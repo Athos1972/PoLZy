@@ -29,6 +29,8 @@ possible future enhancements for each installation.
 ## Main touch points between existing infrastructure and PoLZy
 
 * As an IFrame in an existing portal
+* Via API Calls 
+* As a stand alone WEB-App including user-management
 
 ### Supporting business functions
 
@@ -41,7 +43,8 @@ possible future enhancements for each installation.
 PoLZy is used by remote systems via API-Calls and users via WEB-Frontend. The APIs in the
 PoLZy backend are used either directly or from the frontend. PoLZy runs on multiple Docker
 images:
-* Database of operations, users, customizing settings
+
+* Database of product details (=Mapping), operations, users, customizing settings
 * Backend
 * Frontend
 
@@ -49,8 +52,13 @@ images:
 
 ## Non-functional properties
 * Swagger/OpenAPI documentation
-* Multilanguage frontend and database customizing entries
+* Custom exchangeable Stylesheet, for colors and Logos
+* Custom exachangeble Header and Footer area (e.g. Contact Info Helpdesk)
+* Multilanguage frontend and database customizing entries (all text elements in the database
+  include a table for each language. If current language is not found, fall-back to english.
+  If english is not found, take first maintained entry)
 * ENUMs (from customizing database) in Swagger
-* Extensive documentation
+* Extensive documentation to enable customer enhancements
 * Plugin concept for Backend factories
+* Mouse-over with customizable texts for all frontend elements
  
