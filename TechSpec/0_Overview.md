@@ -13,7 +13,12 @@ that occur frequently and should be dealt with a minimium of effort, for instanc
 * Change of premium payment details (frequency, payment channel)
 
 PoLZy is optimised for fast entry and simple handling of the application, despite the complex
-background of operations in the policy mangement system.
+background of operations in the policy management system.
+
+Typical users of PoLZy include clerks in insurance companies, agents in the field, clerks in the
+backoffice of agencies. Their aim is to finish processing of a standard process on a policy with
+as little possible interaction with the system in the least possible time in order to process a high
+volumn per person and per time slice.
 
 PoLZy can be extended easily and provides a report for each product, user channel, etc.
 to see, which operations were requested but couln't be executed - thus providing insight into
@@ -41,12 +46,12 @@ possible future enhancements for each installation.
 
 # Technical abstract
 PoLZy is used by remote systems via API-Calls and users via WEB-Frontend. The APIs in the
-PoLZy backend are used either directly or from the frontend. PoLZy runs on multiple Docker
+PoLZy backend are used either directly by a remote system or from the WEB-frontend. PoLZy runs on multiple Docker
 images:
 
 * Database of product details (=Mapping), operations, users, customizing settings
-* Backend
-* Frontend
+* Backend (1..n instances)
+* Frontend (1..n instances)
 
 ...gunicorn, nginx for demo purposes also on Docker.
 
@@ -70,6 +75,35 @@ world. PoLZy acts as a proxy and translator for simple business processes into t
 landscape.
 
 The general approach is to have a functional data model (e.g. Policy, Partner, Agent, Insured
-Risk, etc.) and use standard API-Calls to enable the outside world (remote systems, Web-Frontend)
-to use these standardized terms. Then call custom classes to translate these custom 
+Risk, etc. including all relevant attributes) and use standard API-Calls to enable the outside world (remote systems, 
+Web-Frontend) to use these standardized terms to express a functional need. 
+
+Then translate (via custom code for each system) this functional need into a technical interface call (e.g. REST,
+SOAP, RFC, RPC, etc.) and provide answers again in functional terms (translated again from the reply of the internal
+system via custom code).
+
+For some popular systems (e.g. SAP FS-PM) we provide standard implementations as guidance, but each implementation of
+a customer will need adjustments.
+
+## Functional classes
+
+### Policy
+* Policy-Number
+* Product line (e.g. Car, Life, P&C, Health)
+* Remote System
+* Current status
+* Current date
+* Insured Partner (Reference to Partner record)
+* Premium Payer (Reference to Partner record)
+* Insured Object (Rerefence to Insured Object record)
+
+### Partner
+* The usual fields you'd expect for person or company records
+* Custom implementations of additional fields (e.g. Risk Group, Current occupation, Previous occupations, 
+  Sports, details about health condition)
+
+### Insured Object
+* Type (Person | Object)
+* If Person --> Link to Partner record
+* Additional attributes for each object type
  
