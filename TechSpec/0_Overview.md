@@ -61,4 +61,15 @@ images:
 * Extensive documentation to enable customer enhancements
 * Plugin concept for Backend factories
 * Mouse-over with customizable texts for all frontend elements
+
+## Technical integration
+
+System landscape of insurance company may be complex and large-scale with different backend
+policy management systems. It doesn't add any value to present this complexity to the outside
+world. PoLZy acts as a proxy and translator for simple business processes into this complex
+landscape.
+
+The general approach is to have a functional data model (e.g. Policy, Partner, Agent, Insured
+Risk, etc.) and use standard API-Calls to enable the outside world (remote systems, Web-Frontend)
+to use these standardized terms. Then call custom classes to translate these custom 
  
