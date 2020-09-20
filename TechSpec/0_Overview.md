@@ -31,6 +31,37 @@ possible future enhancements for each installation.
 * Request execution of an operation on a policy and effective date
 * Request status of an operation
 
+## WEB-UI of PoLZy
+
+The WEB-UI is designed for high volume data input. As Backend-Systems for policy management are 
+usually not ideal for fast processing of requests, the WEB-UI is of asynchronous nature by default. 
+
+A clerk can enter many policies at once. Each policy is one card - condensed at the beginning. A new,
+empty card is added once a policy number started to be entered by the user.
+
+Once a policy number and effective date are entered, the card gets disabled until there is an answer
+from the backend. Then the card is active again and can be expanded. In the expanded view there are
+
+* Policy number
+* Policy information (dynamically rendered based on input from PoLZy-Backend)
+* Activity dropdown (dynamically filled based on input from PoLZy-Backend)
+* Close-Button
+
+### Activity selection
+Once an activity is selected a sub-card with the requested fields (according to PoLZy-Backend) 
+is shown. Also a "Cancel" and "Execute" Button are shown.
+
+Once the Execute-Button is clicked, the card gets locked again until we've further information 
+from PoLZy-Backend. 
+
+* If the status is "accepted" we show an hourglass on the card. 
+* If the status is "rejected" we show the card red until the user click into it again.
+* If the status is "processed" we show the card green and a "close"-Icon is visible.
+
+The status updates should be triggered by the backend and not polled from the frontend to 
+minimize system load when many users process many policies and there is a slow policy management
+backend involved.
+
 ## Main touch points between existing infrastructure and PoLZy
 
 * As an IFrame in an existing portal
