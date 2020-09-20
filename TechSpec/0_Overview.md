@@ -85,7 +85,7 @@ system via custom code).
 For some popular systems (e.g. SAP FS-PM) we provide standard implementations as guidance, but each implementation of
 a customer will need adjustments.
 
-A sample flow of API-Calls and function calls is [here](https://gogs.baangt.org/athos/PoLZy/1_RequestFlowForOneTransaction.md):  
+A sample flow of API-Calls and function calls is [here](1_RequestFlowForOneTransaction.md):  
 
 ## Functional classes
 
