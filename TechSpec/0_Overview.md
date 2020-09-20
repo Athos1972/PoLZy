@@ -55,7 +55,7 @@ images:
 
 ...gunicorn, nginx for demo purposes also on Docker.
 
-## Non-functional properties
+## Non-functional properties and requirements
 * Swagger/OpenAPI documentation
 * Custom exchangeable Stylesheet, for colors and Logos
 * Custom exachangeble Header and Footer area (e.g. Contact Info Helpdesk)
@@ -85,6 +85,8 @@ system via custom code).
 For some popular systems (e.g. SAP FS-PM) we provide standard implementations as guidance, but each implementation of
 a customer will need adjustments.
 
+A sample flow of API-Calls and function calls is [here](https://gogs.baangt.org/athos/PoLZy/1_RequestFlowForOneTransaction.md):  
+
 ## Functional classes
 
 ### Policy
@@ -96,6 +98,8 @@ a customer will need adjustments.
 * Insured Partner (Reference to Partner record)
 * Premium Payer (Reference to Partner record)
 * Insured Object (Rerefence to Insured Object record)
+* Product line specific attributes (extendable for each installation)
+* Other attributes (exetendable for each installation, e.g. requirements for specific countries)
 
 ### Partner
 * The usual fields you'd expect for person or company records
@@ -104,6 +108,8 @@ a customer will need adjustments.
 
 ### Insured Object
 * Type (Person | Object)
-* If Person --> Link to Partner record
-* Additional attributes for each object type
+* SubType (Object, e.g. "House", "Car", "Factory", "Field", "Forest")
+* Person --> Link to Partner record
+* Additional attributes for each object type and subtype.
+* Additional attributes for each implementation of PoLZy
  
