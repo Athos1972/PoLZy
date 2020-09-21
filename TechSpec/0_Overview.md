@@ -86,6 +86,12 @@ images:
 
 ...gunicorn, nginx for demo purposes also on Docker.
 
+In the future of PoLZy we might extend the functionality to also provide a fast entry for
+other objects than policies, e.g. business partner data, object data, reinsurance data etc.
+
+Apart from a few corner stones, the class design should be easy to extend and refactor in order
+to adjust to such enhancements.
+
 ## Non-functional properties and requirements
 * Swagger/OpenAPI documentation
 * Custom exchangeable Stylesheet, for colors and Logos
