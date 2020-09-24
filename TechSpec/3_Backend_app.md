@@ -67,12 +67,12 @@ The Activities execute internal app methods based on the specific activity type.
 
 #### Add Insurance Object
 * Triggered by an Activity of type `AddInsuranceObject`  
-* Creates an Insurance Object instance  
-* Adds the created Insurance Object to the specified Policy instance  
+* Creates an Insured Person or Insured Object instance  
+* Adds the created instance to the specified Policy instance  
 
 #### Add Partner
 * Triggered by an Activity of type `AddPartner`  
 * Get the Partner from DB  
 * Creates a Partner instance if the Partner is not found   
-* Adds the Partner to the specified Policy or Insurance Object
+* Adds the Partner to the specified Policy or Insured Person instance
 
