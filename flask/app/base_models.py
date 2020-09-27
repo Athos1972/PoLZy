@@ -1,6 +1,3 @@
-#from sqlalchemy import Column, LargeBinary, String
-#from baangt.base.DataBaseORM import base, engine
-#from sqlalchemy.orm import sessionmaker
 from app import db, auth
 from datetime import datetime, timedelta, date
 from random import choice
@@ -9,18 +6,12 @@ import string
 
 ACCESS_KEY_LENGTH = 64
 EXPIRED_HOURS = 24
-ACTIVITY_TYPES = [
-    'cancel',
-    'suspend',
-    'Change',
-
-]
 
 def get_uuid():
     return uuid.uuid4().bytes
 
-def generate_token(lenght=ACCESS_KEY_LENGTH):
-    simbols = string.letters + string.digits + '!#$%&*+-<=>?@'
+def generate_token(length=ACCESS_KEY_LENGTH):
+    simbols = string.ascii_letters + string.digits + '!#$%&*+-<=>?@'
     return ''.join(choice(simbols) for i in range(length))
 
 def get_expired(hours=EXPIRED_HOURS, days=0):
@@ -51,7 +42,7 @@ class User(db.Model):
     access_key = db.Column(db.String(128), nullable=False, default=generate_token)
     key_expired = db.Column(db.DateTime, nullable=False, default=get_expired)
 
-    # realshinships
+    # relationships
     oauth_provider = db.relationship(
         'OAuthProvider',
         foreign_keys=[oauth_provider_id],
@@ -83,11 +74,11 @@ class Activity(db.Model):
     creator_id = db.Column(db.LargeBinary, db.ForeignKey('users.id'), nullable=False)
     created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     policy_number = db.Column(db.String(64), nullable=False)
-    effective_date = db.Column(db.Date, nullable=False, default=date.today())
+    effective_date = db.Column(db.Date, nullable=False, default=date.today)
     type_id = db.Column(db.Integer, db.ForeignKey('activity_types.id'), nullable=False)
     is_finished = db.Column(db.Boolean, nullable=False, default=False)
     
-    # realshinships
+    # relationships
     creator = db.relationship(
         'User',
         backref=db.backref('created_activities', order_by='desc(Activity.created)'),
@@ -101,46 +92,35 @@ class Activity(db.Model):
     def __str__(self):
         return str(uuid.UUID(bytes=self.id))
 
-class ActyvityType(db.Model):
+    @classmethod
+    def create_from_json(cls, data):
+        # 
+        # create instance using data
+        #
+
+        ####### TO DELETE:
+        current_user = User.query.first()
+        
+        # get activity type
+        activity_type = ActivityType.query.filter_by(name=data.get('activity_type')).first()
+        # create activity instance
+        instance = cls(
+            policy_number=data.get('policy_number'),
+            type=activity_type,
+            creator=current_user,
+        )
+        # set effective date
+        if data.get('effective_date'):
+            instance.effective_date = datetime.strptime(data.get('effective_date'), '%Y-%m-%d').date()
+        
+        # store to db
+        db.session.add(instance)
+        db.session.commit()
+        
+        return instance
+
+class ActivityType(db.Model):
     __tablename__ = 'activity_types'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), nullable=False)
     description = db.Column(db.String(128), nullable=True)
-
-# 
-# Activity Values
-#
-
-class PartnerValues(db.Model):
-    __tablename__ = 'partners'
-    id = db.Column(db.Integer, primary_key=True)
-    activity_id = db.Column(db.LargeBinary, db.ForeignKey('activity.id'), nullable=False)
-    is_person = db.Column(db.Boolean, nullable=False)
-    first_name = db.Column(db.String(64))
-    last_name = db.Column(db.String(64))
-    middle_name = db.Column(db.String(64))
-    birth_date = db.Column(db.Date)
-    company_name = db.Column(db.String(64))
-    address = db.Column(db.String(128))
-    city = db.Column(db.String(64))
-    country = db.Column(db.String(64))
-    postal_code = db.Column(db.String(16))
-    primary_email = db.Column(db.String(64))
-    secondary_email = db.Column(db.String(64))
-    primary_phone = db.Column(db.String(16))
-    secondary_phone = db.Column(db.String(16))
-    risk_group = db.Column(db.String(64))
-    current_occupation = db.Column(db.String(64))
-    current_occupation_from = db.Column(db.Date)
-    previous_ocupation = db.Column(db.String(64))
-    sports = db.Column(db.String(64))
-    health_conditions = db.Column(db.String(256))
-    
-    # realshinships
-    activity = db.relationship(
-        'Activity',
-        backref=db.backref('values', uselist=False),
-        foreign_keys=[activity_id],
-        uselist=False,
-    )
-

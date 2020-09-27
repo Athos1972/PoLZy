@@ -15,4 +15,4 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 auth = HTTPTokenAuth(scheme='Bearer')
 
-from app import routes, models
+from app import routes, base_models, value_models

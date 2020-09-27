@@ -1,13 +1,47 @@
-from flask import jsonify, request#, url_for, send_file
-from app import app, models, policy
+from flask import jsonify, request
+from app import app
+from datetime import date
+from app.policy import Policy
+from app.base_models import Activity, ActivityType
 
 
 @app.route('/policy/<string:policy_number>/<string:effective_date>')
-def get_policy(policy_number, effective_date):
-	item = policy.Policy(policy_number, effective_date)
-	item.fetch()
-	if item.data:
-		return jsonify(item.data), 200
+@app.route('/policy/<string:policy_number>')
+def get_policy(policy_number, effective_date=None):
+    #
+    # fetches a Policy by policy_number & effective_data
+    # and returns it
+    #
 
-	return jsonify({'error': 'Policy not found'}), 404
+    # set default effective_date if needed
+    if effective_date is None:
+        effective_date = str(date.today())
 
+    # get Policy
+    policy = Policy(policy_number, effective_date)
+    if policy.fetch():
+        return jsonify(policy.get()), 200
+
+    return jsonify({'error': 'Policy not found'}), 404
+
+
+@app.route(f'/activity', methods=['POST'])
+def new_activity():
+    #
+    # create new activity
+    #
+
+    # get post data
+    data = request.get_json()
+
+    # create activity
+    try:
+        activity = Activity.create_from_json(data)
+        return jsonify({
+            'id': str(activity),
+            'status': 'accepted',
+            'msg': 'Activity accepted',
+        }), 202
+    except Exception as e:
+        print(e)
+        return jsonify({'error': 'Bad Request'}), 400

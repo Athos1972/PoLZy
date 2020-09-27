@@ -5,7 +5,7 @@ from string import ascii_uppercase, digits
 from datetime import date, timedelta
 
 RECORD_NUMBER = 50
-
+OBJECTS = None
 
 def generate_persons(number):
     print('\nGenerating persons...')
@@ -105,11 +105,40 @@ def generate_companies(number):
 
     return partners
 
+def generate_attributes(name, number):
+    return {f'{name} {i+1}': choice(OBJECTS) for i in range(number)}
+
+def get_product_line_attributes(name):
+    if name == 'Life':
+        return generate_attributes('Life Attribute', 3)
+    if name == 'Health':
+        return generate_attributes('Health Attribute', 5)
+    if name == 'P&C':
+        return generate_attributes('P&C Attribute', 2)
+    if name == 'Car':
+        return generate_attributes('Car Attribute', 1)
+    return {}
+
+def get_object_type_attributes(name):
+    if name == 'House':
+        return generate_attributes('Hause Attribute', 1)
+    if name == 'Car':
+        return generate_attributes('Car Attribute', 2)
+    if name == 'Factory':
+        return generate_attributes('Factory Attribute', 3)
+    if name == 'Field':
+        return generate_attributes('Field Attribute', 2)
+    if name == 'Forest':
+        return generate_attributes('Forest Attribute', 1)
+    return {}
+
 def generate_insured_object(person=None):
     if person:
         return {
             'is_person': True,
             'partner': person,
+            'attributes': generate_attributes('Insured Person Attribute', 3),
+            'implementation_attributes': generate_attributes('Implementation Attribute', 2),
         }
 
     object_types = [
@@ -119,9 +148,12 @@ def generate_insured_object(person=None):
         'Field',
         'Forest',
     ]
+    object_type = choice(object_types)
     return {
         'is_person': False,
-        'type': choice(object_types),
+        'type': object_type,
+        'attributes': get_object_type_attributes(object_type),
+        'implementation_attributes': generate_attributes('Implementation Attribute', 2),
     }
 
 def generate_policies(number):
@@ -157,11 +189,15 @@ def generate_policies(number):
             {
                 'number': policy_number,
                 'effective_date': str(effective_date),
-                'product_line': product_line,
+                'product_line': {
+                    'name': product_line,
+                    'attributes': get_product_line_attributes(product_line),
+                },
                 'remote_system': 'PoLZy',
                 'status': choice(statuses),
                 'premium_payer': choice(partners),
                 'insured_object': insured_object,
+                'attributes': generate_attributes('Policy Attribute', 4),
             }
         )
 
@@ -169,6 +205,16 @@ def generate_policies(number):
 
 
 if __name__ == '__main__':
+    # get object list to populate attributes
+    print('Fetching object list...')
+    objects_url = 'https://raw.githubusercontent.com/dariusk/corpora/master/data/objects/objects.json'
+    r = requests.get(objects_url)
+    if r.status_code != 200:
+        print(f'Objects Response: {r.status_code}\n{r.text}')
+        exit()
+    OBJECTS = r.json().get('objects')
+
+    # generate and save policies
     policies = generate_policies(RECORD_NUMBER)
     with open('policies.json', 'w') as f:
         json.dump(policies, f)

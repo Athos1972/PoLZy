@@ -1,34 +1,82 @@
 from datetime import datetime
-import json
+from app import attributes
+
+# Policy Management System emulator
+import policy_system
 
 #
-# Policy details classes
+# Policy details 
 #
 
-path_to_policies = 'app/data/policies.json'
+class Policy:
+    # setting possible activities depending on Policy status
+    activities_by_status = {
+        'active': [
+            'cancel',
+            'suspend',
+        ],
+        'canceled': [],
+        'suspended': [
+            're-activate'
+        ],
+    }
 
+    def __init__(self, number, date):
+        #
+        # initialization
+        #
+
+        self.number = number
+        self.effective_date = date
+        self.data = None
+        self.status = None
+
+    def fetch(self):
+        #
+        # fetch Policy from Policy Management System
+        #
+
+        item = policy_system.get(self.number, self.effective_date)
+        if item:
+            self.data = item
+            self.status = item.get('status')
+            return True
+        
+        # policy not found
+        return False
+
+    def get(self):
+        #
+        # returns Policy data
+        #
+
+        if self.data:
+            # insured object attributes
+            object_attributes = None
+            type_attributes = None
+            if self.data['insured_object'].get('is_person') is True:
+                object_attributes = attributes.insured_person
+            elif self.data['insured_object'].get('is_person') is False:
+                object_attributes = attributes.insured_object
+                type_attributes = attributes.insured_object_type.get(self.data['insured_object'].get('type'))
+
+            return {
+                'policy': self.data,
+                'attributes': {
+                    'policy': attributes.policy,
+                    'product_line': attributes.product_line.get(self.data['product_line'].get('name')),
+                    'insured_object': object_attributes,
+                    'insured_object_type': type_attributes,
+                },
+                'possible_activities': self.activities_by_status.get(self.status),
+            }
+
+
+'''
 def get_date(date_string):
     if date_string is None:
         return None
     return datetime.strptime(date_string, '%Y-%m-%d')
-
-def get_data(path=path_to_policies):
-    with open(path, 'r') as f:
-        return json.load(f)
-
-
-class Policy:
-    def __init__(self, number, date):
-        self.number = number
-        self.effective_date = date
-        self.data = None
-
-    def fetch(self):
-        data = get_data()
-        for item in data:
-            if self.number == item['number'] and self.effective_date == item['effective_date']:
-                self.data = item
-
 
 class Partner:
     def __init__(self, data):
@@ -62,4 +110,4 @@ class InsuredObject:
             self.person = Partner(data)
         else:
             self.type = data.get('type')
-            
+'''            
