@@ -1,5 +1,6 @@
 from datetime import datetime
-from app import attributes
+from polzy import attributes
+from polzy.activities import activities_by_status
 
 # Policy Management System emulator
 import policy_system
@@ -9,17 +10,6 @@ import policy_system
 #
 
 class Policy:
-    # setting possible activities depending on Policy status
-    activities_by_status = {
-        'active': [
-            'cancel',
-            'suspend',
-        ],
-        'canceled': [],
-        'suspended': [
-            're-activate'
-        ],
-    }
 
     def __init__(self, number, date):
         #
@@ -68,7 +58,7 @@ class Policy:
                     'insured_object': object_attributes,
                     'insured_object_type': type_attributes,
                 },
-                'possible_activities': self.activities_by_status.get(self.status),
+                'possible_activities': activities_by_status.get(self.status),
             }
 
 

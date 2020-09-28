@@ -3,8 +3,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_httpauth import HTTPTokenAuth
 from config import Config
-#from redis import Redis
-#import rq
 
 # create application
 app = Flask(__name__)
@@ -15,4 +13,5 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 auth = HTTPTokenAuth(scheme='Bearer')
 
-from app import routes, base_models, value_models
+from base import routes, models
+from polzy import models

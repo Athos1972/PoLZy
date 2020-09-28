@@ -1,8 +1,8 @@
 from flask import jsonify, request
-from app import app
+from base import app
 from datetime import date
-from app.policy import Policy
-from app.base_models import Activity, ActivityType
+from base.policy import Policy
+from base.models import Activity, ActivityType
 
 
 @app.route('/policy/<string:policy_number>/<string:effective_date>')

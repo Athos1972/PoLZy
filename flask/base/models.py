@@ -1,21 +1,8 @@
-from app import db, auth
+from base import db, auth
 from datetime import datetime, timedelta, date
-from random import choice
+from base.auth import get_uuid, generate_token, get_expired
 import uuid
-import string
 
-ACCESS_KEY_LENGTH = 64
-EXPIRED_HOURS = 24
-
-def get_uuid():
-    return uuid.uuid4().bytes
-
-def generate_token(length=ACCESS_KEY_LENGTH):
-    simbols = string.ascii_letters + string.digits + '!#$%&*+-<=>?@'
-    return ''.join(choice(simbols) for i in range(length))
-
-def get_expired(hours=EXPIRED_HOURS, days=0):
-    return datetime.utcnow() + timedelta(hours=hours, days=days)
 
 # authentication
 @auth.verify_token
