@@ -1,4 +1,4 @@
-# PoLZy - Policy Life Cycle
+# PoLZy - Policy Life Cycle (Policen LebensZyklus)
 
 * [Overview](TechSpec/0_Overview.md)  
 * [Request flow](TechSpec/1_RequestFlowForOneTransaction.md)
