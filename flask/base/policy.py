@@ -2,9 +2,6 @@ from datetime import datetime
 from polzy import attributes
 from polzy.activities import activities_by_status
 
-# Policy Management System emulator
-import policy_system
-
 #
 # Policy details 
 #
@@ -21,19 +18,23 @@ class Policy:
         self.data = None
         self.status = None
 
-    def fetch(self):
+    def fetch(self, fetch_function):
         #
         # fetch Policy from Policy Management System
         #
 
-        item = policy_system.get(self.number, self.effective_date)
-        if item:
-            self.data = item
-            self.status = item.get('status')
-            return True
+        def inner():
+            item = fetch_function(self.number, self.effective_date)
+
+            if item:
+                self.data = item
+                self.status = item.get('status')
+                return True
         
-        # policy not found
-        return False
+            # policy not found
+            return False
+
+        return inner
 
     def get(self):
         #

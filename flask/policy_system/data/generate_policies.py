@@ -45,13 +45,14 @@ def generate_persons(number):
     for user in users:
         persons.append(
             {
+                'is_person': True,
                 'first_name': user['name'].get('first'),
                 'last_name': user['name'].get('last'),
                 'birthdate': user['dob'].get('date')[:10],
                 'address': ' '.join(map(str, user['location'].get('street').values())),
                 'city': user['location'].get('city'),
                 'country': user['location'].get('country'),
-                'postal_code': user['location'].get('postcode'),
+                'postal_code': str(user['location'].get('postcode')),
                 'email': user['email'],
                 'primary_phone': user['phone'],
                 'secondary_phone': user['cell'],
@@ -96,7 +97,7 @@ def generate_companies(number):
                 'address': ' '.join(map(str, user['location'].get('street').values())),
                 'city': user['location'].get('city'),
                 'country': user['location'].get('country'),
-                'postal_code': user['location'].get('postcode'),
+                'postal_code': str(user['location'].get('postcode')),
                 'email': user['email'],
                 'primary_phone': user['phone'],
                 'secondary_phone': user['cell'],
