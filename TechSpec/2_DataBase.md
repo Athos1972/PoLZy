@@ -4,7 +4,7 @@ PoLZy Database
 Database Structure
 ------------------
 [Editable Source (open with diagrams.net)](https://drive.google.com/file/d/1Rco3Wep9Kzqp2xrR9Ft0G2DvkWvj3iFR/view?usp=sharing)
-![PoLZy Database Structure](PoLZy_DB.jpg "PoLZy Database Structure")
+![PoLZy Database Structure](../media/PoLZy_DB.jpg "PoLZy Database Structure")
 
 Description
 -----------
