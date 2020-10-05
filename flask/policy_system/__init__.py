@@ -17,6 +17,9 @@ def get(policy_number, effective_date):
         policies = json.load(f)
         # delay emulation
         sleep(DELAY_SECONDS)
+        request_number = policy_number.upper().replace('-', '')
+        request_date = effective_date.replace('-', '')
+        print(f'**** REQUEST POLICY: {request_number} {request_date}')
         for item in policies:
-            if policy_number.upper() == item['number'].upper() and effective_date == item['effective_date']:
+            if request_number == item['number'].replace('-', '') and request_date == item['effective_date'].replace('-', ''):
                 return item

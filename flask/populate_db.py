@@ -2,12 +2,13 @@
 # populates PoLZy db with sample instances
 #
 
-
-from app import db
-from app.base_models import User, ActivityType, OAuthProvider, generate_token
+from base import db
+from base.models import User, ActivityType, OAuthProvider
+from base.auth import generate_token
+from polzy.activities import activities_by_status
 import uuid
 from datetime import datetime, timedelta
-from app.policy import Policy
+
 
 # create OAuth provider
 print('Creating OAuth Provider...')
@@ -32,7 +33,7 @@ db.session.add(user)
 # create activity types
 print('Creating Activity Types...')
 activities = {}
-for name in {i for key, value in Policy.activities_by_status.items() for i in value}:
+for name in {i for key, value in activities_by_status.items() for i in value}:
     activity = ActivityType(
         name=name,
         description=f'Sample {name.capitalize()} Activity',

@@ -6,14 +6,8 @@ import os
 #
 
 class Config(object):
-    # flask secret key
-    SECRET_KEY = os.getenv('SECRET_KEY') or 'secret!key'
 
-    # json format
-    JSON_SORT_KEYS = False
 
-    # DB connection
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', default='sqlite:///polzy.db')
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    CLASSNAME_POLICY = 'polzy.interface.SamplePolicy'
 
     

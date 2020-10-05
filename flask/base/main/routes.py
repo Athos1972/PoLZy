@@ -1,12 +1,13 @@
 from flask import jsonify, request
-from app import app
 from datetime import date
-from app.policy import Policy
-from app.base_models import Activity, ActivityType
+from base.policy import Policy
+from base.models import Activity, ActivityType
+from base.utils import get_policy_class
+from base.main import bp
 
 
-@app.route('/policy/<string:policy_number>/<string:effective_date>')
-@app.route('/policy/<string:policy_number>')
+@bp.route('/policy/<string:policy_number>/<string:effective_date>')
+@bp.route('/policy/<string:policy_number>')
 def get_policy(policy_number, effective_date=None):
     #
     # fetches a Policy by policy_number & effective_data
@@ -17,15 +18,18 @@ def get_policy(policy_number, effective_date=None):
     if effective_date is None:
         effective_date = str(date.today())
 
-    # get Policy
-    policy = Policy(policy_number, effective_date)
-    if policy.fetch():
-        return jsonify(policy.get()), 200
+    try:
+        # get Policy
+        policy = get_policy_class()(policy_number, effective_date)
+        if policy.fetch():
+            return jsonify(policy.get()), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
     return jsonify({'error': 'Policy not found'}), 404
 
 
-@app.route(f'/activity', methods=['POST'])
+@bp.route(f'/activity', methods=['POST'])
 def new_activity():
     #
     # create new activity

@@ -1,0 +1,72 @@
+{
+  "policy": {
+    "number": "HE-54648",
+    "effective_date": "2021-01-12",
+    "product_line": {
+      "name": "Car",
+      "attributes": {
+        "Car Attribute 1": "zipper"
+      }
+    },
+    "remote_system": "PoLZy",
+    "status": "canceled",
+    "premium_payer": {
+      "first_name": "Daniel",
+      "last_name": "Kangas",
+      "birthdate": "1981-08-28",
+      "address": "4970 Hämeenkatu",
+      "city": "Kärsämäki",
+      "country": "Finland",
+      "postal_code": 34672,
+      "email": "daniel.kangas@example.com",
+      "primary_phone": "07-818-006",
+      "secondary_phone": "049-208-09-01",
+      "occupation": "stonemason",
+      "occupation_from": "2010-12-24",
+      "previous_occupation": "transit police",
+      "sports": [
+        "Wrestling"
+      ],
+      "health_condition": "Normal"
+    },
+    "insured_object": {
+      "is_person": false,
+      "type": "Car",
+      "attributes": {
+        "Car Attribute 1": "candlestick",
+        "Car Attribute 2": "screw"
+      },
+      "implementation_attributes": {
+        "Implementation Attribute 1": "rusty nail",
+        "Implementation Attribute 2": "trash bag"
+      }
+    },
+    "attributes": {
+      "Policy Attribute 1": "chair",
+      "Policy Attribute 2": "broccoli",
+      "Policy Attribute 3": "lemon",
+      "Policy Attribute 4": "garden spade"
+    }
+  },
+  "attributes": {
+    "policy": {
+      "Policy Attribute 1": "Description of Policy Attribute 1",
+      "Policy Attribute 2": "Description of Policy Attribute 2",
+      "Policy Attribute 3": "Description of Policy Attribute 3",
+      "Policy Attribute 4": "Description of Policy Attribute 4"
+    },
+    "product_line": {
+      "Car Attribute 1": "Description of Car Attribute 1"
+    },
+    "insured_object": {
+      "Insured Object Attribute 1": "Description of Insured Object Attribute 1",
+      "Insured Object Attribute 2": "Description of Insured Object Attribute 2",
+      "Insured Object Attribute 3": "Description of Insured Object Attribute 3"
+    },
+    "insured_object_type": {
+      "Car Attribute 1": "Description of Car Attribute 1",
+      "Car Attribute 2": "Description of Car Attribute 2"
+    }
+  },
+  "possible_activities": []
+}
