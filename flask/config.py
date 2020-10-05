@@ -19,4 +19,6 @@ class Config(object):
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    CLASSNAME_POLICY = 'polzy.interface.SamplePolicy'
+
     

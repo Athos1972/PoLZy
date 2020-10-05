@@ -3,9 +3,7 @@ from base import app
 from datetime import date
 from base.policy import Policy
 from base.models import Activity, ActivityType
-
-# custom elements 
-from polzy.interface import fetch_policy
+from base.utils import get_policy_class
 
 
 @app.route('/policy/<string:policy_number>/<string:effective_date>')
@@ -20,10 +18,13 @@ def get_policy(policy_number, effective_date=None):
     if effective_date is None:
         effective_date = str(date.today())
 
-    # get Policy
-    policy = Policy(policy_number, effective_date)
-    if policy.fetch(fetch_policy)():
-        return jsonify(policy.get()), 200
+    try:
+        # get Policy
+        policy = get_policy_class()(policy_number, effective_date)
+        if policy.fetch():
+            return jsonify(policy.get()), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
     return jsonify({'error': 'Policy not found'}), 404
 
