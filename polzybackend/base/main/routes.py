@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from polzybackend import jsonify, request
 from datetime import date
 from base.policy import Policy
 from base.models import Activity, ActivityType

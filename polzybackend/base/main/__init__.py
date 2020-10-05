@@ -1,4 +1,4 @@
-from flask import Blueprint
+from polzybackend import Blueprint
 
 bp = Blueprint('main', __name__)
 

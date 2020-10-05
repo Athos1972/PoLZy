@@ -1,4 +1,4 @@
-from flask import current_app
+from polzybackend import current_app
 from importlib import import_module
 from base.policy import Policy
 
