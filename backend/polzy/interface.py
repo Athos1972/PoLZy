@@ -3,7 +3,7 @@
 #
 
 
-from base.policy import Policy
+from polzybackend.policy import Policy
 import policy_system
 
 

@@ -1,6 +1,6 @@
-from polzybackend import current_app
+from flask import current_app
 from importlib import import_module
-from base.policy import Policy
+from .policy import Policy
 
 def import_class(name):
     #

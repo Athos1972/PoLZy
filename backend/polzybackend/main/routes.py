@@ -1,9 +1,9 @@
-from polzybackend import jsonify, request
+from flask import jsonify, request
 from datetime import date
-from base.policy import Policy
-from base.models import Activity, ActivityType
-from base.utils import get_policy_class
-from base.main import bp
+from ..policy import Policy
+from ..models import Activity, ActivityType
+from ..utils import get_policy_class
+from . import bp
 
 
 @bp.route('/policy/<string:policy_number>/<string:effective_date>')

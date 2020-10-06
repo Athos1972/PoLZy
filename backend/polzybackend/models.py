@@ -1,6 +1,6 @@
-from base import db, auth
+from . import db, auth
+from .auth import get_uuid, generate_token, get_expired
 from datetime import datetime, timedelta, date
-from base.auth import get_uuid, generate_token, get_expired
 import uuid
 
 

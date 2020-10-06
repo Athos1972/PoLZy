@@ -1,8 +1,7 @@
-from polzybackend import Flask
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_httpauth import HTTPTokenAuth
-#from config import Config
 import os
 
 
@@ -11,7 +10,7 @@ db = SQLAlchemy()
 migrate = Migrate()
 auth = HTTPTokenAuth(scheme='Bearer')
 
-def create_app(config):
+def create_app(config=None):
     # create application
     app = Flask(__name__)
     # set default config
@@ -27,11 +26,11 @@ def create_app(config):
     db.init_app(app)
     migrate.init_app(app, db)
 
-    from base.main import bp
+    from .main import bp
     app.register_blueprint(bp)
 
     return app
 
 
 
-from base import models
+from . import models
