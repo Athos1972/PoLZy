@@ -1,10 +1,24 @@
 import React from 'react'
-import { Grid, Card, CardContent, Typography, TextField } from '@material-ui/core'
+import { connect } from 'react-redux'
+import { Grid, Card, CardContent, Typography, TextField, Button, Icon } from '@material-ui/core'
+import { withStyles } from '@material-ui/core/styles'
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers'
 import DateFnsUtils from '@date-io/date-fns'
+import { addPolicy } from '../redux/actions'
+import SearchIcon from '@material-ui/icons/Search'
 
+// Error Card Styles
+const SearchButton = withStyles((theme) => ({
+  root: {
+    backgroundColor: "#00c853",
+    marginTop: theme.spacing(2),
+    '&:hover': {
+      backgroundColor: "#43a047",
+    }
+  },
+}))(Button)
 
-export default class NewPolicy extends React.Component {
+class NewPolicy extends React.Component {
 
   state = {
     policyNumber: '',
@@ -17,10 +31,20 @@ export default class NewPolicy extends React.Component {
     })
   }
 
-  handleDateChange = date =>{
+  handleDateChange = date => {
     this.setState({
       effectiveDate: date,
     })
+  }
+
+  handleSubmit = () => {
+    if (this.state.policyNumber) {
+      this.props.addPolicy({
+        status: "waiting",
+        number: this.state.policyNumber,
+        date: this.state.effectiveDate.toISOString().split('T')[0],
+      })
+    }
   }
 
   render() {  
@@ -60,9 +84,22 @@ export default class NewPolicy extends React.Component {
                 />
               </MuiPickersUtilsProvider>
             </Grid>
+            <Grid item>
+              <SearchButton
+                variant="contained"
+                color="primary"
+                endIcon={<SearchIcon />}
+                onClick={this.handleSubmit}
+              >
+                Find
+              </SearchButton>
+            </Grid>
           </Grid>
         </CardContent>
       </Card>
     )
   }
 }
+
+// connect to redux store
+export default connect(null, {addPolicy: addPolicy})(NewPolicy)

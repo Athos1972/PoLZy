@@ -1,7 +1,10 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { Card, CardHeader, CardActions, Typography, IconButton, Tooltip } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
+import { removePolicy } from '../redux/actions'
+
 
 // Error Card Styles
 const CardError = withStyles(() => ({
@@ -25,15 +28,22 @@ const CardErrorContent = withStyles((theme) => ({
 }))(CardActions)
 
 
-export default function ErrorPolicy(props) {
-  const {policy} = props
+function ErrorPolicy(props) {
+  const {index, policy} = props
+
+  const handleCloseClick = () => {
+    props.closePolicyCard(index)
+  } 
 
   return(
     <CardError>
       <CardErrorHeader
         action={
           <Tooltip title="Close">
-            <IconButton aria-label="close">
+            <IconButton 
+              aria-label="close"
+              onClick={handleCloseClick}
+            >
               <CloseIcon />
             </IconButton>
           </Tooltip>
@@ -52,3 +62,6 @@ export default function ErrorPolicy(props) {
     </CardError>
   )
 }
+
+// connect to redux store
+export default connect(null, {closePolicyCard: removePolicy})(ErrorPolicy)

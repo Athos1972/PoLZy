@@ -1,18 +1,14 @@
 import React, { useState } from 'react'
-import LoginView from './views/LoginView'
-import HomeView from './views/HomeView'
+import { Provider } from 'react-redux'
+import PolzyApp from './polzy'
+import store from './redux/store'
 
-function App() {
-  const [accessToken, setAccessToken] = useState(false)
+export default function App() {
 
-  const handleLogin = () => setAccessToken(true)
-  const handlLogout = () => setAccessToken(false)
-
-  if (accessToken) {
-    return <HomeView auth={handlLogout} />
-  }
-
-  return <LoginView auth={handleLogin} />
+  return(
+    <Provider store={store}>
+      <PolzyApp />
+    </Provider>
+  )
 }
 
-export default App;

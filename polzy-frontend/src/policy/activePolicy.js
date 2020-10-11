@@ -1,10 +1,13 @@
 import React from 'react'
+import clsx from 'clsx'
+import { connect } from 'react-redux'
 import { Card, CardHeader, CardActions, CardContent, Collapse, Button, IconButton, Tooltip } from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import CloseIcon from '@material-ui/icons/Close'
-import clsx from 'clsx'
 import PolicyDetails from './policyDetails'
+import { removePolicy } from '../redux/actions'
+
 
 // Active Card Styles
 const CardHeaderActive = withStyles((theme) => ({
@@ -35,14 +38,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function ActivePolicy(props) {
+function ActivePolicy(props) {
 
+  const { index } = props
   const { policy, possible_activities, attributes } = props.policy
   const classes = useStyles()
   const [expanded, setExpanded] = React.useState(false);
 
+  const handleCloseClick = () => {
+    props.closePolicyCard(index)
+  }
+
   const handleExpandClick = () => {
-    setExpanded(!expanded);
+    setExpanded(!expanded)
   }
 
   return(
@@ -50,7 +58,10 @@ export default function ActivePolicy(props) {
       <CardHeaderActive
         action={
           <Tooltip title="Close">
-            <IconButton aria-label="close">
+            <IconButton 
+              onClick={handleCloseClick}
+              aria-label="close"
+            >
               <CloseIcon />
             </IconButton>
           </Tooltip>
@@ -87,3 +98,6 @@ export default function ActivePolicy(props) {
     </Card>
   )
 }
+
+// connect to redux store
+export default connect(null, {closePolicyCard: removePolicy})(ActivePolicy)

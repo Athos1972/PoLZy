@@ -1,39 +1,15 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { Toolbar, Typography, Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Brand from './brand'
+import { signOut } from '../redux/actions'
 
-export default function Header(props){
-  const classes = useStyles()
 
-  return(
-    <React.Fragment>
-      <Toolbar className={classes.toolbar}>
-      <div className={classes.title}>
-        <Brand fontSize={40} marginBottom={10} />
-      </div>
-      <Typography
-        classes={{root: classes.user}}
-        variant="button"
-      >
-        Admin
-      </Typography>
-      <Button 
-        variant="outlined"
-        size="small"
-        onClick={props.auth}
-      >
-        Sign out
-      </Button>
-      </Toolbar>
-    </React.Fragment>
-  )
-}
-
+// styles
 const useStyles = makeStyles({
   toolbar: {
     borderBottom: "2px solid",
-    //borderBottomColor: "#00c853",
     borderBottomColor: "#aaa",
     marginBottom: 10,
   },
@@ -47,3 +23,37 @@ const useStyles = makeStyles({
     color: "grey",
   }
 })
+
+function Header(props){
+  const classes = useStyles()
+
+  return(
+    <React.Fragment>
+      <Toolbar className={classes.toolbar}>
+      <div className={classes.title}>
+        <Brand fontSize={40} marginBottom={10} />
+      </div>
+      <Typography
+        classes={{root: classes.user}}
+        variant="button"
+      >
+        {props.user.username}
+      </Typography>
+      <Button 
+        variant="outlined"
+        size="small"
+        onClick={props.signOut}
+      >
+        Sign out
+      </Button>
+      </Toolbar>
+    </React.Fragment>
+  )
+}
+
+// connect to redux store
+const mapStateToProps = (state) => ({
+  user: state.user,
+})
+
+export default connect(mapStateToProps, {signOut: signOut})(Header)

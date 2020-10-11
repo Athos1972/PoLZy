@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { Container, Grid } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Header from'../components/header'
@@ -8,8 +9,7 @@ import ErrorPolicy from '../policy/errorPolicy'
 import ActivePolicy from '../policy/activePolicy'
 import Copyright from '../components/copyright'
 
-import { policies } from '../testData/policies'
-
+// set styles
 const useStyles = makeStyles((theme) => ({
   footer: {
     padding: theme.spacing(3, 2),
@@ -18,39 +18,38 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function PolicyCard(props) {
-  const { policy } = props
+  const { index, policy } = props
   
   switch (policy.status) {
     case "ok":
       return(
-        <ActivePolicy policy={policy.data} />
+        <ActivePolicy index={index} policy={policy.data} />
       )
     case "waiting":
       return(
-        <DisabledPolicy policy={policy} />
+        <DisabledPolicy index={index} policy={policy} />
       )
     default:
       return(
-        <ErrorPolicy policy={policy} />
+        <ErrorPolicy index={index} policy={policy} />
       )
   }
 }
 
-export default function HomeView(props) {
-  const {auth} = props
+function HomeView(props) {
   const classes = useStyles()
 
   return(
     <React.Fragment>
     <Container maxWidth="lg">
-      <Header auth={auth} />
+      <Header />
       <Grid container direction="column" spacing={2}>
         <Grid item>
           <NewPolicy />
         </Grid>
-        {policies.map((policy) => (
-          <Grid item>
-            <PolicyCard key={policy.number} policy={policy} />
+        {props.policies.map((policy, index) => (
+          <Grid item key={index}>
+            <PolicyCard index={index} policy={policy} />
           </Grid>
         ))}
       </Grid>
@@ -60,6 +59,9 @@ export default function HomeView(props) {
     </footer>
     </React.Fragment>
   )
-
 }
 
+// connect to redux store
+export default connect((state) => ({
+  policies: state.policies,
+}))(HomeView)
