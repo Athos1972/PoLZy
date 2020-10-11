@@ -1,11 +1,13 @@
 import React from 'react'
-import { Grid, Card, CardHeader, CardActions, CardContent, Typography, Button, IconButton } from '@material-ui/core'
-import { makeStyles, withStyles } from '@material-ui/core/styles'
-import DeleteIcon from '@material-ui/icons/Delete'
+import { Card, CardHeader, CardActions, Typography, IconButton, Tooltip } from '@material-ui/core'
+import { withStyles } from '@material-ui/core/styles'
+import CloseIcon from '@material-ui/icons/Close'
 
+// Error Card Styles
 const CardError = withStyles(() => ({
   root: {
     backgroundColor: "#fbb",
+    color: "#b71c1c",
   },
 }))(Card)
 
@@ -22,35 +24,25 @@ const CardErrorContent = withStyles((theme) => ({
   },
 }))(CardActions)
 
-const useStyles = makeStyles({
-  card: {
-    backgroundColor: "#fbb",
-  },
-
-  cardText: {
-    color: "#b71c1c",
-  },
-})
 
 export default function ErrorPolicy(props) {
-
   const {policy} = props
-  const classes = useStyles()
 
   return(
     <CardError>
       <CardErrorHeader
-        action={ 
-          <IconButton aria-label="delete">
-            <DeleteIcon />
-          </IconButton>
+        action={
+          <Tooltip title="Close">
+            <IconButton aria-label="close">
+              <CloseIcon />
+            </IconButton>
+          </Tooltip>
         }
         title={"Policy #" + policy.number}
         subheader={policy.date}
       />
       <CardErrorContent>
         <Typography
-          className={classes.cardText}
           component="p"
           variant="h5"
         >

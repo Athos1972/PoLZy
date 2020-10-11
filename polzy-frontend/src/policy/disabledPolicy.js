@@ -1,54 +1,23 @@
 import React from 'react'
-import { Grid, Card, CardHeader, Typography } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
+import { Card, CardHeader } from '@material-ui/core'
+import { withStyles } from '@material-ui/core/styles'
 
+// Disabled Card Styles
+const CardDisabled = withStyles(() => ({
+  root: {
+    backgroundColor: "#ccc",
+  },
+}))(Card)
 
 export default function DisabledPolicy(props) {
-
-  const policy = props.policy
-  const classes = useStyles()
-
-  function Row(props) {
-    return(
-      <React.Fragment>
-        <Grid item xs={4}>
-          <Typography
-            component="p"
-            variant="h5"
-          >
-            {props.title}:
-          </Typography>
-        </Grid>
-        <Grid item xs={4}>
-          <Typography
-            className={classes.value}
-            component="p"
-            variant="h5"
-          >
-            {props.value}
-          </Typography>
-        </Grid>
-      </React.Fragment>
-    )
-  }
+  const {policy} = props
 
   return(
-    <Card classes={{root: classes.card}}>
+    <CardDisabled>
       <CardHeader
         title={"Policy #" + policy.number}
         subheader={policy.date}
       />
-    </Card>
+    </CardDisabled>
   )
 }
-
-const useStyles = makeStyles({
-  card: {
-    backgroundColor: "#ccc",
-  },
-
-  value: {
-    color: "#555",
-  },
-
-})

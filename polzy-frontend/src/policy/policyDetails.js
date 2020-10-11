@@ -3,6 +3,7 @@ import { Paper, Grid, Typography } from '@material-ui/core'
 import { Table, TableHead, TableBody, TableRow, TableCell } from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 
+// Styles for policy status
 const StatusActive = withStyles((theme) => ({
   head: {
     color: theme.palette.success.main,
@@ -21,6 +22,7 @@ const StatusCanceled = withStyles((theme) => ({
   },
 }))(TableCell)
 
+// Styles for policy section container
 const Section = withStyles((theme) => ({
   root: {
     //padding: theme.spacing(2),
@@ -28,7 +30,17 @@ const Section = withStyles((theme) => ({
   },
 }))(Paper)
 
+// Style for policy section title
+const useStyles = makeStyles((theme) => ({
+  title: {
+    color: theme.palette.common.black,
+    paddingLeft: theme.spacing(2),
+  },
+}));
+
+
 function MakeRow(props) {
+  // renders a policy property
   const {title, value} = props
 
   return(
@@ -41,37 +53,10 @@ function MakeRow(props) {
   )
 }
 
-function MakeStatus(props) {
-  const {value} = props
-  const classes = useStyles()
-
-  return(
-    <React.Fragment>
-      <TableRow>
-        <TableCell>Status</TableCell>
-        <TableCell classes={{head: classes.statusValue}}>{value}</TableCell>
-      </TableRow>
-    </React.Fragment>
-  )
-}
-
-function MakeHeader(props) {
-  const {title, value} = props
-
-  return(
-    <React.Fragment>
-      <TableHead>
-        <TableRow>
-          <TableCell>{title}</TableCell>
-          <TableCell>{value}</TableCell>
-        </TableRow>
-      </TableHead>
-    </React.Fragment>
-  )
-}
-
 function Title(props) {
+  // renders title of policy section
   const classes = useStyles()
+
   return (
     <Typography 
       className={classes.title}
@@ -86,6 +71,7 @@ function Title(props) {
 }
 
 function PolicyStatus(props) {
+  // renders policy status
   const {status} = props
 
   switch(status) {
@@ -101,8 +87,8 @@ function PolicyStatus(props) {
 }
 
 function PolicyMain(props) {
+  // renders general data of policy
   const {data} = props
-  const classes = useStyles()
 
   return(
     <React.Fragment>
@@ -127,6 +113,7 @@ function PolicyMain(props) {
 }
 
 function ProductLine(props) {
+  // renders product line section of policy
   const {data} = props
 
   return(
@@ -146,6 +133,7 @@ function ProductLine(props) {
 }
 
 function RenderPartner(props) {
+  // renders partner
   const {data} = props
 
   return(
@@ -179,7 +167,8 @@ function RenderPartner(props) {
   )  
 }
 
-function Partner(props) {
+function PremiumPayer(props) {
+  // renders premium payer
   const {data} = props
 
   return(
@@ -196,31 +185,8 @@ function Partner(props) {
   )
 }
 
-
-function InsuredPerson(props) {
-  const {data} = props
-
-  return(
-    <React.Fragment>
-      <Section>
-        <Title title="Insured Person" />
-        <Table size="small">
-          <TableBody>
-            <RenderPartner data={data} />
-            {Object.keys(data.attributes).map((attr) => (
-              <MakeRow key={attr} title={attr} value={data.attributes[attr]} />
-            ))}
-            {Object.keys(data.implementation_attributes).map((attr) => (
-              <MakeRow key={attr} title={attr} value={data.implementation_attributes[attr]} />
-            ))}
-          </TableBody>
-        </Table>
-      </Section>
-    </React.Fragment>
-  )
-}
-
 function InsuredObject(props) {
+  // renders insured object or person
   const {data} = props
 
   return(
@@ -258,7 +224,7 @@ export default function PolicyDetails(props) {
           <ProductLine data={policy.product_line} />
         </Grid>
         <Grid container direction="column" item xs={12} md={4}>
-          <Partner data={policy.premium_payer} />
+          <PremiumPayer data={policy.premium_payer} />
         </Grid>
         <Grid container direction="column" item xs={12} md={4}>
           <InsuredObject data={policy.insured_object} />
@@ -269,15 +235,5 @@ export default function PolicyDetails(props) {
 
 }
 
-const useStyles = makeStyles((theme) => ({
-  title: {
-    color: theme.palette.common.black,
-    paddingLeft: theme.spacing(2),
-  },
 
-  paper: {
-    //padding: theme.spacing(2),
-    margin: theme.spacing(1),
-  },
-}));
 

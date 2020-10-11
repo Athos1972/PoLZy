@@ -1,11 +1,12 @@
 import React from 'react'
-import { Grid, Card, CardHeader, CardActions, CardContent, Collapse, Typography, Button, IconButton } from '@material-ui/core'
+import { Card, CardHeader, CardActions, CardContent, Collapse, Button, IconButton, Tooltip } from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import DeleteIcon from '@material-ui/icons/Delete'
+import CloseIcon from '@material-ui/icons/Close'
 import clsx from 'clsx'
 import PolicyDetails from './policyDetails'
 
+// Active Card Styles
 const CardHeaderActive = withStyles((theme) => ({
   root: {
     paddingBottom: 0,
@@ -19,6 +20,21 @@ const CardActionsActive = withStyles((theme) => ({
   },
 }))(CardActions)
 
+// Expand Button Styles
+const useStyles = makeStyles((theme) => ({
+  expand: {
+    transform: 'rotate(0deg)',
+    marginLeft: 'auto',
+    transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.shortest,
+    }),
+  },
+
+  expandOpen: {
+    transform: 'rotate(180deg)',
+  },
+}))
+
 export default function ActivePolicy(props) {
 
   const { policy, possible_activities, attributes } = props.policy
@@ -29,29 +45,32 @@ export default function ActivePolicy(props) {
     setExpanded(!expanded);
   }
 
-
   return(
     <Card>
       <CardHeaderActive
-        action={ 
-          <IconButton aria-label="delete">
-            <DeleteIcon />
-          </IconButton>
+        action={
+          <Tooltip title="Close">
+            <IconButton aria-label="close">
+              <CloseIcon />
+            </IconButton>
+          </Tooltip>
         }
         title={"Policy #" + policy.number}
         subheader={policy.effective_date}
       />
       <CardActionsActive>
-        <IconButton
-          className={clsx(classes.expand, {
-            [classes.expandOpen]: expanded,
-          })}
-          onClick={handleExpandClick}
-          aria-expanded={expanded}
-          aria-label="view details"
-        >
-          <ExpandMoreIcon />
-        </IconButton>
+        <Tooltip title={expanded ? ("Collapse") : ("Expand")}>
+          <IconButton
+            className={clsx(classes.expand, {
+              [classes.expandOpen]: expanded,
+            })}
+            onClick={handleExpandClick}
+            aria-expanded={expanded}
+            aria-label="view details"
+          >
+            <ExpandMoreIcon />
+          </IconButton>
+          </Tooltip>
       </CardActionsActive>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
@@ -68,23 +87,3 @@ export default function ActivePolicy(props) {
     </Card>
   )
 }
-
-const useStyles = makeStyles((theme) => ({
-
-  value: {
-    color: "#555",
-  },
-
-  expand: {
-    transform: 'rotate(0deg)',
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest,
-    }),
-  },
-
-  expandOpen: {
-    transform: 'rotate(180deg)',
-  },
-
-}))

@@ -1,3 +1,4 @@
+# flask 
 __pycache__
 venv
 migrations
@@ -5,3 +6,15 @@ migrations
 *.egg-info
 *.db
 *.pyc
+
+# react
+.DS_STORE
+build
+node_modules
+coverage
+
+package-lock.json
+size-snapshot.json
+
+# misc
+*.log
