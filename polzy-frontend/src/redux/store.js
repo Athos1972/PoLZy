@@ -9,11 +9,11 @@ const store = createStore(reducer)
 
 
 // debug items
-
+/*
 policies.map(item => {
 	store.dispatch(addPolicy(item))
 })
-
+*/
 
 
 console.log(store.getState())
