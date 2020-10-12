@@ -4,7 +4,7 @@
 import json
 from time import sleep
 
-DELAY_SECONDS = 1
+DELAY_SECONDS = 5
 POLICY_DATASET = 'policy_system/data/policies.json'
 
 def get(policy_number, effective_date):
