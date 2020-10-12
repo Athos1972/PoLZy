@@ -24,9 +24,10 @@ export const addPolicy = (newPolicy) => ({
   payload: newPolicy,
 })
 
-export const updatePolicy = (updateData) => ({
+export const updatePolicy = (index, updateData) => ({
   type: UPDATE_POLICY,
   payload: updateData,
+  id: index,
 })
 
 export const removePolicy = (index) => ({

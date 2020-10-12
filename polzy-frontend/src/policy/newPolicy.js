@@ -4,8 +4,9 @@ import { Grid, Card, CardContent, Typography, TextField, Button, Icon } from '@m
 import { withStyles } from '@material-ui/core/styles'
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers'
 import DateFnsUtils from '@date-io/date-fns'
-import { addPolicy } from '../redux/actions'
 import SearchIcon from '@material-ui/icons/Search'
+import { addPolicy } from '../redux/actions'
+
 
 // Error Card Styles
 const SearchButton = withStyles((theme) => ({
@@ -17,6 +18,18 @@ const SearchButton = withStyles((theme) => ({
     }
   },
 }))(Button)
+
+// format date to string YYYY-MM-DD
+const dateToString = date => {
+  const d = date.getDate()
+  const m = date.getMonth() + 1
+
+  return [
+    date.getFullYear(),
+    (m > 9 ? '' : '0') + m,
+    (d > 9 ? '' : '0') + d,
+  ].join('-')
+}
 
 class NewPolicy extends React.Component {
 
@@ -37,12 +50,21 @@ class NewPolicy extends React.Component {
     })
   }
 
-  handleSubmit = () => {
+  handleSubmit = async () => {
     if (this.state.policyNumber) {
+      // format date
+      //const effectiveDate = this.state.effectiveDate.toISOString().split('T')[0]
+      const effectiveDate = dateToString(this.state.effectiveDate)
+      // add policy card
       this.props.addPolicy({
         status: "waiting",
         number: this.state.policyNumber,
-        date: this.state.effectiveDate.toISOString().split('T')[0],
+        date: effectiveDate,
+      })
+      // update state to default
+      this.setState({
+        policyNumber: '',
+        effectiveDate: new Date(),
       })
     }
   }

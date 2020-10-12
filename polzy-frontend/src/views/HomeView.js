@@ -22,8 +22,9 @@ function PolicyCard(props) {
   
   switch (policy.status) {
     case "ok":
+      //console.log(policy)
       return(
-        <ActivePolicy index={index} policy={policy.data} />
+        <ActivePolicy index={index} policy={policy} />
       )
     case "waiting":
       return(

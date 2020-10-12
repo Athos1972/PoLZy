@@ -20,9 +20,18 @@ const policyReducer = (state = [], action) => {
   console.log(action)
   switch (action.type) {
     case ADD_POLICY:
-      return [action.payload, ...state]
+      return [...state, action.payload]
     case UPDATE_POLICY:
-      return state
+      console.log(UPDATE_POLICY)
+      console.log(state)
+      const newState =  state.map((item, index) => (
+        index === action.id ? {
+          ...item, 
+          ...action.payload,
+        } : item
+      ))
+      console.log(newState)
+      return newState
     case REMOVE_POLICY:
       return [
         ...state.slice(0, action.payload),

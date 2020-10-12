@@ -56,7 +56,7 @@ function ErrorPolicy(props) {
           component="p"
           variant="h5"
         >
-          {policy.status === "failed" ? ("Policy Not Found") : ("Invalid Response Status")}
+          {"error" in policy ? (policy.error) : ("Invalid Policy Data")}
         </Typography>
       </CardErrorContent>
     </CardError>
