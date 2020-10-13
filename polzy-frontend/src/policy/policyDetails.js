@@ -2,6 +2,9 @@ import React from 'react'
 import { Paper, Grid, Typography } from '@material-ui/core'
 import { Table, TableHead, TableBody, TableRow, TableCell } from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
+import DoneIcon from '@material-ui/icons/Done'
+import CloseIcon from '@material-ui/icons/Close'
+
 
 // Styles for policy status
 const StatusActive = withStyles((theme) => ({
@@ -37,6 +40,31 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(2),
   },
 }));
+
+function GetValue(props) {
+  const {value} = props
+  console.log('VALUE:')
+  console.log(value)
+  console.log(typeof value)
+
+  if (typeof value === "boolean"){
+    return(
+      <React.Fragment>
+        {value ? (
+          <DoneIcon style={{ color: "green" }} />
+        ) : (
+          <CloseIcon color="secondary" />
+        )}
+      </React.Fragment>
+    )
+  }
+
+  return (
+    <React.Fragment>
+      {value}
+    </React.Fragment>
+  )
+}
 
 
 function MakeRow(props) {
@@ -123,7 +151,7 @@ function ProductLine(props) {
         <Table size="small">
           <TableBody>
             {Object.keys(data.attributes).map((attr) => (
-              <MakeRow key={attr} title={attr} value={data.attributes[attr]} />
+              <MakeRow key={attr} title={attr} value={<GetValue value={data.attributes[attr]} />} />
             ))}
           </TableBody>
         </Table>
@@ -150,10 +178,10 @@ function RenderPartner(props) {
       <MakeRow title="Address" value={data.address} />
       <MakeRow title="City" value={data.city} />
       <MakeRow title="Country" value={data.country} />
-      <MakeRow title="Postal Code" value={data.postalcode} />
+      <MakeRow title="Postal Code" value={data.postal_code} />
       <MakeRow title="Email" value={data.email} />
       <MakeRow title="Phone primary" value={data.primary_phone} />
-      <MakeRow title="Phone secondary" value={data.econdary_phone} />
+      <MakeRow title="Phone secondary" value={data.secondary_phone} />
       {data.is_person ? (
         <React.Fragment>
           <MakeRow title="Current Occupation" value={[data.occupation, '(from', data.occupation_from].join(' ') + ')'} />
@@ -201,7 +229,7 @@ function InsuredObject(props) {
               <MakeRow title="Type" value={data.type} />
             )}
             {Object.keys(data.attributes).map((attr) => (
-              <MakeRow key={attr} title={attr} value={data.attributes[attr]} />
+              <MakeRow key={attr} title={attr} value={<GetValue value={data.attributes[attr]} />} />
             ))}
             {Object.keys(data.implementation_attributes).map((attr) => (
               <MakeRow key={attr} title={attr} value={data.implementation_attributes[attr]} />

@@ -4,6 +4,7 @@ import { Grid, Card, CardContent, Typography, TextField, Button, Icon } from '@m
 import { withStyles } from '@material-ui/core/styles'
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers'
 import DateFnsUtils from '@date-io/date-fns'
+import { format } from 'date-fns'
 import SearchIcon from '@material-ui/icons/Search'
 import { addPolicy } from '../redux/actions'
 
@@ -55,6 +56,7 @@ class NewPolicy extends React.Component {
       // format date
       //const effectiveDate = this.state.effectiveDate.toISOString().split('T')[0]
       const effectiveDate = dateToString(this.state.effectiveDate)
+      console.log(format(this.state.effectiveDate, "yyyy-MM-dd"))
       // add policy card
       this.props.addPolicy({
         status: "waiting",
