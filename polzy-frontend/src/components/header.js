@@ -33,7 +33,7 @@ function Header(props){
     <React.Fragment>
       <Toolbar className={classes.toolbar}>
       <div className={classes.title}>
-        <Brand fontSize={40} marginBottom={10} />
+        <Brand size={60} marginBottom={10} />
       </div>
       <Typography
         classes={{root: classes.user}}

@@ -1,5 +1,7 @@
 import React from 'react'
+import { SvgIcon } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
+import logo from '../logo/LEZYSEM5-01.svg'
 
 
 export default function Brand(props) {
@@ -7,20 +9,17 @@ export default function Brand(props) {
 
   return(
     <div className={classes.brand}>
-      PoLZy
+      {/*<SvgIcon component={logo} />*/}
+      <img src={logo} height={props.size} />
     </div>
   )
 }
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(props => ({
   brand: {
     display: "flex",
     justifyContent: "center",
-    color: "#00c853",
-    fontFamily: "Indie Flower",
-    fontWeight: 800,
-    fontSize: props => props.fontSize,
     marginTop: props => props.marginTop,
     marginBottom: props => props.marginBottom,
   },
-})
+}))

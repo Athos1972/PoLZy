@@ -46,7 +46,7 @@ function LoginView(props) {
     <React.Fragment>
       <Container maxWidth='xs'>
         <div className={classes.container}>
-          <Brand fontSize={60} marginBottom={40} />
+          <Brand size={400} marginBottom={40} />
           <Button
             classes={{root: classes.button}}
           	variant="contained"
