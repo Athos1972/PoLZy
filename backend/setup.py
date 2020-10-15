@@ -12,10 +12,10 @@ if __name__ == '__main__':
 
     setuptools.setup(
         name="polzybackend",
-        version="0.0.5",
+        version="0.0.6",
         author="Bernhard Buhl",
         author_email="buhl@buhl-consulting.com.cy",
-        description="Open source Insurance Policy life cycle management",
+        description="Open source Insurance Policy Life Cycle Management",
         long_description=long_description,
         long_description_content_type="text/markdown",
         url="https://baangt.org",
