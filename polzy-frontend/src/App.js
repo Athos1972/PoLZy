@@ -1,14 +1,22 @@
 import React, { useState } from 'react'
-import { Provider } from 'react-redux'
-import PolzyApp from './polzy'
-import store from './redux/store'
+import { connect } from 'react-redux'
+import LoginView from './views/LoginView'
+import HomeView from './views/HomeView'
 
-export default function App() {
+function App(props) {
 
   return(
-    <Provider store={store}>
-      <PolzyApp />
-    </Provider>
+    <React.Fragment>
+      {props.user['access_token'] === undefined ? (
+        <LoginView />
+      ) : (
+        <HomeView />
+      )}
+    </React.Fragment>
   )
 }
 
+// connect to redux store
+export default connect((state) => ({
+  user: state.user,
+}))(App)

@@ -1,0 +1,45 @@
+{
+  "auth": {
+    "signin.button": "Press to Sign In",
+    "signout.button": "Sign Out"
+  },
+
+  "policy": {
+  	"action": "Action",
+  	"close": "Close",
+  	"collapse": "Collapse",
+  	"effective.date": "Effective Date",
+  	"execute": "Execute",
+    "expand": "Expand",
+  	"find": "Find",
+  	"find.policy": "Find Policy",
+  	"insured.object": "Insured Object",
+  	"invalid": "Invalid Policy Data",
+  	"none": "None",
+    "policy": "Policy",
+    "policy.number": "Policy Number",
+    "policy not found": "Policy not Found",
+    "premium.payer": "Premium Payer",
+    "product.line": "Product Line",
+    "status": "Status",
+    "type": "Type"
+  },
+
+  "partner": {
+  	"first.name": "First Name",
+  	"last.name": "Last Name",
+  	"birthday": "Birthday",
+  	"company.name": "Company Name",
+  	"address": "Address",
+  	"city": "City",
+  	"country": "Country",
+  	"postal.code": "Postal Code",
+  	"email": "Email",
+  	"phone.primary": "Phone primary",
+  	"phone.secondary": "Phone secondary",
+  	"current.occupation": "Current Occupation",
+  	"previous.occupation": "Previous Occupation",
+  	"sports": "Sports",
+  	"health.condition": "Health Condition"
+  }
+}

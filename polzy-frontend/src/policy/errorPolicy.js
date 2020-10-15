@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { Card, CardHeader, CardActions, Typography, IconButton, Tooltip } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
+import { useTranslation } from 'react-i18next'
 import { removePolicy } from '../redux/actions'
 
 
@@ -30,6 +31,7 @@ const CardErrorContent = withStyles((theme) => ({
 
 function ErrorPolicy(props) {
   const {index, policy} = props
+  const { t } = useTranslation('policy')
 
   const handleCloseClick = () => {
     props.closePolicyCard(index)
@@ -39,7 +41,7 @@ function ErrorPolicy(props) {
     <CardError>
       <CardErrorHeader
         action={
-          <Tooltip title="Close">
+          <Tooltip title={t('close')}>
             <IconButton 
               aria-label="close"
               onClick={handleCloseClick}
@@ -48,7 +50,7 @@ function ErrorPolicy(props) {
             </IconButton>
           </Tooltip>
         }
-        title={"Policy #" + policy.number}
+        title={t('policy') + ' #' + policy.number}
         subheader={policy.date}
       />
       <CardErrorContent>
@@ -56,7 +58,7 @@ function ErrorPolicy(props) {
           component="p"
           variant="h5"
         >
-          {"error" in policy ? (policy.error) : ("Invalid Policy Data")}
+          {"error" in policy ? (t(policy.error.toLowerCase())) : (t("invalid"))}
         </Typography>
       </CardErrorContent>
     </CardError>

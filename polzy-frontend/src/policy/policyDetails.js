@@ -4,6 +4,7 @@ import { Table, TableHead, TableBody, TableRow, TableCell } from '@material-ui/c
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import DoneIcon from '@material-ui/icons/Done'
 import CloseIcon from '@material-ui/icons/Close'
+import { useTranslation } from 'react-i18next'
 
 
 // Styles for policy status
@@ -41,11 +42,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
 function GetValue(props) {
   const {value} = props
-  console.log('VALUE:')
-  console.log(value)
-  console.log(typeof value)
 
   if (typeof value === "boolean"){
     return(
@@ -117,6 +116,7 @@ function PolicyStatus(props) {
 function PolicyMain(props) {
   // renders general data of policy
   const {data} = props
+  const {t} = useTranslation('policy')
 
   return(
     <React.Fragment>
@@ -124,7 +124,7 @@ function PolicyMain(props) {
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell>Status</TableCell>
+              <TableCell>{t("status")}</TableCell>
               <PolicyStatus status={data.status} />
             </TableRow>
           </TableHead>
@@ -143,11 +143,12 @@ function PolicyMain(props) {
 function ProductLine(props) {
   // renders product line section of policy
   const {data} = props
+  const {t} = useTranslation('policy')
 
   return(
     <React.Fragment>
       <Section>
-        <Title title={["Product Line", data.name].join(': ')} />
+        <Title title={t("product.line") + ": " + data.name} />
         <Table size="small">
           <TableBody>
             {Object.keys(data.attributes).map((attr) => (
@@ -163,31 +164,37 @@ function ProductLine(props) {
 function RenderPartner(props) {
   // renders partner
   const {data} = props
+  const {t} = useTranslation('partner')
 
   return(
     <React.Fragment>
       {data.is_person ? (
         <React.Fragment>
-          <MakeRow title="First Name" value={data.first_name} />
-          <MakeRow title="Last Name" value={data.last_name} />
-          <MakeRow title="Birthday" value={data.birthdate} />
+          <MakeRow title={t("first.name")} value={data.first_name} />
+          <MakeRow title={t("last.name")} value={data.last_name} />
+          <MakeRow title={t("birthday")} value={data.birthdate} />
         </React.Fragment>
       ) : (
-        <MakeRow title="Company Name" value={data.company_name} />
+        <MakeRow title={t("company.name")} value={data.company_name} />
       )}
-      <MakeRow title="Address" value={data.address} />
-      <MakeRow title="City" value={data.city} />
-      <MakeRow title="Country" value={data.country} />
-      <MakeRow title="Postal Code" value={data.postal_code} />
-      <MakeRow title="Email" value={data.email} />
-      <MakeRow title="Phone primary" value={data.primary_phone} />
-      <MakeRow title="Phone secondary" value={data.secondary_phone} />
+      <MakeRow title={t("address")} value={data.address} />
+      <MakeRow title={t("city")} value={data.city} />
+      <MakeRow title={t("country")} value={data.country} />
+      <MakeRow title={t("postal.code")} value={data.postal_code} />
+      <MakeRow title={t("email")} value={data.email} />
+      <MakeRow title={t("phone.primary")} value={data.primary_phone} />
+      <MakeRow title={t("phone.secondary")} value={data.secondary_phone} />
       {data.is_person ? (
         <React.Fragment>
-          <MakeRow title="Current Occupation" value={[data.occupation, '(from', data.occupation_from].join(' ') + ')'} />
-          <MakeRow title="Previous Occupation" value={data.previous_occupation} />
-          <MakeRow title="Sports" value={data.sports.join(', ')} />
-          <MakeRow title="Health Condition" value={data.health_condition} />
+          <MakeRow title={t("current.occupation")} value={data.occupation == null ? (
+              ''
+            ) : (
+              data.occupation + ' (from' + data.occupation_from + ')'
+            )}
+          />
+          <MakeRow title={t("previous.occupation")} value={data.previous_occupation} />
+          <MakeRow title={t("sports")} value={data.sports.join(', ')} />
+          <MakeRow title={t("health.condition")} value={data.health_condition} />
         </React.Fragment>
       ) : (null
       )}
@@ -198,11 +205,12 @@ function RenderPartner(props) {
 function PremiumPayer(props) {
   // renders premium payer
   const {data} = props
+  const {t} = useTranslation('policy')
 
   return(
     <React.Fragment>
       <Section>
-        <Title title="Premium Payer" />
+        <Title title={t("premium.payer")} />
         <Table size="small">
           <TableBody>
             <RenderPartner data={data} />
@@ -216,18 +224,15 @@ function PremiumPayer(props) {
 function InsuredObject(props) {
   // renders insured object or person
   const {data} = props
+  const {t} = useTranslation('policy')
 
   return(
     <React.Fragment>
       <Section>
-        <Title title={data.is_person ? ("Insured Person") : ("Insured Object")} />
+        <Title title={t("Insured Object")} />
         <Table size="small">
           <TableBody>
-            {data.is_person ? (
-              <RenderPartner data={data.partner} />
-            ): (
-              <MakeRow title="Type" value={data.type} />
-            )}
+            <MakeRow title={t("Type")} value={data.type} />
             {Object.keys(data.attributes).map((attr) => (
               <MakeRow key={attr} title={attr} value={<GetValue value={data.attributes[attr]} />} />
             ))}
@@ -262,6 +267,4 @@ export default function PolicyDetails(props) {
   )
 
 }
-
-
 

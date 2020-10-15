@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Container, Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
+import { useTranslation } from 'react-i18next'
 import Brand from '../components/brand'
 import Copyright from '../components/copyright'
 import { signIn } from '../redux/actions'
@@ -28,6 +29,8 @@ const useStyles = makeStyles({
 
 // login view
 function LoginView(props) {
+  
+  const { t } = useTranslation('auth')
 
   const handleLogin = () => {
     props.signIn({
@@ -51,7 +54,7 @@ function LoginView(props) {
             fullWidth
           	onClick={handleLogin}
           >
-         		Press to Login
+         		{t('auth:signin.button')}
           </Button>
           <Copyright />
         </div>
@@ -62,4 +65,3 @@ function LoginView(props) {
 
 // connect to redux store
 export default connect(null, {signIn: signIn})(LoginView)
-

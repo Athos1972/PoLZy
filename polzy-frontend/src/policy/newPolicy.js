@@ -6,6 +6,7 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/picker
 import DateFnsUtils from '@date-io/date-fns'
 import { format } from 'date-fns'
 import SearchIcon from '@material-ui/icons/Search'
+import { withTranslation } from 'react-i18next'
 import { addPolicy } from '../redux/actions'
 
 
@@ -54,7 +55,6 @@ class NewPolicy extends React.Component {
   handleSubmit = async () => {
     if (this.state.policyNumber) {
       // format date
-      //const effectiveDate = this.state.effectiveDate.toISOString().split('T')[0]
       const effectiveDate = dateToString(this.state.effectiveDate)
       console.log(format(this.state.effectiveDate, "yyyy-MM-dd"))
       // add policy card
@@ -71,7 +71,8 @@ class NewPolicy extends React.Component {
     }
   }
 
-  render() {  
+  render() {
+    const {t} = this.props
     return(
       <Card>
         <CardContent>
@@ -79,7 +80,7 @@ class NewPolicy extends React.Component {
             component="h2"
             variant="h5"
           >
-            Find Policy
+            {t("find.policy")}
           </Typography>
           <Grid container spacing={2}>
             <Grid item>
@@ -87,7 +88,7 @@ class NewPolicy extends React.Component {
                 variant="outlined"
                 margin="normal"
                 id="policy"
-                label="Policy Number"
+                label={t("policy.number")}
                 size="small"
                 value={this.state.policyNumber}
                 onChange={this.handleNumberChange}
@@ -100,7 +101,7 @@ class NewPolicy extends React.Component {
                   variant="inline"
                   inputVariant="outlined"
                   margin="normal"
-                  label="Effective Date"
+                  label={t("effective.date")}
                   format="yyyy-MM-dd"
                   size="small"
                   value={this.state.effectiveDate}
@@ -115,7 +116,7 @@ class NewPolicy extends React.Component {
                 endIcon={<SearchIcon />}
                 onClick={this.handleSubmit}
               >
-                Find
+                {t("find")}
               </SearchButton>
             </Grid>
           </Grid>
@@ -125,5 +126,8 @@ class NewPolicy extends React.Component {
   }
 }
 
+// translation
+const TranslatedNewPolicy = withTranslation('policy')(NewPolicy)
+
 // connect to redux store
-export default connect(null, {addPolicy: addPolicy})(NewPolicy)
+export default connect(null, {addPolicy: addPolicy})(TranslatedNewPolicy)

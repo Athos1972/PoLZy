@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Card, CardHeader } from '@material-ui/core'
+import { Card, CardHeader, CircularProgress } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
+import { useTranslation } from 'react-i18next'
 import { updatePolicy } from '../redux/actions'
 import { fetchPolicy } from '../api'
 
@@ -12,8 +13,15 @@ const CardDisabled = withStyles(() => ({
   },
 }))(Card)
 
+const SpinnerGrey = withStyles(() => ({
+  root: {
+    color: "#555",
+  }
+}))(CircularProgress)
+
 function DisabledPolicy(props) {
   const {index, policy} = props
+  const { t } = useTranslation('policy')
 
   useEffect(() => {
     //const data = await fetchPolicy(policy)
@@ -42,7 +50,8 @@ function DisabledPolicy(props) {
   return(
     <CardDisabled>
       <CardHeader
-        title={"Policy #" + policy.number}
+        action={<SpinnerGrey />}
+        title={t('policy') + ' #' + policy.number}
         subheader={policy.date}
       />
     </CardDisabled>

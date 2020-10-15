@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Toolbar, Typography, Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
+import { useTranslation } from 'react-i18next'
 import Brand from './brand'
 import { signOut } from '../redux/actions'
 
@@ -25,6 +26,7 @@ const useStyles = makeStyles({
 })
 
 function Header(props){
+  const { t } = useTranslation('auth')
   const classes = useStyles()
 
   return(
@@ -44,7 +46,7 @@ function Header(props){
         size="small"
         onClick={props.signOut}
       >
-        Sign out
+        {t('auth:signout.button')}
       </Button>
       </Toolbar>
     </React.Fragment>
