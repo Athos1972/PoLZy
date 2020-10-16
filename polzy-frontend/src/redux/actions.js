@@ -2,7 +2,6 @@
 //action types
 export const SIGN_IN = 'SIGN_IN'
 export const SIGN_OUT = 'SIGN_OUT'
-export const UPDATE_LNG = 'UPDATE_LNG'
 
 export const ADD_POLICY = 'ADD_POLICY'
 export const UPDATE_POLICY = 'UPDATE_POLICY'
