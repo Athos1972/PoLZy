@@ -1,5 +1,11 @@
 import { combineReducers } from 'redux'
-import { SIGN_IN, SIGN_OUT, ADD_POLICY, UPDATE_POLICY, REMOVE_POLICY } from './actions.js'
+import { 
+  SIGN_IN,
+  SIGN_OUT,
+  ADD_POLICY,
+  UPDATE_POLICY,
+  REMOVE_POLICY
+} from './actions.js'
 
 //const merge = (prev, next) => Object.assign({}, prev, next)
 

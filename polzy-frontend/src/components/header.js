@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Toolbar, Typography, Button } from '@material-ui/core'
+import { Toolbar, Typography, Button, Select, MenuItem } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import Brand from './brand'
@@ -25,29 +25,40 @@ const useStyles = makeStyles({
   }
 })
 
+
 function Header(props){
-  const { t } = useTranslation('auth')
+  const { t, i18n } = useTranslation('auth')
   const classes = useStyles()
+
+  console.log(i18n)
 
   return(
     <React.Fragment>
       <Toolbar className={classes.toolbar}>
-      <div className={classes.title}>
-        <Brand size={60} marginBottom={10} />
-      </div>
-      <Typography
-        classes={{root: classes.user}}
-        variant="button"
-      >
-        {props.user.username}
-      </Typography>
-      <Button 
-        variant="outlined"
-        size="small"
-        onClick={props.signOut}
-      >
-        {t('auth:signout.button')}
-      </Button>
+        <Select
+          id="language-select"
+          value={i18n.language}
+          onChange={(e) => {i18n.changeLanguage(e.target.value)}}
+        >
+          <MenuItem value="en">English</MenuItem>
+          <MenuItem value="de">Deutcshe</MenuItem>
+        </Select>
+        <div className={classes.title}>
+          <Brand size={60} marginBottom={10} />
+        </div>
+        <Typography
+          classes={{root: classes.user}}
+          variant="button"
+        >
+          {props.user.username}
+        </Typography>
+        <Button 
+          variant="outlined"
+          size="small"
+          onClick={props.signOut}
+        >
+          {t('auth:signout.button')}
+        </Button>
       </Toolbar>
     </React.Fragment>
   )
