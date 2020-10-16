@@ -41,7 +41,8 @@ function Header(props){
           onChange={(e) => {i18n.changeLanguage(e.target.value)}}
         >
           <MenuItem value="en">English</MenuItem>
-          <MenuItem value="de">Deutcshe</MenuItem>
+          <MenuItem value="de">Deutsch</MenuItem>
+          <MenuItem value="wi">Wienerisch</MenuIem>
         </Select>
         <div className={classes.title}>
           <Brand size={60} marginBottom={10} />
