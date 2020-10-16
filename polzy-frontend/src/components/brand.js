@@ -1,5 +1,4 @@
 import React from 'react'
-import { SvgIcon } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import logo from '../logo/LEZYSEM5-01.svg'
 
@@ -10,7 +9,7 @@ export default function Brand(props) {
   return(
     <div className={classes.brand}>
       {/*<SvgIcon component={logo} />*/}
-      <img src={logo} height={props.size} />
+      <img src={logo} height={props.size} alt="LeZySEM" />
     </div>
   )
 }

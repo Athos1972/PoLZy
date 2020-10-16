@@ -13,7 +13,7 @@ const useStyles = makeStyles({
     paddingTop: 60,
     display: "flex",
     flexDirection: "column",
-    justifyContent: "center",
+    alignItems: "center",
   },
 
   button: {

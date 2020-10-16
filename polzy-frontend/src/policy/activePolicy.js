@@ -16,7 +16,8 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  TextField
+  TextField,
+  FormGroup
 } from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
@@ -42,6 +43,8 @@ const CardActionsActive = withStyles((theme) => ({
 
 const ActiveButton = withStyles((theme) => ({
   root: {
+    margin: theme.spacing(1),
+    marginLeft: 0,
     backgroundColor: "#00c853",
     '&:hover': {
       backgroundColor: "#43a047",
@@ -49,11 +52,19 @@ const ActiveButton = withStyles((theme) => ({
   },
 }))(Button)
 
-const ActionForm = withStyles({
+const ActiveButtonDisabled = withStyles((theme) => ({
   root: {
-    minWidth: 120,
+    marginBottom: theme.spacing(1),
+  },
+}))(Button)
+
+const ActionControl = withStyles((theme) => ({
+  root: {
+    marginBottom: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    minWidth: 240,
   }
-})(FormControl)
+}))(FormControl)
 
 // More Button Styles
 const useStyles = makeStyles((theme) => ({
@@ -95,13 +106,8 @@ class ActivePolicy extends React.Component {
     action: '',
     actionAttributes: {},
   }
-  //const { index } = props
-  //const { policy, possible_activities, attributes } = this.props.policy
-  
-  //const [expanded, setExpanded] = React.useState(false);
-  //const [action, setAction] = React.useState('')
+
   actionsNotAvailable = (this.props.policy.possible_activities.length === 0)
-  //const [actionAttributes, setActionAttributes] = React.useState({})
 
   handleCloseClick = () => {
     this.props.closePolicyCard(this.props.index)
@@ -147,8 +153,8 @@ class ActivePolicy extends React.Component {
 
   RenderHeader = (props) => (
     <React.Fragment>
-      <Grid container spacing={3}>
-        <Grid item>
+      <Grid container>
+        <Grid item xs={12} md={4}>
           <Typography
             component="p"
             variant="h5"
@@ -156,47 +162,47 @@ class ActivePolicy extends React.Component {
             {props.t('policy') + ' #' + this.props.policy.number}
           </Typography>
         </Grid>
-        <Grid item>
-          <ActionForm
-            variant="outlined"
-            size="small"
-          >
-            <InputLabel id={`action-${this.props.index}-label`}>
-              {props.t("action")}
-            </InputLabel>
-            <Select
-              labelId={`action-${this.props.index}-label`}
-              id={`action-${this.props.index}`}
-              value={this.state.action}
-              onChange={this.handleActionChange}
-              label={props.t("action")}
-              disabled={this.actionsNotAvailable}
+        <Grid item xs={12} md={8}>
+          <FormGroup row>
+            <ActionControl
+              variant="outlined"
+              size="small"
             >
-              <MenuItem value="">
-                <em>{props.t("none")}</em>
-              </MenuItem>
-              {this.props.policy.possible_activities.map((activity) => (
-                <MenuItem value={activity}>
-                  {activity}
+              <InputLabel id={`action-${this.props.index}-label`}>
+                {props.t("action")}
+              </InputLabel>
+              <Select
+                labelId={`action-${this.props.index}-label`}
+                id={`action-${this.props.index}`}
+                value={this.state.action}
+                onChange={this.handleActionChange}
+                disabled={this.actionsNotAvailable}
+              >
+                <MenuItem value="">
+                  <em>{props.t("none")}</em>
                 </MenuItem>
-              ))}
-            </Select>
-          </ActionForm>
-        </Grid>
-        <Grid item>
-          {this.validateActivity ? (
-            <ActiveButton variant="contained" color="primary">
-              {props.t("execute")}
-            </ActiveButton>
-          ) : (
-            <Button variant="contained" disabled>
-              {props.t("execute")}
-            </Button>
-          )}
+                {this.props.policy.possible_activities.map((activity) => (
+                  <MenuItem value={activity}>
+                    {activity}
+                  </MenuItem>
+                ))}
+              </Select>
+            </ActionControl>
+            {this.validateActivity() ? (
+              <ActiveButton variant="contained" color="primary">
+                {props.t("execute")}
+              </ActiveButton>
+            ) : (
+              <ActiveButtonDisabled variant="contained" disabled>
+                {props.t("execute")}
+              </ActiveButtonDisabled>
+            )}
+          </FormGroup>
         </Grid>
       </Grid>
     </React.Fragment>
   )
+
 
   render(){
     const {t} = this.props
@@ -215,10 +221,10 @@ class ActivePolicy extends React.Component {
           </Tooltip>
         }
         title={<this.RenderHeader t={t} />}
-        subheader={this.props.policy.effective_date}
+        subheader={this.props.policy.date}
       />
       <CardContent>
-        <Grid container spacing={3}>
+        <Grid container spacing={2}>
           {Object.keys(this.state.actionAttributes).map((attr) => (
               <Grid item key={attr}>
                 <Tooltip title={this.props.policy.attributes.policy[attr]}>

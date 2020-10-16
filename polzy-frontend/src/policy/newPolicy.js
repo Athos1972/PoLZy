@@ -1,16 +1,42 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Grid, Card, CardContent, Typography, TextField, Button, Icon } from '@material-ui/core'
+import { 
+  Grid,
+  Card,
+  CardMedia,
+  CardHeader,
+  CardContent,
+  TextField,
+  Button,
+} from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers'
 import DateFnsUtils from '@date-io/date-fns'
+import enLocale from "date-fns/locale/en-US"
+import deLocale from "date-fns/locale/de"
 import { format } from 'date-fns'
 import SearchIcon from '@material-ui/icons/Search'
 import { withTranslation } from 'react-i18next'
 import { addPolicy } from '../redux/actions'
+import logo from '../logo/LEZYSEM5-01.png'
 
 
+// Search Button Styles
 // Error Card Styles
+const CardFindPolicy = withStyles({
+  root: {
+    display: "flex",
+    padding: 5,
+  },
+})(Card)
+
+const CardLogo = withStyles({
+  root: {
+    width: 160,
+    float: "right",
+  }
+})(CardMedia)
+
 const SearchButton = withStyles((theme) => ({
   root: {
     backgroundColor: "#00c853",
@@ -21,23 +47,22 @@ const SearchButton = withStyles((theme) => ({
   },
 }))(Button)
 
-// format date to string YYYY-MM-DD
-const dateToString = date => {
-  const d = date.getDate()
-  const m = date.getMonth() + 1
-
-  return [
-    date.getFullYear(),
-    (m > 9 ? '' : '0') + m,
-    (d > 9 ? '' : '0') + d,
-  ].join('-')
-}
 
 class NewPolicy extends React.Component {
 
   state = {
     policyNumber: '',
     effectiveDate: new Date(),
+  }
+
+  getLocale = () => {
+    const { i18n } = this.props
+    switch (i18n.language) {
+      case 'en':
+        return enLocale
+      default:
+        return deLocale
+    }
   }
 
   handleNumberChange = event => {
@@ -55,8 +80,8 @@ class NewPolicy extends React.Component {
   handleSubmit = async () => {
     if (this.state.policyNumber) {
       // format date
-      const effectiveDate = dateToString(this.state.effectiveDate)
-      console.log(format(this.state.effectiveDate, "yyyy-MM-dd"))
+      //const effectiveDate = dateToString(this.state.effectiveDate)
+      const effectiveDate = format(this.state.effectiveDate, "yyyy-MM-dd")
       // add policy card
       this.props.addPolicy({
         status: "waiting",
@@ -73,55 +98,62 @@ class NewPolicy extends React.Component {
 
   render() {
     const {t} = this.props
+
     return(
-      <Card>
-        <CardContent>
-          <Typography
-            component="h2"
-            variant="h5"
-          >
-            {t("find.policy")}
-          </Typography>
-          <Grid container spacing={2}>
-            <Grid item>
-              <TextField
-                variant="outlined"
-                margin="normal"
-                id="policy"
-                label={t("policy.number")}
-                size="small"
-                value={this.state.policyNumber}
-                onChange={this.handleNumberChange}
-              />
-            </Grid>
-            <Grid item>
-              <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <KeyboardDatePicker
-                  autoOk
-                  variant="inline"
-                  inputVariant="outlined"
+      <CardFindPolicy>
+        <div style={{flex: '1 0 auto'}}>
+          <CardHeader
+            title={t("find.policy")}
+          />
+          <CardContent>
+            <Grid container spacing={2}>
+              <Grid item>
+                <TextField
+                  variant="outlined"
                   margin="normal"
-                  label={t("effective.date")}
-                  format="yyyy-MM-dd"
+                  id="policy"
+                  label={t("policy.number")}
                   size="small"
-                  value={this.state.effectiveDate}
-                  onChange={this.handleDateChange}
+                  value={this.state.policyNumber}
+                  onChange={this.handleNumberChange}
                 />
-              </MuiPickersUtilsProvider>
+              </Grid>
+              <Grid item>
+                <MuiPickersUtilsProvider 
+                  utils={DateFnsUtils}
+                  locale={this.getLocale()}
+                >
+                  <KeyboardDatePicker
+                    autoOk
+                    variant="inline"
+                    inputVariant="outlined"
+                    margin="normal"
+                    label={t("effective.date")}
+                    format="yyyy-MM-dd"
+                    size="small"
+                    value={this.state.effectiveDate}
+                    onChange={this.handleDateChange}
+                  />
+                </MuiPickersUtilsProvider>
+              </Grid>
+              <Grid item>
+                <SearchButton
+                  variant="contained"
+                  color="primary"
+                  endIcon={<SearchIcon />}
+                  onClick={this.handleSubmit}
+                >
+                  {t("find")}
+                </SearchButton>
+              </Grid>
             </Grid>
-            <Grid item>
-              <SearchButton
-                variant="contained"
-                color="primary"
-                endIcon={<SearchIcon />}
-                onClick={this.handleSubmit}
-              >
-                {t("find")}
-              </SearchButton>
-            </Grid>
-          </Grid>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </div>
+        <CardLogo
+          image={logo}
+          title="LeZySEM"
+        />
+      </CardFindPolicy>
     )
   }
 }

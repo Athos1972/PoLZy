@@ -7,7 +7,6 @@ import {
   REMOVE_POLICY
 } from './actions.js'
 
-//const merge = (prev, next) => Object.assign({}, prev, next)
 
 const userReducer = (state = {}, action) => {
   switch (action.type) {
