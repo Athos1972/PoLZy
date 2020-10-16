@@ -22,7 +22,7 @@ import {
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import CloseIcon from '@material-ui/icons/Close'
-import { withTranslation } from 'react-i18next'
+import { withTranslation, useTranslation } from 'react-i18next'
 import PolicyDetails from './policyDetails'
 import { removePolicy } from '../redux/actions'
 
@@ -43,8 +43,7 @@ const CardActionsActive = withStyles((theme) => ({
 
 const ActiveButton = withStyles((theme) => ({
   root: {
-    margin: theme.spacing(1),
-    marginLeft: 0,
+    marginBottom: theme.spacing(1),
     backgroundColor: "#00c853",
     '&:hover': {
       backgroundColor: "#43a047",
@@ -84,18 +83,21 @@ const useStyles = makeStyles((theme) => ({
 
 function MoreButton(props) {
   const classes = useStyles()
+  const {t} = useTranslation('policy')
 
   return(
-    <IconButton
-      className={clsx(classes.expand, {
-        [classes.expandOpen]: props.expanded,
-      })}
-      onClick={props.onClick}
-      aria-expanded={props.expanded}
-      aria-label="view details"
-    >
-      <ExpandMoreIcon />
-    </IconButton>
+    <Tooltip title={props.expanded ? (t("collapse")) : (t("expand"))}>
+      <IconButton
+        className={clsx(classes.expand, {
+          [classes.expandOpen]: props.expanded,
+        })}
+        onClick={props.onClick}
+        aria-expanded={props.expanded}
+        aria-label="view details"
+      >
+        <ExpandMoreIcon />
+      </IconButton>
+    </Tooltip>
   )
 }
 
@@ -177,6 +179,7 @@ class ActivePolicy extends React.Component {
                 value={this.state.action}
                 onChange={this.handleActionChange}
                 disabled={this.actionsNotAvailable}
+                label={props.t("action")}
               >
                 <MenuItem value="">
                   <em>{props.t("none")}</em>
@@ -241,10 +244,7 @@ class ActivePolicy extends React.Component {
         </Grid>
       </CardContent>
       <CardActionsActive>
-        <Tooltip title={this.state.expanded ? (t("collapse")) : (t("expand"))}>
-          <MoreButton expanded={this.state.expanded} onClick={this.handleExpandClick} />
-
-        </Tooltip>
+        <MoreButton expanded={this.state.expanded} onClick={this.handleExpandClick} />
       </CardActionsActive>
       <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
         <CardContent>

@@ -6,6 +6,7 @@
 
   "policy": {
   	"action": "Action",
+    "clauses": "Clauses",
   	"close": "Close",
   	"collapse": "Collapse",
   	"effective.date": "Effective Date",

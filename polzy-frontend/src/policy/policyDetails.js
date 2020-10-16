@@ -1,6 +1,6 @@
 import React from 'react'
 import { Paper, Grid, Typography } from '@material-ui/core'
-import { Table, TableHead, TableBody, TableRow, TableCell } from '@material-ui/core'
+import { Table, TableHead, TableBody, TableRow, TableCell, Tooltip, Link } from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import DoneIcon from '@material-ui/icons/Done'
 import CloseIcon from '@material-ui/icons/Close'
@@ -33,6 +33,16 @@ const Section = withStyles((theme) => ({
     margin: theme.spacing(1),
   },
 }))(Paper)
+
+const HtmlTooltip = withStyles((theme) => ({
+  tooltip: {
+    backgroundColor: '#f5f5f9',
+    color: 'rgba(0, 0, 0, 0.87)',
+    maxWidth: 220,
+    fontSize: theme.typography.pxToRem(12),
+    border: '1px solid #dadde9',
+  },
+}))(Tooltip);
 
 // Style for policy section title
 const useStyles = makeStyles((theme) => ({
@@ -76,6 +86,33 @@ function MakeRow(props) {
         <TableCell>{title}</TableCell>
         <TableCell>{value}</TableCell>
       </TableRow>
+    </React.Fragment>
+  )
+}
+
+function MakeClauseRow(props) {
+  // renders a policy property with tip
+  const {clause} = props
+
+  return(
+    <React.Fragment>
+      <HtmlTooltip 
+        placement="bottom-start"
+        interactive
+        title={
+          <React.Fragment>
+            <h4>{clause.description}</h4>
+            <Link href={clause.link}>
+              {clause.link}
+            </Link>
+          </React.Fragment>
+        } 
+      >
+      <TableRow>
+        <TableCell>{clause.name}</TableCell>
+        <TableCell>{clause.number}</TableCell>
+      </TableRow>
+      </HtmlTooltip>
     </React.Fragment>
   )
 }
@@ -202,6 +239,26 @@ function RenderPartner(props) {
   )  
 }
 
+function GenericSection(props) {
+  // renders premium payer, insured object sections
+  const {title, data} = props
+
+  return(
+    <React.Fragment>
+      <Section>
+        <Title title={title} />
+        <Table size="small">
+          <TableBody>
+            {Object.keys(data).map((attr) => (
+              <MakeRow key={attr} title={attr} value={data[attr]} />
+            ))}
+          </TableBody>
+        </Table>
+      </Section>
+    </React.Fragment>
+  )
+}
+
 function PremiumPayer(props) {
   // renders premium payer
   const {data} = props
@@ -246,8 +303,36 @@ function InsuredObject(props) {
   )
 }
 
+function Clauses(props) {
+  // renders clauses
+  const {data} = props
+  const {t} = useTranslation('policy')
+
+  console.log("Clauses")
+  console.log(data)
+
+  return(
+    <React.Fragment>
+      <Section>
+        <Title title={t("clauses")} />
+        <Table size="small">
+          <TableBody>
+            {data.map((clause) => (
+              <MakeClauseRow
+                key={clause.number} 
+                clause={clause} 
+              />
+            ))}
+          </TableBody>
+        </Table>
+      </Section>
+    </React.Fragment>
+  )
+}
+
 export default function PolicyDetails(props) {
   const {policy} = props
+  const {t} = useTranslation('policy')
 
   return(
     <React.Fragment>
@@ -257,10 +342,11 @@ export default function PolicyDetails(props) {
           <ProductLine data={policy.product_line} />
         </Grid>
         <Grid container direction="column" item xs={12} md={4}>
-          <PremiumPayer data={policy.premium_payer} />
+          <GenericSection title={t('premium.payer')} data={policy.premium_payer} />
         </Grid>
         <Grid container direction="column" item xs={12} md={4}>
-          <InsuredObject data={policy.insured_object} />
+          <GenericSection title={t('insured.object')} data={policy.insured_object} />
+          <Clauses data={policy.clauses} />
         </Grid>
       </Grid>
     </React.Fragment>
