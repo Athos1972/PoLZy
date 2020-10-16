@@ -42,7 +42,7 @@ function Header(props){
         >
           <MenuItem value="en">English</MenuItem>
           <MenuItem value="de">Deutsch</MenuItem>
-          <MenuItem value="wi">Wienerisch</MenuIem>
+          <MenuItem value="wi">Wienerisch</MenuItem>
         </Select>
         <div className={classes.title}>
           <Brand size={60} marginBottom={10} />
