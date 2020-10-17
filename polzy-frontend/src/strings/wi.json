@@ -6,6 +6,7 @@
 
   "policy": {
   	"action": "Wos moch ma?",
+    "clauses": "Klauseln",
   	"close": "Weg damit",
   	"collapse": "Weg damit",
   	"effective.date": "Wirksamkeitsdatum",
