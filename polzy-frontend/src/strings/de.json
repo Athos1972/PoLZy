@@ -6,6 +6,7 @@
 
   "policy": {
   	"action": "Aktivität",
+    "clauses": "Klauseln",
   	"close": "Schließen",
   	"collapse": "Einklappen",
   	"effective.date": "Wirksamkeitsdatum",
