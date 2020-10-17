@@ -19,7 +19,7 @@ const useStyles = makeStyles({
     color: "#00c853",
     fontFamily: "Indie Flower",
     fontWeight: 800,
-    fontSize: props => props.fontSize,
+    fontSize: props => props.size,
     marginTop: props => props.marginTop,
     marginBottom: props => props.marginBottom,
   },

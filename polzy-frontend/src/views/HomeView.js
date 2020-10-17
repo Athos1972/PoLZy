@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Container, Grid } from '@material-ui/core'
+import { Container } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Header from'../components/header'
 import NewPolicy from '../policy/newPolicy'
@@ -11,6 +11,11 @@ import Copyright from '../components/copyright'
 
 // set styles
 const useStyles = makeStyles((theme) => ({
+  container: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+
   footer: {
     padding: theme.spacing(3, 2),
     marginTop: 'auto',
@@ -39,12 +44,20 @@ function PolicyCard(props) {
 
 function HomeView(props) {
   const classes = useStyles()
+  console.log(props.policies)
 
   return(
     <React.Fragment>
     <Container maxWidth="lg">
       <Header />
-      <Grid container direction="column" spacing={2}>
+      <div className={classes.container}>
+        <NewPolicy />
+        {props.policies.map((policy, index) => (
+            <PolicyCard key={policy.key} index={index} policy={policy} />
+        ))}
+      </div>
+
+      {/*<Grid container direction="column">
         <Grid item>
           <NewPolicy />
         </Grid>
@@ -53,7 +66,7 @@ function HomeView(props) {
             <PolicyCard index={index} policy={policy} />
           </Grid>
         ))}
-      </Grid>
+      </Grid>*/}
     </Container>
     <footer className={classes.footer}>
       <Copyright />

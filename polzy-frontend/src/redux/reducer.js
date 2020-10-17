@@ -23,7 +23,10 @@ const userReducer = (state = {}, action) => {
 const policyReducer = (state = [], action) => {
   switch (action.type) {
     case ADD_POLICY:
-      return [...state, action.payload]
+      const key = (
+        state.length > 0 ? (state[state.length-1].key + 1) : (1)
+      )
+      return [...state, {key: key, ...action.payload}]
     case UPDATE_POLICY:
       const newState =  state.map((item, index) => (
         index === action.id ? {

@@ -2,9 +2,6 @@ import React from 'react'
 import clsx from 'clsx'
 import { connect } from 'react-redux'
 import { 
-  Card,
-  CardHeader,
-  CardActions,
   CardContent,
   Collapse,
   Button,
@@ -23,23 +20,10 @@ import { makeStyles, withStyles } from '@material-ui/core/styles'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import CloseIcon from '@material-ui/icons/Close'
 import { withTranslation, useTranslation } from 'react-i18next'
+import { CardActiveHide, CardActive, CardTop, CardBottom, hideTime } from './policyCardStyles'
 import PolicyDetails from './policyDetails'
 import { removePolicy } from '../redux/actions'
 
-
-// Active Card Styles
-const CardHeaderActive = withStyles((theme) => ({
-  root: {
-    paddingBottom: 0,
-  },
-}))(CardHeader)
-
-const CardActionsActive = withStyles((theme) => ({
-  root: {
-    paddingTop: 0,
-    paddingBottom: 0,
-  },
-}))(CardActions)
 
 const ActiveButton = withStyles((theme) => ({
   root: {
@@ -81,6 +65,24 @@ const useStyles = makeStyles((theme) => ({
 
 }))
 
+function PolicyCard(props) {
+  const {hidden, content} = props
+
+  return(
+    <React.Fragment>
+      {hidden ? (
+        <CardActiveHide>
+          {content}
+        </CardActiveHide>
+      ) : (
+        <CardActive>
+          {content}
+        </CardActive>
+      )}
+    </React.Fragment>
+  )
+}
+
 function MoreButton(props) {
   const classes = useStyles()
   const {t} = useTranslation('policy')
@@ -105,6 +107,7 @@ class ActivePolicy extends React.Component {
 
   state = {
     expanded: false,
+    hidden: false,
     action: '',
     actionAttributes: {},
   }
@@ -112,7 +115,11 @@ class ActivePolicy extends React.Component {
   actionsNotAvailable = (this.props.policy.possible_activities.length === 0)
 
   handleCloseClick = () => {
-    this.props.closePolicyCard(this.props.index)
+    this.setState({
+      hidden: true,
+      expanded: false,
+    })
+    setTimeout(() => {this.props.closePolicyCard(this.props.index)}, hideTime)
   }
 
   handleExpandClick = () => {
@@ -210,48 +217,54 @@ class ActivePolicy extends React.Component {
   render(){
     const {t} = this.props
   return(
-    
-    <Card>
-      <CardHeaderActive
-        action={
-          <Tooltip title={t("close")}>
-            <IconButton 
-              onClick={this.handleCloseClick}
-              aria-label="close"
-            >
-              <CloseIcon />
-            </IconButton>
-          </Tooltip>
+    <React.Fragment>
+      <PolicyCard
+        hidden={this.state.hidden}
+        content={
+          <React.Fragment>
+          <CardTop
+            action={
+              <Tooltip title={t("close")}>
+                <IconButton 
+                  onClick={this.handleCloseClick}
+                  aria-label="close"
+                >
+                  <CloseIcon />
+                </IconButton>
+              </Tooltip>
+            }
+            title={<this.RenderHeader t={t} />}
+            subheader={this.props.policy.date}
+          />
+          <CardContent>
+            <Grid container spacing={2}>
+              {Object.keys(this.state.actionAttributes).map((attr) => (
+                  <Grid item key={attr}>
+                    <Tooltip title={this.props.policy.attributes.policy[attr]}>
+                      <TextField
+                       label={attr}
+                       variant="outlined"
+                       size="small"
+                       onChange={(event) => this.updateActionAttribute(attr, event.target.value)}
+                       value={this.state.actionAttributes[attr]}
+                      />
+                    </Tooltip>
+                  </Grid>
+              ))}
+            </Grid>
+          </CardContent>
+          <CardBottom>
+            <MoreButton expanded={this.state.expanded} onClick={this.handleExpandClick} />
+          </CardBottom>
+          <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
+            <CardContent>
+              <PolicyDetails policy={this.props.policy.policy} />
+            </CardContent>
+          </Collapse>
+          </React.Fragment>
         }
-        title={<this.RenderHeader t={t} />}
-        subheader={this.props.policy.date}
       />
-      <CardContent>
-        <Grid container spacing={2}>
-          {Object.keys(this.state.actionAttributes).map((attr) => (
-              <Grid item key={attr}>
-                <Tooltip title={this.props.policy.attributes.policy[attr]}>
-                  <TextField
-                   label={attr}
-                   variant="outlined"
-                   size="small"
-                   onChange={(event) => this.updateActionAttribute(attr, event.target.value)}
-                   value={this.state.actionAttributes[attr]}
-                  />
-                </Tooltip>
-              </Grid>
-          ))}
-        </Grid>
-      </CardContent>
-      <CardActionsActive>
-        <MoreButton expanded={this.state.expanded} onClick={this.handleExpandClick} />
-      </CardActionsActive>
-      <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
-        <CardContent>
-          <PolicyDetails policy={this.props.policy.policy} />
-        </CardContent>
-      </Collapse>
-    </Card>
+    </React.Fragment>
   )
   }
 }

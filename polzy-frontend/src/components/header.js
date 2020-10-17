@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Toolbar, Typography, Button, Select, MenuItem } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
-import Brand from './brand'
+import Brand from './brandString'
 import { signOut } from '../redux/actions'
 
 
@@ -45,7 +45,7 @@ function Header(props){
           <MenuItem value="wi">Wienerisch</MenuItem>
         </Select>
         <div className={classes.title}>
-          <Brand size={60} marginBottom={10} />
+          <Brand size={36} marginBottom={10} />
         </div>
         <Typography
           classes={{root: classes.user}}

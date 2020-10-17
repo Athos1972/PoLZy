@@ -1,18 +1,13 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Card, CardHeader, CircularProgress } from '@material-ui/core'
+import { CardHeader, CircularProgress } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
+import { CardDisabled } from './policyCardStyles'
 import { updatePolicy } from '../redux/actions'
 import { fetchPolicy } from '../api'
 
-// Disabled Card Styles
-const CardDisabled = withStyles(() => ({
-  root: {
-    backgroundColor: "#ccc",
-  },
-}))(Card)
-
+// Waiting Spinner
 const SpinnerGrey = withStyles(() => ({
   root: {
     color: "#555",

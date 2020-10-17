@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Container, Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
-import Brand from '../components/brand'
+import Brand from '../components/brandLogo'
 import Copyright from '../components/copyright'
 import { signIn } from '../redux/actions'
 
