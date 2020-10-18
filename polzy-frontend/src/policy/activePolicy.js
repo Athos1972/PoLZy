@@ -49,6 +49,15 @@ const ActionControl = withStyles((theme) => ({
   }
 }))(FormControl)
 
+const ValueControl = withStyles((theme) => ({
+  root: {
+    //marginBottom: theme.spacing(1),
+    //marginRight: theme.spacing(1),
+    //minWidth: 120,
+    width: "100%",
+  }
+}))(FormControl)
+
 // More Button Styles
 const useStyles = makeStyles((theme) => ({
   expand: {
@@ -160,8 +169,11 @@ class ActivePolicy extends React.Component {
     if (this.state.actionIndex === -1)
       return false
     // check action values are filled
-    for (let key in this.state.actionValues) {
-      if (this.state.actionValues[key] === '')
+    console.log('Validate Activity')
+    console.log(this.state.actionValues)
+    for (let index in this.state.actionValues) {
+      console.log(index)
+      if (this.possible_activities[this.state.actionIndex].fields[index].isMandatory && this.state.actionValues[index] === '')
         return false
     }
     return true
@@ -220,6 +232,45 @@ class ActivePolicy extends React.Component {
     </React.Fragment>
   )
 
+  RenderActivityField = (props) => (
+    <React.Fragment>
+    <Tooltip title={props.data.tooltip}>
+      {props.data.inputRange.length > 0 ? (
+        <ValueControl
+          variant="outlined"
+          size="small"
+          required={props.data.isMandatory}
+        >
+          <InputLabel id={`${props.data.name}-${this.props.index}-label`}>
+            {props.data.name}
+          </InputLabel>
+          <Select
+            labelId={`${props.data.name}-${this.props.index}-label`}
+            id={`${props.data.name}-${this.props.index}`}
+            value={this.state.actionValues[props.index]}
+            onChange={(event) => this.updateActionValue(props.index, event.target.value)}
+            label={props.data.name}
+          >
+            {props.data.inputRange.map((value, index) => (
+              <MenuItem value={index}>
+                {value}
+              </MenuItem>
+            ))}
+          </Select>
+        </ValueControl>
+      ) : (
+          <TextField
+            label={props.data.name}
+            variant="outlined"
+            size="small"
+            onChange={(event) => this.updateActionValue(props.index, event.target.value)}
+            value={this.state.actionValues[props.index]}
+          />
+      )}
+    </Tooltip>
+    </React.Fragment>
+  )
+
 
   render(){
     const {t} = this.props
@@ -248,16 +299,8 @@ class ActivePolicy extends React.Component {
             <CardContent>
               <Grid container spacing={2}>
                 {this.possible_activities[this.state.actionIndex].fields.map((field, index) => (
-                    <Grid item key={field.name}>
-                      <Tooltip title={field.tooltip}>
-                        <TextField
-                         label={field.name}
-                         variant="outlined"
-                         size="small"
-                         onChange={(event) => this.updateActionValue(index, event.target.value)}
-                         value={this.state.actionValues[index]}
-                        />
-                      </Tooltip>
+                    <Grid item key={field.name} xs={12} md={4} lg={3}>
+                      <this.RenderActivityField index={index} data={field} />
                     </Grid>
                 ))}
               </Grid>
