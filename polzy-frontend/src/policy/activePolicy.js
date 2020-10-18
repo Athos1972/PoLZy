@@ -142,9 +142,10 @@ class ActivePolicy extends React.Component {
   handleActionChange = (event) => {
     if (event.target.value >= 0) {
       const actionValuesCount = this.possible_activities[event.target.value].fields.length
+      const defaultActionValues = this.possible_activities[event.target.value].fields.map((field) => (field.valueChosenOrEntered))
       this.setState({
         actionIndex: event.target.value,
-        actionValues: new Array(actionValuesCount).fill(''),
+        actionValues: defaultActionValues,
       })
     } else {
       this.setState({
@@ -234,7 +235,10 @@ class ActivePolicy extends React.Component {
 
   RenderActivityField = (props) => (
     <React.Fragment>
-    <Tooltip title={props.data.tooltip}>
+    <Tooltip
+      title={props.data.tooltip}
+      placement="top"
+    >
       {props.data.inputRange.length > 0 ? (
         <ValueControl
           variant="outlined"
@@ -252,7 +256,7 @@ class ActivePolicy extends React.Component {
             label={props.data.name}
           >
             {props.data.inputRange.map((value, index) => (
-              <MenuItem value={index}>
+              <MenuItem value={value}>
                 {value}
               </MenuItem>
             ))}
