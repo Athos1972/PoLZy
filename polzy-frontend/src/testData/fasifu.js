@@ -206,19 +206,54 @@ export const policies = [
       "E-mail": null,
       "Phone (primary)": null,
       "Phone (secondary)": null
-    }
+    },
+    "possible_activities": [
+        {
+            "name": "Cancel",
+            "description": "Cancels the policy",
+            "fields": [
+                {
+                    "name": "Stornogrund",
+                    "brief": "Stornogrund",
+                    "tooltip": "Bitte w\u00e4hle einen Stornogrund aus der Liste der m\u00f6glichen Stornogr\u00fcnde. Nach Auswahl des Stornogrunds erschienen eventuell weitere Eingabefelder",
+                    "type": "Text",
+                    "inputRange": [
+                        "9002 Wegfall",
+                        "9003 Konkurs"
+                    ],
+                    "onlyFromRange": false,
+                    "valueChosenOrEntered": "9002 Wegfall",
+                    "inputTriggers": true,
+                    "isMandatory": true
+                },
+                {
+                    "name": "Stornodatum",
+                    "brief": "Stornodatum",
+                    "tooltip": "Per welchem Datum soll storniert werden?",
+                    "type": "Datum",
+                    "inputRange": [
+                        "2021-01-01",
+                        "2022-01-01"
+                    ],
+                    "onlyFromRange": false,
+                    "valueChosenOrEntered": "",
+                    "inputTriggers": false,
+                    "isMandatory": false
+                }
+            ]
+        },
+        {
+            "name": "Ruhestellung",
+            "description": "Ruhestellung per Wirksamkeitsdatum aktivieren",
+            "fields": []
+        },
+        {
+            "name": "Manuelle Buchung",
+            "description": "Manuelle Buchung erfassen",
+            "fields": []
+        }
+    ]
   },
-  "possible_activities": [
-    "cancel",
-    "suspend"
-  ],
-  "attributes": {
-    "policy": {
-      "Policy Attribute 1": "Description of Policy Attribute 1",
-      "Policy Attribute 2": "Description of Policy Attribute 2",
-      "Policy Attribute 3": "Description of Policy Attribute 3",
-      "Policy Attribute 4": "Description of Policy Attribute 4"
-    }
-  }
+
 },
 ]

@@ -108,11 +108,13 @@ class ActivePolicy extends React.Component {
   state = {
     expanded: false,
     hidden: false,
-    action: '',
-    actionAttributes: {},
+    actionIndex: -1,
+    actionValues: [],
   }
 
-  actionsNotAvailable = (this.props.policy.possible_activities.length === 0)
+  actionsNotAvailable = (this.props.policy.policy.possible_activities.length === 0)
+
+  possible_activities = this.props.policy.policy.possible_activities
 
   handleCloseClick = () => {
     this.setState({
@@ -129,32 +131,37 @@ class ActivePolicy extends React.Component {
   }
 
   handleActionChange = (event) => {
-    
-    const newActionAttributes = {}
-    if (event.target.value !== '') {
-      Object.keys(this.props.policy.attributes.policy).forEach(key => {newActionAttributes[key] = ''})
+    if (event.target.value >= 0) {
+      const actionValuesCount = this.possible_activities[event.target.value].fields.length
+      this.setState({
+        actionIndex: event.target.value,
+        actionValues: new Array(actionValuesCount).fill(''),
+      })
+    } else {
+      this.setState({
+        actionIndex: -1,
+        actionValues: [],
+      })
     }
-    this.setState({
-      action: event.target.value,
-      actionAttributes: newActionAttributes,
-    })
   }
 
-  updateActionAttribute = (attr, value) => {
-    const items = {...this.state.actionAttributes}
-    items[attr] = value
-    this.setState({
-      actionAttributes: items,
-    })
+  updateActionValue = (index, value) => {
+    this.setState((state) => ({
+      actionValues: [
+        ...state.actionValues.slice(0, index),
+        value,
+        ...state.actionValues.slice(index + 1),
+      ],
+    }))
   }
 
   validateActivity = () => {
     // check if action selected
-    if (this.state.action === '')
+    if (this.state.actionIndex === -1)
       return false
-    // check action attributes are filled
-    for (let key in this.state.actionAttributes) {
-      if (this.state.actionAttributes[key] === '')
+    // check action values are filled
+    for (let key in this.state.actionValues) {
+      if (this.state.actionValues[key] === '')
         return false
     }
     return true
@@ -168,7 +175,7 @@ class ActivePolicy extends React.Component {
             component="p"
             variant="h5"
           >
-            {props.t('policy') + ' #' + this.props.policy.number}
+            {props.t('policy') + ' #' + this.props.policy.policy.number}
           </Typography>
         </Grid>
         <Grid item xs={12} md={8}>
@@ -183,17 +190,17 @@ class ActivePolicy extends React.Component {
               <Select
                 labelId={`action-${this.props.index}-label`}
                 id={`action-${this.props.index}`}
-                value={this.state.action}
+                value={this.state.actionIndex}
                 onChange={this.handleActionChange}
                 disabled={this.actionsNotAvailable}
                 label={props.t("action")}
               >
-                <MenuItem value="">
+                <MenuItem value={-1}>
                   <em>{props.t("none")}</em>
                 </MenuItem>
-                {this.props.policy.possible_activities.map((activity) => (
-                  <MenuItem value={activity}>
-                    {activity}
+                {this.possible_activities.map((activity, index) => (
+                  <MenuItem value={index}>
+                    {activity.name}
                   </MenuItem>
                 ))}
               </Select>
@@ -216,6 +223,7 @@ class ActivePolicy extends React.Component {
 
   render(){
     const {t} = this.props
+
   return(
     <React.Fragment>
       <PolicyCard
@@ -234,25 +242,27 @@ class ActivePolicy extends React.Component {
               </Tooltip>
             }
             title={<this.RenderHeader t={t} />}
-            subheader={this.props.policy.date}
+            subheader={this.props.policy.policy.date}
           />
-          <CardContent>
-            <Grid container spacing={2}>
-              {Object.keys(this.state.actionAttributes).map((attr) => (
-                  <Grid item key={attr}>
-                    <Tooltip title={this.props.policy.attributes.policy[attr]}>
-                      <TextField
-                       label={attr}
-                       variant="outlined"
-                       size="small"
-                       onChange={(event) => this.updateActionAttribute(attr, event.target.value)}
-                       value={this.state.actionAttributes[attr]}
-                      />
-                    </Tooltip>
-                  </Grid>
-              ))}
-            </Grid>
-          </CardContent>
+          {this.state.actionIndex === -1 ? ( null ) : (
+            <CardContent>
+              <Grid container spacing={2}>
+                {this.possible_activities[this.state.actionIndex].fields.map((field, index) => (
+                    <Grid item key={field.name}>
+                      <Tooltip title={field.tooltip}>
+                        <TextField
+                         label={field.name}
+                         variant="outlined"
+                         size="small"
+                         onChange={(event) => this.updateActionValue(index, event.target.value)}
+                         value={this.state.actionValues[index]}
+                        />
+                      </Tooltip>
+                    </Grid>
+                ))}
+              </Grid>
+            </CardContent>
+          )}
           <CardBottom>
             <MoreButton expanded={this.state.expanded} onClick={this.handleExpandClick} />
           </CardBottom>
