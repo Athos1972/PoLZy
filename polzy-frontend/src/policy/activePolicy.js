@@ -14,7 +14,8 @@ import {
   Select,
   MenuItem,
   TextField,
-  FormGroup
+  FormGroup,
+  CircularProgress
 } from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
@@ -23,6 +24,7 @@ import { withTranslation, useTranslation } from 'react-i18next'
 import { CardActiveHide, CardActive, CardTop, CardBottom, hideTime } from './policyCardStyles'
 import PolicyDetails from './policyDetails'
 import { removePolicy } from '../redux/actions'
+import { executeActivity } from '../api'
 
 
 const ActiveButton = withStyles((theme) => ({
@@ -117,6 +119,7 @@ class ActivePolicy extends React.Component {
   state = {
     expanded: false,
     hidden: false,
+    actionExecition: false,
     actionIndex: -1,
     actionValues: [],
   }
@@ -180,6 +183,48 @@ class ActivePolicy extends React.Component {
     return true
   }
 
+  handleActionExecution = () => {
+    console.log('Action Execution')
+    this.setState({
+      actionExecition: true,
+    })
+
+    const executionData = {
+      "policy_number": this.props.policy.policy.number,
+      "effective_date": this.props.policy.policy.effective_date,
+      "activity_class": "CLASSNAME_ACTIVITY_CANCEL",
+    }
+
+    executeActivity(executionData).then(data => {
+      console.log(data)
+      this.setState({
+        actionExecition: false,
+      })
+    })
+  }
+
+  RenderExecutionButton = (props) => (
+    <React.Fragment>
+    {this.state.actionExecition ? (
+      <ActiveButton variant="contained" color="primary" disabled>
+        <CircularProgress />
+      </ActiveButton>
+    ) : (
+      <React.Fragment>
+      {this.validateActivity() ? (
+        <ActiveButton variant="contained" color="primary">
+          {props.t("execute")}
+        </ActiveButton>
+      ) : (
+        <ActiveButtonDisabled variant="contained" disabled>
+          {props.t("execute")}
+        </ActiveButtonDisabled>
+      )}
+      </React.Fragment>
+    )}
+    </React.Fragment>
+  )
+
   RenderHeader = (props) => (
     <React.Fragment>
       <Grid container>
@@ -218,14 +263,26 @@ class ActivePolicy extends React.Component {
                 ))}
               </Select>
             </ActionControl>
-            {this.validateActivity() ? (
-              <ActiveButton variant="contained" color="primary">
-                {props.t("execute")}
+            {this.state.actionExecition ? (
+              <ActiveButton variant="contained" color="primary" disabled>
+                <CircularProgress />
               </ActiveButton>
             ) : (
-              <ActiveButtonDisabled variant="contained" disabled>
-                {props.t("execute")}
-              </ActiveButtonDisabled>
+              <React.Fragment>
+              {this.validateActivity() ? (
+                <ActiveButton 
+                  variant="contained"
+                  color="primary"
+                  onClick={this.handleActionExecution}
+                >
+                  {props.t("execute")}
+                </ActiveButton>
+              ) : (
+                <ActiveButtonDisabled variant="contained" disabled>
+                  {props.t("execute")}
+                </ActiveButtonDisabled>
+              )}
+              </React.Fragment>
             )}
           </FormGroup>
         </Grid>
