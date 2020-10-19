@@ -1,6 +1,7 @@
 from flask import current_app
 from importlib import import_module
 from .policy import Policy
+from .models import Activity
 
 def import_class(name):
     #
@@ -22,3 +23,13 @@ def get_policy_class():
         return import_class(current_app.config.get('CLASSNAME_POLICY'))
 
     return Policy
+
+def get_activity_class(activity_type_class):
+    #
+    # returns activity class
+    #
+
+    if current_app.config.get(activity_type_class):
+        return import_class(current_app.config.get(activity_type_class))
+
+    return Activity

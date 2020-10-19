@@ -62,8 +62,10 @@ class Activity(db.Model):
     created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     policy_number = db.Column(db.String(64), nullable=False)
     effective_date = db.Column(db.Date, nullable=False, default=date.today)
-    type_id = db.Column(db.Integer, db.ForeignKey('activity_types.id'), nullable=False)
+    #type_id = db.Column(db.Integer, db.ForeignKey('activity_types.id'), nullable=False)
+    type = db.Column(db.String(32), nullable=False)
     is_finished = db.Column(db.Boolean, nullable=False, default=False)
+    attributes = db.Column(db.String(512), nullable=True)
     
     # relationships
     creator = db.relationship(
@@ -71,10 +73,10 @@ class Activity(db.Model):
         backref=db.backref('created_activities', order_by='desc(Activity.created)'),
         foreign_keys=[creator_id],
     )
-    type = db.relationship(
-        'ActivityType',
-        foreign_keys=[type_id],
-    )
+    #type = db.relationship(
+    #    'ActivityType',
+    #    foreign_keys=[type_id],
+    #)
 
     def __str__(self):
         return str(uuid.UUID(bytes=self.id))

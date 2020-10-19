@@ -2,7 +2,7 @@ from flask import jsonify, request
 from datetime import date
 from ..policy import Policy
 from ..models import Activity, ActivityType
-from ..utils import get_policy_class
+from ..utils import get_policy_class, get_activity_class
 from . import bp
 
 
@@ -40,12 +40,17 @@ def new_activity():
 
     # create activity
     try:
-        activity = Activity.create_from_json(data)
-        return jsonify({
-            'id': str(activity),
-            'status': 'accepted',
-            'msg': 'Activity accepted',
-        }), 202
+        #activity = Activity.create_from_json(data)
+        activity = get_activity_class(data.get('activity_class')).create_from_json(data)
+        
     except Exception as e:
         print(e)
         return jsonify({'error': 'Bad Request'}), 400
+
+    # TODO: execte activity
+
+    return jsonify({
+        'id': str(activity),
+        'status': 'accepted',
+        'msg': 'Activity accepted',
+    }), 202
