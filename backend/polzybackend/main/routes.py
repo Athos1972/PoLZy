@@ -47,7 +47,8 @@ def new_activity():
         print(e)
         return jsonify({'error': 'Bad Request'}), 400
 
-    # TODO: execte activity
+    # TODO: execute activity
+    activity.executeActivity()
 
     return jsonify({
         'id': str(activity),
