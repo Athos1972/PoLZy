@@ -4,6 +4,11 @@ from ..policy import Policy
 from ..models import Activity, ActivityType
 from ..utils import get_policy_class, get_activity_class
 from . import bp
+from fasifu.GlobalConstants import GlobalConstants
+from logging import getLogger
+
+# Flask app has its logger: current_app.logger
+#logger = getLogger(GlobalConstants.loggerName)
 
 
 @bp.route('/policy/<string:policy_number>/<string:effective_date>')
@@ -65,7 +70,7 @@ def new_activity():
         return jsonify({'error': 'Bad Request'}), 400
 
     return jsonify({
-        'id': str(activity),
+        'id': str(lString),
         'status': 'accepted',
         'msg': 'Activity accepted',
     }), 202
