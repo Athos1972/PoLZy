@@ -29,9 +29,9 @@ const policyReducer = (state = [], action) => {
       return [...state, {key: key, ...action.payload}]
     case UPDATE_POLICY:
       const newState =  state.map((item, index) => (
-        index === action.id ? {
-          ...item, 
+        index === action.id ? { 
           ...action.payload,
+          key: item.key,
         } : item
       ))
       return newState

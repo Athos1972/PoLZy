@@ -1,10 +1,9 @@
 export const policies = [
 {
-  "status": "ok",
-  "number": "2017723435",
-  "date": "2020-09-24",
-  "policy": {
-    "number": "2017723435",
+  "id": "42118db7-f92a-4ec4-9513-df7d2f4bf758",
+  "request_state": "ok",
+
+    "policy_number": "2017723435",
     "effective_date": "2020-09-24",
     "status": "AUF",
     "remote_system": "PM_PLUS",
@@ -253,7 +252,6 @@ export const policies = [
             "fields": []
         }
     ]
-  },
 
 },
 ]

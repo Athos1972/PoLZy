@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from flask import jsonify, request, current_app
 from datetime import date
 from ..policy import Policy
 from ..models import Activity, ActivityType
@@ -22,8 +22,10 @@ def get_policy(policy_number, effective_date=None):
         # get Policy
         policy = get_policy_class()(policy_number, effective_date)
         if policy.fetch():
+            current_app.config['POLICIES'][policy.uuid] = policy
             return jsonify(policy.get()), 200
     except Exception as e:
+        current_app.logger.warning(f'Fetch plolicy {policy_number} {effective_date} failed: {e}')
         return jsonify({'error': str(e)}), 400
 
     return jsonify({'error': 'Policy not found'}), 404
@@ -37,18 +39,30 @@ def new_activity():
 
     # get post data
     data = request.get_json()
+    print(data)
+    print(current_app.config.get('POLICIES'))
 
-    # create activity
+    # get policy and create activity 
     try:
-        #activity = Activity.create_from_json(data)
-        activity = get_activity_class(data.get('activity_class')).create_from_json(data)
+        # get policy from app store
+        policy = current_app.config['POLICIES'].get(data['id'])
+        if policy is None:
+            raise Exception(f'Policy {data["id"]} is absent in PoLZy storage')
+
+        # save activity to DB
+        activity = Activity.new(data, policy)
+
+        # execute activity
+        if policy.executeActivity(data['activity']):
+            # update activity
+            activity.finish()
+            # update policy
+            policy.fetch()
+            return jsonify(policy.get()), 200
         
     except Exception as e:
         print(e)
         return jsonify({'error': 'Bad Request'}), 400
-
-    # TODO: execute activity
-    activity.executeActivity()
 
     return jsonify({
         'id': str(activity),

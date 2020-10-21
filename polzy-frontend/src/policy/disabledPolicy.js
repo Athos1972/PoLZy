@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { CardHeader, CircularProgress } from '@material-ui/core'
+import { CardHeader, CircularProgress, LinearProgress } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
-import { CardDisabled } from './policyCardStyles'
+import { CardDisabled, CardTop, CardMiddle } from './CardStyles'
+import { PolicyTitle } from './Components'
 import { updatePolicy } from '../redux/actions'
 import { fetchPolicy } from '../api'
 
@@ -21,20 +22,23 @@ function DisabledPolicy(props) {
   useEffect(() => {
     //const data = await fetchPolicy(policy)
     fetchPolicy(policy).then(data => {
+      console.log('POLICY RESPONSE:')
+      console.log(data)
       if ('error' in data) {
         props.updatePolicy(
           index,
           {
-            status: "failed",
-            ...data
+            ...policy,
+            request_state: "failed",
+            ...data,
           }
         )
-      } else if ('policy' in data) {
+      } else if ('id' in data) {
         props.updatePolicy(
           index,
           {
-            status: "ok",
-            ...data
+            request_state: "ok",
+            ...data,
           }
         )
       }
@@ -44,11 +48,13 @@ function DisabledPolicy(props) {
 
   return(
     <CardDisabled>
-      <CardHeader
-        action={<SpinnerGrey />}
-        title={t('policy') + ' #' + policy.number}
-        subheader={policy.date}
+      <CardTop
+        title={<PolicyTitle number={policy.policy_number} />}
+        subheader={policy.effective_date}
       />
+      <CardMiddle>
+        <LinearProgress />
+      </CardMiddle>
     </CardDisabled>
   )
 }

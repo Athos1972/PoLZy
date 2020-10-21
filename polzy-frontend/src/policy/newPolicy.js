@@ -33,6 +33,7 @@ const CardFindPolicy = withStyles({
 const CardLogo = withStyles({
   root: {
     width: 160,
+    height: 170,
     float: "right",
   }
 })(CardMedia)
@@ -80,13 +81,12 @@ class NewPolicy extends React.Component {
   handleSubmit = async () => {
     if (this.state.policyNumber) {
       // format date
-      //const effectiveDate = dateToString(this.state.effectiveDate)
       const effectiveDate = format(this.state.effectiveDate, "yyyy-MM-dd")
       // add policy card
       this.props.addPolicy({
-        status: "waiting",
-        number: this.state.policyNumber,
-        date: effectiveDate,
+        request_state: "waiting",
+        policy_number: this.state.policyNumber,
+        effective_date: effectiveDate,
       })
       // update state to default
       this.setState({

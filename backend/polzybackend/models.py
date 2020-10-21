@@ -2,6 +2,7 @@ from . import db, auth
 from .auth import get_uuid, generate_token, get_expired
 from datetime import datetime, timedelta, date
 import uuid
+import json
 
 
 # authentication
@@ -65,7 +66,7 @@ class Activity(db.Model):
     #type_id = db.Column(db.Integer, db.ForeignKey('activity_types.id'), nullable=False)
     type = db.Column(db.String(32), nullable=False)
     is_finished = db.Column(db.Boolean, nullable=False, default=False)
-    attributes = db.Column(db.String(512), nullable=True)
+    attributes = db.Column(db.String, nullable=True)
     
     # relationships
     creator = db.relationship(
@@ -82,7 +83,7 @@ class Activity(db.Model):
         return str(uuid.UUID(bytes=self.id))
 
     @classmethod
-    def create_from_json(cls, data):
+    def new(cls, data, policy):
         # 
         # create instance using data
         #
@@ -91,22 +92,31 @@ class Activity(db.Model):
         current_user = User.query.first()
         
         # get activity type
-        activity_type = ActivityType.query.filter_by(name=data.get('activity_type')).first()
+        #activity_type = ActivityType.query.filter_by(name=data.get('activity_type')).first()
         # create activity instance
         instance = cls(
-            policy_number=data.get('policy_number'),
-            type=activity_type,
+            policy_number=policy.number,
+            effective_date=datetime.strptime(policy.effective_date, '%Y-%m-%d').date(),
+            type=data['activity'].get('name'),
             creator=current_user,
+            attributes=json.dumps(data['activity'].get('fields'))
         )
         # set effective date
-        if data.get('effective_date'):
-            instance.effective_date = datetime.strptime(data.get('effective_date'), '%Y-%m-%d').date()
+        #if data.get('effective_date'):
+        #    instance.effective_date = datetime.strptime(data.get('effective_date'), '%Y-%m-%d').date()
         
         # store to db
         db.session.add(instance)
         db.session.commit()
         
         return instance
+
+    def finish(self):
+        #
+        # sets is_finished to True 
+        #
+        self.is_finished = True
+        db.session.commit()
 
 class ActivityType(db.Model):
     __tablename__ = 'activity_types'

@@ -3,7 +3,8 @@ import { connect } from 'react-redux'
 import { Typography, IconButton, Tooltip } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import { useTranslation } from 'react-i18next'
-import { CardErrorHide, CardError, CardTop, CardMiddle, hideTime } from './policyCardStyles'
+import { CardErrorHide, CardError, CardTop, CardMiddle, hideTime } from './CardStyles'
+import { PolicyTitle } from './Components'
 import { removePolicy } from '../redux/actions'
 
 function PolicyCard(props) {
@@ -51,8 +52,8 @@ function ErrorPolicy(props) {
                 </IconButton>
               </Tooltip>
             }
-            title={t('policy') + ' #' + policy.number}
-            subheader={policy.date}
+            title={<PolicyTitle number={policy.policy_number} />}
+            subheader={policy.effective_date}
           />
           <CardMiddle>
             <Typography

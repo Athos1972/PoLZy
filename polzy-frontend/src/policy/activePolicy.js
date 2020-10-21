@@ -21,9 +21,10 @@ import { makeStyles, withStyles } from '@material-ui/core/styles'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import CloseIcon from '@material-ui/icons/Close'
 import { withTranslation, useTranslation } from 'react-i18next'
-import { CardActiveHide, CardActive, CardTop, CardBottom, hideTime } from './policyCardStyles'
+import { CardActiveHide, CardActive, CardTop, CardBottom, hideTime } from './CardStyles'
+import { PolicyTitle } from './Components'
 import PolicyDetails from './policyDetails'
-import { removePolicy } from '../redux/actions'
+import { removePolicy, updatePolicy } from '../redux/actions'
 import { executeActivity } from '../api'
 
 
@@ -119,14 +120,14 @@ class ActivePolicy extends React.Component {
   state = {
     expanded: false,
     hidden: false,
-    actionExecition: false,
+    actionExecution: false,
     actionIndex: -1,
     actionValues: [],
   }
 
-  actionsNotAvailable = (this.props.policy.policy.possible_activities.length === 0)
+  actionsNotAvailable = (this.props.policy.possible_activities.length === 0)
 
-  possible_activities = this.props.policy.policy.possible_activities
+  possible_activities = this.props.policy.possible_activities
 
   handleCloseClick = () => {
     this.setState({
@@ -186,19 +187,33 @@ class ActivePolicy extends React.Component {
   handleActionExecution = () => {
     console.log('Action Execution')
     this.setState({
-      actionExecition: true,
+      actionExecution: true,
     })
 
     const executionData = {
-      "policy_number": this.props.policy.policy.number,
-      "effective_date": this.props.policy.policy.effective_date,
-      "activity_class": "CLASSNAME_ACTIVITY_CANCEL",
+      id: this.props.policy.id,
+      activity: {
+        name: this.props.policy.possible_activities[this.state.actionIndex].name,
+        fields: this.props.policy.possible_activities[this.state.actionIndex].fields.map((field, index) => ({
+          name: field.name,
+          value: this.state.actionValues[index],
+        })),
+      }
     }
 
     executeActivity(executionData).then(data => {
+      console.log('EXECUTE ACTIVITY RESPONSE')
       console.log(data)
+      // update policy data
+      this.props.updatePolicy(
+        this.props.index,
+        {
+          request_state: "ok",
+          ...data,
+        }
+      )
       this.setState({
-        actionExecition: false,
+        actionExecution: false,
       })
     })
   }
@@ -229,12 +244,7 @@ class ActivePolicy extends React.Component {
     <React.Fragment>
       <Grid container>
         <Grid item xs={12} md={4}>
-          <Typography
-            component="p"
-            variant="h5"
-          >
-            {props.t('policy') + ' #' + this.props.policy.policy.number}
-          </Typography>
+          <PolicyTitle number={this.props.policy.policy_number} />
         </Grid>
         <Grid item xs={12} md={8}>
           <FormGroup row>
@@ -263,26 +273,18 @@ class ActivePolicy extends React.Component {
                 ))}
               </Select>
             </ActionControl>
-            {this.state.actionExecition ? (
-              <ActiveButton variant="contained" color="primary" disabled>
-                <CircularProgress />
+            {this.validateActivity() ? (
+              <ActiveButton 
+                variant="contained"
+                color="primary"
+                onClick={this.handleActionExecution}
+              >
+                {props.t("execute")}
               </ActiveButton>
             ) : (
-              <React.Fragment>
-              {this.validateActivity() ? (
-                <ActiveButton 
-                  variant="contained"
-                  color="primary"
-                  onClick={this.handleActionExecution}
-                >
-                  {props.t("execute")}
-                </ActiveButton>
-              ) : (
-                <ActiveButtonDisabled variant="contained" disabled>
-                  {props.t("execute")}
-                </ActiveButtonDisabled>
-              )}
-              </React.Fragment>
+              <ActiveButtonDisabled variant="contained" disabled>
+                {props.t("execute")}
+              </ActiveButtonDisabled>
             )}
           </FormGroup>
         </Grid>
@@ -354,7 +356,7 @@ class ActivePolicy extends React.Component {
               </Tooltip>
             }
             title={<this.RenderHeader t={t} />}
-            subheader={this.props.policy.policy.date}
+            subheader={this.props.policy.effective_date}
           />
           {this.state.actionIndex === -1 ? ( null ) : (
             <CardContent>
@@ -372,7 +374,7 @@ class ActivePolicy extends React.Component {
           </CardBottom>
           <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
             <CardContent>
-              <PolicyDetails policy={this.props.policy.policy} />
+              <PolicyDetails policy={this.props.policy} />
             </CardContent>
           </Collapse>
           </React.Fragment>
@@ -387,4 +389,10 @@ class ActivePolicy extends React.Component {
 const TranslatedActivePolicy = withTranslation('policy')(ActivePolicy)
 
 // connect to redux store
-export default connect(null, {closePolicyCard: removePolicy})(TranslatedActivePolicy)
+export default connect(
+  null,
+  {
+    closePolicyCard: removePolicy,
+    updatePolicy: updatePolicy,
+  }
+)(TranslatedActivePolicy)

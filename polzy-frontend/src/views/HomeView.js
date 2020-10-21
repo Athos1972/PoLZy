@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 function PolicyCard(props) {
   const { index, policy } = props
   
-  switch (policy.status) {
+  switch (policy.request_state) {
     case "ok":
       //console.log(policy)
       return(

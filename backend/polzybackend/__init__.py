@@ -23,6 +23,9 @@ def create_app(config=None):
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config.from_object(config)
 
+    # policy store
+    app.config['POLICIES'] = {}
+
     db.init_app(app)
     migrate.init_app(app, db)
 

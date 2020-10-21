@@ -97,7 +97,8 @@ function MakeClauseRow(props) {
   return(
     <React.Fragment>
       <HtmlTooltip 
-        placement="bottom-start"
+        placement="left"
+        arrow
         interactive
         title={
           <React.Fragment>
