@@ -1,22 +1,23 @@
 {
   "auth": {
     "signin.button": "Anmelden",
-    "signout.button": "Abmelden"
+    "signout.button": "Abmelden",
+    "stage": "Stage"
   },
 
   "policy": {
-  	"action": "Aktivität",
+    "action": "Aktivität",
     "clauses": "Klauseln",
-  	"close": "Schließen",
-  	"collapse": "Einklappen",
-  	"effective.date": "Wirksamkeitsdatum",
-  	"execute": "Ausführen",
+    "close": "Schließen",
+    "collapse": "Einklappen",
+    "effective.date": "Wirksamkeitsdatum",
+    "execute": "Ausführen",
     "expand": "Erweitern",
-  	"find": "Finden",
-  	"find.policy": "Finde Polizze",
-  	"insured.object": "Versichertes Objekt",
-  	"invalid": "Ungültige Polizzendaten",
-  	"none": "Keine",
+    "find": "Finden",
+    "find.policy": "Finde Polizze",
+    "insured.object": "Versichertes Objekt",
+    "invalid": "Ungültige Polizzendaten",
+    "none": "Keine",
     "policy": "Polizze",
     "policy.number": "Polizze",
     "policy not found": "Polizze nicht gefunden",
@@ -24,23 +25,5 @@
     "product.line": "LOB",
     "status": "Status",
     "type": "Art"
-  },
-
-  "partner": {
-  	"first.name": "Vorname",
-  	"last.name": "Last Name",
-  	"birthday": "Birthday",
-  	"company.name": "Company Name",
-  	"address": "Address",
-  	"city": "City",
-  	"country": "Country",
-  	"postal.code": "Postal Code",
-  	"email": "Email",
-  	"phone.primary": "Phone primary",
-  	"phone.secondary": "Phone secondary",
-  	"current.occupation": "Current Occupation",
-  	"previous.occupation": "Previous Occupation",
-  	"sports": "Sports",
-  	"health.condition": "Health Condition"
   }
 }

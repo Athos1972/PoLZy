@@ -44,6 +44,18 @@ const ActiveButtonDisabled = withStyles((theme) => ({
   },
 }))(Button)
 
+const progressSize = 30
+const ActivityProgress = withStyles((theme) => ({
+  root: {
+    color: "#00c853",
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -(progressSize + theme.spacing(1)) / 2,
+    marginLeft: -progressSize/2,
+  }
+}))(CircularProgress)
+
 const ActionControl = withStyles((theme) => ({
   root: {
     marginBottom: theme.spacing(1),
@@ -127,7 +139,7 @@ class ActivePolicy extends React.Component {
 
   actionsNotAvailable = (this.props.policy.possible_activities.length === 0)
 
-  possible_activities = this.props.policy.possible_activities
+  //possible_activities = this.props.policy.possible_activities
 
   handleCloseClick = () => {
     this.setState({
@@ -145,8 +157,8 @@ class ActivePolicy extends React.Component {
 
   handleActionChange = (event) => {
     if (event.target.value >= 0) {
-      const actionValuesCount = this.possible_activities[event.target.value].fields.length
-      const defaultActionValues = this.possible_activities[event.target.value].fields.map((field) => (field.valueChosenOrEntered))
+      const actionValuesCount = this.props.policy.possible_activities[event.target.value].fields.length
+      const defaultActionValues = this.props.policy.possible_activities[event.target.value].fields.map((field) => (field.valueChosenOrEntered))
       this.setState({
         actionIndex: event.target.value,
         actionValues: defaultActionValues,
@@ -178,7 +190,7 @@ class ActivePolicy extends React.Component {
     console.log(this.state.actionValues)
     for (let index in this.state.actionValues) {
       console.log(index)
-      if (this.possible_activities[this.state.actionIndex].fields[index].isMandatory && this.state.actionValues[index] === '')
+      if (this.props.policy.possible_activities[this.state.actionIndex].fields[index].isMandatory && this.state.actionValues[index] === '')
         return false
     }
     return true
@@ -204,6 +216,12 @@ class ActivePolicy extends React.Component {
     executeActivity(executionData).then(data => {
       console.log('EXECUTE ACTIVITY RESPONSE')
       console.log(data)
+      // update state
+      this.setState({
+        actionExecution: false,
+        actionIndex: -1,
+        actionValues: [],
+      })
       // update policy data
       this.props.updatePolicy(
         this.props.index,
@@ -212,9 +230,6 @@ class ActivePolicy extends React.Component {
           ...data,
         }
       )
-      this.setState({
-        actionExecution: false,
-      })
     })
   }
 
@@ -266,26 +281,24 @@ class ActivePolicy extends React.Component {
                 <MenuItem value={-1}>
                   <em>{props.t("none")}</em>
                 </MenuItem>
-                {this.possible_activities.map((activity, index) => (
-                  <MenuItem value={index}>
+                {this.props.policy.possible_activities.map((activity, index) => (
+                  <MenuItem key={`${activity.name}-${index}`} value={index}>
                     {activity.name}
                   </MenuItem>
                 ))}
               </Select>
             </ActionControl>
-            {this.validateActivity() ? (
+            <div style={{position: "relative"}}>
               <ActiveButton 
                 variant="contained"
                 color="primary"
                 onClick={this.handleActionExecution}
+                disabled={!this.validateActivity() || this.state.actionExecution}
               >
                 {props.t("execute")}
               </ActiveButton>
-            ) : (
-              <ActiveButtonDisabled variant="contained" disabled>
-                {props.t("execute")}
-              </ActiveButtonDisabled>
-            )}
+              {this.state.actionExecution && <ActivityProgress size={progressSize} />}
+            </div>
           </FormGroup>
         </Grid>
       </Grid>
@@ -315,7 +328,7 @@ class ActivePolicy extends React.Component {
             label={props.data.name}
           >
             {props.data.inputRange.map((value, index) => (
-              <MenuItem value={value}>
+              <MenuItem key={index} value={value}>
                 {value}
               </MenuItem>
             ))}
@@ -361,7 +374,7 @@ class ActivePolicy extends React.Component {
           {this.state.actionIndex === -1 ? ( null ) : (
             <CardContent>
               <Grid container spacing={2}>
-                {this.possible_activities[this.state.actionIndex].fields.map((field, index) => (
+                {this.props.policy.possible_activities[this.state.actionIndex].fields.map((field, index) => (
                     <Grid item key={field.name} xs={12} md={4} lg={3}>
                       <this.RenderActivityField index={index} data={field} />
                     </Grid>

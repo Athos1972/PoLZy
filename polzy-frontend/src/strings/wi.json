@@ -1,22 +1,23 @@
 {
   "auth": {
     "signin.button": "Lossts mi´ eine!",
-    "signout.button": "Ausse von do!"
+    "signout.button": "Ausse von do!",
+    "stage": "Stage"
   },
 
   "policy": {
-  	"action": "Wos moch ma?",
+    "action": "Wos moch ma?",
     "clauses": "Klauseln",
-  	"close": "Weg damit",
-  	"collapse": "Weg damit",
-  	"effective.date": "Wirksamkeitsdatum",
-  	"execute": "Mochn",
+    "close": "Weg damit",
+    "collapse": "Weg damit",
+    "effective.date": "Wirksamkeitsdatum",
+    "execute": "Mochn",
     "expand": "mehr zeign",
-  	"find": "Findn",
-  	"find.policy": "Polizzn suchn",
-  	"insured.object": "Risiko",
-  	"invalid": "Polizzendaten san ned guad!",
-  	"none": "nix",
+    "find": "Findn",
+    "find.policy": "Polizzn suchn",
+    "insured.object": "Risiko",
+    "invalid": "Polizzendaten san ned guad!",
+    "none": "nix",
     "policy": "Polizze",
     "policy.number": "Polizzn",
     "policy not found": "Polizzn ned do",
@@ -24,23 +25,5 @@
     "product.line": "LOB",
     "status": "Status",
     "type": "Art"
-  },
-
-  "partner": {
-  	"first.name": "Vorname",
-  	"last.name": "Last Name",
-  	"birthday": "Birthday",
-  	"company.name": "Company Name",
-  	"address": "Address",
-  	"city": "City",
-  	"country": "Country",
-  	"postal.code": "Postal Code",
-  	"email": "Email",
-  	"phone.primary": "Phone primary",
-  	"phone.secondary": "Phone secondary",
-  	"current.occupation": "Current Occupation",
-  	"previous.occupation": "Previous Occupation",
-  	"sports": "Sports",
-  	"health.condition": "Health Condition"
   }
 }

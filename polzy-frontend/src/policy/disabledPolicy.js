@@ -15,6 +15,12 @@ const SpinnerGrey = withStyles(() => ({
   }
 }))(CircularProgress)
 
+const WaitingProgress = withStyles((theme) => ({
+  root: {
+    marginTop: theme.spacing(1),
+  }
+}))(LinearProgress)
+
 function DisabledPolicy(props) {
   const {index, policy} = props
   const { t } = useTranslation('policy')
@@ -53,7 +59,7 @@ function DisabledPolicy(props) {
         subheader={policy.effective_date}
       />
       <CardMiddle>
-        <LinearProgress />
+        <WaitingProgress />
       </CardMiddle>
     </CardDisabled>
   )
