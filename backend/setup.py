@@ -12,7 +12,7 @@ if __name__ == '__main__':
 
     setuptools.setup(
         name="polzybackend",
-        version="0.0.8",
+        version="0.0.10",
         author="Bernhard Buhl",
         author_email="buhl@buhl-consulting.com.cy",
         description="Open source Insurance Policy Life Cycle Management",
