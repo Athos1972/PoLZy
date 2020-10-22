@@ -24,6 +24,16 @@ def get_policy_class():
 
     return Policy
 
+def get_all_stages():
+    #
+    # returns list of all stages
+    #
+
+    if current_app.config.get('METHOD_GET_STAGES'):
+        return import_class(current_app.config.get('METHOD_GET_STAGES'))
+
+    raise Exception('Method to Get Stages NOT defined')
+
 def get_activity_class(activity_type_class):
     #
     # returns activity class

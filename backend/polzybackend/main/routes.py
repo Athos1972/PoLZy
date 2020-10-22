@@ -2,10 +2,10 @@ from flask import jsonify, request, current_app
 from datetime import date
 from ..policy import Policy
 from ..models import Activity, ActivityType
-from ..utils import get_policy_class, get_activity_class
+from ..utils import get_policy_class, get_all_stages, get_activity_class
 from . import bp
-from fasifu.GlobalConstants import GlobalConstants
-from logging import getLogger
+#from fasifu.GlobalConstants import GlobalConstants
+#from logging import getLogger
 
 # Flask app has its logger: current_app.logger
 #logger = getLogger(GlobalConstants.loggerName)
@@ -34,6 +34,21 @@ def get_policy(policy_number, effective_date=None):
         return jsonify({'error': str(e)}), 400
 
     return jsonify({'error': 'Policy not found'}), 404
+
+@bp.route('/stage')
+def get_stages():
+    #
+    # returns list of all available stages
+    #
+
+    try:
+        # get all stages
+        stages = get_all_stages()()
+    except Exception as e:
+        current_app.logger.warning(f'Failed to get All Stages: {e}')
+        stages = []
+
+    return jsonify(stages), 200
 
 
 @bp.route(f'/activity', methods=['POST'])
@@ -66,11 +81,11 @@ def new_activity():
             return jsonify(policy.get()), 200
         
     except Exception as e:
-        print(e)
+        current_app.logger.warning(f'Execution activity {data.get("name")} for policy {policy.policy_number} faild: {e}')
         return jsonify({'error': 'Bad Request'}), 400
 
     return jsonify({
-        'id': str(lString),
+        'id': str(activity.id),
         'status': 'accepted',
         'msg': 'Activity accepted',
     }), 202
