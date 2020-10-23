@@ -7,6 +7,10 @@ export const ADD_POLICY = 'ADD_POLICY'
 export const UPDATE_POLICY = 'UPDATE_POLICY'
 export const REMOVE_POLICY = 'REMOVE_POLICY'
 
+export const ADD_ANTRAG = 'ADD_ANTRAG'
+export const UPDATE_ANTRAG = 'UPDATE_ANTRAG'
+export const REMOVE_ANTRAG = 'REMOVE_ANTRAG'
+
 // auth actions
 export const signIn = (user) => ({
   type: SIGN_IN,
@@ -32,5 +36,22 @@ export const updatePolicy = (index, updateData) => ({
 
 export const removePolicy = (index) => ({
   type: REMOVE_POLICY,
+  payload: index,
+})
+
+// antrag actions
+export const newAntrag = (data) => ({
+  type: ADD_ANTRAG,
+  payload: data,
+})
+
+export const updateAntrag = (index, data) => ({
+  type: UPDATE_ANTRAG,
+  payload: data,
+  id: index,
+})
+
+export const removeAntrag = (index) => ({
+  type: REMOVE_ANTRAG,
   payload: index,
 })

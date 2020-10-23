@@ -48,6 +48,7 @@ const policyReducer = (state = [], action) => {
 const reducer = combineReducers({
   user: userReducer,
   policies: policyReducer,
+  antrags: policyReducer,
 })
 
 export default reducer

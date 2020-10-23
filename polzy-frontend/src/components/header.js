@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next'
 import Brand from './brandString'
 import MenuButton from './menuButton'
 import { getProducts } from '../api'
-import { signOut } from '../redux/actions'
+import { signOut, newAntrag } from '../redux/actions'
 
 
 // styles
@@ -57,6 +57,7 @@ function Header(props){
 
   const handleSelectProduct = (index) => {
     console.log(`Fast Offer: ${products[index]}`)
+    console.log(`Stage: ${props.user.stage}`)
   }
 
   return(
@@ -108,5 +109,10 @@ function Header(props){
 const mapStateToProps = (state) => ({
   user: state.user,
 })
+
+const mapDispatchToProps = {
+  signOut: signOut,
+  newAntrag: newAntrag,
+}
 
 export default connect(mapStateToProps, {signOut: signOut})(Header)
