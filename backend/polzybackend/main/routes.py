@@ -44,7 +44,7 @@ def get_stages():
     try:
         # get all stages
         stages = get_all_stages()()
-        current_app.logger.critical(f"Value of stages: {stages}")
+        current_app.logger.debug(f"Value of stages: {stages}")
     except Exception as e:
         current_app.logger.warning(f'Failed to get All Stages: {e}')
         stages = []
