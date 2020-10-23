@@ -1,18 +1,31 @@
-import React from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 import { connect } from 'react-redux'
-import { Toolbar, Typography, Button, Select, MenuItem } from '@material-ui/core'
+import { 
+  Toolbar,
+  Typography,
+  Button,
+  Select,
+  MenuItem,
+  Popper,
+  Paper,
+  Grow,
+  ClickAwayListener,
+  MenuList,
+} from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import Brand from './brandString'
+import MenuButton from './menuButton'
+import { getProducts } from '../api'
 import { signOut } from '../redux/actions'
 
 
 // styles
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   toolbar: {
     borderBottom: "2px solid",
     borderBottomColor: "#aaa",
-    marginBottom: 10,
+    marginBottom: theme.spacing(2),
   },
 
   title: {
@@ -20,17 +33,31 @@ const useStyles = makeStyles({
   },
 
   user: {
-    marginRight: 10,
     color: "grey",
-  }
-})
+  },
+
+  tollbarItem: {
+    marginLeft: theme.spacing(1),
+    narginRight: theme.spacing(1),
+  },
+}))
 
 
 function Header(props){
-  const { t, i18n } = useTranslation('auth')
+  const { t, i18n } = useTranslation('auth', 'antrag')
   const classes = useStyles()
+  const [products, setProduct] = useState([])
 
-  console.log(i18n)
+  useEffect(() => {
+    getProducts().then((data) => {
+      console.log(data)
+      setProduct(data)
+    })
+  }, [])
+
+  const handleSelectProduct = (index) => {
+    console.log(`Fast Offer: ${products[index]}`)
+  }
 
   return(
     <React.Fragment>
@@ -47,19 +74,31 @@ function Header(props){
         <div className={classes.title}>
           <Brand size={36} marginBottom={10} />
         </div>
-        <Typography
-          classes={{root: classes.user}}
-          variant="button"
-        >
-          {props.user.username}
-        </Typography>
-        <Button 
-          variant="outlined"
-          size="small"
-          onClick={props.signOut}
-        >
-          {t('auth:signout.button')}
-        </Button>
+        <div className={classes.tollbarItem}>
+          <MenuButton
+            title={t('antrag:fast.offer')}
+            id="fast-offer"
+            items={products}
+            onClick={handleSelectProduct}
+          />
+        </div>
+        <div className={classes.tollbarItem}>
+          <Typography
+            classes={{root: classes.user}}
+            variant="button"
+          >
+            {props.user.username}
+          </Typography>
+        </div>
+        <div className={classes.tollbarItem}>
+          <Button 
+            variant="outlined"
+            size="small"
+            onClick={props.signOut}
+          >
+            {t('auth:signout.button')}
+          </Button>
+        </div>
       </Toolbar>
     </React.Fragment>
   )

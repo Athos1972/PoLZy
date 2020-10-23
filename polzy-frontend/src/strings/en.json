@@ -25,5 +25,9 @@
     "product.line": "Product Line",
     "status": "Status",
     "type": "Type"
+  },
+
+  "antrag": {
+    "fast.offer": "Fast Offer"
   }
 }

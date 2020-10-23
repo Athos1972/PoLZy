@@ -5,6 +5,12 @@ export const getStages = async () => {
   return data
 }
 
+export const getProducts = async () => {
+  const response = await fetch('/antrag')
+  const data = await response.json()
+  return data
+}
+
 export const fetchPolicy = async (policy) => {
   const response = await fetch(`/policy/${policy.policy_number}/${policy.effective_date}`)
   const data = await response.json()
