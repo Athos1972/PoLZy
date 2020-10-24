@@ -1,19 +1,11 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { CardHeader, CircularProgress, LinearProgress } from '@material-ui/core'
+import { LinearProgress } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
-import { useTranslation } from 'react-i18next'
 import { CardDisabled, CardTop, CardMiddle } from './CardStyles'
 import { PolicyTitle } from './Components'
 import { updatePolicy } from '../redux/actions'
 import { fetchPolicy } from '../api'
-
-// Waiting Spinner
-const SpinnerGrey = withStyles(() => ({
-  root: {
-    color: "#555",
-  }
-}))(CircularProgress)
 
 const WaitingProgress = withStyles((theme) => ({
   root: {
@@ -23,7 +15,6 @@ const WaitingProgress = withStyles((theme) => ({
 
 function DisabledPolicy(props) {
   const {index, policy} = props
-  const { t } = useTranslation('policy')
 
   useEffect(() => {
     //const data = await fetchPolicy(policy)

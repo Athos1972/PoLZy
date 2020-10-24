@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react'
+import React, {useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { 
   Toolbar,
@@ -6,17 +6,12 @@ import {
   Button,
   Select,
   MenuItem,
-  Popper,
-  Paper,
-  Grow,
-  ClickAwayListener,
-  MenuList,
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import Brand from './brandString'
 import MenuButton from './menuButton'
-import { getProducts, fetchAntrag } from '../api'
+import { getProducts } from '../api'
 import { signOut, addAntrag } from '../redux/actions'
 
 

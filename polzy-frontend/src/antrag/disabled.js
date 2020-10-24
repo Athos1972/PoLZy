@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { CardHeader, CircularProgress, LinearProgress } from '@material-ui/core'
+import { LinearProgress } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
-import { useTranslation } from 'react-i18next'
 import { CardDisabled, CardTop, CardMiddle } from '../policy/CardStyles'
 import { AntragTitle } from './components'
 import { updateAntrag } from '../redux/actions'
@@ -17,7 +16,6 @@ const WaitingProgress = withStyles((theme) => ({
 
 function DisabledAntrag(props) {
   const {index, antrag} = props
-  const { t } = useTranslation('policy')
 
   useEffect(() => {
     // fetch antrag data

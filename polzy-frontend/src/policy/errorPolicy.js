@@ -27,7 +27,7 @@ function PolicyCard(props) {
 
 function ErrorPolicy(props) {
   const {index, policy} = props
-  const { t } = useTranslation('policy')
+  const { t } = useTranslation('common', 'policy')
   const [hidden, setHidden] = useState(false)
 
   const handleCloseClick = () => {
@@ -43,7 +43,7 @@ function ErrorPolicy(props) {
         <React.Fragment>
           <CardTop
             action={
-              <Tooltip title={t('close')}>
+              <Tooltip title={t('common:close')}>
                 <IconButton 
                   aria-label="close"
                   onClick={handleCloseClick}
@@ -60,7 +60,7 @@ function ErrorPolicy(props) {
               component="p"
               variant="h5"
             >
-              {"error" in policy ? (t(policy.error.toLowerCase())) : (t("invalid"))}
+              {"error" in policy ? (policy.error) : (t("policy:invalid"))}
             </Typography>
           </CardMiddle>
         </React.Fragment>

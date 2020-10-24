@@ -199,47 +199,6 @@ function ProductLine(props) {
   )
 }
 
-function RenderPartner(props) {
-  // renders partner
-  const {data} = props
-  const {t} = useTranslation('partner')
-
-  return(
-    <React.Fragment>
-      {data.is_person ? (
-        <React.Fragment>
-          <MakeRow title={t("first.name")} value={data.first_name} />
-          <MakeRow title={t("last.name")} value={data.last_name} />
-          <MakeRow title={t("birthday")} value={data.birthdate} />
-        </React.Fragment>
-      ) : (
-        <MakeRow title={t("company.name")} value={data.company_name} />
-      )}
-      <MakeRow title={t("address")} value={data.address} />
-      <MakeRow title={t("city")} value={data.city} />
-      <MakeRow title={t("country")} value={data.country} />
-      <MakeRow title={t("postal.code")} value={data.postal_code} />
-      <MakeRow title={t("email")} value={data.email} />
-      <MakeRow title={t("phone.primary")} value={data.primary_phone} />
-      <MakeRow title={t("phone.secondary")} value={data.secondary_phone} />
-      {data.is_person ? (
-        <React.Fragment>
-          <MakeRow title={t("current.occupation")} value={data.occupation == null ? (
-              ''
-            ) : (
-              data.occupation + ' (from' + data.occupation_from + ')'
-            )}
-          />
-          <MakeRow title={t("previous.occupation")} value={data.previous_occupation} />
-          <MakeRow title={t("sports")} value={data.sports.join(', ')} />
-          <MakeRow title={t("health.condition")} value={data.health_condition} />
-        </React.Fragment>
-      ) : (null
-      )}
-    </React.Fragment>
-  )  
-}
-
 function GenericSection(props) {
   // renders premium payer, insured object sections
   const {title, data} = props
@@ -252,50 +211,6 @@ function GenericSection(props) {
           <TableBody>
             {Object.keys(data).map((attr) => (
               <MakeRow key={attr} title={attr} value={data[attr]} />
-            ))}
-          </TableBody>
-        </Table>
-      </Section>
-    </React.Fragment>
-  )
-}
-
-function PremiumPayer(props) {
-  // renders premium payer
-  const {data} = props
-  const {t} = useTranslation('policy')
-
-  return(
-    <React.Fragment>
-      <Section>
-        <Title title={t("premium.payer")} />
-        <Table size="small">
-          <TableBody>
-            <RenderPartner data={data} />
-          </TableBody>
-        </Table>
-      </Section>
-    </React.Fragment>
-  )
-}
-
-function InsuredObject(props) {
-  // renders insured object or person
-  const {data} = props
-  const {t} = useTranslation('policy')
-
-  return(
-    <React.Fragment>
-      <Section>
-        <Title title={t("Insured Object")} />
-        <Table size="small">
-          <TableBody>
-            <MakeRow title={t("Type")} value={data.type} />
-            {Object.keys(data.attributes).map((attr) => (
-              <MakeRow key={attr} title={attr} value={<GetValue value={data.attributes[attr]} />} />
-            ))}
-            {Object.keys(data.implementation_attributes).map((attr) => (
-              <MakeRow key={attr} title={attr} value={data.implementation_attributes[attr]} />
             ))}
           </TableBody>
         </Table>

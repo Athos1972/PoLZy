@@ -12,7 +12,7 @@ import {
 } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import { useTranslation } from 'react-i18next'
-import { CardActiveHide, CardActive, CardTop, CardBottom, hideTime } from '../policy/CardStyles'
+import { CardActiveHide, CardActive, CardTop, hideTime } from '../policy/CardStyles'
 import { AntragTitle, InputField } from './components'
 import { removeAntrag } from '../redux/actions'
 

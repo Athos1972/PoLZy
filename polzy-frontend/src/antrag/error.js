@@ -27,7 +27,7 @@ function AntragCard(props) {
 
 function ErrorAntrag(props) {
   const {index, antrag} = props
-  const { t } = useTranslation('antrag', 'policy')
+  const { t } = useTranslation('common')
   const [hidden, setHidden] = useState(false)
 
   const handleCloseClick = () => {
@@ -42,7 +42,7 @@ function ErrorAntrag(props) {
         <React.Fragment>
           <CardTop
             action={
-              <Tooltip title={t('policy:close')}>
+              <Tooltip title={t('close')}>
                 <IconButton 
                   aria-label="close"
                   onClick={handleCloseClick}
