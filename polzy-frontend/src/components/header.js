@@ -16,8 +16,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import Brand from './brandString'
 import MenuButton from './menuButton'
-import { getProducts } from '../api'
-import { signOut, newAntrag } from '../redux/actions'
+import { getProducts, fetchAntrag } from '../api'
+import { signOut, addAntrag } from '../redux/actions'
 
 
 // styles
@@ -58,6 +58,15 @@ function Header(props){
   const handleSelectProduct = (index) => {
     console.log(`Fast Offer: ${products[index]}`)
     console.log(`Stage: ${props.user.stage}`)
+    
+    props.newAntrag({
+      request_state: "waiting",
+      product_line: {
+        name: products[index],
+      },
+      stage: props.user.stage,
+    })
+    
   }
 
   return(
@@ -112,7 +121,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   signOut: signOut,
-  newAntrag: newAntrag,
+  newAntrag: addAntrag,
 }
 
-export default connect(mapStateToProps, {signOut: signOut})(Header)
+export default connect(mapStateToProps, mapDispatchToProps)(Header)

@@ -40,7 +40,7 @@ export const removePolicy = (index) => ({
 })
 
 // antrag actions
-export const newAntrag = (data) => ({
+export const addAntrag = (data) => ({
   type: ADD_ANTRAG,
   payload: data,
 })

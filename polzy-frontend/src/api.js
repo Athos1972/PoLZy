@@ -17,6 +17,12 @@ export const fetchPolicy = async (policy) => {
   return data
 }
 
+export const fetchAntrag = async (antrag) => {
+  const response = await fetch(`/antrag/${antrag.product_line.name}/${antrag.stage}`)
+  const data = await response.json()
+  return data
+}
+
 export const executeActivity = async (activity) => {
   const response = await fetch('/activity', {
     method: 'POST',

@@ -7,6 +7,9 @@ import NewPolicy from '../policy/newPolicy'
 import DisabledPolicy from '../policy/disabledPolicy'
 import ErrorPolicy from '../policy/errorPolicy'
 import ActivePolicy from '../policy/activePolicy'
+import DisabledAntrag from '../antrag/disabled'
+import ErrorAntrag from '../antrag/error'
+import ActiveAntrag from '../antrag/active'
 import Copyright from '../components/copyright'
 
 // set styles
@@ -22,12 +25,32 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+function AntragCard(props) {
+  const { index, antrag } = props
+
+  console.log(`ANTRAG-${index}: ${antrag.request_state}`)
+  
+  switch (antrag.request_state) {
+    case "ok":
+      return(
+        <ActiveAntrag index={index} antrag={antrag} />
+      )
+    case "waiting":
+      return(
+        <DisabledAntrag index={index} antrag={antrag} />
+      )
+    default:
+      return(
+        <ErrorAntrag index={index} antrag={antrag} />
+      )
+  }
+}
+
 function PolicyCard(props) {
   const { index, policy } = props
   
   switch (policy.request_state) {
     case "ok":
-      //console.log(policy)
       return(
         <ActivePolicy index={index} policy={policy} />
       )
@@ -44,7 +67,8 @@ function PolicyCard(props) {
 
 function HomeView(props) {
   const classes = useStyles()
-  console.log(props.policies)
+  console.log('Home View')
+  console.log(props.antrags)
 
   return(
     <React.Fragment>
@@ -52,21 +76,14 @@ function HomeView(props) {
       <Header />
       <div className={classes.container}>
         <NewPolicy />
+        {/* antrag cards */
+        props.antrags.map((antrag, index) => (
+          <AntragCard key={`antrag-${antrag.key}`} index={index} antrag={antrag} />
+        ))}
         {props.policies.map((policy, index) => (
-            <PolicyCard key={policy.key} index={index} policy={policy} />
+          <PolicyCard key={`policy-${policy.key}`} index={index} policy={policy} />
         ))}
       </div>
-
-      {/*<Grid container direction="column">
-        <Grid item>
-          <NewPolicy />
-        </Grid>
-        {props.policies.map((policy, index) => (
-          <Grid item key={index}>
-            <PolicyCard index={index} policy={policy} />
-          </Grid>
-        ))}
-      </Grid>*/}
     </Container>
     <footer className={classes.footer}>
       <Copyright />
@@ -78,4 +95,5 @@ function HomeView(props) {
 // connect to redux store
 export default connect((state) => ({
   policies: state.policies,
+  antrags: state.antrags,
 }))(HomeView)
