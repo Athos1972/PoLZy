@@ -46,6 +46,15 @@ function ActiveAntrag(props) {
     fields.reduce((obj, field) => ({...obj, [field.name]: field.valueChosenOrEntered}), {})
   )
 
+  const validateFields = () => {
+    // checks if all mandatory fields are filled
+    for (const field of fields) {
+      if (field.isMandatory && values[field.name] === '')
+        return false
+    }
+    return true
+  }
+
   const handleCloseClick = () => {
     setHidden(true)
     setTimeout(() => {props.closeAntrag(props.index)}, hideTime)
@@ -116,6 +125,7 @@ function ActiveAntrag(props) {
             <Button
               size="small"
               color="primary"
+              disabled={!validateFields()}
             >
               {t('antrag:calculate')}
             </Button>

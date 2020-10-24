@@ -76,6 +76,7 @@ export function InputField(props) {
             variant="outlined"
             size="small"
             value={value}
+            required={data.isMandatory}
             onChange={(event) => onChange(data.name, data.fieldDataType, event.target.value)}
           />
         )}
