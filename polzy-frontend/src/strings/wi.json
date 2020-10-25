@@ -31,9 +31,9 @@
   },
 
   "antrag": {
-    "calculate": "Calculate",
-    "fast.offer": "Fast Offer",
-    "invalid.antrag": "Invalid Request",
+    "calculate": "Rechna",
+    "fast.offer": "Schnörechna",
+    "invalid.antrag": "Do stimmt wos ned",
     "select.product": "Select Product"
   }
 }
