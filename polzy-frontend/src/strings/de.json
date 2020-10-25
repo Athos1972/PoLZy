@@ -2,7 +2,7 @@
   "auth": {
     "signin.button": "Anmelden",
     "signout.button": "Abmelden",
-    "stage": "Bühne"
+    "stage": "Stage"
   },
 
   "common": {
@@ -32,7 +32,7 @@
 
   "antrag": {
     "calculate": "Berechnung",
-    "fast.offer": "Schnelles Angebot",
+    "fast.offer": "Schnellrechner",
     "invalid.antrag": "Ungültige Anfrage"
   }
 }
