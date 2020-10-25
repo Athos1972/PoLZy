@@ -33,14 +33,8 @@ export function AntragTitle(props) {
 /*
 **  Card Input Field
 */
-const ValueControl = withStyles((theme) => ({
-  root: {
-    width: "100%",
-  }
-}))(FormControl)
-
 export function InputField(props) {
-  const {data, value, onChange} = props
+  const {data, value, onChange, disabled} = props
 
   const handleBlur = () => {
     const min = Number(data.inputRange[1])
@@ -66,6 +60,7 @@ export function InputField(props) {
                 size="small"
                 fullWidth
                 required={data.isMandatory}
+                disabled={disabled}
               >
                 <InputLabel htmlFor={`${data.name}`}>
                   {data.brief}
@@ -84,10 +79,12 @@ export function InputField(props) {
                 />
               </FormControl>
             ) : (
-              <ValueControl
+              <FormControl
                 variant="outlined"
                 size="small"
+                fullWidth
                 required={data.isMandatory}
+                disabled={disabled}
               >
                 <InputLabel id={`${data.name}-label`}>
                   {data.brief}
@@ -105,7 +102,7 @@ export function InputField(props) {
                     </MenuItem>
                   ))}
                 </Select>
-              </ValueControl>
+              </FormControl>
             )}
           </React.Fragment>
         ) : (
@@ -115,6 +112,7 @@ export function InputField(props) {
             size="small"
             value={value}
             required={data.isMandatory}
+            disabled={disabled}
             onChange={(event) => onChange(data.name, data.fieldDataType, event.target.value)}
           />
         )}
