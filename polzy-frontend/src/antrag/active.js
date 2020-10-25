@@ -21,7 +21,7 @@ import { removeAntrag } from '../redux/actions'
 const useStyles = makeStyles((theme) => ({
   actionContainer: {
     display: 'flex',
-    justifyContent: 'end',
+    justifyContent: 'flex-end',
   },
 
 }));
