@@ -33,6 +33,7 @@
   "antrag": {
     "calculate": "Calculate",
     "fast.offer": "Fast Offer",
-    "invalid.antrag": "Invalid Request"
+    "invalid.antrag": "Invalid Request",
+    "select.product": "Select Product"
   }
 }

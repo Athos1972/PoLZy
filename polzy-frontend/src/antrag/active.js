@@ -11,11 +11,20 @@ import {
   Button,
 } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
+import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import { CardActiveHide, CardActive, CardTop, hideTime } from '../policy/CardStyles'
 import { AntragTitle, InputField } from './components'
 import { removeAntrag } from '../redux/actions'
 
+// set styles
+const useStyles = makeStyles((theme) => ({
+  actionContainer: {
+    display: 'flex',
+    justifyContent: 'end',
+  },
+
+}));
 
 function AntragCard(props) {
   const {hidden, content} = props
@@ -39,6 +48,7 @@ function ActiveAntrag(props) {
   const {antrag} = props
   const {fields} = antrag
   const {t} = useTranslation('common', 'antrag')
+  const classes = useStyles()
 
   const [hidden, setHidden] = useState(false)
   const [values, setValues] = useState(
@@ -121,7 +131,7 @@ function ActiveAntrag(props) {
               ))}
             </Grid>
           </CardContent>
-          <CardActions>
+          <CardActions classes={{root: classes.actionContainer}} >
             <Button
               size="small"
               color="primary"

@@ -1,4 +1,4 @@
-import React, {useState, useEffect } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { 
   Toolbar,
@@ -10,8 +10,6 @@ import {
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import Brand from './brandString'
-import MenuButton from './menuButton'
-import { getProducts } from '../api'
 import { signOut, addAntrag } from '../redux/actions'
 
 
@@ -39,31 +37,9 @@ const useStyles = makeStyles((theme) => ({
 
 
 function Header(props){
-  const { t, i18n } = useTranslation('auth', 'antrag')
+  const { t, i18n } = useTranslation('auth')
   const classes = useStyles()
-  const [products, setProduct] = useState([])
-
-  useEffect(() => {
-    getProducts().then((data) => {
-      console.log(data)
-      setProduct(data)
-    })
-  }, [])
-
-  const handleSelectProduct = (index) => {
-    console.log(`Fast Offer: ${products[index]}`)
-    console.log(`Stage: ${props.user.stage}`)
-    
-    props.newAntrag({
-      request_state: "waiting",
-      product_line: {
-        name: products[index],
-      },
-      stage: props.user.stage,
-    })
-    
-  }
-
+  
   return(
     <React.Fragment>
       <Toolbar className={classes.toolbar}>
@@ -78,14 +54,6 @@ function Header(props){
         </Select>
         <div className={classes.title}>
           <Brand size={36} marginBottom={10} />
-        </div>
-        <div className={classes.tollbarItem}>
-          <MenuButton
-            title={t('antrag:fast.offer')}
-            id="fast-offer"
-            items={products}
-            onClick={handleSelectProduct}
-          />
         </div>
         <div className={classes.tollbarItem}>
           <Typography

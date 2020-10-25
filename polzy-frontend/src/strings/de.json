@@ -33,6 +33,7 @@
   "antrag": {
     "calculate": "Berechnung",
     "fast.offer": "Schnelles Angebot",
-    "invalid.antrag": "Ungültige Anfrage"
+    "invalid.antrag": "Ungültige Anfrage",
+    "select.product": "Ausgewähltes Produkt"
   }
 }

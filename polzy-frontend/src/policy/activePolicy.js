@@ -65,9 +65,6 @@ const ActionControl = withStyles((theme) => ({
 
 const ValueControl = withStyles((theme) => ({
   root: {
-    //marginBottom: theme.spacing(1),
-    //marginRight: theme.spacing(1),
-    //minWidth: 120,
     width: "100%",
   }
 }))(FormControl)
