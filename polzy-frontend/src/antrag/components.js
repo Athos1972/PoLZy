@@ -127,7 +127,7 @@ export function InputField(props) {
 **  Button with progress 
 */
 export function ProgressButton(props) {
-  const {title, loading, onClick } = props
+  const {title, loading, disabled, onClick } = props
   const classes = useStyles()
 
   return(
@@ -136,7 +136,7 @@ export function ProgressButton(props) {
         variant="contained"
         color="primary"
         onClick={onClick}
-        disabled={loading}
+        disabled={disabled || loading}
       >
         {title}
       </Button>

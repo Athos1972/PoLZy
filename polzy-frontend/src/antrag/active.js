@@ -176,17 +176,20 @@ function ActiveAntrag(props) {
                 </Grid>
               ))}
             </Grid>
-            {/* Premium Field */}
             {!newAntrag && (
-              <div className={classes.flexContainerRight}>
-                <Typography
-                  className={classes.premiumText}
-                  component="div"
-                  variant="h5"
-                >
-                  {`${t("antrag:premium")}: € ${premium.valueChosenOrEntered}`}
-                </Typography>
-              </div>
+              <React.Fragment>
+                {/* Premium Field */}
+                <div className={classes.flexContainerRight}>
+                  <Typography
+                    className={classes.premiumText}
+                    component="div"
+                    variant="h5"
+                  >
+                    {`${t("antrag:premium")}: € ${premium.valueChosenOrEntered}`}
+                  </Typography>
+                </div>
+              {/* Activity Fields */}
+              </React.Fragment>
             )}
           </CardContent>
         {/* Calculate Button */}
@@ -195,6 +198,7 @@ function ActiveAntrag(props) {
               <ProgressButton
                 title={t('antrag:calculate')}
                 loading={isCalculate}
+                disabled={!validateFields()}
                 onClick={handleCalculateClick}
               />
             </CardActions>
