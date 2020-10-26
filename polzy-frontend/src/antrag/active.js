@@ -130,7 +130,7 @@ function ActiveAntrag(props) {
                 </IconButton>
               </Tooltip>
             }
-            title={<AntragTitle product={antrag.product_line.name} />}
+            title={<AntragTitle product={antrag.product_line.attributes.Produkt} />}
           />
           <CardContent>
             {/* Flags */}
