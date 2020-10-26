@@ -8,6 +8,7 @@ import {
   MenuItem,
   TextField,
   OutlinedInput,
+  InputAdornment,
 } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
@@ -34,7 +35,7 @@ export function AntragTitle(props) {
 **  Card Input Field
 */
 export function InputField(props) {
-  const {data, value, onChange, disabled} = props
+  const {data, value, onChange } = props
 
   const handleBlur = () => {
     const min = Number(data.inputRange[1])
@@ -46,25 +47,26 @@ export function InputField(props) {
     }
   }
 
+  const withAdornment = /^Euro/.test(data.valueChosenOrEnteredOutput)
+
   return(
     <React.Fragment>
       <Tooltip
         title={data.tooltip}
         placement="top"
       >
-        {data.inputRange.length > 0 ? (
-          <React.Fragment>
-            {data.fieldDataType === "Zahl" && data.inputRange[0] === "range" ? (
-              <FormControl
-                variant="outlined"
-                size="small"
-                fullWidth
-                required={data.isMandatory}
-                disabled={disabled}
-              >
-                <InputLabel htmlFor={`${data.name}`}>
-                  {data.brief}
-                </InputLabel>
+        <FormControl
+          variant="outlined"
+          size="small"
+          fullWidth
+          required={data.isMandatory}
+        >
+          <InputLabel htmlFor={`${data.name}`}>
+            {data.brief}
+          </InputLabel>
+          {data.inputRange.length > 0 ? (
+            <React.Fragment>
+              {data.fieldDataType === "Zahl" && data.inputRange[0] === "range" ? (
                 <OutlinedInput
                   id={data.name}
                   value={value}
@@ -77,45 +79,31 @@ export function InputField(props) {
                     type: 'number',
                   }}
                 />
-              </FormControl>
-            ) : (
-              <FormControl
-                variant="outlined"
-                size="small"
-                fullWidth
-                required={data.isMandatory}
-                disabled={disabled}
-              >
-                <InputLabel id={`${data.name}-label`}>
-                  {data.brief}
-                </InputLabel>
+              ) : (
                 <Select
-                  labelId={`${data.name}-label`}
                   id={data.name}
                   value={value}
                   onChange={(event) => onChange(data.name, data.fieldDataType, event.target.value)}
                   label={data.brief}
+                  renderValue={(v) => (withAdornment ? `€ ${v}` : v)}
                 >
-                  {data.inputRange.map((value, index) => (
-                    <MenuItem key={index} value={value}>
-                      {value}
+                  {data.inputRange.map((itemValue, index) => (
+                    <MenuItem key={index} value={itemValue}>
+                      {itemValue}
                     </MenuItem>
                   ))}
                 </Select>
-              </FormControl>
-            )}
-          </React.Fragment>
-        ) : (
-          <TextField
-            label={data.brief}
-            variant="outlined"
-            size="small"
-            value={value}
-            required={data.isMandatory}
-            disabled={disabled}
-            onChange={(event) => onChange(data.name, data.fieldDataType, event.target.value)}
-          />
-        )}
+              )}
+            </React.Fragment>
+          ) : (
+            <OutlinedInput
+              id={data.name}
+              value={value}
+              onChange={(event) => onChange(data.name, data.fieldDataType, event.target.value)}
+              label={data.brief}
+            />
+          )}
+        </FormControl>
       </Tooltip>
     </React.Fragment>
   )

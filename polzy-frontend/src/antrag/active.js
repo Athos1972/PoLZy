@@ -21,10 +21,15 @@ import { calculateAntrag } from '../api'
 
 // set styles
 const useStyles = makeStyles((theme) => ({
-  actionContainer: {
+  flexContainerRight: {
     display: 'flex',
     justifyContent: 'flex-end',
   },
+
+  premiumText: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+  }
 
 }));
 
@@ -136,7 +141,7 @@ function ActiveAntrag(props) {
             {/* Flags */}
             <Grid container spacing={2}>
               {fields.filter((field) => (field.fieldDataType === "Flag")).map((field) => (
-                <Grid item key={field.name} xs={12} md={4} lg={3}>
+                <Grid item key={field.name} xs={6} md={4} lg={3}>
                   <Tooltip
                     title={field.tooltip}
                     placement="top"
@@ -148,7 +153,6 @@ function ActiveAntrag(props) {
                           onChange={(e) => updateValue(field.name, field.fieldDataType, e.target.checked)}
                           name={field.name}
                           color="primary"
-                          disabled={!newAntrag}
                         />
                       }
                       label={field.brief}
@@ -167,26 +171,23 @@ function ActiveAntrag(props) {
                     data={field}
                     value={values[field.name]}
                     onChange={updateValue}
-                    disabled={!newAntrag}
                   />
                 </Grid>
               ))}
             </Grid>
             {/* Premium Field */}
-            <Tooltip
-              title={premium.tooltip}
-              placement="top"
-            >
+            <div className={classes.flexContainerRight}>
               <Typography
-                component="p"
+                className={classes.premiumText}
+                component="div"
                 variant="h5"
               >
-                {`${premium.brief}: ${premium.premium}`}
+                {`${t("antrag:premium")}: € ${premium.valueChosenOrEntered}`}
               </Typography>
-            </Tooltip>
+            </div>
           </CardContent>
           {newAntrag && (
-            <CardActions classes={{root: classes.actionContainer}} >
+            <CardActions classes={{root: classes.flexContainerRight}} >
               <Button
                 size="small"
                 color="primary"
