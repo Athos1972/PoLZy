@@ -145,7 +145,7 @@ function ActiveAntrag(props) {
     const requestData = {
       id: antrag.id,
       activity: currentActivity,
-      values: activityValues,
+      values: currentActivity === "Berechnen" ? values : activityValues,
     }
     // execute activity
     executeAntrag(props.stage, requestData).then(data => {
