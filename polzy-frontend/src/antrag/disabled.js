@@ -20,8 +20,6 @@ function DisabledAntrag(props) {
   useEffect(() => {
     // fetch antrag data
     fetchAntrag(antrag).then(data => {
-      console.log('ANTRAG RESPONSE:')
-      console.log(data)
       if ('error' in data) {
         props.updateAntrag(
           index,

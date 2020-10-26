@@ -63,11 +63,15 @@ function ActiveAntrag(props) {
   const classes = useStyles()
 
   const premium = fields.reduce((obj, field) => (field.name === "premium" ? field : obj), {})
+  const getValues = () => {
+    return fields.reduce((obj, field) => ({
+      ...obj,
+      [field.name]: field.valueChosenOrEntered
+    }), {})
+  }
 
   const [hidden, setHidden] = useState(false)
-  const [values, setValues] = useState(
-    fields.reduce((obj, field) => ({...obj, [field.name]: field.valueChosenOrEntered}), {})
-  )
+  const [values, setValues] = useState(getValues)
   const [currentActivity, setActivity] = useState('')
   const [activityValues, setActivityValues] = useState({})
   const [isWaiting, setWaiting] = useState(false)
@@ -120,9 +124,8 @@ function ActiveAntrag(props) {
     }
     // calculate antrag
     executeAntrag(props.stage, requestData).then(data => {
-      
       // update antrag
-      updateAntrag(
+      props.updateAntrag(
         props.index,
         {
           request_state: "ok",
@@ -148,7 +151,7 @@ function ActiveAntrag(props) {
     executeAntrag(props.stage, requestData).then(data => {
       
       // update antrag
-      updateAntrag(
+      props.updateAntrag(
         props.index,
         {
           request_state: "ok",
@@ -158,6 +161,7 @@ function ActiveAntrag(props) {
       
       //update state
       setWaiting(false)
+      setActivity('')
     })
   }
 
@@ -212,6 +216,7 @@ function ActiveAntrag(props) {
               )).map((field) => (
                 <Grid item key={field.name} xs={12} md={4} lg={3}>
                   <InputField
+                    id={antrag.id}
                     data={field}
                     value={values[field.name]}
                     onChange={updateValue}

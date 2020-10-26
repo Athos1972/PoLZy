@@ -2,29 +2,19 @@
 export const antrags = [
 {
   "request_state": "ok",
-  "id": "8cffa865-15a9-480e-91f4-93280fd224b4",
+  "id": "ae59ae58-50f5-48ed-833e-c69b75fd80bb",
   "number": "testNummer",
-  "status": "Berechnet",
+  "status": "Neu",
   "product_line": {
     "name": "KFZ",
     "attributes": {
-      "Produkt": "KFZ"
+      "Produkt": "Sicher unterwegs"
     }
   },
   "possible_activities": [
     {
       "name": "Berechnen",
       "description": "Schnellrechner f\u00fcr eingegebene Parameter",
-      "fields": []
-    },
-    {
-      "name": "Drucken",
-      "description": "\u00dcbersichtsblatt als PDF ausgeben",
-      "fields": []
-    },
-    {
-      "name": "VN festlegen",
-      "description": "VN suchen oder neu erfassen",
       "fields": []
     }
   ],
@@ -168,42 +158,10 @@ export const antrags = [
       ],
       "onlyFromRange": true,
       "valueChosenOrEntered": "Neu",
-      "valueChosenOrEnteredTech": "Neu",
+      "valueChosenOrEnteredTech": "2020-10-26T18:05:35.064285",
       "valueChosenOrEnteredOutput": "Neu",
       "inputTriggers": false,
       "isMandatory": true
-    },
-    {
-      "fieldType": 1,
-      "name": "AlterZulassungsbesitzer",
-      "brief": "Alter Zulassungsbesitzer",
-      "tooltip": "Bitte geben Sie das Alter des Zulassungsbesitzers ein",
-      "fieldDataType": "Zahl",
-      "inputRange": [
-        "range",
-        "18",
-        "80"
-      ],
-      "onlyFromRange": true,
-      "valueChosenOrEntered": 30,
-      "valueChosenOrEnteredTech": 30,
-      "valueChosenOrEnteredOutput": 30,
-      "inputTriggers": false,
-      "isMandatory": true
-    },
-    {
-      "fieldType": 1,
-      "name": "fahrenUnter23",
-      "brief": "Fahrer unter 23",
-      "tooltip": "Fahren mit diesem Fahrzeug auch Lenker, die unter 23 Jahre alt sind?",
-      "fieldDataType": "Flag",
-      "inputRange": [],
-      "onlyFromRange": true,
-      "valueChosenOrEntered": true,
-      "valueChosenOrEnteredTech": "JA",
-      "valueChosenOrEnteredOutput": "Ja",
-      "inputTriggers": false,
-      "isMandatory": false
     },
     {
       "fieldType": 1,
@@ -261,7 +219,7 @@ export const antrags = [
         "500"
       ],
       "onlyFromRange": false,
-      "valueChosenOrEntered": "13",
+      "valueChosenOrEntered": "",
       "valueChosenOrEnteredTech": "",
       "valueChosenOrEnteredOutput": "",
       "inputTriggers": false,
@@ -279,11 +237,43 @@ export const antrags = [
         "500"
       ],
       "onlyFromRange": false,
-      "valueChosenOrEntered": "15",
+      "valueChosenOrEntered": "",
       "valueChosenOrEnteredTech": "",
       "valueChosenOrEnteredOutput": "",
       "inputTriggers": false,
       "isMandatory": true
+    },
+    {
+      "fieldType": 1,
+      "name": "AlterZulassungsbesitzer",
+      "brief": "Alter Zulassungsbesitzer",
+      "tooltip": "Bitte geben Sie das Alter des Zulassungsbesitzers ein",
+      "fieldDataType": "Zahl",
+      "inputRange": [
+        "range",
+        "18",
+        "80"
+      ],
+      "onlyFromRange": true,
+      "valueChosenOrEntered": 30,
+      "valueChosenOrEnteredTech": 30,
+      "valueChosenOrEnteredOutput": 30,
+      "inputTriggers": false,
+      "isMandatory": true
+    },
+    {
+      "fieldType": 1,
+      "name": "fahrenUnter23",
+      "brief": "Fahrer unter 23",
+      "tooltip": "Fahren mit diesem Fahrzeug auch Lenker, die unter 23 Jahre alt sind?",
+      "fieldDataType": "Flag",
+      "inputRange": [],
+      "onlyFromRange": true,
+      "valueChosenOrEntered": true,
+      "valueChosenOrEnteredTech": "JA",
+      "valueChosenOrEnteredOutput": "Ja",
+      "inputTriggers": false,
+      "isMandatory": false
     },
     {
       "fieldType": 1,
@@ -383,9 +373,104 @@ export const antrags = [
       "fieldDataType": "Zahl",
       "inputRange": [],
       "onlyFromRange": true,
-      "valueChosenOrEntered": 3100.56,
-      "valueChosenOrEnteredTech": 3100.56,
-      "valueChosenOrEnteredOutput": "Euro 3100,56",
+      "valueChosenOrEntered": "",
+      "valueChosenOrEnteredTech": "",
+      "valueChosenOrEnteredOutput": "Euro ",
+      "inputTriggers": false,
+      "isMandatory": false
+    }
+  ]
+},
+{
+  "request_state": "ok",
+  "id": "d9ebbfac-8d59-4505-afa0-e866b3cb4501",
+  "number": "testNummer",
+  "status": "Berechnet",
+  "product_line": {
+    "name": "PnC",
+    "attributes": {
+      "Produkt": "DONAU Privatschutz Rechtsschutz"
+    }
+  },
+  "possible_activities": [
+    {
+      "name": "Berechnen",
+      "description": "Schnellrechner f\u00fcr eingegebene Parameter",
+      "fields": []
+    },
+    {
+      "name": "Drucken",
+      "description": "\u00dcbersichtsblatt als PDF ausgeben",
+      "fields": []
+    },
+    {
+      "name": "VN festlegen",
+      "description": "VN suchen oder neu erfassen",
+      "fields": []
+    }
+  ],
+  "fields": [
+    {
+      "fieldType": 1,
+      "name": "Versicherungsbeginn",
+      "brief": "Versicherungsbeginn",
+      "tooltip": "Datum des Versicherungsbeginns",
+      "fieldDataType": "Datum",
+      "inputRange": [],
+      "onlyFromRange": false,
+      "valueChosenOrEntered": "26.10.2020",
+      "valueChosenOrEnteredTech": null,
+      "valueChosenOrEnteredOutput": null,
+      "inputTriggers": false,
+      "isMandatory": true
+    },
+    {
+      "fieldType": 1,
+      "name": "AlterVN",
+      "brief": "Alter Versicherungsnehmer",
+      "tooltip": "Bitte geben Sie das Alter des VN ein",
+      "fieldDataType": "Zahl",
+      "inputRange": [
+        "range",
+        "18",
+        "80"
+      ],
+      "onlyFromRange": true,
+      "valueChosenOrEntered": 30,
+      "valueChosenOrEnteredTech": null,
+      "valueChosenOrEnteredOutput": null,
+      "inputTriggers": false,
+      "isMandatory": true
+    },
+    {
+      "fieldType": 1,
+      "name": "PlzVN",
+      "brief": "PLZ Versicherungsnehmer",
+      "tooltip": "Postleitzahl der Meldeadresse des Versicherungsnehmers",
+      "fieldDataType": "Zahl",
+      "inputRange": [
+        "range",
+        "1010",
+        "9999"
+      ],
+      "onlyFromRange": true,
+      "valueChosenOrEntered": 1010,
+      "valueChosenOrEnteredTech": null,
+      "valueChosenOrEnteredOutput": null,
+      "inputTriggers": false,
+      "isMandatory": true
+    },
+    {
+      "fieldType": 2,
+      "name": "premium",
+      "brief": "Pr\u00e4mie",
+      "tooltip": "Indikative Pr\u00e4mie basierend auf den Eingaben",
+      "fieldDataType": "Zahl",
+      "inputRange": [],
+      "onlyFromRange": true,
+      "valueChosenOrEntered": 160.52,
+      "valueChosenOrEnteredTech": 160.52,
+      "valueChosenOrEnteredOutput": 160.52,
       "inputTriggers": false,
       "isMandatory": false
     }

@@ -21,8 +21,6 @@ const useStyles = makeStyles((theme) => ({
 
 function AntragCard(props) {
   const { index, antrag } = props
-
-  console.log(`ANTRAG-${index}: ${antrag.request_state}`)
   
   switch (antrag.request_state) {
     case "ok":

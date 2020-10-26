@@ -37,12 +37,11 @@ const useStyles = makeStyles({
 function LoginView(props) {
   
   const { t } = useTranslation('auth')
-  const [stage, setStage] = useState(null)
+  const [stage, setStage] = useState('')
   const [allStages, setAllStages] = useState([])
 
   useEffect(() => {
     getStages().then((data) => {
-      console.log(data)
       setAllStages(data)
     })
   }, [])

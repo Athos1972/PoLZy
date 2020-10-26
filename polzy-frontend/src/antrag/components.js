@@ -48,7 +48,7 @@ export function AntragTitle(props) {
 **  Card Input Field
 */
 export function InputField(props) {
-  const {data, value, onChange } = props
+  const {id, data, value, onChange } = props
 
   const handleBlur = () => {
     const min = Number(data.inputRange[1])
@@ -110,7 +110,7 @@ export function InputField(props) {
             </React.Fragment>
           ) : (
             <OutlinedInput
-              id={data.name}
+              id={`${data.name}-${id}`}
               value={value}
               onChange={(event) => onChange(data.name, data.fieldDataType, event.target.value)}
               label={data.brief}
