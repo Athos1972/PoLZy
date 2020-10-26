@@ -5,19 +5,22 @@
     "stage": "Stage"
   },
 
+  "common": {
+    "close": "Close",
+    "collapse": "Collapse",
+    "expand": "Expand",
+    "none": "None"
+  },
+
   "policy": {
     "action": "Action",
     "clauses": "Clauses",
-    "close": "Close",
-    "collapse": "Collapse",
     "effective.date": "Effective Date",
     "execute": "Execute",
-    "expand": "Expand",
     "find": "Find",
     "find.policy": "Find Policy",
     "insured.object": "Insured Object",
     "invalid": "Invalid Policy Data",
-    "none": "None",
     "policy": "Policy",
     "policy.number": "Policy Number",
     "policy not found": "Policy not Found",
@@ -25,5 +28,12 @@
     "product.line": "Product Line",
     "status": "Status",
     "type": "Type"
+  },
+
+  "antrag": {
+    "calculate": "Calculate",
+    "fast.offer": "Fast Offer",
+    "invalid.antrag": "Invalid Request",
+    "select.product": "Select Product"
   }
 }

@@ -2,36 +2,37 @@ import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { LinearProgress } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
-import { CardDisabled, CardTop, CardMiddle } from './CardStyles'
-import { PolicyTitle } from './Components'
-import { updatePolicy } from '../redux/actions'
-import { fetchPolicy } from '../api'
+import { CardDisabled, CardTop, CardMiddle } from '../policy/CardStyles'
+import { AntragTitle } from './components'
+import { updateAntrag } from '../redux/actions'
+import { fetchAntrag } from '../api'
 
+// Waiting Element
 const WaitingProgress = withStyles((theme) => ({
   root: {
     marginTop: theme.spacing(1),
   }
 }))(LinearProgress)
 
-function DisabledPolicy(props) {
-  const {index, policy} = props
+function DisabledAntrag(props) {
+  const {index, antrag} = props
 
   useEffect(() => {
-    //const data = await fetchPolicy(policy)
-    fetchPolicy(policy).then(data => {
-      console.log('POLICY RESPONSE:')
+    // fetch antrag data
+    fetchAntrag(antrag).then(data => {
+      console.log('ANTRAG RESPONSE:')
       console.log(data)
       if ('error' in data) {
-        props.updatePolicy(
+        props.updateAntrag(
           index,
           {
-            ...policy,
+            ...antrag,
             request_state: "failed",
             ...data,
           }
         )
-      } else if ('id' in data) {
-        props.updatePolicy(
+      } else {
+        props.updateAntrag(
           index,
           {
             request_state: "ok",
@@ -40,14 +41,12 @@ function DisabledPolicy(props) {
         )
       }
     })
-    
   })
 
   return(
     <CardDisabled>
       <CardTop
-        title={<PolicyTitle number={policy.policy_number} />}
-        subheader={policy.effective_date}
+        title={<AntragTitle product={antrag.product_line.name} />}
       />
       <CardMiddle>
         <WaitingProgress />
@@ -57,4 +56,4 @@ function DisabledPolicy(props) {
 }
 
 // connect to redux store
-export default connect(null, {updatePolicy: updatePolicy})(DisabledPolicy)
+export default connect(null, {updateAntrag: updateAntrag})(DisabledAntrag)

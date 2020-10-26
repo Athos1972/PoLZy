@@ -1,18 +1,24 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Toolbar, Typography, Button, Select, MenuItem } from '@material-ui/core'
+import { 
+  Toolbar,
+  Typography,
+  Button,
+  Select,
+  MenuItem,
+} from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import Brand from './brandString'
-import { signOut } from '../redux/actions'
+import { signOut, addAntrag } from '../redux/actions'
 
 
 // styles
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   toolbar: {
     borderBottom: "2px solid",
     borderBottomColor: "#aaa",
-    marginBottom: 10,
+    marginBottom: theme.spacing(2),
   },
 
   title: {
@@ -20,18 +26,20 @@ const useStyles = makeStyles({
   },
 
   user: {
-    marginRight: 10,
     color: "grey",
-  }
-})
+  },
+
+  tollbarItem: {
+    marginLeft: theme.spacing(1),
+    narginRight: theme.spacing(1),
+  },
+}))
 
 
 function Header(props){
   const { t, i18n } = useTranslation('auth')
   const classes = useStyles()
-
-  console.log(i18n)
-
+  
   return(
     <React.Fragment>
       <Toolbar className={classes.toolbar}>
@@ -47,19 +55,23 @@ function Header(props){
         <div className={classes.title}>
           <Brand size={36} marginBottom={10} />
         </div>
-        <Typography
-          classes={{root: classes.user}}
-          variant="button"
-        >
-          {props.user.username}
-        </Typography>
-        <Button 
-          variant="outlined"
-          size="small"
-          onClick={props.signOut}
-        >
-          {t('auth:signout.button')}
-        </Button>
+        <div className={classes.tollbarItem}>
+          <Typography
+            classes={{root: classes.user}}
+            variant="button"
+          >
+            {props.user.username}
+          </Typography>
+        </div>
+        <div className={classes.tollbarItem}>
+          <Button 
+            variant="outlined"
+            size="small"
+            onClick={props.signOut}
+          >
+            {t('auth:signout.button')}
+          </Button>
+        </div>
       </Toolbar>
     </React.Fragment>
   )
@@ -70,4 +82,9 @@ const mapStateToProps = (state) => ({
   user: state.user,
 })
 
-export default connect(mapStateToProps, {signOut: signOut})(Header)
+const mapDispatchToProps = {
+  signOut: signOut,
+  newAntrag: addAntrag,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header)

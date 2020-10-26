@@ -255,3 +255,182 @@ export const policies = [
 
 },
 ]
+
+export const antrags = [
+  {
+    "id": "42118db7-f92a-4ec4-9513-df7d2f4bf759",
+    "request_state": "ok",
+    "number": "testNummer",
+    "product_line": {
+      "name": "KFZ",
+      "attributes": {
+        "Produkt": "KFZ"
+      }
+    },
+    "possible_activities": [
+      {
+        "name": null,
+        "description": null,
+        "fields": []
+      }
+    ],
+    "fields": [
+      {
+        "fieldType": 1,
+        "name": "Fahrzeugart",
+        "brief": "Fahrzeugart",
+        "tooltip": "Bitte w\u00e4hle die Fahrzeugart aus",
+        "fieldDataType": "Text",
+        "inputRange": [],
+        "onlyFromRange": false,
+        "valueChosenOrEntered": "PKW",
+        "valueChosenOrEnteredTech": "PKW",
+        "inputTriggers": true,
+        "isMandatory": true
+      },
+      {
+        "fieldType": 1,
+        "name": "AlterZulassungsbesitzer",
+        "brief": "Alter Zulassungsbesitzer",
+        "tooltip": "Bitte geben Sie das Alter des Zulassungsbesitzers ein",
+        "fieldDataType": "Zahl",
+        "inputRange": [],
+        "onlyFromRange": true,
+        "valueChosenOrEntered": 30,
+        "valueChosenOrEnteredTech": 30,
+        "inputTriggers": false,
+        "isMandatory": true
+      },
+      {
+        "fieldType": 1,
+        "name": "fahrenUnter23",
+        "brief": "Fahrer unter 23",
+        "tooltip": "Fahren mit diesem Fahrzeug auch Lenker, die unter 23 Jahre alt sind?",
+        "fieldDataType": "Flag",
+        "inputRange": [],
+        "onlyFromRange": true,
+        "valueChosenOrEntered": true,
+        "valueChosenOrEnteredTech": "JA",
+        "inputTriggers": false,
+        "isMandatory": false
+      },
+      {
+        "fieldType": 1,
+        "name": "Antriebsart",
+        "brief": "Art des Antriebs",
+        "tooltip": "Bitte w\u00e4hlen Sie die Art des Antriebs",
+        "fieldDataType": "Text",
+        "inputRange": [],
+        "onlyFromRange": true,
+        "valueChosenOrEntered": "Benzin mit Kat",
+        "valueChosenOrEnteredTech": "BENZIN_MIT_KAT",
+        "inputTriggers": false,
+        "isMandatory": true
+      },
+      {
+        "fieldType": 1,
+        "name": "CO2",
+        "brief": "CO2-Wert",
+        "tooltip": "Bitte geben sie den CO2-Wert des Fahrzeugs an",
+        "fieldDataType": "Zahl",
+        "inputRange": [],
+        "onlyFromRange": false,
+        "valueChosenOrEntered": "",
+        "valueChosenOrEnteredTech": "",
+        "inputTriggers": false,
+        "isMandatory": true
+      },
+      {
+        "fieldType": 1,
+        "name": "KW",
+        "brief": "Kilowatt",
+        "tooltip": "Bitte geben sie den KW-Wert des Fahrzeugs an",
+        "fieldDataType": "Zahl",
+        "inputRange": [],
+        "onlyFromRange": false,
+        "valueChosenOrEntered": "",
+        "valueChosenOrEnteredTech": "",
+        "inputTriggers": false,
+        "isMandatory": true
+      },
+      {
+        "fieldType": 1,
+        "name": "PlzZulassungsbesitzer",
+        "brief": "PLZ Zulassungsbesitzer",
+        "tooltip": "Postleitzahl der Meldeadresse des Zulassungsbesitzers",
+        "fieldDataType": "Zahl",
+        "inputRange": [],
+        "onlyFromRange": true,
+        "valueChosenOrEntered": 1010,
+        "valueChosenOrEnteredTech": 1010,
+        "inputTriggers": false,
+        "isMandatory": true
+      },
+      {
+        "fieldType": 1,
+        "name": "Haftpflicht",
+        "brief": "Haftpflicht",
+        "tooltip": "Klick, wenn Haftpflicht-Versicherung kalkuliert werden soll",
+        "fieldDataType": "Flag",
+        "inputRange": [],
+        "onlyFromRange": false,
+        "valueChosenOrEntered": true,
+        "valueChosenOrEnteredTech": "JA",
+        "inputTriggers": false,
+        "isMandatory": false
+      },
+      {
+        "fieldType": 1,
+        "name": "Kaskovariante",
+        "brief": "Kaskovariante",
+        "tooltip": "Auswahl, welche Kasko-Variante gew\u00e4hlt werden soll",
+        "fieldDataType": "Text",
+        "inputRange": [],
+        "onlyFromRange": true,
+        "valueChosenOrEntered": "Teilkasko teilweiser SBH",
+        "valueChosenOrEnteredTech": "Teilkasko teilweiser SBH",
+        "inputTriggers": false,
+        "isMandatory": false
+      },
+      {
+        "fieldType": 1,
+        "name": "Kasko_SBH",
+        "brief": "Selbstbehalt Kasko",
+        "tooltip": "Auswahl, welcher SBH gelten soll",
+        "fieldDataType": "Zahl",
+        "inputRange": [],
+        "onlyFromRange": true,
+        "valueChosenOrEntered": 550,
+        "valueChosenOrEnteredTech": 550,
+        "inputTriggers": false,
+        "isMandatory": false
+      },
+      {
+        "fieldType": 1,
+        "name": "IU",
+        "brief": "Insassenunfall",
+        "tooltip": "Auswahl, ob Lenker- oder Lenker- und Insassenunfall gew\u00fcnscht ist",
+        "fieldDataType": "Text",
+        "inputRange": [],
+        "onlyFromRange": true,
+        "valueChosenOrEntered": "Lenker- und Insassen",
+        "valueChosenOrEnteredTech": "Lenker- und Insassen",
+        "inputTriggers": false,
+        "isMandatory": false
+      },
+      {
+        "fieldType": 1,
+        "name": "premium",
+        "brief": "Pr\u00e4mie",
+        "tooltip": "Indikative Pr\u00e4mie basierend auf den Eingaben",
+        "fieldDataType": "Zahl",
+        "inputRange": [],
+        "onlyFromRange": true,
+        "valueChosenOrEntered": "",
+        "valueChosenOrEnteredTech": "",
+        "inputTriggers": false,
+        "isMandatory": false
+      }
+    ]
+  },
+]

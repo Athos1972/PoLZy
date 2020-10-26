@@ -4,7 +4,10 @@ import {
   SIGN_OUT,
   ADD_POLICY,
   UPDATE_POLICY,
-  REMOVE_POLICY
+  REMOVE_POLICY,
+  ADD_ANTRAG,
+  UPDATE_ANTRAG,
+  REMOVE_ANTRAG,
 } from './actions.js'
 
 
@@ -45,9 +48,35 @@ const policyReducer = (state = [], action) => {
   }
 }
 
+const antragReducer = (state = [], action) => {
+  switch (action.type) {
+    case ADD_ANTRAG:
+      const key = (
+        state.length > 0 ? (state[state.length-1].key + 1) : (1)
+      )
+      return [...state, {key: key, ...action.payload}]
+    case UPDATE_ANTRAG:
+      const newState =  state.map((item, index) => (
+        index === action.id ? { 
+          ...action.payload,
+          key: item.key,
+        } : item
+      ))
+      return newState
+    case REMOVE_ANTRAG:
+      return [
+        ...state.slice(0, action.payload),
+        ...state.slice(action.payload + 1)
+      ]
+    default:
+      return state
+  }
+}
+
 const reducer = combineReducers({
   user: userReducer,
   policies: policyReducer,
+  antrags: antragReducer,
 })
 
 export default reducer

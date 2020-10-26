@@ -79,7 +79,7 @@ function LoginView(props) {
               label={t("stage")}
             >
               {allStages.map((stage, index) => (
-                <MenuItem key={index} value={index}>
+                <MenuItem key={index} value={stage}>
                   {stage}
                 </MenuItem>
               ))}

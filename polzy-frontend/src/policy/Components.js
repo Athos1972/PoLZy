@@ -1,6 +1,6 @@
 import React from 'react'
 import { Typography } from '@material-ui/core'
-import { withTranslation, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 
 
 export function PolicyTitle(props) {
@@ -14,16 +14,5 @@ export function PolicyTitle(props) {
     >
       {t('policy') + ' ' + number}
     </Typography>
-  )
-}
-
-export function PolicyTitle2(props) {
-  const {t} = useTranslation('policy')
-  const {number} = props
-
-  return(
-    <React.Fragment>
-      {t('policy') + ' ' + number}
-    </React.Fragment>
   )
 }

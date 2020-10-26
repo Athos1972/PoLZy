@@ -8,7 +8,6 @@ import {
   IconButton,
   Tooltip,
   Grid,
-  Typography,
   FormControl,
   InputLabel,
   Select,
@@ -66,9 +65,6 @@ const ActionControl = withStyles((theme) => ({
 
 const ValueControl = withStyles((theme) => ({
   root: {
-    //marginBottom: theme.spacing(1),
-    //marginRight: theme.spacing(1),
-    //minWidth: 120,
     width: "100%",
   }
 }))(FormControl)
@@ -109,7 +105,7 @@ function PolicyCard(props) {
 
 function MoreButton(props) {
   const classes = useStyles()
-  const {t} = useTranslation('policy')
+  const {t} = useTranslation('common')
 
   return(
     <Tooltip title={props.expanded ? (t("collapse")) : (t("expand"))}>
@@ -157,7 +153,6 @@ class ActivePolicy extends React.Component {
 
   handleActionChange = (event) => {
     if (event.target.value >= 0) {
-      const actionValuesCount = this.props.policy.possible_activities[event.target.value].fields.length
       const defaultActionValues = this.props.policy.possible_activities[event.target.value].fields.map((field) => (field.valueChosenOrEntered))
       this.setState({
         actionIndex: event.target.value,
@@ -243,11 +238,11 @@ class ActivePolicy extends React.Component {
       <React.Fragment>
       {this.validateActivity() ? (
         <ActiveButton variant="contained" color="primary">
-          {props.t("execute")}
+          {props.t("policy:execute")}
         </ActiveButton>
       ) : (
         <ActiveButtonDisabled variant="contained" disabled>
-          {props.t("execute")}
+          {props.t("policy:execute")}
         </ActiveButtonDisabled>
       )}
       </React.Fragment>
@@ -268,7 +263,7 @@ class ActivePolicy extends React.Component {
               size="small"
             >
               <InputLabel id={`action-${this.props.index}-label`}>
-                {props.t("action")}
+                {props.t("policy:action")}
               </InputLabel>
               <Select
                 labelId={`action-${this.props.index}-label`}
@@ -276,10 +271,10 @@ class ActivePolicy extends React.Component {
                 value={this.state.actionIndex}
                 onChange={this.handleActionChange}
                 disabled={this.actionsNotAvailable}
-                label={props.t("action")}
+                label={props.t("policy:action")}
               >
                 <MenuItem value={-1}>
-                  <em>{props.t("none")}</em>
+                  <em>{props.t("common:none")}</em>
                 </MenuItem>
                 {this.props.policy.possible_activities.map((activity, index) => (
                   <MenuItem key={`${activity.name}-${index}`} value={index}>
@@ -295,7 +290,7 @@ class ActivePolicy extends React.Component {
                 onClick={this.handleActionExecution}
                 disabled={!this.validateActivity() || this.state.actionExecution}
               >
-                {props.t("execute")}
+                {props.t("policy:execute")}
               </ActiveButton>
               {this.state.actionExecution && <ActivityProgress size={progressSize} />}
             </div>
@@ -359,7 +354,7 @@ class ActivePolicy extends React.Component {
           <React.Fragment>
           <CardTop
             action={
-              <Tooltip title={t("close")}>
+              <Tooltip title={t("common:close")}>
                 <IconButton 
                   onClick={this.handleCloseClick}
                   aria-label="close"
@@ -399,7 +394,7 @@ class ActivePolicy extends React.Component {
 }
 
 // translation
-const TranslatedActivePolicy = withTranslation('policy')(ActivePolicy)
+const TranslatedActivePolicy = withTranslation('common', 'policy')(ActivePolicy)
 
 // connect to redux store
 export default connect(

@@ -3,11 +3,11 @@ import { connect } from 'react-redux'
 import { Typography, IconButton, Tooltip } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import { useTranslation } from 'react-i18next'
-import { CardErrorHide, CardError, CardTop, CardMiddle, hideTime } from './CardStyles'
-import { PolicyTitle } from './Components'
-import { removePolicy } from '../redux/actions'
+import { CardErrorHide, CardError, CardTop, CardMiddle, hideTime } from '../policy/CardStyles'
+import { AntragTitle } from './components'
+import { removeAntrag } from '../redux/actions'
 
-function PolicyCard(props) {
+function AntragCard(props) {
   const {hidden, content} = props
 
   return(
@@ -25,25 +25,24 @@ function PolicyCard(props) {
   )
 }
 
-function ErrorPolicy(props) {
-  const {index, policy} = props
-  const { t } = useTranslation('common', 'policy')
+function ErrorAntrag(props) {
+  const {index, antrag} = props
+  const { t } = useTranslation('common')
   const [hidden, setHidden] = useState(false)
 
   const handleCloseClick = () => {
-    //props.closePolicyCard(index)
     setHidden(true)
-    setTimeout(() => {props.closePolicyCard(index)}, hideTime)
+    setTimeout(() => {props.closeAntrag(index)}, hideTime)
   }
 
   return(
-    <PolicyCard
+    <AntragCard
       hidden={hidden}
       content={
         <React.Fragment>
           <CardTop
             action={
-              <Tooltip title={t('common:close')}>
+              <Tooltip title={t('close')}>
                 <IconButton 
                   aria-label="close"
                   onClick={handleCloseClick}
@@ -52,15 +51,14 @@ function ErrorPolicy(props) {
                 </IconButton>
               </Tooltip>
             }
-            title={<PolicyTitle number={policy.policy_number} />}
-            subheader={policy.effective_date}
+            title={<AntragTitle product={antrag.product_line.name} />}
           />
           <CardMiddle>
             <Typography
               component="p"
               variant="h5"
             >
-              {"error" in policy ? (policy.error) : (t("policy:invalid"))}
+              {"error" in antrag ? (antrag.error) : (t("antrag:invalid.antrag"))}
             </Typography>
           </CardMiddle>
         </React.Fragment>
@@ -70,4 +68,4 @@ function ErrorPolicy(props) {
 }
 
 // connect to redux store
-export default connect(null, {closePolicyCard: removePolicy})(ErrorPolicy)
+export default connect(null, {closeAntrag: removeAntrag})(ErrorAntrag)

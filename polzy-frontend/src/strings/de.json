@@ -5,19 +5,22 @@
     "stage": "Stage"
   },
 
+  "common": {
+    "close": "Schließen",
+    "collapse": "Einklappen",
+    "expand": "Erweitern",
+    "none": "Keine"
+  },
+
   "policy": {
     "action": "Aktivität",
     "clauses": "Klauseln",
-    "close": "Schließen",
-    "collapse": "Einklappen",
     "effective.date": "Wirksamkeitsdatum",
     "execute": "Ausführen",
-    "expand": "Erweitern",
     "find": "Finden",
     "find.policy": "Finde Polizze",
     "insured.object": "Versichertes Objekt",
     "invalid": "Ungültige Polizzendaten",
-    "none": "Keine",
     "policy": "Polizze",
     "policy.number": "Polizze",
     "policy not found": "Polizze nicht gefunden",
@@ -25,5 +28,12 @@
     "product.line": "LOB",
     "status": "Status",
     "type": "Art"
+  },
+
+  "antrag": {
+    "calculate": "Berechnung",
+    "fast.offer": "Schnellrechner",
+    "invalid.antrag": "Ungültige Anfrage",
+    "select.product": "Ausgewähltes Produkt"
   }
 }

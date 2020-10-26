@@ -1,12 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { Container } from '@material-ui/core'
+import { Container, Tabs, Tab } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
+import { useTranslation } from 'react-i18next'
+import PolicyView from './PolicyView'
+import AntragView from './AntragView'
 import Header from'../components/header'
-import NewPolicy from '../policy/newPolicy'
-import DisabledPolicy from '../policy/disabledPolicy'
-import ErrorPolicy from '../policy/errorPolicy'
-import ActivePolicy from '../policy/activePolicy'
 import Copyright from '../components/copyright'
 
 // set styles
@@ -22,51 +21,56 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function PolicyCard(props) {
-  const { index, policy } = props
-  
-  switch (policy.request_state) {
-    case "ok":
-      //console.log(policy)
-      return(
-        <ActivePolicy index={index} policy={policy} />
-      )
-    case "waiting":
-      return(
-        <DisabledPolicy index={index} policy={policy} />
-      )
-    default:
-      return(
-        <ErrorPolicy index={index} policy={policy} />
-      )
-  }
+function TabPanel(props) {
+  const { children, name, value } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={name !== value}
+      id={`tabpanel-${name}`}
+      aria-labelledby={`tab-${name}`}
+    >
+      { name === value && children }
+    </div>
+  )
 }
 
 function HomeView(props) {
   const classes = useStyles()
-  console.log(props.policies)
+  const [tab, setTab] = useState('policy')
+  const {t} = useTranslation('policy', 'antrag')
 
   return(
     <React.Fragment>
     <Container maxWidth="lg">
       <Header />
-      <div className={classes.container}>
-        <NewPolicy />
-        {props.policies.map((policy, index) => (
-            <PolicyCard key={policy.key} index={index} policy={policy} />
-        ))}
-      </div>
-
-      {/*<Grid container direction="column">
-        <Grid item>
-          <NewPolicy />
-        </Grid>
-        {props.policies.map((policy, index) => (
-          <Grid item key={index}>
-            <PolicyCard index={index} policy={policy} />
-          </Grid>
-        ))}
-      </Grid>*/}
+      <Tabs 
+        value={tab}
+        onChange={(e, v) => {setTab(v)}}
+        indicatorColor="primary"
+        textColor="primary"
+        variant="fullWidth"
+      >
+        <Tab
+          label={t('policy:policy')}
+          value="policy"
+          id="tab-policy"
+          aria-controls="tabpanel-policy"
+        />
+        <Tab
+          label={t('antrag:fast.offer')}
+          value="antrag"
+          id="tab-antrag"
+          aria-controls="tabpanel-antrag"
+        />
+      </Tabs>
+      <TabPanel name="policy" value={tab}>
+        <PolicyView />
+      </TabPanel>
+      <TabPanel name="antrag" value={tab}>
+        <AntragView />
+      </TabPanel>
     </Container>
     <footer className={classes.footer}>
       <Copyright />
@@ -78,4 +82,5 @@ function HomeView(props) {
 // connect to redux store
 export default connect((state) => ({
   policies: state.policies,
+  antrags: state.antrags,
 }))(HomeView)
