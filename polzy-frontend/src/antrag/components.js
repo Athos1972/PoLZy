@@ -12,6 +12,11 @@ import {
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers'
+import DateFnsUtils from '@date-io/date-fns'
+import enLocale from "date-fns/locale/en-US"
+import deLocale from "date-fns/locale/de"
+import { format, parse } from 'date-fns'
 
 // Styles
 const useStyles = makeStyles((theme) => ({
@@ -49,6 +54,14 @@ export function AntragTitle(props) {
 */
 export function InputField(props) {
   const {id, data, value, onChange } = props
+  const {i18n} = useTranslation()
+
+  const [date, setDate] = React.useState(new Date)
+  if (data.fieldDataType === "Datum") {
+    const strDate = parse(value, 'dd.MM.yyyy', new Date())
+    console.log('Value: ' + value)
+    console.log(strDate)
+  }
 
   const handleBlur = () => {
     const min = Number(data.inputRange[1])
@@ -62,6 +75,15 @@ export function InputField(props) {
 
   const withAdornment = /^Euro/.test(data.valueChosenOrEnteredOutput)
 
+  const getLocale = () => {
+    switch (i18n.language) {
+      case 'en':
+        return enLocale
+      default:
+        return deLocale
+    }
+  }
+
   return(
     <React.Fragment>
       <Tooltip
@@ -74,14 +96,16 @@ export function InputField(props) {
           fullWidth
           required={data.isMandatory}
         >
-          <InputLabel htmlFor={`${data.name}`}>
-            {data.brief}
-          </InputLabel>
+          {data.fieldDataType !== "Datum" && (
+            <InputLabel htmlFor={`${data.name}-${id}`}>
+              {data.brief}
+            </InputLabel>
+          )}
           {data.inputRange.length > 0 ? (
             <React.Fragment>
               {data.fieldDataType === "Zahl" && data.inputRange[0] === "range" ? (
                 <OutlinedInput
-                  id={data.name}
+                  id={`${data.name}-${id}`}
                   value={value}
                   onChange={(event) => onChange(data.name, data.fieldDataType, event.target.value)}
                   onBlur={handleBlur}
@@ -94,7 +118,7 @@ export function InputField(props) {
                 />
               ) : (
                 <Select
-                  id={data.name}
+                  id={`${data.name}-${id}`}
                   value={value}
                   onChange={(event) => onChange(data.name, data.fieldDataType, event.target.value)}
                   label={data.brief}
@@ -109,12 +133,33 @@ export function InputField(props) {
               )}
             </React.Fragment>
           ) : (
-            <OutlinedInput
-              id={`${data.name}-${id}`}
-              value={value}
-              onChange={(event) => onChange(data.name, data.fieldDataType, event.target.value)}
-              label={data.brief}
-            />
+            <React.Fragment>
+              {data.fieldDataType === "Datum" ? (
+                <MuiPickersUtilsProvider 
+                    utils={DateFnsUtils}
+                    locale={getLocale()}
+                  >
+                    <KeyboardDatePicker
+                      autoOk
+                      variant="inline"
+                      inputVariant="outlined"
+                      label={data.brief}
+                      format="yyyy-MM-dd"
+                      size="small"
+                      value={parse(value, 'dd.MM.yyyy', new Date())}
+                      onChange={(date) => onChange(data.name, data.fieldDataType, format(date, "dd.MM.yyyy"))}
+                      required={data.isMandatory}
+                    />
+                  </MuiPickersUtilsProvider>
+              ) : (
+                <OutlinedInput
+                  id={`${data.name}-${id}`}
+                  value={value}
+                  onChange={(event) => onChange(data.name, data.fieldDataType, event.target.value)}
+                  label={data.brief}
+                />
+              )}
+            </React.Fragment>
           )}
         </FormControl>
       </Tooltip>

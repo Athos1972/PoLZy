@@ -35,6 +35,7 @@
     "fast.offer": "Fast Offer",
     "invalid.antrag": "Invalid Request",
     "premium": "Premium",
+    "re-calculate": "Re-calculate",
     "select.product": "Select Product"
   }
 }

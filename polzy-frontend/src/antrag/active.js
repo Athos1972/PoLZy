@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { 
   CardContent,
@@ -74,7 +74,14 @@ function ActiveAntrag(props) {
   const [values, setValues] = useState(getValues)
   const [currentActivity, setActivity] = useState('')
   const [activityValues, setActivityValues] = useState({})
+  const [isCalculate, setCalculate] = useState(false)
   const [isWaiting, setWaiting] = useState(false)
+
+  useEffect(() => {
+    // update antrag values
+    setValues(getValues)
+
+  }, [fields])
 
   const validateFields = () => {
     // checks if all mandatory fields are filled
@@ -104,6 +111,10 @@ function ActiveAntrag(props) {
   }
 
   const updateValue = (name, type, value) => {
+    console.log('UPDATE VALUE:')
+    console.log(name)
+    console.log(type)
+    console.log(value)
     const re = /^[0-9\b]+$/
     if (type !== 'Zahl' || value === '' || re.test(value)) {
       setValues((preValues) => ({
@@ -115,7 +126,7 @@ function ActiveAntrag(props) {
 
   const handleCalculateClick = () => {
     // switch calculate mode
-    setWaiting(true)
+    setCalculate(true)
     // build request body
     const requestData = {
       id: antrag.id,
@@ -134,7 +145,7 @@ function ActiveAntrag(props) {
       )
       
       //update state
-      setWaiting(false)
+      setCalculate(false)
     })
   }
 
@@ -224,68 +235,69 @@ function ActiveAntrag(props) {
                 </Grid>
               ))}
             </Grid>
+
+            {/* Premium Field */}
             {antrag.status !== "Neu" && (
-              <React.Fragment>
-
-                {/* Premium Field */}
-                <div className={classes.flexContainerRight}>
-                  <Typography
-                    className={classes.premiumText}
-                    component="div"
-                    variant="h5"
-                  >
-                    {`${t("antrag:premium")}: € ${premium.valueChosenOrEntered}`}
-                  </Typography>
-                </div>
-
-                {/* Activity Select */}
-                <Grid container spacing={2}>
-                  <Grid item xs={12} md={6}>
-                    <FormControl
-                      variant="outlined"
-                      size="small"
-                      fullWidth
-                    >
-                      <InputLabel htmlFor="activity">
-                        {t("common:action")}
-                      </InputLabel>
-                      <Select
-                        id="activity"
-                        value={currentActivity}
-                        onChange={(e) => setActivity(e.target.value)}
-                        label={t("common:action")}
-                      >
-                        {antrag.possible_activities.map((activity, index) => (
-                          <MenuItem key={index} value={activity.name}>
-                            {activity.description}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                  <Grid item>
-                    <ProgressButton
-                      title={t('common:execute')}
-                      loading={isWaiting}
-                      disabled={currentActivity === 'Berechnen' ? !validateFields() : !validateActivity()}
-                      onClick={handleActivityExecute}
-                    />
-                  </Grid>
-                </Grid>
-              </React.Fragment>
+              <div className={classes.flexContainerRight}>
+                <Typography
+                  className={classes.premiumText}
+                  component="div"
+                  variant="h5"
+                >
+                  {`${t("antrag:premium")}: € ${premium.valueChosenOrEntered}`}
+                </Typography>
+              </div>
             )}
-          </CardContent>
-        {/* Calculate Button */}
-          {antrag.status === "Neu" && (
-            <CardActions classes={{root: classes.flexContainerRight}} >
-              <ProgressButton
-                title={t('antrag:calculate')}
-                loading={isWaiting}
-                disabled={!validateFields()}
-                onClick={handleCalculateClick}
-              />
-            </CardActions>
-          )}
+            </CardContent>
+
+          {/* Calculate Button */}
+          <CardActions classes={{root: classes.flexContainerRight}} >
+            <ProgressButton
+              title={antrag.status === "Neu" ? t('antrag:calculate') : t('antrag:re-calculate')}
+              loading={isCalculate}
+              disabled={!validateFields()}
+              onClick={handleCalculateClick}
+            />
+          </CardActions>
+
+          {/* Activity Select */}
+          {antrag.status !== "Neu" &&
+            <CardContent>
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={6}>
+                  <FormControl
+                    variant="outlined"
+                    size="small"
+                    fullWidth
+                  >
+                    <InputLabel htmlFor="activity">
+                      {t("common:action")}
+                    </InputLabel>
+                    <Select
+                      id="activity"
+                      value={currentActivity}
+                      onChange={(e) => setActivity(e.target.value)}
+                      label={t("common:action")}
+                    >
+                      {antrag.possible_activities.map((activity, index) => (
+                        <MenuItem key={index} value={activity.name}>
+                          {activity.description}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item>
+                  <ProgressButton
+                    title={t('common:execute')}
+                    loading={isWaiting}
+                    disabled={currentActivity === 'Berechnen' ? !validateFields() : !validateActivity()}
+                    onClick={handleActivityExecute}
+                  />
+                </Grid>
+              </Grid>
+            </CardContent>
+          }
         </React.Fragment>
       }
     />
