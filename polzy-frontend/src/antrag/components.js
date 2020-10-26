@@ -6,12 +6,25 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  TextField,
   OutlinedInput,
-  InputAdornment,
+  Button,
+  CircularProgress,
 } from '@material-ui/core'
-import { withStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
+
+// Styles
+const useStyles = makeStyles((theme) => ({
+  buttonProgress: {
+    color: theme.palette.primary.main,
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -(theme.spacing(4) - theme.spacing(1)) / 2,
+    marginLeft: -theme.spacing(4) / 2,
+  }
+}))
+
 
 /*
 **   Title of Antrag Card
@@ -106,5 +119,28 @@ export function InputField(props) {
         </FormControl>
       </Tooltip>
     </React.Fragment>
+  )
+}
+
+
+/*
+**  Button with progress 
+*/
+export function ProgressButton(props) {
+  const {title, loading, onClick } = props
+  const classes = useStyles()
+
+  return(
+    <div style={{position: "relative"}}>
+      <Button 
+        variant="contained"
+        color="primary"
+        onClick={onClick}
+        disabled={loading}
+      >
+        {title}
+      </Button>
+      {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
+    </div>
   )
 }

@@ -15,13 +15,14 @@ import CloseIcon from '@material-ui/icons/Close'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import { CardActiveHide, CardActive, CardTop, hideTime } from '../policy/CardStyles'
-import { AntragTitle, InputField } from './components'
+import { AntragTitle, InputField, ProgressButton } from './components'
 import { removeAntrag, updateAntrag } from '../redux/actions'
 import { calculateAntrag } from '../api'
 
 // set styles
 const useStyles = makeStyles((theme) => ({
   flexContainerRight: {
+    margin: theme.spacing(1),
     display: 'flex',
     justifyContent: 'flex-end',
   },
@@ -176,26 +177,26 @@ function ActiveAntrag(props) {
               ))}
             </Grid>
             {/* Premium Field */}
-            <div className={classes.flexContainerRight}>
-              <Typography
-                className={classes.premiumText}
-                component="div"
-                variant="h5"
-              >
-                {`${t("antrag:premium")}: € ${premium.valueChosenOrEntered}`}
-              </Typography>
-            </div>
+            {!newAntrag && (
+              <div className={classes.flexContainerRight}>
+                <Typography
+                  className={classes.premiumText}
+                  component="div"
+                  variant="h5"
+                >
+                  {`${t("antrag:premium")}: € ${premium.valueChosenOrEntered}`}
+                </Typography>
+              </div>
+            )}
           </CardContent>
+        {/* Calculate Button */}
           {newAntrag && (
             <CardActions classes={{root: classes.flexContainerRight}} >
-              <Button
-                size="small"
-                color="primary"
-                disabled={!validateFields()}
+              <ProgressButton
+                title={t('antrag:calculate')}
+                loading={isCalculate}
                 onClick={handleCalculateClick}
-              >
-                {t('antrag:calculate')}
-              </Button>
+              />
             </CardActions>
           )}
         </React.Fragment>
