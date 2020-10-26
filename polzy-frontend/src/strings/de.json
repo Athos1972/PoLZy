@@ -6,17 +6,17 @@
   },
 
   "common": {
+    "action": "Aktivität",
     "close": "Schließen",
     "collapse": "Einklappen",
+    "execute": "Ausführen",
     "expand": "Erweitern",
     "none": "Keine"
   },
 
   "policy": {
-    "action": "Aktivität",
     "clauses": "Klauseln",
     "effective.date": "Wirksamkeitsdatum",
-    "execute": "Ausführen",
     "find": "Finden",
     "find.policy": "Finde Polizze",
     "insured.object": "Versichertes Objekt",

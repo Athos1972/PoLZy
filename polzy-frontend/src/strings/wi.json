@@ -6,17 +6,17 @@
   },
 
   "common": {
+    "action": "Wos moch ma?",
     "close": "Weg damit",
     "collapse": "Weg damit",
+    "execute": "Mochn",
     "expand": "mehr zeign",
     "none": "nix"
   },
 
   "policy": {
-    "action": "Wos moch ma?",
     "clauses": "Klauseln",
     "effective.date": "Wirksamkeitsdatum",
-    "execute": "Mochn",
     "find": "Findn",
     "find.policy": "Polizzn suchn",
     "insured.object": "Risiko",

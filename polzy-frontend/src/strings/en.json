@@ -6,17 +6,17 @@
   },
 
   "common": {
+    "action": "Action",
     "close": "Close",
     "collapse": "Collapse",
+    "execute": "Execute",
     "expand": "Expand",
     "none": "None"
   },
 
   "policy": {
-    "action": "Action",
     "clauses": "Clauses",
     "effective.date": "Effective Date",
-    "execute": "Execute",
     "find": "Find",
     "find.policy": "Find Policy",
     "insured.object": "Insured Object",

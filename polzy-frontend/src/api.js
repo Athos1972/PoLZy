@@ -35,7 +35,7 @@ export const fetchAntrag = async (antrag) => {
   return data
 }
 
-export const calculateAntrag = async (stage, antrag) => {
+export const executeAntrag = async (stage, antrag) => {
   const response = await fetch(`/${stage}/antrag`, {
     method: 'POST',
     headers: {'content-type': 'application/json'},
@@ -44,4 +44,3 @@ export const calculateAntrag = async (stage, antrag) => {
   const data = await response.json()
   return data
 }
-

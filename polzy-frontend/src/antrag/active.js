@@ -10,6 +10,10 @@ import {
   Switch,
   Button,
   Typography,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import { makeStyles } from '@material-ui/core/styles'
@@ -17,7 +21,7 @@ import { useTranslation } from 'react-i18next'
 import { CardActiveHide, CardActive, CardTop, hideTime } from '../policy/CardStyles'
 import { AntragTitle, InputField, ProgressButton } from './components'
 import { removeAntrag, updateAntrag } from '../redux/actions'
-import { calculateAntrag } from '../api'
+import { executeAntrag } from '../api'
 
 // set styles
 const useStyles = makeStyles((theme) => ({
@@ -61,20 +65,31 @@ function ActiveAntrag(props) {
   const newAntrag = (antrag.status === "Neu")
   const premium = fields.reduce((obj, field) => (field.name === "premium" ? field : obj), {})
 
-  console.log('PREMIUM')
-  console.log(premium)
-
   const [hidden, setHidden] = useState(false)
   const [values, setValues] = useState(
-    //fields.map((field) => (field.valueChosenOrEntered))
     fields.reduce((obj, field) => ({...obj, [field.name]: field.valueChosenOrEntered}), {})
   )
-  const [isCalculate, setCalculate] = useState(false)
+  const [currentActivity, setActivity] = useState('')
+  const [activityValues, setActivityValues] = useState({})
+  const [isWaiting, setWaiting] = useState(false)
 
   const validateFields = () => {
     // checks if all mandatory fields are filled
     for (const field of fields) {
       if (field.isMandatory && values[field.name] === '')
+        return false
+    }
+    return true
+  }
+
+  const validateActivity = () => {
+    // check if activity selected
+    if (currentActivity === '')
+      return false
+    // check if required activity fields are filled
+    const selectedActivity = antrag.possible_activities.reduce((obj, field) => (field.name === currentActivity ? field : obj), {})
+    for (const field of selectedActivity.fields) {
+      if(field.isMandatory && activityValues[field.name] === '')
         return false
     }
     return true
@@ -97,14 +112,15 @@ function ActiveAntrag(props) {
 
   const handleCalculateClick = () => {
     // switch calculate mode
-    setCalculate(true)
+    setWaiting(true)
     // build request body
     const requestData = {
       id: antrag.id,
+      activity: "Berechnen",
       values: values,
     }
-
-    calculateAntrag(props.stage, requestData).then(data => {
+    // calculate antrag
+    executeAntrag(props.stage, requestData).then(data => {
       
       // update antrag
       updateAntrag(
@@ -116,7 +132,33 @@ function ActiveAntrag(props) {
       )
       
       //update state
-      setCalculate(false)
+      setWaiting(false)
+    })
+  }
+
+  const handleActivityExecute = () => {
+    // switch calculate mode
+    setWaiting(true)
+    // build request body
+    const requestData = {
+      id: antrag.id,
+      activity: currentActivity,
+      values: activityValues,
+    }
+    // execute activity
+    executeAntrag(props.stage, requestData).then(data => {
+      
+      // update antrag
+      updateAntrag(
+        props.index,
+        {
+          request_state: "ok",
+          ...data,
+        }
+      )
+      
+      //update state
+      setWaiting(false)
     })
   }
 
@@ -139,6 +181,7 @@ function ActiveAntrag(props) {
             title={<AntragTitle product={antrag.product_line.name} />}
           />
           <CardContent>
+
             {/* Flags */}
             <Grid container spacing={2}>
               {fields.filter((field) => (field.fieldDataType === "Flag")).map((field) => (
@@ -162,6 +205,7 @@ function ActiveAntrag(props) {
                 </Grid>
               ))}
             </Grid>
+
             {/* Other Fields */}
             <Grid container spacing={2}>
               {fields.filter((field) => (
@@ -178,6 +222,7 @@ function ActiveAntrag(props) {
             </Grid>
             {!newAntrag && (
               <React.Fragment>
+
                 {/* Premium Field */}
                 <div className={classes.flexContainerRight}>
                   <Typography
@@ -188,7 +233,41 @@ function ActiveAntrag(props) {
                     {`${t("antrag:premium")}: € ${premium.valueChosenOrEntered}`}
                   </Typography>
                 </div>
-              {/* Activity Fields */}
+
+                {/* Activity Select */}
+                <Grid container spacing={2}>
+                  <Grid item xs={12} md={6}>
+                    <FormControl
+                      variant="outlined"
+                      size="small"
+                      fullWidth
+                    >
+                      <InputLabel htmlFor="activity">
+                        {t("common:action")}
+                      </InputLabel>
+                      <Select
+                        id="activity"
+                        value={currentActivity}
+                        onChange={(e) => setActivity(e.target.value)}
+                        label={t("common:action")}
+                      >
+                        {antrag.possible_activities.map((activity, index) => (
+                          <MenuItem key={index} value={activity.name}>
+                            {activity.description}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item>
+                    <ProgressButton
+                      title={t('common:execute')}
+                      loading={isWaiting}
+                      disabled={currentActivity === 'Berechnen' ? !validateFields() : !validateActivity()}
+                      onClick={handleActivityExecute}
+                    />
+                  </Grid>
+                </Grid>
               </React.Fragment>
             )}
           </CardContent>
@@ -197,7 +276,7 @@ function ActiveAntrag(props) {
             <CardActions classes={{root: classes.flexContainerRight}} >
               <ProgressButton
                 title={t('antrag:calculate')}
-                loading={isCalculate}
+                loading={isWaiting}
                 disabled={!validateFields()}
                 onClick={handleCalculateClick}
               />
