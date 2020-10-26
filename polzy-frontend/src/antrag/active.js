@@ -62,7 +62,6 @@ function ActiveAntrag(props) {
   const {t} = useTranslation('common', 'antrag')
   const classes = useStyles()
 
-  const newAntrag = (antrag.status === "Neu")
   const premium = fields.reduce((obj, field) => (field.name === "premium" ? field : obj), {})
 
   const [hidden, setHidden] = useState(false)
@@ -220,7 +219,7 @@ function ActiveAntrag(props) {
                 </Grid>
               ))}
             </Grid>
-            {!newAntrag && (
+            {antrag.status !== "Neu" && (
               <React.Fragment>
 
                 {/* Premium Field */}
@@ -272,7 +271,7 @@ function ActiveAntrag(props) {
             )}
           </CardContent>
         {/* Calculate Button */}
-          {newAntrag && (
+          {antrag.status === "Neu" && (
             <CardActions classes={{root: classes.flexContainerRight}} >
               <ProgressButton
                 title={t('antrag:calculate')}
