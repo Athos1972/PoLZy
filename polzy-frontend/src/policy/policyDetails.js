@@ -256,12 +256,12 @@ export default function PolicyDetails(props) {
         <Grid container direction="column" item xs={12} md={4}>
           <PolicyMain data={policy} />
           <ProductLine data={policy.product_line} />
-        </Grid>
-        <Grid container direction="column" item xs={12} md={4}>
           <GenericSection title={t('premium.payer')} data={policy.premium_payer} />
         </Grid>
         <Grid container direction="column" item xs={12} md={4}>
           <GenericSection title={t('insured.object')} data={policy.insured_object} />
+        </Grid>
+        <Grid container direction="column" item xs={12} md={4}>
           <Clauses data={policy.clauses} />
         </Grid>
       </Grid>

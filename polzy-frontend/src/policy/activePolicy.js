@@ -108,7 +108,7 @@ function MoreButton(props) {
   const {t} = useTranslation('common')
 
   return(
-    <Tooltip title={props.expanded ? (t("collapse")) : (t("expand"))}>
+    <Tooltip title={props.expanded ? (t("common:collapse")) : (t("common:expand"))}>
       <IconButton
         className={clsx(classes.expand, {
           [classes.expandOpen]: props.expanded,
@@ -238,11 +238,11 @@ class ActivePolicy extends React.Component {
       <React.Fragment>
       {this.validateActivity() ? (
         <ActiveButton variant="contained" color="primary">
-          {props.t("policy:execute")}
+          {props.t("common:execute")}
         </ActiveButton>
       ) : (
         <ActiveButtonDisabled variant="contained" disabled>
-          {props.t("policy:execute")}
+          {props.t("common:execute")}
         </ActiveButtonDisabled>
       )}
       </React.Fragment>
@@ -263,7 +263,7 @@ class ActivePolicy extends React.Component {
               size="small"
             >
               <InputLabel id={`action-${this.props.index}-label`}>
-                {props.t("policy:action")}
+                {props.t("common:action")}
               </InputLabel>
               <Select
                 labelId={`action-${this.props.index}-label`}
@@ -271,7 +271,7 @@ class ActivePolicy extends React.Component {
                 value={this.state.actionIndex}
                 onChange={this.handleActionChange}
                 disabled={this.actionsNotAvailable}
-                label={props.t("policy:action")}
+                label={props.t("common:action")}
               >
                 <MenuItem value={-1}>
                   <em>{props.t("common:none")}</em>
@@ -290,7 +290,7 @@ class ActivePolicy extends React.Component {
                 onClick={this.handleActionExecution}
                 disabled={!this.validateActivity() || this.state.actionExecution}
               >
-                {props.t("policy:execute")}
+                {props.t("common:execute")}
               </ActiveButton>
               {this.state.actionExecution && <ActivityProgress size={progressSize} />}
             </div>
