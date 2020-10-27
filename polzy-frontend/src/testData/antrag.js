@@ -2,9 +2,9 @@
 export const antrags = [
 {
   "request_state": "ok",
-  "id": "ae59ae58-50f5-48ed-833e-c69b75fd80bb",
+  "id": "5a070eac-b256-4450-896d-d1315c187b0b",
   "number": "testNummer",
-  "status": "Neu",
+  "status": "Berechnet",
   "product_line": {
     "name": "KFZ",
     "attributes": {
@@ -15,6 +15,19 @@ export const antrags = [
     {
       "name": "Berechnen",
       "description": "Schnellrechner f\u00fcr eingegebene Parameter",
+      "icon": "calculate.svg",
+      "fields": []
+    },
+    {
+      "name": "Drucken",
+      "description": "\u00dcbersichtsblatt als PDF ausgeben",
+      "icon": "pdf.svg",
+      "fields": []
+    },
+    {
+      "name": "VN festlegen",
+      "description": "VN suchen oder neu erfassen",
+      "icon": "partnersearch.svg",
       "fields": []
     }
   ],
@@ -24,43 +37,14 @@ export const antrags = [
       "name": "Versicherungsbeginn",
       "brief": "Versicherungsbeginn",
       "tooltip": "Datum des Versicherungsbeginns",
+      "icon": "",
       "fieldDataType": "Datum",
       "inputRange": [],
       "onlyFromRange": false,
-      "valueChosenOrEntered": "26.10.2020",
-      "valueChosenOrEnteredTech": null,
-      "valueChosenOrEnteredOutput": null,
+      "valueChosenOrEntered": "27.10.2020",
+      "valueChosenOrEnteredTech": "27.10.2020",
+      "valueChosenOrEnteredOutput": "27.10.2020",
       "inputTriggers": false,
-      "isMandatory": true
-    },
-    {
-      "fieldType": 1,
-      "name": "Fahrzeugart",
-      "brief": "Fahrzeugart",
-      "tooltip": "Bitte w\u00e4hle die Fahrzeugart aus",
-      "fieldDataType": "Text",
-      "inputRange": [
-        "PKW",
-        "Klein LKW",
-        "Gross LKW",
-        "Motorrad",
-        "Wohnmobil",
-        "Anh\u00e4nger",
-        "Zugmaschine/Traktor",
-        "Wohnmobil ab 3.5",
-        "Elektrofahrrad",
-        "Kleinmotorrad",
-        "Moped",
-        "Arbeitsmaschine",
-        "Motorkarren",
-        "Transportkarren",
-        "Sonderfahrzeuge"
-      ],
-      "onlyFromRange": false,
-      "valueChosenOrEntered": "PKW",
-      "valueChosenOrEnteredTech": "PKW",
-      "valueChosenOrEnteredOutput": "PKW",
-      "inputTriggers": true,
       "isMandatory": true
     },
     {
@@ -68,6 +52,7 @@ export const antrags = [
       "name": "Marke",
       "brief": "Marke",
       "tooltip": "Bitte w\u00e4hlen Sie den Hersteller des Fahrzeugs aus der Liste",
+      "icon": "",
       "fieldDataType": "Text",
       "inputRange": [
         "",
@@ -140,6 +125,7 @@ export const antrags = [
       "name": "AlterFahrzeug",
       "brief": "Alter des Fahrzeugs",
       "tooltip": "Bitte geben Sie das Alter des Fahrzeugs ein",
+      "icon": "",
       "fieldDataType": "Text",
       "inputRange": [
         "Neu",
@@ -158,7 +144,7 @@ export const antrags = [
       ],
       "onlyFromRange": true,
       "valueChosenOrEntered": "Neu",
-      "valueChosenOrEnteredTech": "2020-10-26T18:05:35.064285",
+      "valueChosenOrEnteredTech": "2020-10-27T18:28:23.419876",
       "valueChosenOrEnteredOutput": "Neu",
       "inputTriggers": false,
       "isMandatory": true
@@ -168,6 +154,7 @@ export const antrags = [
       "name": "Antriebsart",
       "brief": "Art des Antriebs",
       "tooltip": "Bitte w\u00e4hlen Sie die Art des Antriebs",
+      "icon": "",
       "fieldDataType": "Text",
       "inputRange": [
         "Andere",
@@ -182,8 +169,8 @@ export const antrags = [
         "Brennstoffzelle mit Prim\u00e4renergie Ethanol",
         "Brennstoffzelle mit Prim\u00e4renergie Methanol",
         "Brennstoffzelle mit Prim\u00e4renergie Wasserstoff",
-        "Diesel mit Kat.",
-        "Diesel ohne Kat.",
+        "Diesel mit Kat",
+        "Diesel ohne Kat",
         "Elektro",
         "Erdgas (NG)",
         "Fl\u00fcssiggas (LPG)",
@@ -212,6 +199,7 @@ export const antrags = [
       "name": "CO2",
       "brief": "CO2-Wert",
       "tooltip": "Bitte geben sie den CO2-Wert des Fahrzeugs an",
+      "icon": "",
       "fieldDataType": "Zahl",
       "inputRange": [
         "range",
@@ -219,9 +207,9 @@ export const antrags = [
         "500"
       ],
       "onlyFromRange": false,
-      "valueChosenOrEntered": "",
-      "valueChosenOrEnteredTech": "",
-      "valueChosenOrEnteredOutput": "",
+      "valueChosenOrEntered": "88",
+      "valueChosenOrEnteredTech": "88",
+      "valueChosenOrEnteredOutput": "88",
       "inputTriggers": false,
       "isMandatory": true
     },
@@ -230,6 +218,7 @@ export const antrags = [
       "name": "KW",
       "brief": "Kilowatt",
       "tooltip": "Bitte geben sie den KW-Wert des Fahrzeugs an",
+      "icon": "",
       "fieldDataType": "Zahl",
       "inputRange": [
         "range",
@@ -237,9 +226,9 @@ export const antrags = [
         "500"
       ],
       "onlyFromRange": false,
-      "valueChosenOrEntered": "",
-      "valueChosenOrEnteredTech": "",
-      "valueChosenOrEnteredOutput": "",
+      "valueChosenOrEntered": "88",
+      "valueChosenOrEnteredTech": "88",
+      "valueChosenOrEnteredOutput": "88",
       "inputTriggers": false,
       "isMandatory": true
     },
@@ -248,6 +237,7 @@ export const antrags = [
       "name": "AlterZulassungsbesitzer",
       "brief": "Alter Zulassungsbesitzer",
       "tooltip": "Bitte geben Sie das Alter des Zulassungsbesitzers ein",
+      "icon": "",
       "fieldDataType": "Zahl",
       "inputRange": [
         "range",
@@ -255,9 +245,28 @@ export const antrags = [
         "80"
       ],
       "onlyFromRange": true,
-      "valueChosenOrEntered": 30,
-      "valueChosenOrEnteredTech": 30,
-      "valueChosenOrEnteredOutput": 30,
+      "valueChosenOrEntered": "30",
+      "valueChosenOrEnteredTech": "30",
+      "valueChosenOrEnteredOutput": "30",
+      "inputTriggers": false,
+      "isMandatory": true
+    },
+    {
+      "fieldType": 1,
+      "name": "BonusMalusStufe",
+      "brief": "BonusMalusStufe",
+      "tooltip": "",
+      "icon": "",
+      "fieldDataType": "Zahl",
+      "inputRange": [
+        "range",
+        "0",
+        "17"
+      ],
+      "onlyFromRange": true,
+      "valueChosenOrEntered": "0",
+      "valueChosenOrEnteredTech": "0",
+      "valueChosenOrEnteredOutput": "0",
       "inputTriggers": false,
       "isMandatory": true
     },
@@ -266,10 +275,11 @@ export const antrags = [
       "name": "fahrenUnter23",
       "brief": "Fahrer unter 23",
       "tooltip": "Fahren mit diesem Fahrzeug auch Lenker, die unter 23 Jahre alt sind?",
+      "icon": "",
       "fieldDataType": "Flag",
       "inputRange": [],
-      "onlyFromRange": true,
-      "valueChosenOrEntered": true,
+      "onlyFromRange": false,
+      "valueChosenOrEntered": "True",
       "valueChosenOrEnteredTech": "JA",
       "valueChosenOrEnteredOutput": "Ja",
       "inputTriggers": false,
@@ -280,6 +290,7 @@ export const antrags = [
       "name": "PlzZulassungsbesitzer",
       "brief": "PLZ Zulassungsbesitzer",
       "tooltip": "Postleitzahl der Meldeadresse des Zulassungsbesitzers",
+      "icon": "",
       "fieldDataType": "Zahl",
       "inputRange": [
         "range",
@@ -287,10 +298,41 @@ export const antrags = [
         "9999"
       ],
       "onlyFromRange": true,
-      "valueChosenOrEntered": 1010,
-      "valueChosenOrEnteredTech": 1010,
-      "valueChosenOrEnteredOutput": 1010,
+      "valueChosenOrEntered": "1010",
+      "valueChosenOrEnteredTech": "1010",
+      "valueChosenOrEnteredOutput": "1010",
       "inputTriggers": false,
+      "isMandatory": true
+    },
+    {
+      "fieldType": 1,
+      "name": "Fahrzeugart",
+      "brief": "Fahrzeugart",
+      "tooltip": "Bitte w\u00e4hle die Fahrzeugart aus",
+      "icon": "",
+      "fieldDataType": "Text",
+      "inputRange": [
+        "PKW",
+        "Klein LKW",
+        "Gross LKW",
+        "Motorrad",
+        "Wohnmobil",
+        "Anh\u00e4nger",
+        "Zugmaschine/Traktor",
+        "Wohnmobil ab 3.5",
+        "Elektrofahrrad",
+        "Kleinmotorrad",
+        "Moped",
+        "Arbeitsmaschine",
+        "Motorkarren",
+        "Transportkarren",
+        "Sonderfahrzeuge"
+      ],
+      "onlyFromRange": false,
+      "valueChosenOrEntered": "PKW",
+      "valueChosenOrEnteredTech": "PKW",
+      "valueChosenOrEnteredOutput": "PKW",
+      "inputTriggers": true,
       "isMandatory": true
     },
     {
@@ -298,10 +340,11 @@ export const antrags = [
       "name": "Haftpflicht",
       "brief": "Haftpflicht",
       "tooltip": "Klick, wenn Haftpflicht-Versicherung kalkuliert werden soll",
+      "icon": "",
       "fieldDataType": "Flag",
       "inputRange": [],
       "onlyFromRange": false,
-      "valueChosenOrEntered": true,
+      "valueChosenOrEntered": "True",
       "valueChosenOrEnteredTech": "JA",
       "valueChosenOrEnteredOutput": "Ja",
       "inputTriggers": false,
@@ -309,9 +352,25 @@ export const antrags = [
     },
     {
       "fieldType": 1,
+      "name": "Bonusretter",
+      "brief": "Bonusretter",
+      "tooltip": "W\u00e4hlen Sie den Bonsuretter",
+      "icon": "",
+      "fieldDataType": "Flag",
+      "inputRange": [],
+      "onlyFromRange": false,
+      "valueChosenOrEntered": "True",
+      "valueChosenOrEnteredTech": "JA",
+      "valueChosenOrEnteredOutput": "Ja",
+      "inputTriggers": false,
+      "isMandatory": true
+    },
+    {
+      "fieldType": 1,
       "name": "Kaskovariante",
       "brief": "Kaskovariante",
       "tooltip": "Auswahl, welche Kasko-Variante gew\u00e4hlt werden soll",
+      "icon": "",
       "fieldDataType": "Text",
       "inputRange": [
         "Keine",
@@ -334,6 +393,7 @@ export const antrags = [
       "name": "Kasko_SBH",
       "brief": "Selbstbehalt Kasko",
       "tooltip": "Auswahl, welcher SBH gelten soll",
+      "icon": "",
       "fieldDataType": "Zahl",
       "inputRange": [
         "350",
@@ -341,8 +401,8 @@ export const antrags = [
         "950"
       ],
       "onlyFromRange": true,
-      "valueChosenOrEntered": 650,
-      "valueChosenOrEnteredTech": 650,
+      "valueChosenOrEntered": "650",
+      "valueChosenOrEnteredTech": "650.0",
       "valueChosenOrEnteredOutput": "Euro 650",
       "inputTriggers": false,
       "isMandatory": false
@@ -352,6 +412,7 @@ export const antrags = [
       "name": "IU",
       "brief": "Insassenunfall",
       "tooltip": "Auswahl, ob Lenker- oder Lenker- und Insassenunfall gew\u00fcnscht ist",
+      "icon": "",
       "fieldDataType": "Text",
       "inputRange": [
         "Lenkerunfall",
@@ -366,111 +427,36 @@ export const antrags = [
       "isMandatory": false
     },
     {
-      "fieldType": 2,
-      "name": "premium",
-      "brief": "Pr\u00e4mie",
-      "tooltip": "Indikative Pr\u00e4mie basierend auf den Eingaben",
+      "fieldType": 1,
+      "name": "Rabatt",
+      "brief": "Rabatt",
+      "tooltip": "Rabattstufe ausw\u00e4hlen",
+      "icon": "",
       "fieldDataType": "Zahl",
-      "inputRange": [],
+      "inputRange": [
+        "range",
+        "0",
+        "20"
+      ],
       "onlyFromRange": true,
-      "valueChosenOrEntered": "",
-      "valueChosenOrEnteredTech": "",
-      "valueChosenOrEnteredOutput": "Euro ",
+      "valueChosenOrEntered": "0",
+      "valueChosenOrEnteredTech": "0",
+      "valueChosenOrEnteredOutput": "0",
       "inputTriggers": false,
       "isMandatory": false
-    }
-  ]
-},
-{
-  "request_state": "ok",
-  "id": "d9ebbfac-8d59-4505-afa0-e866b3cb4501",
-  "number": "testNummer",
-  "status": "Berechnet",
-  "product_line": {
-    "name": "PnC",
-    "attributes": {
-      "Produkt": "DONAU Privatschutz Rechtsschutz"
-    }
-  },
-  "possible_activities": [
-    {
-      "name": "Berechnen",
-      "description": "Schnellrechner f\u00fcr eingegebene Parameter",
-      "fields": []
-    },
-    {
-      "name": "Drucken",
-      "description": "\u00dcbersichtsblatt als PDF ausgeben",
-      "fields": []
-    },
-    {
-      "name": "VN festlegen",
-      "description": "VN suchen oder neu erfassen",
-      "fields": []
-    }
-  ],
-  "fields": [
-    {
-      "fieldType": 1,
-      "name": "Versicherungsbeginn",
-      "brief": "Versicherungsbeginn",
-      "tooltip": "Datum des Versicherungsbeginns",
-      "fieldDataType": "Datum",
-      "inputRange": [],
-      "onlyFromRange": false,
-      "valueChosenOrEntered": "26.10.2020",
-      "valueChosenOrEnteredTech": null,
-      "valueChosenOrEnteredOutput": null,
-      "inputTriggers": false,
-      "isMandatory": true
-    },
-    {
-      "fieldType": 1,
-      "name": "AlterVN",
-      "brief": "Alter Versicherungsnehmer",
-      "tooltip": "Bitte geben Sie das Alter des VN ein",
-      "fieldDataType": "Zahl",
-      "inputRange": [
-        "range",
-        "18",
-        "80"
-      ],
-      "onlyFromRange": true,
-      "valueChosenOrEntered": 30,
-      "valueChosenOrEnteredTech": null,
-      "valueChosenOrEnteredOutput": null,
-      "inputTriggers": false,
-      "isMandatory": true
-    },
-    {
-      "fieldType": 1,
-      "name": "PlzVN",
-      "brief": "PLZ Versicherungsnehmer",
-      "tooltip": "Postleitzahl der Meldeadresse des Versicherungsnehmers",
-      "fieldDataType": "Zahl",
-      "inputRange": [
-        "range",
-        "1010",
-        "9999"
-      ],
-      "onlyFromRange": true,
-      "valueChosenOrEntered": 1010,
-      "valueChosenOrEnteredTech": null,
-      "valueChosenOrEnteredOutput": null,
-      "inputTriggers": false,
-      "isMandatory": true
     },
     {
       "fieldType": 2,
       "name": "premium",
       "brief": "Pr\u00e4mie",
       "tooltip": "Indikative Pr\u00e4mie basierend auf den Eingaben",
+      "icon": "",
       "fieldDataType": "Zahl",
       "inputRange": [],
       "onlyFromRange": true,
-      "valueChosenOrEntered": 160.52,
-      "valueChosenOrEnteredTech": 160.52,
-      "valueChosenOrEnteredOutput": 160.52,
+      "valueChosenOrEntered": "2913.63",
+      "valueChosenOrEnteredTech": "2913.63",
+      "valueChosenOrEnteredOutput": "Euro 2913,63",
       "inputTriggers": false,
       "isMandatory": false
     }

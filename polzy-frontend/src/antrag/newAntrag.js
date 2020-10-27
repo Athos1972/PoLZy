@@ -13,8 +13,9 @@ import {
 import { withStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import { addAntrag } from '../redux/actions'
-import logo from '../logo/LEZYSEM5-01.png'
 import { getProducts } from '../api'
+import MenuButton from '../components/menuButton'
+import logo from '../logo/LEZYSEM5-01.png'
 
 
 
@@ -70,27 +71,12 @@ function NewAntrag(props) {
           title={t("antrag:fast.offer")}
         />
         <CardContent>
-          <ProductControl
-            variant="outlined"
-            size="small"
-          >
-            <InputLabel id="select-product-label">
-              {t("antrag:select.product")}
-            </InputLabel>
-            <Select
-              labelId="select-product-label"
-              id="select-product"
-              value=""
-              onChange={(event) => handleProductSelect(event.target.value)}
-              label={t("antrag:select.product")}
-            >
-              {productList.map((value, index) => (
-                <MenuItem key={index} value={value}>
-                  {value}
-                </MenuItem>
-              ))}
-            </Select>
-          </ProductControl>
+          <MenuButton
+            id="product-select"
+            title={t("antrag:select.product")}
+            items={productList}
+            onClick={handleProductSelect}
+          />
         </CardContent>
       </div>
       <CardLogo

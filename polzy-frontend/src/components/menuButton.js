@@ -1,7 +1,23 @@
 import React from 'react'
-import { Button, Menu, MenuItem } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
+import { Button, Menu, MenuItem, SvgIcon, ListItemIcon } from '@material-ui/core'
+import { ReactComponent as House } from '../Icons/house_filled.svg'
+
+const useStyles = makeStyles(theme => ({
+  imageIcon: {
+    height: '100%',
+  },
+  iconRoot: {
+    fillColor: theme.palette.primary.main,
+    color: theme.palette.secondary.main,
+  },
+  menuItem: {
+    backgroundColor: theme.palette.secondary.main,
+  }
+}))
 
 export default function MenuButton(props){
+  const {id, title, items} = props
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (event) => {
@@ -12,33 +28,41 @@ export default function MenuButton(props){
     setAnchorEl(null)
   }
 
-  const handleMenuClick = (event, index) => {
+  const handleMenuClick = (event, value) => {
     setAnchorEl(null)
-    props.onClick(index)
+    props.onClick(value)
   }
+
+  const classes = useStyles()
 
   return(
     <React.Fragment>
       <Button
-        size="small"
-        aria-controls={props.id}
+        color="primary"
+        variant="contained"
+        aria-controls={id}
         aria-haspopup="true"
         onClick={handleClick}
       >
-        {props.title}
+        {title}
       </Button>
       <Menu
-        id={props.id}
+        id={id}
         anchorEl={anchorEl}
         keepMounted
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        {props.items.map((value, index) => (
+        {items.map((value) => (
           <MenuItem 
             key={value}
-            onClick={(event) => handleMenuClick(event, index)}
+            onClick={(event) => handleMenuClick(event, value)}
           >
+            <ListItemIcon>
+              <SvgIcon color="primary">
+                <House />
+              </SvgIcon>
+            </ListItemIcon>
             {value}
           </MenuItem>
         ))}

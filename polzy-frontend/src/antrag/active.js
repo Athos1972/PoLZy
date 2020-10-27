@@ -14,6 +14,10 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  BottomNavigation,
+  BottomNavigationAction,
+  SvgIcon,
+  Fab,
 } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import { makeStyles } from '@material-ui/core/styles'
@@ -22,6 +26,9 @@ import { CardActiveHide, CardActive, CardTop, hideTime } from '../policy/CardSty
 import { AntragTitle, InputField, ProgressButton } from './components'
 import { removeAntrag, updateAntrag } from '../redux/actions'
 import { executeAntrag } from '../api'
+import { ReactComponent as Calculate } from '../Icons/calculate.svg'
+import { ReactComponent as Pdf } from '../Icons/pdf.svg'
+import { ReactComponent as Partnersearch } from '../Icons/partnersearch.svg'
 
 // set styles
 const useStyles = makeStyles((theme) => ({
@@ -35,6 +42,8 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
   }
+
+
 
 }));
 
@@ -54,6 +63,33 @@ function AntragCard(props) {
       )}
     </React.Fragment>
   )
+}
+
+function ActivityIcon(props) {
+  const {icon} = props
+
+  switch (icon) {
+    case 'calculate.svg':
+      return (
+        <SvgIcon viewBox="0 0 512 512">
+          <Calculate />
+        </SvgIcon>
+      )
+    case 'pdf.svg':
+      return (
+        <SvgIcon viewBox="0 0 48 48">
+          <Pdf />
+        </SvgIcon>
+      )
+    case 'partnersearch.svg':
+      return (
+        <SvgIcon viewBox="0 0 964.8 964.8">
+          <Partnersearch />
+        </SvgIcon>
+      )
+    default:
+      return <CloseIcon />
+  }
 }
 
 function ActiveAntrag(props) {
@@ -261,7 +297,7 @@ function ActiveAntrag(props) {
           </CardActions>
 
           {/* Activity Select */}
-          {antrag.status !== "Neu" &&
+          {/*antrag.status !== "Neu" &&
             <CardContent>
               <Grid container spacing={2}>
                 <Grid item xs={12} md={6}>
@@ -296,6 +332,28 @@ function ActiveAntrag(props) {
                   />
                 </Grid>
               </Grid>
+            </CardContent>
+          */}
+
+          {/* bottom navigation */}
+          {antrag.status !== "Neu" &&
+            <CardContent>
+              <BottomNavigation value={currentActivity} onChange={(e, v) => setActivity(v)} >
+                {antrag.possible_activities.map((activity, index) => (
+
+                    <BottomNavigationAction
+                      key={index}
+                      label={activity.name}
+                      value={activity.name}
+                      icon={<ActivityIcon icon={activity.icon} />}
+                    >
+                      <Tooltip
+                        title={activity.description}
+                        placement="top"
+                      />
+                    </BottomNavigationAction>
+                ))}
+              </BottomNavigation>
             </CardContent>
           }
         </React.Fragment>
