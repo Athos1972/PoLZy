@@ -56,7 +56,7 @@ export default function MenuButton(props){
         {items.map((item) => (
           <MenuItem 
             key={item.name}
-            onClick={(event) => handleMenuClick(event, item.name)}
+            onClick={(event) => handleMenuClick(event, item.description)}
           >
             <ListItemIcon>
               <SvgIcon color="primary">
