@@ -200,9 +200,12 @@ function ActiveAntrag(props) {
     executeAntrag(props.stage, requestData).then(data => {
       
       // check response
-      if ('link' in data) {
+      if (activity === "Drucken") {
         console.log(data)
         window.open(`http://localhost:5000/files/${data.link}`, "_blank")
+      } else if (activity === "Antrag erzeugen") {
+        console.log(data)
+        window.open(data.link, "_blank")
       } else {
         // update antrag
         props.updateAntrag(
