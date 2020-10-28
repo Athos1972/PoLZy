@@ -195,14 +195,19 @@ function ActiveAntrag(props) {
     const requestData = {
       id: antrag.id,
       activity: "Berechnen",
-      values: antrag.field_groups.filter(group => groups[group.name]).reduce((result, group) => ({
+      values: {
+        ...groups,
+        ...values,
+      }
+    }
+      /*values: antrag.field_groups.filter(group => groups[group.name]).reduce((result, group) => ({
         ...result,
         ...antrag[group.name].reduce((groupFields, field) => ({
           ...groupFields,
           [field.name]: values[field.name],
         }), {}),
       }), {}),
-    }
+    }*/
 
 
     // calculate antrag
