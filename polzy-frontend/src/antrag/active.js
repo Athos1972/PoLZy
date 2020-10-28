@@ -26,9 +26,7 @@ import { CardActiveHide, CardActive, CardTop, hideTime } from '../policy/CardSty
 import { AntragTitle, InputField, ProgressButton } from './components'
 import { removeAntrag, updateAntrag } from '../redux/actions'
 import { executeAntrag } from '../api'
-import { ReactComponent as Calculate } from '../Icons/calculate.svg'
-import { ReactComponent as Pdf } from '../Icons/pdf.svg'
-import { ReactComponent as Partnersearch } from '../Icons/partnersearch.svg'
+import { ActivityIcon } from '../components/icons'
 
 // set styles
 const useStyles = makeStyles((theme) => ({
@@ -77,40 +75,10 @@ function AntragCard(props) {
   )
 }
 
-function ActivityIcon(props) {
-  const {icon} = props
-
-  switch (icon) {
-    case 'calculate.svg':
-      return (
-        <SvgIcon viewBox="0 0 512 512">
-          <Calculate />
-        </SvgIcon>
-      )
-    case 'pdf.svg':
-      return (
-        <SvgIcon viewBox="0 0 48 48">
-          <Pdf />
-        </SvgIcon>
-      )
-    case 'partnersearch.svg':
-      return (
-        <SvgIcon viewBox="0 0 964.8 964.8">
-          <Partnersearch />
-        </SvgIcon>
-      )
-    default:
-      return <CloseIcon />
-  }
-}
-
 function ActiveAntrag(props) {
   const {antrag} = props
-  //const {fields} = antrag
   const {t} = useTranslation('common', 'antrag')
   const classes = useStyles()
-
-  //const premium = fields.reduce((obj, field) => (field.name === "premium" ? field : obj), {})
 
   const [hidden, setHidden] = useState(false)
 
@@ -140,6 +108,8 @@ function ActiveAntrag(props) {
   const [activityValues, setActivityValues] = useState({})
   const [isCalculate, setCalculate] = useState(false)
   const [isWaiting, setWaiting] = useState(false)
+  const [isPartnerVisible, setPartnerVisible] = useState(false)
+  const [partnet, setPartner] = useState('')
 
   const validateFields = () => {
     // checks if all mandatory fields are filled
@@ -200,15 +170,6 @@ function ActiveAntrag(props) {
         ...values,
       }
     }
-      /*values: antrag.field_groups.filter(group => groups[group.name]).reduce((result, group) => ({
-        ...result,
-        ...antrag[group.name].reduce((groupFields, field) => ({
-          ...groupFields,
-          [field.name]: values[field.name],
-        }), {}),
-      }), {}),
-    }*/
-
 
     // calculate antrag
     executeAntrag(props.stage, requestData).then(data => {
@@ -226,26 +187,32 @@ function ActiveAntrag(props) {
     })
   }
 
-  const handleActivityExecute = () => {
+  const executeActivity = (activity) => {
     // switch calculate mode
     setWaiting(true)
     // build request body
     const requestData = {
       id: antrag.id,
-      activity: currentActivity,
-      values: currentActivity === "Berechnen" ? values : activityValues,
+      activity: activity,
+      //values: currentActivity === "Berechnen" ? values : activityValues,
     }
     // execute activity
     executeAntrag(props.stage, requestData).then(data => {
       
-      // update antrag
-      props.updateAntrag(
-        props.index,
-        {
-          request_state: "ok",
-          ...data,
-        }
-      )
+      // check response
+      if ('link' in data) {
+        console.log(data)
+        window.open(`http://localhost:5000/files/${data.link}`, "_blank")
+      } else {
+        // update antrag
+        props.updateAntrag(
+          props.index,
+          {
+            request_state: "ok",
+            ...data,
+          }
+        )
+      }
       
       //update state
       setWaiting(false)
@@ -253,7 +220,21 @@ function ActiveAntrag(props) {
     })
   }
 
+  const handleActivitySelect = (event, value) => {
+    // update state
+    setActivity(value)
 
+    // execute activity
+    if (value === "VN festlegen" ) {
+      setPartnerVisible(true)
+    } else {
+      setPartnerVisible(false)
+      setPartner('')
+      executeActivity(value)
+    }
+  }
+
+  
   return(
     <AntragCard
       hidden={hidden}
@@ -417,12 +398,19 @@ function ActiveAntrag(props) {
             </CardContent>
           */}
 
+          {/* Partner Search */}
+
           {/* bottom navigation */}
           {antrag.status !== "Neu" &&
             <CardContent>
-              <BottomNavigation value={currentActivity} onChange={(e, v) => setActivity(v)} >
-                {antrag.possible_activities.map((activity, index) => (
-
+              <BottomNavigation
+                value={currentActivity}
+                showLabels
+                onChange={handleActivitySelect}
+              >
+                {antrag.possible_activities.filter(activity => (
+                  activity.name !== "Berechnen"
+                )).map((activity, index) => (
                     <BottomNavigationAction
                       key={index}
                       label={activity.name}

@@ -1,7 +1,7 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { Button, Menu, MenuItem, SvgIcon, ListItemIcon } from '@material-ui/core'
-import { ReactComponent as House } from '../Icons/house_filled.svg'
+import { ProductIcon } from '../components/icons'
 
 const useStyles = makeStyles(theme => ({
   imageIcon: {
@@ -59,9 +59,7 @@ export default function MenuButton(props){
             onClick={(event) => handleMenuClick(event, item.description)}
           >
             <ListItemIcon>
-              <SvgIcon color="primary">
-                <House />
-              </SvgIcon>
+              <ProductIcon icon={item.name} />
             </ListItemIcon>
             {item.description}
           </MenuItem>
