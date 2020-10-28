@@ -1,5 +1,3 @@
-
-export const antrags = [
 {
   "request_state": "ok",
   "id": "dcb5ba18-4af8-4bb1-a5aa-b6f930cc3d09",
@@ -67,7 +65,7 @@ export const antrags = [
       "fieldDataType": "Flag",
       "inputRange": [],
       "onlyFromRange": false,
-      "valueChosenOrEntered": "False",
+      "valueChosenOrEntered": "True",
       "valueChosenOrEnteredTech": "JA",
       "valueChosenOrEnteredOutput": "Ja",
       "inputTriggers": false,
@@ -509,4 +507,3 @@ export const antrags = [
     }
   ]
 }
-]

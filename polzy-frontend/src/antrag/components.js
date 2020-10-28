@@ -59,8 +59,6 @@ export function InputField(props) {
   const [date, setDate] = React.useState(new Date)
   if (data.fieldDataType === "Datum") {
     const strDate = parse(value, 'dd.MM.yyyy', new Date())
-    console.log('Value: ' + value)
-    console.log(strDate)
   }
 
   const handleBlur = () => {

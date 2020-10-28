@@ -50,6 +50,7 @@ function NewAntrag(props) {
 
   useEffect(() => {
     getProducts(props.user.stage).then((data) => {
+      console.log(data)
       setProductList(data)
     })
   }, [props.user.stage])

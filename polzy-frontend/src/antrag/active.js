@@ -17,7 +17,7 @@ import {
   BottomNavigation,
   BottomNavigationAction,
   SvgIcon,
-  Fab,
+  Paper,
 } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import { makeStyles } from '@material-ui/core/styles'
@@ -32,18 +32,30 @@ import { ReactComponent as Partnersearch } from '../Icons/partnersearch.svg'
 
 // set styles
 const useStyles = makeStyles((theme) => ({
+  flexContainerVertical: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+
   flexContainerRight: {
     margin: theme.spacing(1),
     display: 'flex',
     justifyContent: 'flex-end',
   },
 
+  fieldGroup: {
+    padding: theme.spacing(1),
+    margin: theme.spacing(1),
+  },
+
+  fieldGroupCntainer: {
+    margin: 0,
+  },
+
   premiumText: {
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
-  }
-
-
+  },
 
 }));
 
@@ -94,36 +106,48 @@ function ActivityIcon(props) {
 
 function ActiveAntrag(props) {
   const {antrag} = props
-  const {fields} = antrag
+  //const {fields} = antrag
   const {t} = useTranslation('common', 'antrag')
   const classes = useStyles()
 
-  const premium = fields.reduce((obj, field) => (field.name === "premium" ? field : obj), {})
-  const getValues = () => {
-    return fields.reduce((obj, field) => ({
-      ...obj,
-      [field.name]: field.valueChosenOrEntered
-    }), {})
-  }
+  //const premium = fields.reduce((obj, field) => (field.name === "premium" ? field : obj), {})
 
   const [hidden, setHidden] = useState(false)
+
+  // groups state
+  const getGroups = () => {
+    return antrag.field_groups.reduce((result, group) => ({
+      ...result,
+      [group.name]: group.valueChosenOrEntered === "True",
+    }), {})
+  }
+  const [groups, setGroups] = useState(getGroups)
+
+  // values state
+  const getValues = () => {
+    return antrag.field_groups.filter(group => groups[group.name]).reduce((result, group) => ({
+      ...result,
+      ...antrag[group.name].reduce((groupFields, field) => ({
+        ...groupFields,
+        [field.name]: field.fieldDataType === "Flag" ? field.valueChosenOrEntered === "True" : field.valueChosenOrEntered,
+      }), {}),
+    }), {})
+  }
   const [values, setValues] = useState(getValues)
+
+  // other states
   const [currentActivity, setActivity] = useState('')
   const [activityValues, setActivityValues] = useState({})
   const [isCalculate, setCalculate] = useState(false)
   const [isWaiting, setWaiting] = useState(false)
 
-  useEffect(() => {
-    // update antrag values
-    setValues(getValues)
-
-  }, [fields])
-
   const validateFields = () => {
     // checks if all mandatory fields are filled
-    for (const field of fields) {
-      if (field.isMandatory && values[field.name] === '')
-        return false
+    for (const group of antrag.field_groups.filter(group => (group.valueChosenOrEntered === "True"))) {
+      for (const field of antrag[group.name]) {
+        if (field.isMandatory && values[field.name] === '')
+          return false
+      }
     }
     return true
   }
@@ -146,11 +170,14 @@ function ActiveAntrag(props) {
     setTimeout(() => {props.closeAntrag(props.index)}, hideTime)
   }
 
+  const updateGroupVisibility = (name, value) => {
+    setGroups((preValues) => ({
+      ...preValues,
+      [name]: value,
+    }))
+  }
+
   const updateValue = (name, type, value) => {
-    console.log('UPDATE VALUE:')
-    console.log(name)
-    console.log(type)
-    console.log(value)
     const re = /^[0-9\b]+$/
     if (type !== 'Zahl' || value === '' || re.test(value)) {
       setValues((preValues) => ({
@@ -163,12 +190,21 @@ function ActiveAntrag(props) {
   const handleCalculateClick = () => {
     // switch calculate mode
     setCalculate(true)
+
     // build request body
     const requestData = {
       id: antrag.id,
       activity: "Berechnen",
-      values: values,
+      values: antrag.field_groups.filter(group => groups[group.name]).reduce((result, group) => ({
+        ...result,
+        ...antrag[group.name].reduce((groupFields, field) => ({
+          ...groupFields,
+          [field.name]: values[field.name],
+        }), {}),
+      }), {}),
     }
+
+
     // calculate antrag
     executeAntrag(props.stage, requestData).then(data => {
       // update antrag
@@ -212,6 +248,7 @@ function ActiveAntrag(props) {
     })
   }
 
+
   return(
     <AntragCard
       hidden={hidden}
@@ -232,9 +269,11 @@ function ActiveAntrag(props) {
           />
           <CardContent>
 
-            {/* Flags */}
+            {/* Input Group Switchers */}
             <Grid container spacing={2}>
-              {fields.filter((field) => (field.fieldDataType === "Flag")).map((field) => (
+              {antrag.field_groups.filter((field) => (
+                field.fieldType === 1 && field.fieldDataType === "Flag"
+              )).map((field) => (
                 <Grid item key={field.name} xs={6} md={4} lg={3}>
                   <Tooltip
                     title={field.tooltip}
@@ -243,8 +282,8 @@ function ActiveAntrag(props) {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={values[field.name]}
-                          onChange={(e) => updateValue(field.name, field.fieldDataType, e.target.checked)}
+                          checked={groups[field.name]}
+                          onChange={(e) => updateGroupVisibility(field.name, e.target.checked)}
                           name={field.name}
                           color="primary"
                         />
@@ -256,21 +295,59 @@ function ActiveAntrag(props) {
               ))}
             </Grid>
 
-            {/* Other Fields */}
-            <Grid container spacing={2}>
-              {fields.filter((field) => (
-                field.fieldDataType !== "Flag" && field.name !== "premium"
-              )).map((field) => (
-                <Grid item key={field.name} xs={12} md={4} lg={3}>
-                  <InputField
-                    id={antrag.id}
-                    data={field}
-                    value={values[field.name]}
-                    onChange={updateValue}
-                  />
-                </Grid>
-              ))}
-            </Grid>
+
+            {/* Input Groups */}
+            <div className={classes.flexContainerVertical}>
+                {antrag.field_groups.filter(group => groups[group.name]).map(group => (
+                  <Paper 
+                    classes={{root: classes.fieldGroup}}
+                    elevation={2}
+                  >
+                    {/* Title */}
+                    <Typography gutterBottom variant="h5" component="p">
+                      {group.tooltip}
+                    </Typography>
+
+                    {/* Flags */}
+                    <Grid classes={{root: classes.fieldGroupCntainer}} container spacing={2}>
+                      {antrag[group.name].filter((field) => (field.fieldDataType === "Flag")).map((field) => (
+                        <Grid item key={field.name} xs={6} md={4} lg={3}>
+                          <Tooltip
+                            title={field.tooltip}
+                            placement="top"
+                          >
+                            <FormControlLabel
+                              control={
+                                <Switch
+                                  checked={values[field.name]}
+                                  onChange={(e) => updateValue(field.name, field.fieldDataType, e.target.checked)}
+                                  name={field.name}
+                                  color="primary"
+                                />
+                              }
+                              label={field.brief}
+                            />
+                          </Tooltip>
+                        </Grid>
+                      ))}
+                    </Grid>
+
+                    {/* Other Fields */}
+                    <Grid classes={{root: classes.fieldGroupCntainer}} container spacing={2}>
+                      {antrag[group.name].filter((field) => (field.fieldDataType !== "Flag")).map((field) => (
+                        <Grid item key={field.name} xs={12} md={4} lg={3}>
+                          <InputField
+                            id={antrag.id}
+                            data={field}
+                            value={values[field.name]}
+                            onChange={updateValue}
+                          />
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </Paper>
+                ))}
+            </div>
 
             {/* Premium Field */}
             {antrag.status !== "Neu" && (
@@ -280,7 +357,7 @@ function ActiveAntrag(props) {
                   component="div"
                   variant="h5"
                 >
-                  {`${t("antrag:premium")}: € ${premium.valueChosenOrEntered}`}
+                  {`${t("antrag:premium")}: € ${antrag.fields[0].valueChosenOrEntered}`}
                 </Typography>
               </div>
             )}
