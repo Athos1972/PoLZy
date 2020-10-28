@@ -19,7 +19,7 @@
     "effective.date": "Wirksamkeitsdatum",
     "find": "Finden",
     "find.policy": "Finde Polizze",
-    "insured.object": "Versichertes Objekt",
+    "insured.object": "Versichertes Risiko",
     "invalid": "Ungültige Polizzendaten",
     "policy": "Polizze",
     "policy.number": "Polizze",
@@ -36,6 +36,6 @@
     "invalid.antrag": "Ungültige Anfrage",
     "re-calculate": "Neu rechnen",
     "premium": "Prämie",
-    "select.product": "Ausgewähltes Produkt"
+    "select.product": "Produkt wählen"
   }
 }

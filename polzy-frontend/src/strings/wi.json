@@ -15,11 +15,11 @@
   },
 
   "policy": {
-    "clauses": "Klauseln",
+    "clauses": "Kladruckt's",
     "effective.date": "Wirksamkeitsdatum",
     "find": "Findn",
     "find.policy": "Polizzn suchn",
-    "insured.object": "Risiko",
+    "insured.object": "Schodnpotential",
     "invalid": "Polizzendaten san ned guad!",
     "policy": "Polizze",
     "policy.number": "Polizzn",
