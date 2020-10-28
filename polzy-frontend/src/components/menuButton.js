@@ -53,17 +53,17 @@ export default function MenuButton(props){
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        {items.map((value) => (
+        {items.map((item) => (
           <MenuItem 
-            key={value}
-            onClick={(event) => handleMenuClick(event, value)}
+            key={item.name}
+            onClick={(event) => handleMenuClick(event, item.name)}
           >
             <ListItemIcon>
               <SvgIcon color="primary">
                 <House />
               </SvgIcon>
             </ListItemIcon>
-            {value}
+            {item.description}
           </MenuItem>
         ))}
       </Menu>
