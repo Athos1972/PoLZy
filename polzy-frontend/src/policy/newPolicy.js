@@ -17,8 +17,9 @@ import deLocale from "date-fns/locale/de"
 import { format } from 'date-fns'
 import SearchIcon from '@material-ui/icons/Search'
 import { withTranslation } from 'react-i18next'
+import { CardNew, CardLogo } from '../styles/cards'
 import { addPolicy } from '../redux/actions'
-import logo from '../logo/LEZYSEM5-01.png'
+import logo from '../logo/LEZYSEM5-02.png'
 
 
 // Search Button Styles
@@ -30,7 +31,7 @@ const CardFindPolicy = withStyles({
   },
 })(Card)
 
-const CardLogo = withStyles({
+const CardLogo2 = withStyles({
   root: {
     width: 160,
     height: 170,
@@ -40,11 +41,11 @@ const CardLogo = withStyles({
 
 const SearchButton = withStyles((theme) => ({
   root: {
-    backgroundColor: "#00c853",
+    //backgroundColor: "#00c853",
     marginTop: theme.spacing(2),
-    '&:hover': {
+    /*'&:hover': {
       backgroundColor: "#43a047",
-    }
+    }*/
   },
 }))(Button)
 
@@ -100,7 +101,7 @@ class NewPolicy extends React.Component {
     const {t} = this.props
 
     return(
-      <CardFindPolicy>
+      <CardNew>
         <div style={{flex: '1 0 auto'}}>
           <CardHeader
             title={t("find.policy")}
@@ -153,7 +154,7 @@ class NewPolicy extends React.Component {
           image={logo}
           title="LeZySEM"
         />
-      </CardFindPolicy>
+      </CardNew>
     )
   }
 }

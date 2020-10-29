@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Typography, IconButton, Tooltip } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import { useTranslation } from 'react-i18next'
-import { CardErrorHide, CardError, CardTop, CardMiddle, hideTime } from '../policy/CardStyles'
+import { CardErrorHide, CardError, CardTop, CardMiddle, hideTime } from '../styles/cards'
 import { AntragTitle } from './components'
 import { removeAntrag } from '../redux/actions'
 

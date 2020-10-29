@@ -20,7 +20,7 @@ import { makeStyles, withStyles } from '@material-ui/core/styles'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import CloseIcon from '@material-ui/icons/Close'
 import { withTranslation, useTranslation } from 'react-i18next'
-import { CardActiveHide, CardActive, CardTop, CardBottom, hideTime } from './CardStyles'
+import { CardActiveHide, CardActive, CardTop, CardBottom, hideTime } from '../styles/cards'
 import { PolicyTitle } from './Components'
 import PolicyDetails from './policyDetails'
 import { removePolicy, updatePolicy } from '../redux/actions'
@@ -30,10 +30,10 @@ import { executeActivity } from '../api'
 const ActiveButton = withStyles((theme) => ({
   root: {
     marginBottom: theme.spacing(1),
-    backgroundColor: "#00c853",
+    /*backgroundColor: "#00c853",
     '&:hover': {
       backgroundColor: "#43a047",
-    }
+    }*/
   },
 }))(Button)
 

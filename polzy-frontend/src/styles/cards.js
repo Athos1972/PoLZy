@@ -3,6 +3,7 @@ import {
   CardHeader,
   CardActions,
   CardContent,
+  CardMedia,
 } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 
@@ -22,6 +23,7 @@ COLORS
 const activeColor = "#fff"
 const errorColor = "#fbb"
 const disabledColor = "#ccc"
+
 
 /*
 
@@ -90,14 +92,27 @@ Static Cards
 export const CardActive = withStyles((theme) => ({
   root: {
     marginTop: theme.spacing(themeSpacing),
+    borderColor: theme.palette.primary.main,
+    borderWidth: "thin",
+    borderStyle: "solid",
   }
 }))(Card)
+
+export const CardNew = withStyles((theme) => ({
+  root: {
+    display: "flex",
+    padding: theme.spacing(1),
+  },
+}))(CardActive)
 
 export const CardError = withStyles((theme) => ({
   root: {
     marginTop: theme.spacing(themeSpacing),
     backgroundColor: errorColor,
     color: "#b71c1c",
+    borderColor: theme.palette.error.main,
+    borderWidth: "thin",
+    borderStyle: "solid",
   },
 }))(Card)
 
@@ -105,6 +120,9 @@ export const CardDisabled = withStyles((theme) => ({
   root: {
     marginTop: theme.spacing(themeSpacing),
     backgroundColor: disabledColor,
+    borderColor: "#000",
+    borderWidth: "thin",
+    borderStyle: "solid",
   },
 }))(Card)
 
@@ -112,7 +130,15 @@ export const CardDisabled = withStyles((theme) => ({
 
 Card Elements
 
-*/ 
+*/
+export const CardLogo = withStyles({
+  root: {
+    width: 160,
+    height: 170,
+    float: "right",
+  }
+})(CardMedia)
+
 export const CardTop = withStyles((theme) => ({
   root: {
     paddingBottom: 0,

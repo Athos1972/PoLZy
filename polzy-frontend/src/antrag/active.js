@@ -18,11 +18,12 @@ import {
   BottomNavigationAction,
   SvgIcon,
   Paper,
+  Collapse,
 } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
-import { CardActiveHide, CardActive, CardTop, hideTime } from '../policy/CardStyles'
+import { CardActiveHide, CardActive, CardTop, hideTime } from '../styles/cards'
 import { AntragTitle, InputField, ProgressButton } from './components'
 import { removeAntrag, updateAntrag } from '../redux/actions'
 import { executeAntrag } from '../api'
@@ -48,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
 
   fieldGroupCntainer: {
     margin: 0,
+    width: "100%",
   },
 
   premiumText: {
@@ -287,7 +289,9 @@ function ActiveAntrag(props) {
 
             {/* Input Groups */}
             <div className={classes.flexContainerVertical}>
-                {antrag.field_groups.filter(group => groups[group.name]).map(group => (
+                {/*antrag.field_groups.filter(group => groups[group.name]).map(group => (*/}
+                {antrag.field_groups.map(group => (
+                  <Collapse in={groups[group.name]} timeout="auto" unmountOnExit>
                   <Paper 
                     classes={{root: classes.fieldGroup}}
                     elevation={2}
@@ -335,6 +339,7 @@ function ActiveAntrag(props) {
                       ))}
                     </Grid>
                   </Paper>
+                  </Collapse>
                 ))}
             </div>
 

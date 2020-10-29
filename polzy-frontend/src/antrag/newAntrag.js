@@ -14,8 +14,9 @@ import { withStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import { addAntrag } from '../redux/actions'
 import { getProducts } from '../api'
+import { CardNew, CardLogo } from '../styles/cards'
 import MenuButton from '../components/menuButton'
-import logo from '../logo/LEZYSEM5-01.png'
+import logo from '../logo/LEZYSEM5-02.png'
 
 
 
@@ -28,7 +29,7 @@ const CardNewAntrag = withStyles({
   },
 })(Card)
 
-const CardLogo = withStyles({
+const CardLogo2 = withStyles({
   root: {
     width: 160,
     height: 170,
@@ -66,7 +67,7 @@ function NewAntrag(props) {
   }
 
   return(
-    <CardNewAntrag>
+    <CardNew>
       <div style={{flex: '1 0 auto'}}>
         <CardHeader
           title={t("antrag:fast.offer")}
@@ -84,7 +85,7 @@ function NewAntrag(props) {
         image={logo}
         title="LeZySEM"
       />
-    </CardNewAntrag>
+    </CardNew>
   )
 }
 

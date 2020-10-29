@@ -22,13 +22,13 @@ const useStyles = makeStyles({
   },
 
   button: {
-    backgroundColor: "#00c853",
+    //backgroundColor: "#00c853",
     padding: 10,
     marginTop: 10,
     marginBottom: 30,
-    '&:hover': {
+    /*'&:hover': {
       backgroundColor: "#43a047",
-    }
+    }*/
   },
 })
 

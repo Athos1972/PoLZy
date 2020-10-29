@@ -48,7 +48,7 @@ function HomeView(props) {
       <Tabs 
         value={tab}
         onChange={(e, v) => {setTab(v)}}
-        indicatorColor="primary"
+        indicatorColor="secondary"
         textColor="primary"
         variant="fullWidth"
       >
