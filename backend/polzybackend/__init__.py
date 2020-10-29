@@ -3,12 +3,15 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_httpauth import HTTPTokenAuth
 import os
+from .messenger import Messenger
 
 
 # initialization
 db = SQLAlchemy()
 migrate = Migrate()
 auth = HTTPTokenAuth(scheme='Bearer')
+messenger = Messenger()
+
 
 def create_app(config=None):
     # create application
@@ -31,6 +34,9 @@ def create_app(config=None):
 
     from .main import bp
     app.register_blueprint(bp)
+
+    from .announce import bp as bp_announce
+    app.register_blueprint(bp_announce)
 
     return app
 
