@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { Container, Tabs, Tab, Snackbar, SnackbarContent } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
+import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline'
 import PolicyView from './PolicyView'
 import AntragView from './AntragView'
 import Header from'../components/header'
@@ -22,6 +23,14 @@ const useStyles = makeStyles((theme) => ({
 
   toast: {
     backgroundColor: theme.palette.primary.main,
+  },
+
+  toastContainer: {
+    display: 'flex',
+  },
+
+  toastMessage: {
+    padding: theme.spacing(1) / 2,
   }
 }))
 
@@ -46,27 +55,38 @@ function HomeView(props) {
   const {t} = useTranslation('policy', 'antrag')
 
   const [message, setMessage] = useState('')
+  const [isToast, setToast] = useState(false)
 
   useEffect(() => {
     const eventSource = new EventSource("http://localhost:5000/listen")
-    eventSource.onmessage = (e) => setMessage(e.data)
+    eventSource.onmessage = (e) => {
+      setMessage(e.data)
+      setToast(true)
+    }
   }, [])
 
   const handleToastClose = () => {
-    setMessage('')
+    setToast(false)
   }
 
   return(
     <React.Fragment>
     <Snackbar
       anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      open={message !== ''}
+      open={isToast}
       onClose={handleToastClose}
-      autoHideDuration={2000}
+      autoHideDuration={1500}
     >
       <SnackbarContent 
         classes={{root: classes.toast}}
-        message={message}
+        message={
+          <div className={classes.toastContainer}>
+            <CheckCircleOutline />
+            <div className={classes.toastMessage}>
+              {message}
+            </div>
+          </div>
+        }
       />
     </Snackbar>
     <Container maxWidth="lg">
