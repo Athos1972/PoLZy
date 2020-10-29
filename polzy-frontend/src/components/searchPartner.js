@@ -3,7 +3,7 @@ import TextField from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
-export default function SearchPartner() {
+export default function SearchPartner(props) {
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState([]);
   const loading = open && options.length === 0;
@@ -20,14 +20,14 @@ export default function SearchPartner() {
         method: 'POST',
         headers: {'content-type': 'application/json'},
         body: JSON.stringify({
-          activity: partner,
-          value: value,
+          activity: "partner",
+          value: "value",
         }),
-      }))
+      })
       const partners = await response.json();
 
       if (active) {
-        setOptions(Object.keys(countries).map((key) => countries[key].item[0]));
+        setOptions(Object.keys(partners).map((key) => partners[key].item[0]));
       }
     })();
 

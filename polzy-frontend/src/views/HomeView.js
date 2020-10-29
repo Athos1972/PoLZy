@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Container, Tabs, Tab } from '@material-ui/core'
+import { Container, Tabs, Tab, Snackbar, SnackbarContent } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import PolicyView from './PolicyView'
@@ -19,7 +19,11 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3, 2),
     marginTop: 'auto',
   },
-}));
+
+  toast: {
+    backgroundColor: theme.palette.primary.main,
+  }
+}))
 
 function TabPanel(props) {
   const { children, name, value } = props;
@@ -41,8 +45,30 @@ function HomeView(props) {
   const [tab, setTab] = useState('policy')
   const {t} = useTranslation('policy', 'antrag')
 
+  const [message, setMessage] = useState('')
+
+  useEffect(() => {
+    const eventSource = new EventSource("http://localhost:5000/listen")
+    eventSource.onmessage = (e) => setMessage(e.data)
+  }, [])
+
+  const handleToastClose = () => {
+    setMessage('')
+  }
+
   return(
     <React.Fragment>
+    <Snackbar
+      anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      open={message !== ''}
+      onClose={handleToastClose}
+      autoHideDuration={2000}
+    >
+      <SnackbarContent 
+        classes={{root: classes.toast}}
+        message={message}
+      />
+    </Snackbar>
     <Container maxWidth="lg">
       <Header />
       <Tabs 
