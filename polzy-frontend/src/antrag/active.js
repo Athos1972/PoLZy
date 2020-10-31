@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { 
   CardContent,
@@ -10,13 +10,8 @@ import {
   Switch,
   Button,
   Typography,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
   BottomNavigation,
   BottomNavigationAction,
-  SvgIcon,
   Paper,
   Collapse,
 } from '@material-ui/core'

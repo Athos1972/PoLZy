@@ -103,7 +103,10 @@ function MakeClauseRow(props) {
         title={
           <React.Fragment>
             <h4>{clause.description}</h4>
-            <Link href={clause.link}>
+            <Link
+              href={clause.link}
+              target="_blank"
+            >
               {clause.link}
             </Link>
           </React.Fragment>

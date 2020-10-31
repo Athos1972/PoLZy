@@ -1,20 +1,7 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import { Button, Menu, MenuItem, SvgIcon, ListItemIcon } from '@material-ui/core'
+//import { makeStyles } from '@material-ui/core/styles'
+import { Button, Menu, MenuItem, ListItemIcon } from '@material-ui/core'
 import { ProductIcon } from '../components/icons'
-
-const useStyles = makeStyles(theme => ({
-  imageIcon: {
-    height: '100%',
-  },
-  iconRoot: {
-    fillColor: theme.palette.primary.main,
-    color: theme.palette.secondary.main,
-  },
-  menuItem: {
-    backgroundColor: theme.palette.secondary.main,
-  }
-}))
 
 export default function MenuButton(props){
   const {id, title, items} = props
@@ -32,8 +19,6 @@ export default function MenuButton(props){
     setAnchorEl(null)
     props.onClick(value)
   }
-
-  const classes = useStyles()
 
   return(
     <React.Fragment>

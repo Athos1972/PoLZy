@@ -1,47 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { 
-  Card,
-  CardMedia,
-  CardHeader,
-  CardContent,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-} from '@material-ui/core'
-import { withStyles } from '@material-ui/core/styles'
+import { CardHeader, CardContent, } from '@material-ui/core'
 import { useTranslation } from 'react-i18next'
 import { addAntrag } from '../redux/actions'
 import { getProducts } from '../api'
 import { CardNew, CardLogo } from '../styles/cards'
 import MenuButton from '../components/menuButton'
 import logo from '../logo/LEZYSEM5-02.png'
-
-
-
-// Search Button Styles
-// Error Card Styles
-const CardNewAntrag = withStyles({
-  root: {
-    display: "flex",
-    padding: 5,
-  },
-})(Card)
-
-const CardLogo2 = withStyles({
-  root: {
-    width: 160,
-    height: 170,
-    float: "right",
-  }
-})(CardMedia)
-
-const ProductControl = withStyles((theme) => ({
-  root: {
-    width: "240px",
-  }
-}))(FormControl)
 
 
 function NewAntrag(props) {

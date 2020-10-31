@@ -56,7 +56,7 @@ export function InputField(props) {
   const {id, data, value, onChange } = props
   const {i18n} = useTranslation()
 
-  const [date, setDate] = React.useState(new Date)
+  //const [date, setDate] = React.useState(new Date)
   if (data.fieldDataType === "Datum") {
     const strDate = parse(value, 'dd.MM.yyyy', new Date())
   }

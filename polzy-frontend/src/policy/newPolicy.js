@@ -2,8 +2,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { 
   Grid,
-  Card,
-  CardMedia,
   CardHeader,
   CardContent,
   TextField,
@@ -22,23 +20,7 @@ import { addPolicy } from '../redux/actions'
 import logo from '../logo/LEZYSEM5-02.png'
 
 
-// Search Button Styles
-// Error Card Styles
-const CardFindPolicy = withStyles({
-  root: {
-    display: "flex",
-    padding: 5,
-  },
-})(Card)
-
-const CardLogo2 = withStyles({
-  root: {
-    width: 160,
-    height: 170,
-    float: "right",
-  }
-})(CardMedia)
-
+// Styles
 const SearchButton = withStyles((theme) => ({
   root: {
     //backgroundColor: "#00c853",
