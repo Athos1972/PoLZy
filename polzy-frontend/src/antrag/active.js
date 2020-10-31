@@ -25,8 +25,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import { CardActiveHide, CardActive, CardTop, hideTime } from '../styles/cards'
 import { AntragTitle, InputField, ProgressButton } from './components'
-import { removeAntrag, updateAntrag } from '../redux/actions'
-import { executeAntrag } from '../api'
+import { removeAntrag, updateAntrag, addAntrag } from '../redux/actions'
+import { executeAntrag, cloneAntrag } from '../api'
 import { ActivityIcon } from '../components/icons'
 
 // set styles
@@ -142,6 +142,28 @@ function ActiveAntrag(props) {
     setTimeout(() => {props.closeAntrag(props.index)}, hideTime)
   }
 
+  const isCloneAvailable = () => {
+    for (const activity of antrag.possible_activities) {
+      if (activity.name === "Clone")
+        return true
+    }
+
+    return false
+  }
+
+  const handleCloneClick = () => {
+    // request antrag copy
+    cloneAntrag(props.stage, antrag.id).then(data => {
+      props.newAntrag(
+        {
+          request_state: "ok",
+          stage: props.stage,
+          ...data,
+        }
+      )
+    })
+  }
+
   const updateGroupVisibility = (name, value) => {
     setGroups((preValues) => ({
       ...preValues,
@@ -247,14 +269,26 @@ function ActiveAntrag(props) {
         <React.Fragment>
           <CardTop
             action={
-              <Tooltip title={t("common:close")}>
-                <IconButton 
-                  onClick={handleCloseClick}
-                  aria-label="close"
-                >
-                  <CloseIcon />
-                </IconButton>
-              </Tooltip>
+              <React.Fragment>
+                {isCloneAvailable() &&
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    size="small"
+                    onClick={handleCloneClick}
+                  >
+                    {t("common:copy")}
+                  </Button>
+                }
+                <Tooltip title={t("common:close")}>
+                  <IconButton 
+                    onClick={handleCloseClick}
+                    aria-label="close"
+                  >
+                    <CloseIcon />
+                  </IconButton>
+                </Tooltip>
+              </React.Fragment>
             }
             title={<AntragTitle product={antrag.product_line.attributes.Produkt} />}
           />
@@ -417,7 +451,7 @@ function ActiveAntrag(props) {
                 onChange={handleActivitySelect}
               >
                 {antrag.possible_activities.filter(activity => (
-                  activity.name !== "Berechnen"
+                  activity.name !== "Berechnen" && activity.name !== "Clone"
                 )).map((activity, index) => (
                     <BottomNavigationAction
                       key={index}
@@ -448,6 +482,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   closeAntrag: removeAntrag,
   updateAntrag: updateAntrag,
+  newAntrag: addAntrag,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ActiveAntrag)

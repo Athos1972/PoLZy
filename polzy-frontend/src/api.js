@@ -24,13 +24,19 @@ export const executeActivity = async (activity) => {
 
 // antrag calls
 export const getProducts = async (stage) => {
-  const response = await fetch(`/${stage}/products`)
+  const response = await fetch(`/${stage}/antrag/products`)
   const data = await response.json()
   return data
 }
 
 export const fetchAntrag = async (antrag) => {
-  const response = await fetch(`/${antrag.stage}/antrag/${antrag.product_line.name}`)
+  const response = await fetch(`/${antrag.stage}/antrag/create/${antrag.product_line.name}`)
+  const data = await response.json()
+  return data
+}
+
+export const cloneAntrag = async (stage, antragId) => {
+  const response = await fetch(`/${stage}/antrag/copy/${antragId}`)
   const data = await response.json()
   return data
 }
