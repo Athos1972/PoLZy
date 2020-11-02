@@ -75,7 +75,7 @@ function HomeView(props) {
       anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       open={isToast}
       onClose={handleToastClose}
-      autoHideDuration={1500}
+      autoHideDuration={2000}
     >
       <SnackbarContent 
         classes={{root: classes.toast}}
