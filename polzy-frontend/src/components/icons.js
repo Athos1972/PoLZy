@@ -1,7 +1,18 @@
 import React from 'react'
 import SvgIcon from '@material-ui/core/SvgIcon'
+import Icon from '@material-ui/core/Icon'
+import { makeStyles } from '@material-ui/core/styles'
 
 // product icons
+// as objects
+import carIcon from '../icons/car_filled.svg'
+import docIcon from '../icons/document_filled.svg'
+import forestIcon from '../icons/forest_filled.svg'
+import handshakeIcon from '../icons/handshake_filled.svg'
+import houseIcon from '../icons/house_filled.svg'
+import medicineIcon from '../icons/medicine_filled.svg'
+
+// as component
 import { ReactComponent as Car } from '../icons/car_filled.svg'
 import { ReactComponent as Document } from '../icons/document_filled.svg'
 import { ReactComponent as Forest } from '../icons/forest_filled.svg'
@@ -15,8 +26,42 @@ import { ReactComponent as Pdf } from '../icons/pdf.svg'
 import { ReactComponent as Partnersearch } from '../icons/partnersearch.svg'
 import { ReactComponent as SaveToVNG } from '../icons/saveToVNG.svg'
 
+const useStyles = makeStyles({
+  svgIcon: {
+    display: 'flex',
+    height: 'inherit',
+    width: 'inherit',
+  }
+})
 
 export function ProductIcon(props) {
+  //const {icon} = props
+
+  const classes = useStyles()
+  console.log(classes.svgIcon)
+
+  const icon = () => {
+    switch (props.icon) {
+      case 'AntragKFZ':
+        return carIcon
+      case 'AntragWohnen':
+        return houseIcon
+      case 'AntragRS':
+        return docIcon
+      default:
+        return handshakeIcon
+    }
+  } 
+  
+  return (
+    <Icon>
+      <img className={classes.svgIcon} src={icon()}/>
+    </Icon>
+  )
+}
+
+
+export function ProductIconSvg(props) {
   const {icon} = props
 
   //console.log(Car)
