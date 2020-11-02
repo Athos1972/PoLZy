@@ -325,54 +325,63 @@ function ActiveAntrag(props) {
             <div className={classes.flexContainerVertical}>
                 {/*antrag.field_groups.filter(group => groups[group.name]).map(group => (*/}
                 {antrag.field_groups.map(group => (
-                  <Collapse in={groups[group.name]} timeout="auto" unmountOnExit>
-                  <Paper 
-                    classes={{root: classes.fieldGroup}}
-                    elevation={2}
+                  <Collapse
+                    key={group.name}
+                    in={groups[group.name]}
+                    timeout="auto"
+                    unmountOnExit
                   >
-                    {/* Title */}
-                    <Typography gutterBottom variant="h5" component="p">
-                      {group.tooltip}
-                    </Typography>
+                    <Paper 
+                      classes={{root: classes.fieldGroup}}
+                      elevation={2}
+                    >
+                      {/* Title */}
+                      <Typography gutterBottom variant="h5" component="p">
+                        {group.tooltip}
+                      </Typography>
 
-                    {/* Flags */}
-                    <Grid classes={{root: classes.fieldGroupCntainer}} container spacing={2}>
-                      {antrag[group.name].filter((field) => (field.fieldDataType === "Flag")).map((field) => (
-                        <Grid item key={field.name} xs={6} md={4} lg={3}>
-                          <Tooltip
-                            title={field.tooltip}
-                            placement="top"
-                          >
-                            <FormControlLabel
-                              control={
-                                <Switch
-                                  checked={values[field.name]}
-                                  onChange={(e) => updateValue(field.name, field.fieldDataType, e.target.checked)}
-                                  name={field.name}
-                                  color="primary"
-                                />
-                              }
-                              label={field.brief}
+                      {/* Flags */}
+                      <Grid classes={{root: classes.fieldGroupCntainer}} container spacing={2}>
+                        {antrag[group.name].filter((field) => (
+                          field.fieldDataType === "Flag" && field.fieldType === 1
+                        )).map((field) => (
+                          <Grid item key={field.name} xs={6} md={4} lg={3}>
+                            <Tooltip
+                              title={field.tooltip}
+                              placement="top"
+                            >
+                              <FormControlLabel
+                                control={
+                                  <Switch
+                                    checked={values[field.name]}
+                                    onChange={(e) => updateValue(field.name, field.fieldDataType, e.target.checked)}
+                                    name={field.name}
+                                    color="primary"
+                                  />
+                                }
+                                label={field.brief}
+                              />
+                            </Tooltip>
+                          </Grid>
+                        ))}
+                      </Grid>
+
+                      {/* Other Fields */}
+                      <Grid classes={{root: classes.fieldGroupCntainer}} container spacing={2}>
+                        {antrag[group.name].filter((field) => (
+                          field.fieldDataType !== "Flag" && field.fieldType === 1
+                        )).map((field) => (
+                          <Grid item key={field.name} xs={12} md={4} lg={3}>
+                            <InputField
+                              id={antrag.id}
+                              data={field}
+                              value={values[field.name]}
+                              onChange={updateValue}
                             />
-                          </Tooltip>
-                        </Grid>
-                      ))}
-                    </Grid>
-
-                    {/* Other Fields */}
-                    <Grid classes={{root: classes.fieldGroupCntainer}} container spacing={2}>
-                      {antrag[group.name].filter((field) => (field.fieldDataType !== "Flag")).map((field) => (
-                        <Grid item key={field.name} xs={12} md={4} lg={3}>
-                          <InputField
-                            id={antrag.id}
-                            data={field}
-                            value={values[field.name]}
-                            onChange={updateValue}
-                          />
-                        </Grid>
-                      ))}
-                    </Grid>
-                  </Paper>
+                          </Grid>
+                        ))}
+                      </Grid>
+                    </Paper>
                   </Collapse>
                 ))}
             </div>
