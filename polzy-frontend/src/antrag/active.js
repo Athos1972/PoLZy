@@ -20,6 +20,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import { CardActiveHide, CardActive, CardTop, hideTime } from '../styles/cards'
 import { AntragTitle, InputField, ProgressButton } from './components'
+import DataField from'../components/dataFields'
 import { removeAntrag, updateAntrag, addAntrag } from '../redux/actions'
 import { executeAntrag, cloneAntrag } from '../api'
 import { ActivityIcon } from '../components/icons'
@@ -114,10 +115,10 @@ function ActiveAntrag(props) {
     console.log('VALIDATOR:')
     console.log(values)
     // checks if all mandatory fields are filled
-    for (const group of antrag.field_groups.filter(group => (group.valueChosenOrEntered === "True"))) {
+    for (const group of antrag.field_groups.filter(group => groups[group])) {
       for (const field of antrag[group.name]) {
         console.log(`${field.isMandatory ? "+" : "-"} ${field.name}: ${values[field.name]}`)
-        if (field.isMandatory && values[field.name] === "")
+        if (field.isMandatory && (values[field.name] === "" || values[field.name] === null))
           return false
       }
     }
@@ -170,7 +171,7 @@ function ActiveAntrag(props) {
       [name]: value,
     }))
   }
-
+  /*
   const updateValue = (name, type, value) => {
     const re = /^[0-9\b]+$/
     if (type !== 'Zahl' || value === '' || re.test(value)) {
@@ -179,6 +180,13 @@ function ActiveAntrag(props) {
         [name]: value,
       }))
     }
+  }
+  */
+  const handleDataChanged = (name, value) => {
+    setValues(preValues => ({
+      ...preValues,
+      [name]: value,
+    }))
   }
 
   const handleCalculateClick = () => {
@@ -354,7 +362,7 @@ function ActiveAntrag(props) {
                                 control={
                                   <Switch
                                     checked={values[field.name]}
-                                    onChange={(e) => updateValue(field.name, field.fieldDataType, e.target.checked)}
+                                    onChange={(e) => handleDataChanged(field.name, e.target.checked)}
                                     name={field.name}
                                     color="primary"
                                   />
@@ -372,11 +380,11 @@ function ActiveAntrag(props) {
                           field.fieldDataType !== "Flag" && field.fieldType === 1
                         )).map((field) => (
                           <Grid item key={field.name} xs={12} md={4} lg={3}>
-                            <InputField
+                            <DataField
                               id={antrag.id}
                               data={field}
                               value={values[field.name]}
-                              onChange={updateValue}
+                              onChange={handleDataChanged}
                             />
                           </Grid>
                         ))}
