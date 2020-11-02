@@ -1,7 +1,7 @@
 import React from 'react'
 //import { makeStyles } from '@material-ui/core/styles'
 import { Button, Menu, MenuItem, ListItemIcon } from '@material-ui/core'
-import { ProductIcon } from '../components/icons'
+import { ProductIcon } from './icons'
 
 export default function MenuButton(props){
   const {id, title, items} = props
@@ -38,9 +38,9 @@ export default function MenuButton(props){
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        {items.map((item) => (
+        {items.map((item, index) => (
           <MenuItem 
-            key={item.name}
+            key={`${item.name}-${index}`}
             onClick={(event) => handleMenuClick(event, item.description)}
           >
             <ListItemIcon>

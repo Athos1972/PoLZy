@@ -94,7 +94,9 @@ function ActiveAntrag(props) {
       ...result,
       ...antrag[group.name].reduce((groupFields, field) => ({
         ...groupFields,
-        [field.name]: field.fieldDataType === "Flag" ? field.valueChosenOrEntered === "True" : field.valueChosenOrEntered,
+        [field.name]: field.fieldDataType === "Flag" ? field.valueChosenOrEntered === "True" : (
+          field.valueChosenOrEntered === "None" ? "" : field.valueChosenOrEntered
+        ),
       }), {}),
     }), {})
   }
@@ -109,10 +111,13 @@ function ActiveAntrag(props) {
   const [partnet, setPartner] = useState('')
 
   const validateFields = () => {
+    console.log('VALIDATOR:')
+    console.log(values)
     // checks if all mandatory fields are filled
     for (const group of antrag.field_groups.filter(group => (group.valueChosenOrEntered === "True"))) {
       for (const field of antrag[group.name]) {
-        if (field.isMandatory && values[field.name] === '')
+        console.log(`${field.isMandatory ? "+" : "-"} ${field.name}: ${values[field.name]}`)
+        if (field.isMandatory && values[field.name] === "")
           return false
       }
     }
@@ -220,10 +225,10 @@ function ActiveAntrag(props) {
       
       // check response
       if (activity === "Drucken") {
-        console.log(data)
+        //console.log(data)
         window.open(`http://localhost:5000/files/${data.link}`, "_blank")
       } else if (activity === "Antrag erzeugen") {
-        console.log(data)
+        //console.log(data)
         window.open(data.link, "_blank")
       } else {
         // update antrag

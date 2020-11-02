@@ -18,11 +18,13 @@ import { ReactComponent as SaveToVNG } from '../icons/saveToVNG.svg'
 
 export function ProductIcon(props) {
   const {icon} = props
+
+  //console.log(Car)
   
   switch (icon) {
     case 'AntragKFZ':
       return (
-        <SvgIcon>
+        <SvgIcon shapeRendering="geometricPrecision">
           <Car />
         </SvgIcon>
       )
