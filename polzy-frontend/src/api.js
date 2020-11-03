@@ -42,7 +42,7 @@ export const cloneAntrag = async (stage, antragId) => {
 }
 
 export const executeAntrag = async (stage, antrag) => {
-  const response = await fetch(`/${stage}/antrag`, {
+  const response = await fetch(`/${stage}/antrag/execute`, {
     method: 'POST',
     headers: {'content-type': 'application/json'},
     body: JSON.stringify(antrag),
