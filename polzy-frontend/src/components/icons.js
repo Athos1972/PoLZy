@@ -48,6 +48,8 @@ export function ProductIcon(props) {
         return houseIcon
       case 'AntragRS':
         return docIcon
+      case 'AntragLVBeg':
+        return forestIcon
       default:
         return handshakeIcon
     }
