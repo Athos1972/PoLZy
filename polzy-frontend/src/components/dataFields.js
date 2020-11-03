@@ -117,13 +117,14 @@ export function DataFieldNumber(props) {
 export function DataFieldNumberRange(props) {
   const classes = useStyles()
   const {id, data, value, onChange } = props
+  const {t} = useTranslation('common')
   
   // range boundaries
   const min = Number(data.inputRange[1])
   const max = Number(data.inputRange[2])
-  const helpTextDefault = `Value in range: ${min}-${max}`
+  //const helpTextDefault = `Value in range: ${min}-${max}`
 
-  const [helpText, setHelpText] = React.useState(helpTextDefault)
+  //const [helpText, setHelpText] = React.useState(helpTextDefault)
   const [helpTextWarning, setHelpTextWarning] = React.useState(false)
 
   const handleChange = (e, v) => {
@@ -131,13 +132,13 @@ export function DataFieldNumberRange(props) {
     console.log(`Value: '${newValue}'`)
     // adjust helper text
     if (newValue !== '' && newValue < min) {
-      setHelpText(`The lowest value is ${min}`)
+      //setHelpText(`The lowest value is ${min}`)
       setHelpTextWarning(true)
     } else if (newValue > max) {
-      setHelpText(`The highest value is ${max}`)
+      //setHelpText(`The highest value is ${max}`)
       setHelpTextWarning(true)
     } else {
-      setHelpText(helpTextDefault)
+      //setHelpText(helpTextDefault)
       setHelpTextWarning(false)
     }
     // update value
@@ -146,12 +147,8 @@ export function DataFieldNumberRange(props) {
 
   const handleBlur = () => {
     if (value !== '' && value < min) {
-      //setHelpText(`The lowest value is ${min}`)
-      //setHelpTextWarning(true)
       props.onChange(data.name, min)
     } else if (value > max) {
-      //setHelpText(`The highest value is ${max}`)
-      //setHelpTextWarning(true)
       props.onChange(data.name, max)
     }
   }
@@ -187,7 +184,7 @@ export function DataFieldNumberRange(props) {
           classes={{root: clsx(classes.infoText, {[classes.warningText]: helpTextWarning})}}
           component="p"
         >
-          {helpText}
+          {t('value.range') + ': ' + min + '-' + max}
         </FormHelperText>
       </FormControl>
     </Tooltip>

@@ -9,9 +9,11 @@
     "action": "Action",
     "close": "Close",
     "collapse": "Collapse",
+    "copy": "Copy",
     "execute": "Execute",
     "expand": "Expand",
-    "none": "None"
+    "none": "None",
+    "value.range": "Value in range"
   },
 
   "policy": {
