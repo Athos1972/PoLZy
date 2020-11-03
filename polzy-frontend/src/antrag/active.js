@@ -261,7 +261,7 @@ function ActiveAntrag(props) {
     //if (currentActivity === "VN festlegen" && name === "Kundenname" && value.length > 3) {
       // get options
 
-    }
+    //}
   }
 
   const handleExecuteClick = () => {
