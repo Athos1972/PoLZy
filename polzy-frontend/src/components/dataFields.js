@@ -6,6 +6,11 @@ import {
   InputLabel,
   OutlinedInput,
   TextField,
+  FormControlLabel,
+  Switch,
+  Grid,
+  Paper,
+  Typography,
 } from '@material-ui/core'
 import clsx from 'clsx'
 import Autocomplete from '@material-ui/lab/Autocomplete'
@@ -29,6 +34,16 @@ const useStyles = makeStyles((theme) => ({
 
   warningText: {
     color: theme.palette.secondary.dark,
+  },
+
+  inputGroup: {
+    padding: theme.spacing(1),
+    margin: theme.spacing(1),
+  },
+
+  inputGroupCntainer: {
+    margin: 0,
+    width: "100%",
   },
 
 }))
@@ -199,7 +214,7 @@ export function DataFieldSelect(props) {
   const classes = useStyles()
   const {id, data, value, onChange } = props
 
-  console.log(data)
+  //console.log(data)
 
   return (
     <Tooltip
@@ -280,9 +295,36 @@ export function DataFieldDate(props) {
 
 
 /*
+** Switch
+*/
+export function DataFieldSwitch(props) {
+  const {id, data, value, onChange } = props
+
+  return (
+    <Tooltip
+      title={data.tooltip}
+      placement="top"
+    >
+      <FormControlLabel
+        control={
+          <Switch
+            id={`${data.name}-${id}`}
+            checked={value}
+            onChange={(e) => onChange(data.name, e.target.checked)}
+            color="primary"
+          />
+        }
+        label={data.brief}
+      />
+    </Tooltip>
+  )
+}
+
+
+/*
 ** Data Field Mapper
 */
-export default function DataField(props) {
+export function DataField(props) {
   const {data} = props
 
   if (data.inputRange.length > 0) {
@@ -301,4 +343,75 @@ export default function DataField(props) {
         return <DataFieldText {...props} />
     }
   }
+}
+
+
+/*
+** Input Group
+*/
+export default function DataGroup(props) {
+  const {title, fields, values, actions, ...commonProps} = props
+  const classes = useStyles()
+
+  return (
+    <Paper 
+      classes={{root: classes.inputGroup}}
+      elevation={2}
+    >
+
+      {/* Title */}
+      <Typography 
+        gutterBottom
+        variant="h5"
+        component="p"
+      >
+        {title}
+      </Typography>
+
+      {/* Flags */}
+      <Grid 
+        classes={{root: classes.inputGroupCntainer}}
+        container
+        spacing={2}
+      >
+        {fields.filter((field) => (
+          field.fieldDataType === "Flag" && field.fieldType === 1
+        )).map((field) => (
+          <Grid
+            key={field.name}
+            item
+            xs={6}
+            md={4}
+            lg={3}
+          >
+            <DataFieldSwitch 
+              {...commonProps}
+              data={field}
+              value={values[field.name]}
+            />
+          </Grid>
+        ))}
+      </Grid>
+
+      {/* Other Fields */}
+      <Grid 
+        classes={{root: classes.fieldGroupCntainer}}
+        container
+        spacing={2}
+      >
+        {fields.filter((field) => (
+          field.fieldDataType !== "Flag" && field.fieldType === 1
+        )).map((field) => (
+          <Grid item key={field.name} xs={12} md={4} lg={3}>
+            <DataField
+              {...commonProps}
+              data={field}
+              value={values[field.name]}
+            />
+          </Grid>
+        ))}
+      </Grid>
+      {actions}
+    </Paper>
+  )
 }

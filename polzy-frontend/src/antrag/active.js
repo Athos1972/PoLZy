@@ -20,7 +20,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import { CardActiveHide, CardActive, CardTop, hideTime } from '../styles/cards'
 import { AntragTitle, InputField, ProgressButton } from './components'
-import DataField from'../components/dataFields'
+import DataGroup from'../components/dataFields'
 import { removeAntrag, updateAntrag, addAntrag } from '../redux/actions'
 import { executeAntrag, cloneAntrag } from '../api'
 import { ActivityIcon } from '../components/icons'
@@ -104,10 +104,10 @@ function ActiveAntrag(props) {
   const [values, setValues] = useState(getValues)
 
   // other states
-  const [currentActivity, setActivity] = useState('')
+  const [currentActivity, setActivity] = useState(null)
   const [activityValues, setActivityValues] = useState({})
   const [isCalculate, setCalculate] = useState(false)
-  const [isWaiting, setWaiting] = useState(false)
+  const [isExecuting, setExecute] = useState(false)
   const [isPartnerVisible, setPartnerVisible] = useState(false)
   const [partnet, setPartner] = useState('')
 
@@ -123,19 +123,6 @@ function ActiveAntrag(props) {
         if (field.isMandatory && (values[field.name] === "" || values[field.name] === null))
           return false
       }
-    }
-    return true
-  }
-
-  const validateActivity = () => {
-    // check if activity selected
-    if (currentActivity === '')
-      return false
-    // check if required activity fields are filled
-    const selectedActivity = antrag.possible_activities.reduce((obj, field) => (field.name === currentActivity ? field : obj), {})
-    for (const field of selectedActivity.fields) {
-      if(field.isMandatory && activityValues[field.name] === '')
-        return false
     }
     return true
   }
@@ -173,17 +160,7 @@ function ActiveAntrag(props) {
       [name]: value,
     }))
   }
-  /*
-  const updateValue = (name, type, value) => {
-    const re = /^[0-9\b]+$/
-    if (type !== 'Zahl' || value === '' || re.test(value)) {
-      setValues((preValues) => ({
-        ...preValues,
-        [name]: value,
-      }))
-    }
-  }
-  */
+
   const handleDataChanged = (name, value) => {
     setValues(preValues => ({
       ...preValues,
@@ -221,17 +198,31 @@ function ActiveAntrag(props) {
     })
   }
 
+  const validateActivityFields = () => {
+    // check if activity selected
+    if (currentActivity === null)
+      return false
+    // check if required activity fields are filled
+    for (const field of currentActivity.fields) {
+      if(field.isMandatory && activityValues[field.name] === '')
+        return false
+    }
+    return true
+  }
+
   const executeActivity = (activity) => {
     // switch calculate mode
-    setWaiting(true)
+    setExecute(true)
     // build request body
     const requestData = {
       id: antrag.id,
       activity: activity,
-      //values: currentActivity === "Berechnen" ? values : activityValues,
+      values: activityValues,
     }
     // execute activity
     executeAntrag(props.stage, requestData).then(data => {
+      console.log('Activity Response:')
+      console.log(data)
       
       // check response
       if (activity === "Drucken") {
@@ -252,21 +243,39 @@ function ActiveAntrag(props) {
       }
       
       //update state
-      setWaiting(false)
-      setActivity('')
+      setExecute(false)
+      setActivity(null)
     })
   }
 
-  const handleActivitySelect = (event, value) => {
-    // update state
-    setActivity(value)
+  const handleActivityDataChanged = (name, value) => {
+    console.log('Activity Fields:')
+    console.log(activityValues)
+    setActivityValues(preValues => ({
+      ...preValues,
+      [name]: value,
+    }))
+  }
 
-    // execute activity
-    if (value === "VN festlegen" ) {
-      setPartnerVisible(true)
-    } else {
-      setPartnerVisible(false)
-      setPartner('')
+  const handleExecuteClick = () => {
+    console.log('Execute Clicked')
+    executeActivity(currentActivity.name)
+  }
+
+  const handleActivitySelect = (event, value) => {
+    //console.log("ACTIVITY SELECTED")
+    //console.log(value)
+    const newActivity = antrag.possible_activities.filter(activity => activity.name === value)[0]
+    //console.log(newActivity)
+    // update current activity
+    setActivity(newActivity)
+    setActivityValues(newActivity.fields.filter(field => field.fieldType === 1).reduce((result, field) => ({
+      ...result,
+      [field.name]: field.fieldDataType === "Flag" ? field.valueChosenOrEntered === "True" : field.valueChosenOrEntered,
+    }), {}))
+
+    // execute activity if doesn't require inputs
+    if (newActivity.fields.length === 0) {
       executeActivity(value)
     }
   }
@@ -330,10 +339,8 @@ function ActiveAntrag(props) {
               ))}
             </Grid>
 
-
             {/* Input Groups */}
             <div className={classes.flexContainerVertical}>
-                {/*antrag.field_groups.filter(group => groups[group.name]).map(group => (*/}
                 {antrag.field_groups.map(group => (
                   <Collapse
                     key={group.name}
@@ -341,57 +348,13 @@ function ActiveAntrag(props) {
                     timeout="auto"
                     unmountOnExit
                   >
-                    <Paper 
-                      classes={{root: classes.fieldGroup}}
-                      elevation={2}
-                    >
-                      {/* Title */}
-                      <Typography gutterBottom variant="h5" component="p">
-                        {group.tooltip}
-                      </Typography>
-
-                      {/* Flags */}
-                      <Grid classes={{root: classes.fieldGroupCntainer}} container spacing={2}>
-                        {antrag[group.name].filter((field) => (
-                          field.fieldDataType === "Flag" && field.fieldType === 1
-                        )).map((field) => (
-                          <Grid item key={field.name} xs={6} md={4} lg={3}>
-                            <Tooltip
-                              title={field.tooltip}
-                              placement="top"
-                            >
-                              <FormControlLabel
-                                control={
-                                  <Switch
-                                    checked={values[field.name]}
-                                    onChange={(e) => handleDataChanged(field.name, e.target.checked)}
-                                    name={field.name}
-                                    color="primary"
-                                  />
-                                }
-                                label={field.brief}
-                              />
-                            </Tooltip>
-                          </Grid>
-                        ))}
-                      </Grid>
-
-                      {/* Other Fields */}
-                      <Grid classes={{root: classes.fieldGroupCntainer}} container spacing={2}>
-                        {antrag[group.name].filter((field) => (
-                          field.fieldDataType !== "Flag" && field.fieldType === 1
-                        )).map((field) => (
-                          <Grid item key={field.name} xs={12} md={4} lg={3}>
-                            <DataField
-                              id={antrag.id}
-                              data={field}
-                              value={values[field.name]}
-                              onChange={handleDataChanged}
-                            />
-                          </Grid>
-                        ))}
-                      </Grid>
-                    </Paper>
+                    <DataGroup 
+                      id={antrag.id}
+                      title={group.tooltip}
+                      fields={antrag[group.name]}
+                      values={values}
+                      onChange={handleDataChanged}
+                    />
                   </Collapse>
                 ))}
             </div>
@@ -420,7 +383,26 @@ function ActiveAntrag(props) {
             />
           </CardActions>
 
-          {/* Activity Select */}
+          {/* Activity Fields */}
+          {currentActivity !== null && currentActivity.fields.length > 0 &&
+            <DataGroup 
+              id={antrag.id}
+              title={currentActivity.description}
+              fields={currentActivity.fields}
+              values={activityValues}
+              onChange={handleActivityDataChanged}
+              actions={
+                <div className={classes.flexContainerRight} >
+                  <ProgressButton
+                    title={t('common:execute')}
+                    loading={isExecuting}
+                    disabled={!validateActivityFields()}
+                    onClick={(e) => executeActivity(currentActivity.name)}
+                  />
+                </div>
+              }
+            />
+          }
           {/*antrag.status !== "Neu" &&
             <CardContent>
               <Grid container spacing={2}>
