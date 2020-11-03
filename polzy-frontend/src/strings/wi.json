@@ -8,10 +8,12 @@
   "common": {
     "action": "Wos moch ma?",
     "close": "Weg damit",
+    "copy": "Kopiern",
     "collapse": "Weg damit",
     "execute": "Mochn",
     "expand": "mehr zeign",
-    "none": "nix"
+    "none": "nix",
+    "value.range": "Nur des darfst:"
   },
 
   "policy": {
