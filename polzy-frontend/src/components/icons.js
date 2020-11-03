@@ -38,7 +38,7 @@ export function ProductIcon(props) {
   //const {icon} = props
 
   const classes = useStyles()
-  console.log(classes.svgIcon)
+  //console.log(classes.svgIcon)
 
   const icon = () => {
     switch (props.icon) {

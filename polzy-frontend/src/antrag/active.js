@@ -112,12 +112,14 @@ function ActiveAntrag(props) {
   const [partnet, setPartner] = useState('')
 
   const validateFields = () => {
-    console.log('VALIDATOR:')
-    console.log(values)
+    //console.log('GROUPS:')
+    //console.log(groups)
+    //console.log('VALIDATOR:')
+    //console.log(values)
     // checks if all mandatory fields are filled
-    for (const group of antrag.field_groups.filter(group => groups[group])) {
+    for (const group of antrag.field_groups.filter(group => groups[group.name])) {
       for (const field of antrag[group.name]) {
-        console.log(`${field.isMandatory ? "+" : "-"} ${field.name}: ${values[field.name]}`)
+        //console.log(`${field.isMandatory ? "+" : "-"} ${field.name}: ${values[field.name]}`)
         if (field.isMandatory && (values[field.name] === "" || values[field.name] === null))
           return false
       }

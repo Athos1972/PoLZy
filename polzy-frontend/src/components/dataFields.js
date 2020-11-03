@@ -7,6 +7,7 @@ import {
   OutlinedInput,
   TextField,
 } from '@material-ui/core'
+import clsx from 'clsx'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers'
 import DateFnsUtils from '@date-io/date-fns'
@@ -23,9 +24,13 @@ const useStyles = makeStyles((theme) => ({
   },
 
   infoText: {
-    color: theme.palette.secondary.dark,
     marginBottom: -theme.spacing(2),
-  }
+  },
+
+  warningText: {
+    color: theme.palette.secondary.dark,
+  },
+
 }))
 
 
@@ -111,32 +116,42 @@ export function DataFieldNumber(props) {
 */
 export function DataFieldNumberRange(props) {
   const classes = useStyles()
-  const {id, data, value } = props
+  const {id, data, value, onChange } = props
   
   // range boundaries
   const min = Number(data.inputRange[1])
   const max = Number(data.inputRange[2])
+  const helpTextDefault = `Value in range: ${min}-${max}`
 
-  const [message, setMessage] = React.useState('')
+  const [helpText, setHelpText] = React.useState(helpTextDefault)
+  const [helpTextWarning, setHelpTextWarning] = React.useState(false)
 
-  const handleChange = (e) => {
+  const handleChange = (e, v) => {
     const newValue = e.target.value
-    if (newValue < min) {
-      setMessage(`lowest value is ${min}`)
-      props.onChange(data.name, min)
+    console.log(`Value: '${newValue}'`)
+    // adjust helper text
+    if (newValue !== '' && newValue < min) {
+      setHelpText(`The lowest value is ${min}`)
+      setHelpTextWarning(true)
     } else if (newValue > max) {
-      setMessage(`Highest value is ${max}`)
-      props.onChange(data.name, max)
+      setHelpText(`The highest value is ${max}`)
+      setHelpTextWarning(true)
     } else {
-      setMessage('')
-      props.onChange(data.name, newValue)
+      setHelpText(helpTextDefault)
+      setHelpTextWarning(false)
     }
+    // update value
+    props.onChange(data.name, newValue)
   }
 
   const handleBlur = () => {
-    if (value < min) {
+    if (value !== '' && value < min) {
+      //setHelpText(`The lowest value is ${min}`)
+      //setHelpTextWarning(true)
       props.onChange(data.name, min)
     } else if (value > max) {
+      //setHelpText(`The highest value is ${max}`)
+      //setHelpTextWarning(true)
       props.onChange(data.name, max)
     }
   }
@@ -168,14 +183,12 @@ export function DataFieldNumberRange(props) {
             type: 'number',
           }}
         />
-        {message !== "" && 
-          <FormHelperText
-            classes={{root: classes.infoText}}
-            component="p"
-          >
-            {message}
-          </FormHelperText>
-        }
+        <FormHelperText
+          classes={{root: clsx(classes.infoText, {[classes.warningText]: helpTextWarning})}}
+          component="p"
+        >
+          {helpText}
+        </FormHelperText>
       </FormControl>
     </Tooltip>
   )
