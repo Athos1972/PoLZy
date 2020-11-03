@@ -225,7 +225,7 @@ function ActiveAntrag(props) {
       console.log(data)
       
       // check response
-      if (activity === "Drucken") {
+      if (activity === "Drucken" || activity === "Deckungsuebersicht") {
         //console.log(data)
         window.open(`http://localhost:5000/files/${data.link}`, "_blank")
       } else if (activity === "Antrag erzeugen") {
@@ -255,6 +255,13 @@ function ActiveAntrag(props) {
       ...preValues,
       [name]: value,
     }))
+
+    // partner search
+    //console.log(name + ': ' + value) 
+    //if (currentActivity === "VN festlegen" && name === "Kundenname" && value.length > 3) {
+      // get options
+
+    }
   }
 
   const handleExecuteClick = () => {
@@ -269,7 +276,7 @@ function ActiveAntrag(props) {
     //console.log(newActivity)
     // update current activity
     setActivity(newActivity)
-    setActivityValues(newActivity.fields.filter(field => field.fieldType === 1).reduce((result, field) => ({
+    setActivityValues(newActivity.fields.reduce((result, field) => ({
       ...result,
       [field.name]: field.fieldDataType === "Flag" ? field.valueChosenOrEntered === "True" : field.valueChosenOrEntered,
     }), {}))
