@@ -199,6 +199,8 @@ export function DataFieldSelect(props) {
   const classes = useStyles()
   const {id, data, value, onChange } = props
 
+  console.log(data)
+
   return (
     <Tooltip
       title={data.tooltip}
@@ -212,11 +214,11 @@ export function DataFieldSelect(props) {
         options={data.inputRange}
         fullWidth
         size="small"
-        required={data.isMandatory}
         renderInput={(params) => 
           <TextField {...params}
             label={data.brief}
             variant="outlined"
+            required={data.isMandatory}
           />
         }
       />
