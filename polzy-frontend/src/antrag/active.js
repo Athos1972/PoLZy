@@ -426,7 +426,7 @@ function ActiveAntrag(props) {
           {antrag.status !== "Neu" &&
             <CardContent>
               <BottomNavigation
-                value={currentActivity}
+                value={currentActivity !== null && currentActivity.name}
                 showLabels
                 onChange={handleActivitySelect}
               >
