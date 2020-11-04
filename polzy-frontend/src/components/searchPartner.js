@@ -1,18 +1,25 @@
 import React from 'react'
-import TextField from '@material-ui/core/TextField'
+import { TextField, Tooltip } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
 export default function SearchPartner(props) {
-  const [open, setOpen] = React.useState(false);
-  const [options, setOptions] = React.useState([]);
-  const loading = open && options.length === 0;
+  const [value, setValue] = React.useState('')
+  const [options, setOptions] = React.useState([])
+  const loading = value.length > 3 && options.length === 0
+
+  //console.log('SEARCH PARTNER')
+  //console.log(props)
 
   React.useEffect(() => {
-    let active = true;
+    setOptions([])
+  }, [value])
 
-    if (!loading) {
-      return undefined;
+  React.useEffect(() => {
+    let active = true
+
+    if (value.length < 3) {
+      return undefined
     }
 
     (async () => {
@@ -21,58 +28,66 @@ export default function SearchPartner(props) {
         headers: {'content-type': 'application/json'},
         body: JSON.stringify({
           activity: "partner",
-          value: "value",
+          value: value,
         }),
       })
-      const partners = await response.json();
+      const data = await response.json()
 
       if (active) {
-        setOptions(Object.keys(partners).map((key) => partners[key].item[0]));
+        setOptions(data)
       }
-    })();
+    })()
 
     return () => {
-      active = false;
-    };
-  }, [loading]);
-
-  React.useEffect(() => {
-    if (!open) {
-      setOptions([])
+      active = false
     }
-  }, [open]);
+  }, [loading, value])
+
+  const handleTextChange = (event, newValue) => {
+    setValue(newValue)
+  }
+
+  const handleSelect = (event, v) => {
+    console.log('SELECTED: ')
+    console.log(v)
+    if (v !== null) {
+      props.onSelect(v.id)
+    }
+  }
 
   return (
-    <Autocomplete
-      id="partner-search-input"
-      style={{ width: 300 }}
-      open={open}
-      onOpen={() => {
-        setOpen(true);
-      }}
-      onClose={() => {
-        setOpen(false)
-      }}
-      getOptionSelected={(option, value) => option.name === value.name}
-      getOptionLabel={(option) => option.name}
-      options={options}
-      loading={loading}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          label="Search Partner"
-          variant="outlined"
-          InputProps={{
-            ...params.InputProps,
-            endAdornment: (
-              <React.Fragment>
-                {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                {params.InputProps.endAdornment}
-              </React.Fragment>
-            ),
-          }}
-        />
-      )}
-    />
+    <Tooltip
+      title={props.data.tooltip}
+      placement="top"
+    >
+      <Autocomplete
+        id="partner-search-input"
+        fullWidth
+        size="small"
+        getOptionSelected={(option, value) => option.label === value.label}
+        getOptionLabel={(option) => option.label}
+        inputValue={value}
+        onInputChange={handleTextChange}
+        onChange={handleSelect}
+        options={options}
+        loading={loading}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Search Partner"
+            variant="outlined"
+            InputProps={{
+              ...params.InputProps,
+              endAdornment: (
+                <React.Fragment>
+                  {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                  {params.InputProps.endAdornment}
+                </React.Fragment>
+              ),
+            }}
+          />
+        )}
+      />
+    </Tooltip>
   )
 }

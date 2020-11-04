@@ -21,6 +21,7 @@ import deLocale from "date-fns/locale/de"
 import { format, parse } from 'date-fns'
 import { useTranslation } from 'react-i18next'
 import { makeStyles } from '@material-ui/core/styles'
+import SearchPartner from './searchPartner'
 
 // Styles
 const useStyles = makeStyles((theme) => ({
@@ -339,6 +340,8 @@ export function DataField(props) {
         return <DataFieldNumber {...props} />
       case "Datum":
         return <DataFieldDate {...props} />
+      case "SearchEndPoint":
+        return <SearchPartner {...props} />
       default:
         return <DataFieldText {...props} />
     }

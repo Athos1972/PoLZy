@@ -24,6 +24,7 @@ import DataGroup from'../components/dataFields'
 import { removeAntrag, updateAntrag, addAntrag } from '../redux/actions'
 import { executeAntrag, cloneAntrag } from '../api'
 import { ActivityIcon } from '../components/icons'
+import SearchPartner from '../components/searchPartner'
 
 // set styles
 const useStyles = makeStyles((theme) => ({
@@ -255,13 +256,6 @@ function ActiveAntrag(props) {
       ...preValues,
       [name]: value,
     }))
-
-    // partner search
-    //console.log(name + ': ' + value) 
-    //if (currentActivity === "VN festlegen" && name === "Kundenname" && value.length > 3) {
-      // get options
-
-    //}
   }
 
   const handleExecuteClick = () => {
@@ -287,6 +281,16 @@ function ActiveAntrag(props) {
     }
   }
 
+  const handleSeacrhSelect = (selectedValue) => {
+    console.log('Activity Values:')
+    console.log(selectedValue)
+    setActivityValues(preValues => ({
+      ...preValues,
+      PartnerID: selectedValue,
+    }))
+  }
+
+  console.log(activityValues)
   
   return(
     <AntragCard
@@ -392,12 +396,14 @@ function ActiveAntrag(props) {
 
           {/* Activity Fields */}
           {currentActivity !== null && currentActivity.fields.length > 0 &&
-            <DataGroup 
+            <DataGroup
+              stage={props.stage}
               id={antrag.id}
               title={currentActivity.description}
               fields={currentActivity.fields}
               values={activityValues}
               onChange={handleActivityDataChanged}
+              onSelect={handleSeacrhSelect}
               actions={
                 <div className={classes.flexContainerRight} >
                   <ProgressButton
@@ -410,45 +416,11 @@ function ActiveAntrag(props) {
               }
             />
           }
-          {/*antrag.status !== "Neu" &&
-            <CardContent>
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={6}>
-                  <FormControl
-                    variant="outlined"
-                    size="small"
-                    fullWidth
-                  >
-                    <InputLabel htmlFor="activity">
-                      {t("common:action")}
-                    </InputLabel>
-                    <Select
-                      id="activity"
-                      value={currentActivity}
-                      onChange={(e) => setActivity(e.target.value)}
-                      label={t("common:action")}
-                    >
-                      {antrag.possible_activities.map((activity, index) => (
-                        <MenuItem key={index} value={activity.name}>
-                          {activity.description}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item>
-                  <ProgressButton
-                    title={t('common:execute')}
-                    loading={isWaiting}
-                    disabled={currentActivity === 'Berechnen' ? !validateFields() : !validateActivity()}
-                    onClick={handleActivityExecute}
-                  />
-                </Grid>
-              </Grid>
-            </CardContent>
-          */}
 
-          {/* Partner Search */}
+
+          {/* Partner Search 
+          <SearchPartner stage={props.stage} />
+          */}
 
           {/* bottom navigation */}
           {antrag.status !== "Neu" &&
