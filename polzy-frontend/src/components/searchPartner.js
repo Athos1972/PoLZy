@@ -1,16 +1,20 @@
 import React from 'react'
-import { TextField, Tooltip } from '@material-ui/core'
+import { TextField, Tooltip, Snackbar } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete'
+import MuiAlert from '@material-ui/lab/Alert'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import { searchPartner } from '../api'
 
 export default function SearchPartner(props) {
   const [value, setValue] = React.useState('')
   const [options, setOptions] = React.useState([])
-  const loading = value.length > 3 && options.length === 0
+  const [showToast, setShowToast] = React.useState(false)
+  //const loading = value.length > 3 && options.length === 0
+  const [loading, setLoading] = React.useState(false)
 
   //console.log('SEARCH PARTNER')
   //console.log(props)
-
+/*
   React.useEffect(() => {
     setOptions([])
   }, [value])
@@ -42,9 +46,22 @@ export default function SearchPartner(props) {
       active = false
     }
   }, [loading, value])
-
-  const handleTextChange = (event, newValue) => {
+*/
+  const handleTextChange = (event, newValue, reason) => {
     setValue(newValue)
+
+    if (reason !== "input" || newValue.length <= 3) {
+      return
+    }
+
+    setLoading(true)
+
+    // call backend
+    searchPartner(props.stage, newValue).then(data => {
+      setOptions(data)
+      setLoading(false)
+    })
+
   }
 
   const handleSelect = (event, v) => {
@@ -52,43 +69,64 @@ export default function SearchPartner(props) {
     console.log(v)
     if (v !== null) {
       props.onSelect(v.id)
+      setShowToast(true)
     }
   }
 
+  const handleToastClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+
+    setShowToast(false)
+  }
+
   return (
-    <Tooltip
-      title={props.data.tooltip}
-      placement="top"
-    >
-      <Autocomplete
-        id="partner-search-input"
-        fullWidth
-        size="small"
-        getOptionSelected={(option, value) => option.label === value.label}
-        getOptionLabel={(option) => option.label}
-        filterOptions={(options) => options}
-        inputValue={value}
-        onInputChange={handleTextChange}
-        onChange={handleSelect}
-        options={options}
-        loading={loading}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label="Search Partner"
-            variant="outlined"
-            InputProps={{
-              ...params.InputProps,
-              endAdornment: (
-                <React.Fragment>
-                  {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                  {params.InputProps.endAdornment}
-                </React.Fragment>
-              ),
-            }}
-          />
-        )}
-      />
-    </Tooltip>
+    <React.Fragment>
+      <Tooltip
+        title={props.data.tooltip}
+        placement="top"
+      >
+        <Autocomplete
+          id="partner-search-input"
+          fullWidth
+          size="small"
+          getOptionSelected={(option, value) => option.label === value.label}
+          getOptionLabel={(option) => option.label}
+          filterOptions={(options) => options}
+          inputValue={value}
+          onInputChange={handleTextChange}
+          onChange={handleSelect}
+          options={options}
+          loading={loading}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label={props.data.brief}
+              variant="outlined"
+              InputProps={{
+                ...params.InputProps,
+                endAdornment: (
+                  <React.Fragment>
+                    {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                    {params.InputProps.endAdornment}
+                  </React.Fragment>
+                ),
+              }}
+            />
+          )}
+        />
+      </Tooltip>
+      <Snackbar open={showToast} autoHideDuration={6000} onClose={handleToastClose}>
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          onClose={handleToastClose}
+          severity="success"
+        >
+          Partner Saved
+        </MuiAlert>
+      </Snackbar>
+    </React.Fragment>
   )
 }

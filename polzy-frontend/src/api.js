@@ -50,3 +50,17 @@ export const executeAntrag = async (stage, antrag) => {
   const data = await response.json()
   return data
 }
+
+// search calls
+export const searchPartner = async (stage, value) => {
+  const response = await fetch(`/${stage}/search`, {
+    method: 'POST',
+    headers: {'content-type': 'application/json'},
+    body: JSON.stringify({
+      activity: "partner",
+      value: value,
+    }),
+  })
+  const data = await response.json()
+  return data
+}
