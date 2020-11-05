@@ -82,19 +82,19 @@ function ActiveAntrag(props) {
   const [hidden, setHidden] = useState(false)
 
   // groups state
-  const getGroups = () => {
-    return antrag.field_groups.reduce((result, group) => ({
+  const getGroups = (obj) => {
+    return obj.field_groups.reduce((result, group) => ({
       ...result,
       [group.name]: group.valueChosenOrEntered === "True",
     }), {})
   }
-  const [groups, setGroups] = useState(getGroups)
+  const [groups, setGroups] = useState(getGroups(antrag))
 
   // values state
-  const getValues = () => {
-    return antrag.field_groups.filter(group => groups[group.name]).reduce((result, group) => ({
+  const getValues = (obj) => {
+    return obj.field_groups.filter(group => groups[group.name]).reduce((result, group) => ({
       ...result,
-      ...antrag[group.name].reduce((groupFields, field) => ({
+      ...obj[group.name].reduce((groupFields, field) => ({
         ...groupFields,
         [field.name]: field.fieldDataType === "Flag" ? field.valueChosenOrEntered === "True" : (
           field.valueChosenOrEntered === "None" ? "" : field.valueChosenOrEntered
@@ -102,10 +102,11 @@ function ActiveAntrag(props) {
       }), {}),
     }), {})
   }
-  const [values, setValues] = useState(getValues)
+  const [values, setValues] = useState(getValues(antrag))
 
   // other states
   const [currentActivity, setActivity] = useState(null)
+  const [activityGroups, setActivityGroups] = useState({})
   const [activityValues, setActivityValues] = useState({})
   const [isCalculate, setCalculate] = useState(false)
   const [isExecuting, setExecute] = useState(false)
@@ -249,6 +250,13 @@ function ActiveAntrag(props) {
     })
   }
 
+  const updateActivityGroupVisibility = (name, value) => {
+    setActivityGroups((preValues) => ({
+      ...preValues,
+      [name]: value,
+    }))
+  }
+
   const handleActivityDataChanged = (name, value) => {
     console.log('Activity Fields:')
     console.log(activityValues)
@@ -264,20 +272,29 @@ function ActiveAntrag(props) {
   }
 
   const handleActivitySelect = (event, value) => {
-    //console.log("ACTIVITY SELECTED")
-    //console.log(value)
     const newActivity = antrag.possible_activities.filter(activity => activity.name === value)[0]
-    //console.log(newActivity)
+
     // update current activity
     setActivity(newActivity)
-    setActivityValues(newActivity.fields.reduce((result, field) => ({
-      ...result,
-      [field.name]: field.fieldDataType === "Flag" ? field.valueChosenOrEntered === "True" : field.valueChosenOrEntered,
-    }), {}))
 
     // execute activity if doesn't require inputs
-    if (newActivity.fields.length === 0) {
+    if (
+      (newActivity.fields.length === 0 && !("field_groups" in newActivity)) || 
+      ("field_groups" in newActivity && newActivity.field_groups.length === 0)
+    ) {
       executeActivity(value)
+      return
+    }
+
+    // update activity values
+    if ("field_groups" in newActivity) {
+      setActivityGroups(getGroups(newActivity))
+      setActivityValues(getValues(newActivity))
+    } else {
+      setActivityValues(newActivity.fields.reduce((result, field) => ({
+        ...result,
+        [field.name]: field.fieldDataType === "Flag" ? field.valueChosenOrEntered === "True" : field.valueChosenOrEntered,
+      }), {}))
     }
   }
 
@@ -395,6 +412,55 @@ function ActiveAntrag(props) {
           </CardActions>
 
           {/* Activity Fields */}
+          {currentActivity !== null && ("field_groups" in currentActivity) && currentActivity.field_groups.length > 0 &&
+            <React.Fragment>
+              {/* Input Group Switchers */}
+              <Grid container spacing={2}>
+                {currentActivity.field_groups.filter((field) => (
+                  field.fieldType === 1 && field.fieldDataType === "Flag"
+                )).map((field) => (
+                  <Grid item key={field.name} xs={6} md={4} lg={3}>
+                    <Tooltip
+                      title={field.tooltip}
+                      placement="top"
+                    >
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={activityGroups[field.name]}
+                            onChange={(e) => updateActivityGroupVisibility(field.name, e.target.checked)}
+                            name={field.name}
+                            color="primary"
+                          />
+                        }
+                        label={field.brief}
+                      />
+                    </Tooltip>
+                  </Grid>
+                ))}
+              </Grid>
+
+              {/* Input Groups */}
+              <div className={classes.flexContainerVertical}>
+                  {currentActivity.field_groups.map(group => (
+                    <Collapse
+                      key={group.name}
+                      in={activityGroups[group.name]}
+                      timeout="auto"
+                      unmountOnExit
+                    >
+                      <DataGroup 
+                        id={antrag.id}
+                        title={group.tooltip}
+                        fields={currentActivity[group.name]}
+                        values={activityValues}
+                        onChange={handleActivityDataChanged}
+                      />
+                    </Collapse>
+                  ))}
+              </div>
+            </React.Fragment>
+          }
           {currentActivity !== null && currentActivity.fields.length > 0 &&
             <DataGroup
               stage={props.stage}
