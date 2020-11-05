@@ -3,9 +3,12 @@ import { TextField, Tooltip, Snackbar } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import MuiAlert from '@material-ui/lab/Alert'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import { useTranslation } from 'react-i18next'
 import { searchPartner } from '../api'
 
 export default function SearchPartner(props) {
+  const {t} = useTranslation("antrag")
+
   const [value, setValue] = React.useState('')
   const [options, setOptions] = React.useState([])
   const [showToast, setShowToast] = React.useState(false)
@@ -124,7 +127,7 @@ export default function SearchPartner(props) {
           onClose={handleToastClose}
           severity="success"
         >
-          Partner Saved
+          {t("antrag:partner.saved")}
         </MuiAlert>
       </Snackbar>
     </React.Fragment>

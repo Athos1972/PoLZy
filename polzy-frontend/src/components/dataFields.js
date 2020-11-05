@@ -371,6 +371,8 @@ export default function DataGroup(props) {
     }
   }
 
+  console.log(props)
+
   return (
     <Paper 
       classes={{root: classes.inputGroup}}
