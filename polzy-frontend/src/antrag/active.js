@@ -91,8 +91,8 @@ function ActiveAntrag(props) {
   const [groups, setGroups] = useState(getGroups(antrag))
 
   // values state
-  const getValues = (obj) => {
-    return obj.field_groups.filter(group => groups[group.name]).reduce((result, group) => ({
+  const getValues = (obj, refGroup) => {
+    return obj.field_groups.filter(group => refGroup[group.name]).reduce((result, group) => ({
       ...result,
       ...obj[group.name].reduce((groupFields, field) => ({
         ...groupFields,
@@ -102,7 +102,7 @@ function ActiveAntrag(props) {
       }), {}),
     }), {})
   }
-  const [values, setValues] = useState(getValues(antrag))
+  const [values, setValues] = useState(getValues(antrag, groups))
 
   // other states
   const [currentActivity, setActivity] = useState(null)
@@ -288,8 +288,9 @@ function ActiveAntrag(props) {
 
     // update activity values
     if ("field_groups" in newActivity) {
-      setActivityGroups(getGroups(newActivity))
-      setActivityValues(getValues(newActivity))
+      const newGroups = getGroups(newActivity)
+      setActivityGroups(newGroups)
+      setActivityValues(getValues(newActivity, newGroups))
     } else {
       setActivityValues(newActivity.fields.reduce((result, field) => ({
         ...result,
@@ -307,6 +308,7 @@ function ActiveAntrag(props) {
     }))
   }
 
+  console.log("Activity Values:")
   console.log(activityValues)
   
   return(
@@ -458,6 +460,14 @@ function ActiveAntrag(props) {
                       />
                     </Collapse>
                   ))}
+              </div>
+              <div className={classes.flexContainerRight} >
+                <ProgressButton
+                  title={t('common:execute')}
+                  loading={isExecuting}
+                  disabled={!validateActivityFields()}
+                  onClick={(e) => executeActivity(currentActivity.name)}
+                />
               </div>
             </React.Fragment>
           }
