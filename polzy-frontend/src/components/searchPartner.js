@@ -66,6 +66,7 @@ export default function SearchPartner(props) {
         size="small"
         getOptionSelected={(option, value) => option.label === value.label}
         getOptionLabel={(option) => option.label}
+        filterOptions={(options) => options}
         inputValue={value}
         onInputChange={handleTextChange}
         onChange={handleSelect}

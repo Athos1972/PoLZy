@@ -356,6 +356,21 @@ export default function DataGroup(props) {
   const {title, fields, values, actions, ...commonProps} = props
   const classes = useStyles()
 
+  const size = (screen) => {
+    if (title.includes('suchen')) {
+      return 12
+    }
+
+    switch (screen) {
+      case 'lg':
+        return 3
+      case 'md':
+        return 4
+      default:
+        return 12
+    }
+  }
+
   return (
     <Paper 
       classes={{root: classes.inputGroup}}
@@ -405,7 +420,13 @@ export default function DataGroup(props) {
         {fields.filter((field) => (
           field.fieldDataType !== "Flag" && field.fieldType === 1
         )).map((field) => (
-          <Grid item key={field.name} xs={12} md={4} lg={3}>
+          <Grid 
+            item
+            key={field.name}
+            xs={size('xs')}
+            md={size('md')}
+            lg={size('lg')}
+          >
             <DataField
               {...commonProps}
               data={field}
