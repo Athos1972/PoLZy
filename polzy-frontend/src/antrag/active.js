@@ -219,8 +219,12 @@ function ActiveAntrag(props) {
     const requestData = {
       id: antrag.id,
       activity: activity,
-      values: activityValues,
+      values: {
+        ...activityGroups,
+        ...activityValues,
+      },
     }
+
     // execute activity
     executeAntrag(props.stage, requestData).then(data => {
       console.log('Activity Response:')
@@ -492,11 +496,6 @@ function ActiveAntrag(props) {
               }
             />
           }
-
-
-          {/* Partner Search 
-          <SearchPartner stage={props.stage} />
-          */}
 
           {/* bottom navigation */}
           {antrag.status !== "Neu" &&
