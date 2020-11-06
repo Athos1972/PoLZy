@@ -42,13 +42,13 @@ export function ProductIcon(props) {
 
   const icon = () => {
     switch (props.icon) {
-      case 'AntragKFZ':
+      case 'AntragKF':
         return carIcon
-      case 'AntragWohnen':
+      case 'AntragWo':
         return houseIcon
       case 'AntragRS':
         return docIcon
-      case 'AntragLVBeg':
+      case 'AntragLV':
         return forestIcon
       default:
         return handshakeIcon

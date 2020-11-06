@@ -31,6 +31,9 @@ function NewAntrag(props) {
     })
   }
 
+  console.log("ANTRAG PRODUCTS:")
+  console.log(productList)
+
   return(
     <CardNew>
       <div style={{flex: '1 0 auto'}}>

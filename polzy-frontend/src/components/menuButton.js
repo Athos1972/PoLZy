@@ -44,7 +44,7 @@ export default function MenuButton(props){
             onClick={(event) => handleMenuClick(event, item.description)}
           >
             <ListItemIcon>
-              <ProductIcon icon={item.name} />
+              <ProductIcon icon={item.name.slice(0,8)} />
             </ListItemIcon>
             {item.description}
           </MenuItem>
