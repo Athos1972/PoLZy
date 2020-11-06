@@ -21,7 +21,7 @@ import deLocale from "date-fns/locale/de"
 import { format, parse } from 'date-fns'
 import { useTranslation } from 'react-i18next'
 import { makeStyles } from '@material-ui/core/styles'
-import SearchPartner from './searchPartner'
+//import { SearchPartner from './partner'
 
 // Styles
 const useStyles = makeStyles((theme) => ({
@@ -83,7 +83,6 @@ export function DataFieldText(props) {
   )
 }
 
-
 /*
 **  Number Input
 */
@@ -91,8 +90,8 @@ export function DataFieldNumber(props) {
   const classes = useStyles()
   const {id, data, value } = props
 
-  const handleChange = (e) => {
-    const newValue = e.target.value
+  const handleChange = (event) => {
+    const newValue = event.target.value
     const re = /^[0-9\b]+$/
 
     if (newValue === '' || re.test(newValue)) {
@@ -138,25 +137,16 @@ export function DataFieldNumberRange(props) {
   // range boundaries
   const min = Number(data.inputRange[1])
   const max = Number(data.inputRange[2])
-  //const helpTextDefault = `Value in range: ${min}-${max}`
 
-  //const [helpText, setHelpText] = React.useState(helpTextDefault)
   const [helpTextWarning, setHelpTextWarning] = React.useState(false)
 
-  const handleChange = (e, v) => {
-    const newValue = e.target.value
+  const handleChange = (event) => {
+    const newValue = event.target.value
     console.log(`Value: '${newValue}'`)
-    // adjust helper text
-    if (newValue !== '' && newValue < min) {
-      //setHelpText(`The lowest value is ${min}`)
-      setHelpTextWarning(true)
-    } else if (newValue > max) {
-      //setHelpText(`The highest value is ${max}`)
-      setHelpTextWarning(true)
-    } else {
-      //setHelpText(helpTextDefault)
-      setHelpTextWarning(false)
-    }
+
+    // set help text color
+    setHelpTextWarning((newValue !== '' && newValue < min) || newValue > max)
+
     // update value
     props.onChange(data.name, newValue)
   }
@@ -215,8 +205,6 @@ export function DataFieldSelect(props) {
   const classes = useStyles()
   const {id, data, value, onChange } = props
 
-  //console.log(data)
-
   return (
     <Tooltip
       title={data.tooltip}
@@ -246,6 +234,8 @@ export function DataFieldSelect(props) {
 /*
 ** Date
 */
+export const dateFormat = "dd.MM.yyyy"
+
 export function DataFieldDate(props) {
   const classes = useStyles()
   const {id, data, value } = props
@@ -260,8 +250,6 @@ export function DataFieldDate(props) {
     }
   }
 
-  const dateFormat = "dd.MM.yyyy"
-
   const handleChange = (date) => {
     const strValue = format(date, dateFormat)
     props.onChange(data.name, strValue)
@@ -272,24 +260,27 @@ export function DataFieldDate(props) {
       title={data.tooltip}
       placement="top"
     >
-      <MuiPickersUtilsProvider 
-        utils={DateFnsUtils}
-        locale={getLocale()}
+      <FormControl
+        classes={{root: classes.inputField}}
+        fullWidth
       >
-        <KeyboardDatePicker
-          classes={{root: classes.inputField}}
-          id={`${data.name}-${id}`}
-          autoOk
-          variant="inline"
-          inputVariant="outlined"
-          label={data.brief}
-          format="yyyy-MM-dd"
-          size="small"
-          value={parse(value, dateFormat, new Date())}
-          onChange={handleChange}
-          required={data.isMandatory}
-        />
-      </MuiPickersUtilsProvider>
+        <MuiPickersUtilsProvider
+          utils={DateFnsUtils}
+          locale={getLocale()}
+        >
+          <KeyboardDatePicker
+            id={`${data.name}-${id}`}
+            autoOk
+            size="small"
+            inputVariant="outlined"
+            label={data.brief}
+            format="yyyy-MM-dd"
+            value={parse(value, dateFormat, new Date())}
+            onChange={handleChange}
+            required={data.isMandatory}
+          />
+        </MuiPickersUtilsProvider>
+      </FormControl>
     </Tooltip>
   )
 }
@@ -325,7 +316,7 @@ export function DataFieldSwitch(props) {
 /*
 ** Data Field Mapper
 */
-export function DataField(props) {
+export const DataField = React.forwardRef(function DataField(props, ref) {
   const {data} = props
 
   if (data.inputRange.length > 0) {
@@ -340,13 +331,15 @@ export function DataField(props) {
         return <DataFieldNumber {...props} />
       case "Datum":
         return <DataFieldDate {...props} />
+      /*
       case "SearchEndPoint":
         return <SearchPartner {...props} />
+      */
       default:
         return <DataFieldText {...props} />
     }
   }
-}
+})
 
 
 /*
@@ -371,7 +364,7 @@ export default function DataGroup(props) {
     }
   }
 
-  console.log(props)
+  //console.log(props)
 
   return (
     <Paper 

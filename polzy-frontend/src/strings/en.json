@@ -7,9 +7,11 @@
 
   "common": {
     "action": "Action",
+    "cancel": "Cancel",
     "close": "Close",
     "collapse": "Collapse",
     "copy": "Copy",
+    "create": "Create",
     "execute": "Execute",
     "expand": "Expand",
     "none": "None",
@@ -36,9 +38,21 @@
     "calculate": "Calculate",
     "fast.offer": "Fast Offer",
     "invalid.antrag": "Invalid Request",
+    "partner.new": "New Partner",
+    "partner.created": "New Partner Saved",
     "partner.saved": "Partner Saved",
     "premium": "Premium",
     "re-calculate": "Re-calculate",
     "select.product": "Select Product"
-  }
+  },
+   "partner": {
+      "first.name": "First Name",
+      "last.name": "Last Name",
+      "gender": "Gender",
+      "gender.male": "Male",
+      "gender.female": "Female",
+      "adress": "Address",
+      "email": "E-mail",
+      "phone": "Phone"
+   }
 }

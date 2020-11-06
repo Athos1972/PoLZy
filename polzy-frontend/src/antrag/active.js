@@ -24,7 +24,7 @@ import DataGroup from'../components/dataFields'
 import { removeAntrag, updateAntrag, addAntrag } from '../redux/actions'
 import { executeAntrag, cloneAntrag } from '../api'
 import { ActivityIcon } from '../components/icons'
-import SearchPartner from '../components/searchPartner'
+import PartnerCard from './partner'
 
 // set styles
 const useStyles = makeStyles((theme) => ({
@@ -110,8 +110,8 @@ function ActiveAntrag(props) {
   const [activityValues, setActivityValues] = useState({})
   const [isCalculate, setCalculate] = useState(false)
   const [isExecuting, setExecute] = useState(false)
-  const [isPartnerVisible, setPartnerVisible] = useState(false)
-  const [partnet, setPartner] = useState('')
+  //const [isPartnerVisible, setPartnerVisible] = useState(false)
+  const [partner, setPartner] = useState('')
 
   const validateFields = () => {
     //console.log('GROUPS:')
@@ -227,8 +227,8 @@ function ActiveAntrag(props) {
 
     // execute activity
     executeAntrag(props.stage, requestData).then(data => {
-      console.log('Activity Response:')
-      console.log(data)
+      //console.log('Activity Response:')
+      //console.log(data)
       
       // check response
       if (activity === "Drucken" || activity === "Deckungsuebersicht") {
@@ -262,8 +262,8 @@ function ActiveAntrag(props) {
   }
 
   const handleActivityDataChanged = (name, value) => {
-    console.log('Activity Fields:')
-    console.log(activityValues)
+    //console.log('Activity Fields:')
+    //console.log(activityValues)
     setActivityValues(preValues => ({
       ...preValues,
       [name]: value,
@@ -271,7 +271,7 @@ function ActiveAntrag(props) {
   }
 
   const handleExecuteClick = () => {
-    console.log('Execute Clicked')
+    //console.log('Execute Clicked')
     executeActivity(currentActivity.name)
   }
 
@@ -304,16 +304,23 @@ function ActiveAntrag(props) {
   }
 
   const handleSeacrhSelect = (selectedValue) => {
-    console.log('Activity Values:')
-    console.log(selectedValue)
+    //console.log('Activity Values:')
+    //console.log(selectedValue)
     setActivityValues(preValues => ({
       ...preValues,
       PartnerID: selectedValue,
     }))
   }
 
-  console.log("Activity Values:")
-  console.log(activityValues)
+  const handlePartnerSelect = (newPartner) => {
+    setPartner(newPartner)
+  }
+
+  //console.log("Activity Values:")
+  //console.log(activityValues)
+  console.log("ANtrag Partner:")
+  console.log(partner)
+  //console.log(values)
   
   return(
     <AntragCard
@@ -475,7 +482,7 @@ function ActiveAntrag(props) {
               </div>
             </React.Fragment>
           }
-          {currentActivity !== null && currentActivity.fields.length > 0 &&
+          {/*currentActivity !== null && currentActivity.fields.length > 0 &&
             <DataGroup
               stage={props.stage}
               id={antrag.id}
@@ -483,7 +490,7 @@ function ActiveAntrag(props) {
               fields={currentActivity.fields}
               values={activityValues}
               onChange={handleActivityDataChanged}
-              onSelect={handleSeacrhSelect}
+              onSelect={handlePartnerSelect}
               actions={
                 <div className={classes.flexContainerRight} >
                   <ProgressButton
@@ -494,6 +501,16 @@ function ActiveAntrag(props) {
                   />
                 </div>
               }
+            />
+          */}
+
+          {/* Partner Search or Create */}
+          {currentActivity !== null && currentActivity.name === "VN festlegen" &&
+            <PartnerCard
+              stage={props.stage}
+              id={antrag.id}
+              data={currentActivity}
+              savePartner={handlePartnerSelect}
             />
           }
 
@@ -513,12 +530,7 @@ function ActiveAntrag(props) {
                       label={activity.name}
                       value={activity.name}
                       icon={<ActivityIcon icon={activity.icon} />}
-                    >
-                      <Tooltip
-                        title={activity.description}
-                        placement="top"
-                      />
-                    </BottomNavigationAction>
+                    />
                 ))}
               </BottomNavigation>
             </CardContent>
