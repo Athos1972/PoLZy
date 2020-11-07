@@ -57,8 +57,6 @@ export function DataFieldText(props) {
   const classes = useStyles()
   const {id, data, value, onChange } = props
 
-  console.log('TextField: ' + data.brief)
-
   return (
     <Tooltip
       title={data.tooltip}
@@ -101,8 +99,6 @@ export function DataFieldNumber(props) {
       props.onChange(data.name, newValue)
     }
   }
-
-  console.log('NumberField: ' + data.brief)
 
   return (
     <Tooltip

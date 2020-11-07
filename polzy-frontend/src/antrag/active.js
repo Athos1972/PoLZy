@@ -81,6 +81,9 @@ function ActiveAntrag(props) {
 
   const [hidden, setHidden] = useState(false)
 
+  const [groups, setGroups] = useState({})
+  const [values, setValues] = useState({})
+
   // groups state
   const getGroups = (obj) => {
     return obj.field_groups.reduce((result, group) => ({
@@ -88,8 +91,7 @@ function ActiveAntrag(props) {
       [group.name]: group.valueChosenOrEntered === "True",
     }), {})
   }
-  const [groups, setGroups] = useState(getGroups(antrag))
-
+  
   // values state
   const getValues = (obj) => {
     return obj.field_groups.reduce((result, group) => ({
@@ -102,7 +104,13 @@ function ActiveAntrag(props) {
       }), {}),
     }), {})
   }
-  const [values, setValues] = useState(getValues(antrag))
+
+  React.useEffect(() => {
+    console.log('ANTRAG UPDATE')
+    setGroups({...getGroups(antrag)})
+    setValues({...getValues(antrag)})
+  }, [antrag])
+  
 
   // other states
   const [currentActivity, setActivity] = useState(null)
