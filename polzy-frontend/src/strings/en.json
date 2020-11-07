@@ -51,6 +51,7 @@
       "gender": "Gender",
       "gender.male": "Male",
       "gender.female": "Female",
+      "gender.float": "Other",
       "adress": "Address",
       "email": "E-mail",
       "phone": "Phone"

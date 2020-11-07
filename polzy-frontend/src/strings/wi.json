@@ -7,6 +7,7 @@
 
   "common": {
     "action": "Wos moch ma?",
+    "cancel": "Obbrechn",
     "close": "Weg damit",
     "copy": "Kopiern",
     "collapse": "Weg damit",
@@ -17,7 +18,7 @@
   },
 
   "policy": {
-    "clauses": "Kladruckt's",
+    "clauses": "Kla'ndruckt's",
     "effective.date": "Wirksamkeitsdatum",
     "find": "Findn",
     "find.policy": "Polizzn suchn",
@@ -37,8 +38,19 @@
     "fast.offer": "Schnörechna",
     "invalid.antrag": "Do stimmt wos ned",
     "partner.saved": "TypIn übanomma",
+    "partner.created": "TypIn gspeichat",
     "premium": "Prämie",
     "re-calculate": "Noamoi rechna",
     "select.product": "Wöcha Vasicharung?"
-  }
+  },"partner": {
+      "first.name": "Voanauman",
+      "last.name": "Nochnauman",
+      "gender": "Bua/Madl?",
+      "gender.male": "Bua",
+      "gender.female": "Madl",
+      "gender.float": "Nix/Aundas",
+      "adress": "wo wohnt TypIn",
+      "email": "Mehl",
+      "phone": "Händy"
+   }
 }

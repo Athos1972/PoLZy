@@ -128,6 +128,7 @@ function CreatePartner(props) {
   const genderOptions = [
     t("partner:gender.male"),
     t("partner:gender.female"),
+    t("partner:gender.float"),
   ]
 
   const handleDataChange = (name, value) => {
