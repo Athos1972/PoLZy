@@ -52,12 +52,12 @@ export const executeAntrag = async (stage, antrag) => {
 }
 
 // search calls
-export const searchPartner = async (stage, value) => {
+export const searchPortal = async (stage, target, value) => {
   const response = await fetch(`/${stage}/search`, {
     method: 'POST',
     headers: {'content-type': 'application/json'},
     body: JSON.stringify({
-      activity: "partner",
+      activity: target,
       value: value,
     }),
   })

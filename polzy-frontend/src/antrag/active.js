@@ -326,12 +326,12 @@ function ActiveAntrag(props) {
 
   //console.log("Activity Values:")
   //console.log(activityValues)
-  //console.log("ANtrag Partner:")
-  //console.log(partner)
-  console.log("GROUPS:")
-  console.log(groups)
-  console.log('VALUES:')
-  console.log(values)
+  console.log("ANtrag Partner:")
+  console.log(partner)
+  //console.log("GROUPS:")
+  //console.log(groups)
+  //console.log('VALUES:')
+  //console.log(values)
   
   return(
     <AntragCard
