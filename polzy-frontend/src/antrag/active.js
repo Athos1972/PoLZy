@@ -81,9 +81,6 @@ function ActiveAntrag(props) {
 
   const [hidden, setHidden] = useState(false)
 
-  const [groups, setGroups] = useState({})
-  const [values, setValues] = useState({})
-
   // groups state
   const getGroups = (obj) => {
     return obj.field_groups.reduce((result, group) => ({
@@ -104,6 +101,9 @@ function ActiveAntrag(props) {
       }), {}),
     }), {})
   }
+
+  const [groups, setGroups] = useState({...getGroups(antrag)})
+  const [values, setValues] = useState({...getValues(antrag)})
 
   React.useEffect(() => {
     console.log('ANTRAG UPDATE')

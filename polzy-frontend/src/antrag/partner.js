@@ -58,6 +58,92 @@ const useStyles = makeStyles((theme) => ({
 
 }))
 
+
+/*
+** Input Fields
+*/
+
+function SearchField(props) {
+
+  const [value, setValue] = useState('')
+  const [options, setOptions] = useState([])
+  const [loading, setLoading] = useState(false)
+
+  const handleTextChange = (event, newValue, reason) => {
+    setValue(newValue)
+
+    if (reason !== "input" || newValue.length <= 3) {
+      return
+    }
+
+    setLoading(true)
+
+    // call backend
+    searchPartner(props.stage, newValue).then(data => {
+      setOptions(data)
+      setLoading(false)
+    })
+
+  }
+
+  const handleSelect = (event, newValue) => {
+    console.log('SELECTED: ')
+    console.log(newValue)
+    if (newValue !== null) {
+      props.savePartner(newValue)
+      props.onSelect()
+    }
+  }
+/*
+  const handleToastClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+
+    props.setShowToast(false)
+  }
+*/
+  return (
+    <React.Fragment>
+      <Tooltip
+        title={props.data.tooltip}
+        placement="top"
+      >
+        <Autocomplete
+          id={`${props.data.name}-${props.id}`}
+          fullWidth
+          size="small"
+          getOptionSelected={(option, value) => option.label === value.label}
+          getOptionLabel={(option) => option.label}
+          filterOptions={(options) => options}
+          inputValue={value}
+          onInputChange={handleTextChange}
+          onChange={handleSelect}
+          options={options}
+          loading={loading}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label={props.data.brief}
+              variant="outlined"
+              InputProps={{
+                ...params.InputProps,
+                endAdornment: (
+                  <React.Fragment>
+                    {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                    {params.InputProps.endAdornment}
+                  </React.Fragment>
+                ),
+              }}
+            />
+          )}
+        />
+      </Tooltip>
+    </React.Fragment>
+  )
+}
+
+
 function InputText(props) {
 
   return (
@@ -237,87 +323,6 @@ function CreatePartner(props) {
   )
 }
 
-function SearchPartner(props) {
-  const {t} = useTranslation("antrag")
-
-  const [value, setValue] = useState('')
-  const [options, setOptions] = useState([])
-  const [loading, setLoading] = useState(false)
-
-  const handleTextChange = (event, newValue, reason) => {
-    setValue(newValue)
-
-    if (reason !== "input" || newValue.length <= 3) {
-      return
-    }
-
-    setLoading(true)
-
-    // call backend
-    searchPartner(props.stage, newValue).then(data => {
-      setOptions(data)
-      setLoading(false)
-    })
-
-  }
-
-  const handleSelect = (event, newValue) => {
-    console.log('SELECTED: ')
-    console.log(newValue)
-    if (newValue !== null) {
-      props.savePartner(newValue)
-      props.onSelect()
-    }
-  }
-
-  const handleToastClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return
-    }
-
-    props.setShowToast(false)
-  }
-
-  return (
-    <React.Fragment>
-      <Tooltip
-        title={props.data.tooltip}
-        placement="top"
-      >
-        <Autocomplete
-          id={`${props.data.name}-${props.id}`}
-          fullWidth
-          size="small"
-          getOptionSelected={(option, value) => option.label === value.label}
-          getOptionLabel={(option) => option.label}
-          filterOptions={(options) => options}
-          inputValue={value}
-          onInputChange={handleTextChange}
-          onChange={handleSelect}
-          options={options}
-          loading={loading}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label={props.data.brief}
-              variant="outlined"
-              InputProps={{
-                ...params.InputProps,
-                endAdornment: (
-                  <React.Fragment>
-                    {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                    {params.InputProps.endAdornment}
-                  </React.Fragment>
-                ),
-              }}
-            />
-          )}
-        />
-      </Tooltip>
-    </React.Fragment>
-  )
-}
-
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
@@ -372,7 +377,7 @@ export default function PartnerCard(props) {
 
         {/* Partner Search Field */}
         {partnerField !== null &&
-          <SearchPartner
+          <SearchField
             {...baseProps}
             data={partnerField}
             onSelect={() => handleToastOpen(t("antrag:partner.saved"))}
