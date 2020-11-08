@@ -7,9 +7,11 @@
 
   "common": {
     "action": "Aktivität",
+    "cancel": "Abbrechen",
     "close": "Schließen",
     "copy": "Kopieren",
     "collapse": "Einklappen",
+    "create": "Anlegen",
     "execute": "Ausführen",
     "expand": "Erweitern",
     "none": "Keine",
@@ -37,8 +39,21 @@
     "fast.offer": "Schnellrechner",
     "invalid.antrag": "Ungültige Anfrage",
     "partner.saved": "Partner übernommen",
+    "partner.created": "Partner gespeichert",
+    "partner.new": "Neu anlegen",
     "re-calculate": "Neu rechnen",
     "premium": "Prämie",
     "select.product": "Produkt wählen"
-  }
+  },
+   "partner": {
+      "first.name": "Vorname",
+      "last.name": "Nachname",
+      "gender": "Geschlecht",
+      "gender.male": "Männlich",
+      "gender.female": "Weiblich",
+      "gender.float": "Anders",
+      "adress": "Adresse",
+      "email": "E-Mail",
+      "phone": "Telefon"
+   }
 }

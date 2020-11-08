@@ -135,7 +135,7 @@ function SearchField(props) {
       )}
     />
   )
-  
+
 }
 
 
@@ -214,6 +214,10 @@ function CreatePartner(props) {
     {
       value: 'f',
       label: t("partner:gender.female"),
+    },
+    {
+      value: '3',
+      label: t("partner:gender.float")
     },
   ]
 
