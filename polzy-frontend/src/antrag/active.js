@@ -321,7 +321,7 @@ function ActiveAntrag(props) {
   }
 
   const handlePartnerSelect = (newPartner) => {
-    setPartner(newPartner)
+    setPartner({...newPartner})
   }
 
   //console.log("Activity Values:")
@@ -518,6 +518,7 @@ function ActiveAntrag(props) {
           {/* Partner Search or Create */}
           {currentActivity !== null && currentActivity.name === "VN festlegen" &&
             <PartnerCard
+              partner={partner}
               stage={props.stage}
               id={antrag.id}
               data={currentActivity}

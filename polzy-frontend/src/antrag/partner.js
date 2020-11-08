@@ -66,12 +66,12 @@ const useStyles = makeStyles((theme) => ({
 function SearchField(props) {
   const {t} = useTranslation("antrag")
 
-  const [value, setValue] = useState('')
+  const [value, setValue] = useState(props.defaultValue)
   const [options, setOptions] = useState([])
   const [loading, setLoading] = useState(false)
 
   const handleTextChange = (event, newValue, reason) => {
-    //console.log('TEXT CHANGE: ' + newValue + " - '" + reason + "'")
+    console.log('TEXT CHANGE: ' + newValue + " - '" + reason + "'")
     setValue(newValue)
 
     if (reason === "clear") {
@@ -99,6 +99,10 @@ function SearchField(props) {
       props.pushToast()
     }
   }
+
+  console.log("Search Partner:")
+  console.log(value)
+  console.log(props.defaultValue)
 
   return (
     <Autocomplete
@@ -187,7 +191,7 @@ function InputRadio(props) {
 }
 
 function CreatePartner(props) {
-  const {t} = useTranslation("antrag", "partner")
+  const {t} = useTranslation("common", "antrag", "partner")
 
   const initPartner = {
     firstName: '',
@@ -222,9 +226,12 @@ function CreatePartner(props) {
 
   const handleCreateClick = () => {
     props.onClose()
-    props.saveInstance(partner)
+    props.saveInstance({
+      ...partner,
+      created: true,
+    })
     props.onCreate()
-    setPartner({...initPartner})
+    //setPartner({...initPartner})
   }
 
   const handleAddressSelect = (newAddress) => {
@@ -236,7 +243,6 @@ function CreatePartner(props) {
   }
 
   const validateForm = () => {
-    console.log('FORM VALIDATION')
     for (const prop in partner) {
       if (partner[prop] === '') {
         console.log(prop + ": " + partner[prop])
@@ -294,7 +300,9 @@ function CreatePartner(props) {
           <Grid item xs={12}>
             <SearchField
               id={props.id}
+              stage={props.stage}
               target="address"
+              defaultValue=""
               name="address"
               brief={t("partner:address")}
               saveInstance={handleAddressSelect}
@@ -349,7 +357,7 @@ export default function PartnerCard(props) {
   const {t} = useTranslation("antrag")
   const classes = useStyles()
 
-  const {data, savePartner, ...baseProps} = props
+  const {data, partner, savePartner, ...baseProps} = props
   const searchFields = data.fields.filter(field => field.fieldDataType === "SearchEndPoint")
   const partnerField = searchFields.length > 0 ? searchFields[0] : null
 
@@ -374,6 +382,9 @@ export default function PartnerCard(props) {
   const handlePartnerDialogClose = () => {
     setShowPartnerDialog(false)
   }
+
+  console.log('Partner Card:')
+  console.log(partner)
 
   return (
     <React.Fragment>
@@ -405,6 +416,7 @@ export default function PartnerCard(props) {
                 {...partnerField}
                 saveInstance={savePartner}
                 target="partner"
+                defaultValue={partner.created ? (partner.firstName) : ("")}
                 pushToast={() => handleToastOpen(t("antrag:partner.saved"))}
               />
             </div>
