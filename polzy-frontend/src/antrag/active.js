@@ -121,6 +121,16 @@ function ActiveAntrag(props) {
   //const [isPartnerVisible, setPartnerVisible] = useState(false)
   const [partner, setPartner] = useState('')
 
+  const getPremium = () => {
+    for (const field of antrag.fields) {
+      if (field.name === 'premium') {
+        return field.valueChosenOrEntered === "None" ? ("") : (field.valueChosenOrEntered)
+      }
+    }
+    
+    return ""
+  }
+
   const validateFields = () => {
     //console.log('GROUPS:')
     //console.log(groups)
@@ -461,7 +471,7 @@ function ActiveAntrag(props) {
                   component="div"
                   variant="h5"
                 >
-                  {`${t("antrag:premium")}: € ${antrag.fields[0].valueChosenOrEntered}`}
+                  {`${t("antrag:premium")}: € ${getPremium()}`}
                 </Typography>
               </div>
             )}
