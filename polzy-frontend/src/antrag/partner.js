@@ -25,7 +25,7 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import { parse } from 'date-fns'
-import { searchPartner } from '../api'
+import { searchPortal } from '../api'
 
 
 // Styles
@@ -57,6 +57,83 @@ const useStyles = makeStyles((theme) => ({
   },
 
 }))
+
+
+/*
+** Input Fields
+*/
+
+function SearchField(props) {
+  const {t} = useTranslation("antrag")
+
+  const [value, setValue] = useState('')
+  const [options, setOptions] = useState([])
+  const [loading, setLoading] = useState(false)
+
+  const handleTextChange = (event, newValue, reason) => {
+    //console.log('TEXT CHANGE: ' + newValue + " - '" + reason + "'")
+    setValue(newValue)
+
+    if (reason === "clear") {
+      props.saveInstance('')
+      return
+    }
+
+    if (reason !== "input" || newValue.length <= 3) {
+      return
+    }
+
+    setLoading(true)
+
+    // call backend
+    searchPortal(props.stage, props.target, newValue).then(data => {
+      setOptions(data)
+      setLoading(false)
+    })
+
+  }
+
+  const handleSelect = (event, newValue) => {
+    if (newValue !== null) {
+      props.saveInstance(newValue)
+      props.pushToast()
+    }
+  }
+
+  return (
+    <Autocomplete
+      id={`${props.name}-${props.id}`}
+      fullWidth
+      size="small"
+      getOptionSelected={(option, value) => option.label === value.label}
+      getOptionLabel={(option) => option.label}
+      filterOptions={(options) => options}
+      inputValue={value}
+      onInputChange={handleTextChange}
+      onChange={handleSelect}
+      options={options}
+      loading={loading}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label={props.brief}
+          variant="outlined"
+          InputProps={{
+            ...params.InputProps,
+            endAdornment: (
+              <React.Fragment>
+                {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                {params.InputProps.endAdornment}
+              </React.Fragment>
+            ),
+          }}
+        />
+      )}
+    />
+  )
+
+}
+
 
 function InputText(props) {
 
@@ -96,12 +173,12 @@ function InputRadio(props) {
         value={props.value}
         onChange={(e) => props.onChange(props.name, e.target.value)}
       >
-        {props.options.map(opt => (
+        {props.options.map((opt, index) => (
           <FormControlLabel
-            key={opt}
-            value={opt}
+            key={index}
+            value={opt.value}
             control={<Radio />}
-            label={opt}
+            label={opt.label}
           />
         ))}
       </RadioGroup>
@@ -126,9 +203,18 @@ function CreatePartner(props) {
 
   // options
   const genderOptions = [
-    t("partner:gender.male"),
-    t("partner:gender.female"),
-    t("partner:gender.float"),
+    {
+      value: 'm',
+      label: t("partner:gender.male"),
+    },
+    {
+      value: 'f',
+      label: t("partner:gender.female"),
+    },
+    {
+      value: '3',
+      label: t("partner:gender.float")
+    },
   ]
 
   const handleDataChange = (name, value) => {
@@ -140,10 +226,31 @@ function CreatePartner(props) {
 
   const handleCreateClick = () => {
     props.onClose()
-    props.savePartner(partner)
+    props.saveInstance(partner)
     props.onCreate()
     setPartner({...initPartner})
   }
+
+  const handleAddressSelect = (newAddress) => {
+    console.log('Address Selected')
+    setPartner(preValues => ({
+      ...preValues,
+      address: newAddress,
+    }))
+  }
+
+  const validateForm = () => {
+    console.log('FORM VALIDATION')
+    for (const prop in partner) {
+      if (partner[prop] === '') {
+        console.log(prop + ": " + partner[prop])
+        return false
+      }
+    }
+    return true
+  }
+
+  //console.log(partner)
 
   return (
     <Dialog 
@@ -189,14 +296,13 @@ function CreatePartner(props) {
             />
           </Grid>
           <Grid item xs={12}>
-            <InputText
-              classes
+            <SearchField
               id={props.id}
-              value={partner.address}
-              onChange={handleDataChange}
+              target="address"
               name="address"
               brief={t("partner:address")}
-              required
+              saveInstance={handleAddressSelect}
+              pushToast={props.onAddressSelected}
             />
           </Grid>
           <Grid item xs={12}>
@@ -230,92 +336,12 @@ function CreatePartner(props) {
         <Button
           color="primary"
           onClick={handleCreateClick}
+          disabled={!validateForm()}
         >
           {t("common:create")}
         </Button>
       </DialogActions>
     </Dialog>
-  )
-}
-
-function SearchPartner(props) {
-  const {t} = useTranslation("antrag")
-
-  const [value, setValue] = useState('')
-  const [options, setOptions] = useState([])
-  const [loading, setLoading] = useState(false)
-
-  const handleTextChange = (event, newValue, reason) => {
-    setValue(newValue)
-
-    if (reason !== "input" || newValue.length <= 3) {
-      return
-    }
-
-    setLoading(true)
-
-    // call backend
-    searchPartner(props.stage, newValue).then(data => {
-      setOptions(data)
-      setLoading(false)
-    })
-
-  }
-
-  const handleSelect = (event, newValue) => {
-    console.log('SELECTED: ')
-    console.log(newValue)
-    if (newValue !== null) {
-      props.savePartner(newValue)
-      props.onSelect()
-    }
-  }
-
-  const handleToastClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return
-    }
-
-    props.setShowToast(false)
-  }
-
-  return (
-    <React.Fragment>
-      <Tooltip
-        title={props.data.tooltip}
-        placement="top"
-      >
-        <Autocomplete
-          id={`${props.data.name}-${props.id}`}
-          fullWidth
-          size="small"
-          getOptionSelected={(option, value) => option.label === value.label}
-          getOptionLabel={(option) => option.label}
-          filterOptions={(options) => options}
-          inputValue={value}
-          onInputChange={handleTextChange}
-          onChange={handleSelect}
-          options={options}
-          loading={loading}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label={props.data.brief}
-              variant="outlined"
-              InputProps={{
-                ...params.InputProps,
-                endAdornment: (
-                  <React.Fragment>
-                    {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                    {params.InputProps.endAdornment}
-                  </React.Fragment>
-                ),
-              }}
-            />
-          )}
-        />
-      </Tooltip>
-    </React.Fragment>
   )
 }
 
@@ -327,7 +353,7 @@ export default function PartnerCard(props) {
   const {t} = useTranslation("antrag")
   const classes = useStyles()
 
-  const {data, ...baseProps} = props
+  const {data, savePartner, ...baseProps} = props
   const searchFields = data.fields.filter(field => field.fieldDataType === "SearchEndPoint")
   const partnerField = searchFields.length > 0 ? searchFields[0] : null
 
@@ -373,11 +399,20 @@ export default function PartnerCard(props) {
 
         {/* Partner Search Field */}
         {partnerField !== null &&
-          <SearchPartner
-            {...baseProps}
-            data={partnerField}
-            onSelect={() => handleToastOpen(t("antrag:partner.saved"))}
-          />
+          <Tooltip
+            title={partnerField.tooltip}
+            placement="top"
+          >
+            <div>
+              <SearchField
+                {...baseProps}
+                {...partnerField}
+                saveInstance={savePartner}
+                target="partner"
+                pushToast={() => handleToastOpen(t("antrag:partner.saved"))}
+              />
+            </div>
+          </Tooltip>
         }
         <div className={classes.flexContainerRight} >
           <Button 
@@ -395,7 +430,9 @@ export default function PartnerCard(props) {
         {...baseProps}
         open={showPartnerDialog}
         onClose={handlePartnerDialogClose}
+        saveInstance={savePartner}
         onCreate={() => handleToastOpen(t("antrag:partner.created"))}
+        onAddressSelected={() => handleToastOpen(t("antrag:address.saved"))}
       />
 
       {/* Toast */}

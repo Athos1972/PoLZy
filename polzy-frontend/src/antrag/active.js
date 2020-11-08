@@ -88,11 +88,10 @@ function ActiveAntrag(props) {
       [group.name]: group.valueChosenOrEntered === "True",
     }), {})
   }
-  const [groups, setGroups] = useState(getGroups(antrag))
-
+  
   // values state
-  const getValues = (obj, refGroup) => {
-    return obj.field_groups.filter(group => refGroup[group.name]).reduce((result, group) => ({
+  const getValues = (obj) => {
+    return obj.field_groups.reduce((result, group) => ({
       ...result,
       ...obj[group.name].reduce((groupFields, field) => ({
         ...groupFields,
@@ -102,7 +101,16 @@ function ActiveAntrag(props) {
       }), {}),
     }), {})
   }
-  const [values, setValues] = useState(getValues(antrag, groups))
+
+  const [groups, setGroups] = useState({...getGroups(antrag)})
+  const [values, setValues] = useState({...getValues(antrag)})
+
+  React.useEffect(() => {
+    console.log('ANTRAG UPDATE')
+    setGroups({...getGroups(antrag)})
+    setValues({...getValues(antrag)})
+  }, [antrag])
+  
 
   // other states
   const [currentActivity, setActivity] = useState(null)
@@ -294,7 +302,7 @@ function ActiveAntrag(props) {
     if ("field_groups" in newActivity) {
       const newGroups = getGroups(newActivity)
       setActivityGroups(newGroups)
-      setActivityValues(getValues(newActivity, newGroups))
+      setActivityValues(getValues(newActivity))
     } else {
       setActivityValues(newActivity.fields.reduce((result, field) => ({
         ...result,
@@ -320,6 +328,9 @@ function ActiveAntrag(props) {
   //console.log(activityValues)
   console.log("ANtrag Partner:")
   console.log(partner)
+  //console.log("GROUPS:")
+  //console.log(groups)
+  //console.log('VALUES:')
   //console.log(values)
   
   return(

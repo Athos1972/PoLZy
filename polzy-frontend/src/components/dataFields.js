@@ -68,6 +68,7 @@ export function DataFieldText(props) {
         size="small"
         fullWidth
         required={data.isMandatory}
+        disabled={data.fieldType === 2}
       >
         <InputLabel htmlFor={`${data.name}-${id}`}>
           {data.brief}
@@ -110,6 +111,7 @@ export function DataFieldNumber(props) {
         size="small"
         fullWidth
         required={data.isMandatory}
+        disabled={data.fieldType === 2}
       >
         <InputLabel htmlFor={`${data.name}-${id}`}>
           {data.brief}
@@ -388,7 +390,7 @@ export default function DataGroup(props) {
         spacing={2}
       >
         {fields.filter((field) => (
-          field.fieldDataType === "Flag" && field.fieldType === 1
+          field.fieldDataType === "Flag" && field.fieldType < 3
         )).map((field) => (
           <Grid
             key={field.name}
@@ -413,7 +415,7 @@ export default function DataGroup(props) {
         spacing={2}
       >
         {fields.filter((field) => (
-          field.fieldDataType !== "Flag" && field.fieldType === 1
+          field.fieldDataType !== "Flag" && field.fieldType < 3
         )).map((field) => (
           <Grid 
             item
