@@ -306,11 +306,13 @@ function ActiveAntrag(props) {
     } else {
       setActivityValues(newActivity.fields.reduce((result, field) => ({
         ...result,
-        [field.name]: field.fieldDataType === "Flag" ? field.valueChosenOrEntered === "True" : field.valueChosenOrEntered,
+        [field.name]: field.fieldDataType === "Flag" ? field.valueChosenOrEntered === "True" : (
+          field.valueChosenOrEntered === "None" ? "" : field.valueChosenOrEntered
+        ),
       }), {}))
     }
   }
-
+/*
   const handleSeacrhSelect = (selectedValue) => {
     //console.log('Activity Values:')
     //console.log(selectedValue)
@@ -319,15 +321,55 @@ function ActiveAntrag(props) {
       PartnerID: selectedValue,
     }))
   }
+*/
+  const handlePartnerSelect = (partner) => {
+    console.log('SET PARTNER:')
+    console.log(partner)
+    //setPartner({...newPartner})
+    if (partner === '') {
+      return
+    }
 
-  const handlePartnerSelect = (newPartner) => {
-    setPartner({...newPartner})
+    if ('partnerNumber' in partner) {
+      setActivityValues(preValues => ({
+        ...preValues,
+        PartnerID: partner.partnerNumber,
+        Firstname: partner.firstName,
+        Lastname: partner.lastName,
+        DateOfBirth: partner.birthdate,
+        Gender: "",
+        addressNumber: "",
+        country: "",
+        postcode: partner.postCode,
+        city: partner.city,
+        street: partner.street,
+        streetNumber: "",
+        houseNumber: partner.houseNumber,
+      }))
+    } else {
+      setActivityValues(preValues => ({
+        ...preValues,
+        PartnerID: "",
+        Firstname: partner.firstName,
+        Lastname: partner.lastName,
+        DateOfBirth: "",
+        Gender: partner.gender,
+        addressNumber: partner.address.addressNumber,
+        country: partner.address.country,
+        postcode: partner.address.postCode,
+        city: partner.address.city,
+        street: partner.address.street,
+        streetNumber: partner.address.streetNumber,
+        houseNumber: partner.address.houseNumber,
+      }))
+    }
+    
   }
 
-  //console.log("Activity Values:")
-  //console.log(activityValues)
-  console.log("ANtrag Partner:")
-  console.log(partner)
+  console.log("Activity Values:")
+  console.log(activityValues)
+  //console.log("ANtrag Partner:")
+  //console.log(partner)
   //console.log("GROUPS:")
   //console.log(groups)
   //console.log('VALUES:')
@@ -518,7 +560,7 @@ function ActiveAntrag(props) {
           {/* Partner Search or Create */}
           {currentActivity !== null && currentActivity.name === "VN festlegen" &&
             <PartnerCard
-              partner={partner}
+              partner={activityValues}
               stage={props.stage}
               id={antrag.id}
               data={currentActivity}

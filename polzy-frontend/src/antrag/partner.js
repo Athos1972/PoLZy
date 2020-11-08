@@ -66,13 +66,13 @@ const useStyles = makeStyles((theme) => ({
 function SearchField(props) {
   const {t} = useTranslation("antrag")
 
-  const [value, setValue] = useState(props.defaultValue)
-  const [options, setOptions] = useState([])
+  //const [value, setValue] = useState(props.defaultValue)
+  const [options, setOptions] = useState([])//[{label: props.defaultValue}])
   const [loading, setLoading] = useState(false)
 
   const handleTextChange = (event, newValue, reason) => {
-    console.log('TEXT CHANGE: ' + newValue + " - '" + reason + "'")
-    setValue(newValue)
+    //console.log('TEXT CHANGE: ' + newValue + " - '" + reason + "'")
+    //setValue(newValue)
 
     if (reason === "clear") {
       props.saveInstance('')
@@ -101,7 +101,7 @@ function SearchField(props) {
   }
 
   console.log("Search Partner:")
-  console.log(value)
+  //console.log(value)
   console.log(props.defaultValue)
 
   return (
@@ -112,7 +112,6 @@ function SearchField(props) {
       getOptionSelected={(option, value) => option.label === value.label}
       getOptionLabel={(option) => option.label}
       filterOptions={(options) => options}
-      inputValue={value}
       onInputChange={handleTextChange}
       onChange={handleSelect}
       options={options}
@@ -122,6 +121,7 @@ function SearchField(props) {
           {...params}
           label={props.brief}
           variant="outlined"
+          defaultValue={props.defaultValue}
           InputProps={{
             ...params.InputProps,
             endAdornment: (
@@ -370,6 +370,26 @@ export default function PartnerCard(props) {
   const [showToast, setShowToast] = useState(false)
   const [showPartnerDialog, setShowPartnerDialog] = useState(false)
 
+  const getPartnerLabel = () => {
+    const labelKeys = [
+      'Lastname',
+      'Firstname',
+      'DateOfBirth',
+      'country',
+      'postcode',
+      'city',
+      'street',
+      'streetNumber',
+      'houseNumber',
+    ]
+
+    const label = labelKeys.filter(key => partner[key]).reduce((label, key) => 
+      ([...label, partner[key]]), []
+    ).join(' ')
+
+    return label
+  }
+
   const handleToastOpen = (text) => {
     setToastText(text)
     setShowToast(true)
@@ -420,7 +440,7 @@ export default function PartnerCard(props) {
                 {...partnerField}
                 saveInstance={savePartner}
                 target="partner"
-                defaultValue={partner.created ? (partner.firstName) : ("")}
+                defaultValue={getPartnerLabel()}
                 pushToast={() => handleToastOpen(t("antrag:partner.saved"))}
               />
             </div>
