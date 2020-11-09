@@ -11,6 +11,10 @@ import {
   Grid,
   Paper,
   Typography,
+  Table,
+  TableBody,
+  TableRow,
+  TableCell,
 } from '@material-ui/core'
 import clsx from 'clsx'
 import Autocomplete from '@material-ui/lab/Autocomplete'
@@ -42,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
   },
 
-  inputGroupCntainer: {
+  inputGroupContainer: {
     margin: 0,
     width: "100%",
   },
@@ -385,12 +389,12 @@ export default function DataGroup(props) {
 
       {/* Flags */}
       <Grid 
-        classes={{root: classes.inputGroupCntainer}}
+        classes={{root: classes.inputGroupContainer}}
         container
         spacing={2}
       >
         {fields.filter((field) => (
-          field.fieldDataType === "Flag" && field.fieldType < 3
+          field.fieldDataType === "Flag" && field.fieldType === 1
         )).map((field) => (
           <Grid
             key={field.name}
@@ -408,14 +412,14 @@ export default function DataGroup(props) {
         ))}
       </Grid>
 
-      {/* Other Fields */}
+      {/* Other Input Fields */}
       <Grid 
-        classes={{root: classes.fieldGroupCntainer}}
+        classes={{root: classes.inputGroupContainer}}
         container
         spacing={2}
       >
         {fields.filter((field) => (
-          field.fieldDataType !== "Flag" && field.fieldType < 3
+          field.fieldDataType !== "Flag" && field.fieldType === 1
         )).map((field) => (
           <Grid 
             item
@@ -432,6 +436,20 @@ export default function DataGroup(props) {
           </Grid>
         ))}
       </Grid>
+
+      {/* Output Fields */}
+      <Table>
+        <TableBody>
+          {fields.filter((field) => (field.fieldType === 2)).map((field) => (
+            <TableRow hover>
+              <TableCell>{field.brief}</TableCell>
+              <TableCell>
+                {field.valueChosenOrEntered}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
       {actions}
     </Paper>
   )
