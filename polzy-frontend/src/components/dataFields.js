@@ -25,7 +25,7 @@ import deLocale from "date-fns/locale/de"
 import { format, parse } from 'date-fns'
 import { useTranslation } from 'react-i18next'
 import { makeStyles } from '@material-ui/core/styles'
-//import { SearchPartner from './partner'
+import SearchField from './searchField'
 
 // Styles
 const useStyles = makeStyles((theme) => ({
@@ -412,14 +412,14 @@ export default function DataGroup(props) {
         ))}
       </Grid>
 
-      {/* Other Input Fields */}
+      {/* Input Fields */}
       <Grid 
         classes={{root: classes.inputGroupContainer}}
         container
         spacing={2}
       >
         {fields.filter((field) => (
-          field.fieldDataType !== "Flag" && field.fieldType === 1
+          field.fieldDataType !== "Flag" && field.fieldType === 1 && field.fieldDataType !== "SearchEndPoint"
         )).map((field) => (
           <Grid 
             item
@@ -437,16 +437,42 @@ export default function DataGroup(props) {
         ))}
       </Grid>
 
+    {/* Search Fields */}
+      <Grid 
+        classes={{root: classes.inputGroupContainer}}
+        container
+        spacing={2}
+      >
+        {fields.filter((field) => (field.fieldDataType === "SearchEndPoint")).map((field) => (
+          <Grid 
+            item
+            key={field.name}
+            xs={12}
+          >
+            <SearchField
+              {...commonProps}
+              data={field}
+              value={values[field.name]}
+            />
+          </Grid>
+        ))}
+      </Grid>
+
       {/* Output Fields */}
       <Table>
         <TableBody>
           {fields.filter((field) => (field.fieldType === 2)).map((field) => (
-            <TableRow hover>
-              <TableCell>{field.brief}</TableCell>
-              <TableCell>
-                {field.valueChosenOrEntered}
-              </TableCell>
-            </TableRow>
+            <Tooltip
+              title={field.tooltip}
+              placement="top"
+            >
+              <TableRow hover>
+                <TableCell>{field.brief}</TableCell>
+                <TableCell>
+                  {field.valueChosenOrEntered}
+                </TableCell>
+              </TableRow>
+            </Tooltip>
           ))}
         </TableBody>
       </Table>
