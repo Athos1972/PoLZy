@@ -80,7 +80,7 @@ export function DataFieldText(props) {
         <OutlinedInput
           id={`${data.name}-${id}`}
           value={value}
-          onChange={(e) => onChange(data.name, e.target.value)}
+          onChange={(e) => onChange({[data.name]: e.target.value})}
           label={data.brief}
         />
       </FormControl>
@@ -100,7 +100,7 @@ export function DataFieldNumber(props) {
     const re = /^[0-9\b]+$/
 
     if (newValue === '' || re.test(newValue)) {
-      props.onChange(data.name, newValue)
+      props.onChange({[data.name]: newValue})
     }
   }
 
@@ -154,14 +154,14 @@ export function DataFieldNumberRange(props) {
     setHelpTextWarning((newValue !== '' && newValue < min) || newValue > max)
 
     // update value
-    props.onChange(data.name, newValue)
+    props.onChange({[data.name]: newValue})
   }
 
   const handleBlur = () => {
     if (value !== '' && value < min) {
-      props.onChange(data.name, min)
+      props.onChange({[data.name]: min})
     } else if (value > max) {
-      props.onChange(data.name, max)
+      props.onChange({[data.name]: max})
     }
   }
 
@@ -220,7 +220,7 @@ export function DataFieldSelect(props) {
         classes={{root: classes.inputField}}
         id={`${data.name}-${id}`}
         value={value}
-        onChange={(e, v) => onChange(data.name, v)}
+        onChange={(e, v) => onChange({[data.name]: v})}
         options={data.inputRange}
         fullWidth
         size="small"
@@ -258,7 +258,7 @@ export function DataFieldDate(props) {
 
   const handleChange = (date) => {
     const strValue = format(date, dateFormat)
-    props.onChange(data.name, strValue)
+    props.onChange({[data.name]: strValue})
   }
 
   return (
@@ -308,7 +308,7 @@ export function DataFieldSwitch(props) {
           <Switch
             id={`${data.name}-${id}`}
             checked={value}
-            onChange={(e) => onChange(data.name, e.target.checked)}
+            onChange={(e) => onChange({[data.name]: e.target.checked})}
             color="primary"
           />
         }
@@ -452,7 +452,6 @@ export default function DataGroup(props) {
             <SearchField
               {...commonProps}
               data={field}
-              value={values[field.name]}
             />
           </Grid>
         ))}

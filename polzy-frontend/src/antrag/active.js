@@ -91,6 +91,14 @@ function ActiveAntrag(props) {
   
   // values state
   const getValues = (obj) => {
+    const commonFields = obj.fields.reduce((result, field) => ({
+      ...result,
+      [field.name]: field.fieldDataType === "Flag" ? (
+        field.valueChosenOrEntered === "True"
+      ) : (
+        field.valueChosenOrEntered === "None" ? "" : field.valueChosenOrEntered
+      ),
+    }), {})
     return obj.field_groups.reduce((result, group) => ({
       ...result,
       ...obj[group.name].reduce((groupFields, field) => ({
@@ -99,7 +107,7 @@ function ActiveAntrag(props) {
           field.valueChosenOrEntered === "None" ? "" : field.valueChosenOrEntered
         ),
       }), {}),
-    }), {})
+    }), {...commonFields})
   }
 
   const [groups, setGroups] = useState({...getGroups(antrag)})
@@ -181,10 +189,12 @@ function ActiveAntrag(props) {
     }))
   }
 
-  const handleDataChanged = (name, value) => {
+  const handleDataChanged = (newValues) => {
+    console.log('DATA CHANGE:')
+    console.log(newValues)
     setValues(preValues => ({
       ...preValues,
-      [name]: value,
+      ...newValues,
     }))
   }
 
@@ -376,14 +386,14 @@ function ActiveAntrag(props) {
     
   }
 
-  console.log("Activity Values:")
-  console.log(activityValues)
+  //console.log("Activity Values:")
+  //console.log(activityValues)
   //console.log("ANtrag Partner:")
   //console.log(partner)
   //console.log("GROUPS:")
   //console.log(groups)
-  //console.log('VALUES:')
-  //console.log(values)
+  console.log('VALUES:')
+  console.log(values)
   
   return(
     <AntragCard
@@ -457,6 +467,7 @@ function ActiveAntrag(props) {
                       title={group.tooltip}
                       fields={antrag[group.name]}
                       values={values}
+                      stage={props.stage}
                       onChange={handleDataChanged}
                     />
                   </Collapse>
