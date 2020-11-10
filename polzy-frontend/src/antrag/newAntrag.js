@@ -12,10 +12,10 @@ import logo from '../logo/LEZYSEM5-02.png'
 function NewAntrag(props) {
 
   const [productList, setProductList] = useState([])
-  const {t} = useTranslation('antrag')
+  const {t, i18n} = useTranslation('antrag')
 
   useEffect(() => {
-    getProducts(props.user.stage).then((data) => {
+    getProducts(i18n.language, props.user.stage).then((data) => {
       console.log(data)
       setProductList(data)
     })

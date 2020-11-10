@@ -9,7 +9,12 @@ export const getStages = async () => {
 export const fetchPolicy = async (policy) => {
   const response = await fetch(`/policy/${policy.policy_number}/${policy.effective_date}`)
   const data = await response.json()
-  return data
+  
+  if (response.ok) {
+    return data
+  }
+
+  throw new Error(data.error)
 }
 
 export const executeActivity = async (activity) => {
@@ -19,30 +24,50 @@ export const executeActivity = async (activity) => {
     body: JSON.stringify(activity),
   })
   const data = await response.json()
-  return data
+  
+  if (response.ok) {
+    return data
+  }
+
+  throw new Error(data.error)
 }
 
 // antrag calls
-export const getProducts = async (stage) => {
-  const response = await fetch(`/${stage}/antrag/products`)
+export const getProducts = async (lang, stage) => {
+  const response = await fetch(`/${lang}/${stage}/antrag/products`)
   const data = await response.json()
-  return data
+  
+  if (response.ok) {
+    return data
+  }
+
+  throw new Error(data.error)
 }
 
-export const fetchAntrag = async (antrag) => {
-  const response = await fetch(`/${antrag.stage}/antrag/create/${antrag.product_line.name}`)
+export const fetchAntrag = async (lang, antrag) => {
+  const response = await fetch(`/${lang}/${antrag.stage}/antrag/create/${antrag.product_line.name}`)
   const data = await response.json()
-  return data
+
+  if (response.ok) {
+    return data
+  }
+
+  throw new Error(data.error)
 }
 
-export const cloneAntrag = async (stage, antragId) => {
-  const response = await fetch(`/${stage}/antrag/copy/${antragId}`)
+export const cloneAntrag = async (lang, stage, antragId) => {
+  const response = await fetch(`/${lang}/${stage}/antrag/copy/${antragId}`)
   const data = await response.json()
-  return data
+  
+  if (response.ok) {
+    return data
+  }
+
+  throw new Error(data.error)
 }
 
-export const executeAntrag = async (stage, antrag) => {
-  const response = await fetch(`/${stage}/antrag/execute`, {
+export const executeAntrag = async (lang, stage, antrag) => {
+  const response = await fetch(`/${lang}/${stage}/antrag/execute`, {
     method: 'POST',
     headers: {'content-type': 'application/json'},
     body: JSON.stringify(antrag),
@@ -57,8 +82,8 @@ export const executeAntrag = async (stage, antrag) => {
 }
 
 // search calls
-export const searchPortal = async (stage, target, value) => {
-  const response = await fetch(`/${stage}/search`, {
+export const searchPortal = async (lang, stage, target, value) => {
+  const response = await fetch(`/${lang}/${stage}/search`, {
     method: 'POST',
     headers: {'content-type': 'application/json'},
     body: JSON.stringify({
@@ -67,5 +92,10 @@ export const searchPortal = async (stage, target, value) => {
     }),
   })
   const data = await response.json()
-  return data
+  
+  if (response.ok) {
+    return data
+  }
+
+  throw new Error(data.error)
 }

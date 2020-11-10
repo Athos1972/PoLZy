@@ -75,7 +75,7 @@ function AntragCard(props) {
 
 function ActiveAntrag(props) {
   const {antrag} = props
-  const {t} = useTranslation('common', 'antrag')
+  const {t, i18n} = useTranslation('common', 'antrag')
   const classes = useStyles()
 
   const [hidden, setHidden] = useState(false)
@@ -212,7 +212,7 @@ function ActiveAntrag(props) {
     }
 
     // calculate antrag
-    executeAntrag(props.stage, requestData).then(data => {
+    executeAntrag(i18n.language, props.stage, requestData).then(data => {
       // update antrag
       props.updateAntrag(
         props.index,
@@ -221,7 +221,11 @@ function ActiveAntrag(props) {
           ...data,
         }
       )
-      
+      //update state
+      setCalculate(false)
+
+    }).catch(error => {
+      console.log(error)
       //update state
       setCalculate(false)
     })
@@ -257,7 +261,7 @@ function ActiveAntrag(props) {
     }
 
     // execute activity
-    executeAntrag(props.stage, requestData).then(data => {
+    executeAntrag(i18n.language, props.stage, requestData).then(data => {
       //console.log('Activity Response:')
       //console.log(data)
       
@@ -415,14 +419,14 @@ function ActiveAntrag(props) {
     
   }
 
-  //console.log("Activity Values:")
-  //console.log(activityValues)
+  console.log("Activity Values:")
+  console.log(activityValues)
   //console.log("ANtrag Partner:")
   //console.log(partner)
   //console.log("GROUPS:")
   //console.log(groups)
-  //console.log('VALUES:')
-  //console.log(values)
+  console.log('VALUES:')
+  console.log(values)
   
   return(
     <AntragCard

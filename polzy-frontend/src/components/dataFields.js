@@ -445,6 +445,7 @@ export default function DataGroup(props) {
         <TableBody>
           {fields.filter((field) => (field.fieldType === 2)).map((field) => (
             <Tooltip
+              key={field.name}
               title={field.tooltip}
               placement="top"
             >

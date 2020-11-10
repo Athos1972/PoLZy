@@ -49,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
 */
 
 function SearchDropDown(props) {
+  const {i18n} = useTranslation('antrag')
   const {id, data} = props
   const [options, setOptions] = useState([])
   const [loading, setLoading] = useState(false)
@@ -67,7 +68,7 @@ function SearchDropDown(props) {
     setLoading(true)
 
     // call backend
-    searchPortal(props.stage, data.endpoint, newValue).then(data => {
+    searchPortal(i18n.language, props.stage, data.endpoint, newValue).then(data => {
       setOptions(data)
       setLoading(false)
     })
