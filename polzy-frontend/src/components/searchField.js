@@ -13,6 +13,7 @@ import {
   DialogActions,
   TextField,
   CircularProgress,
+  Tooltip,
 } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import ClearIcon from '@material-ui/icons/Clear'
@@ -192,7 +193,7 @@ export default function SearchField(props) {
         </Grid>
       ) : (
         <Tooltip
-          title={partnerField.tooltip}
+          title={data.tooltip}
           placement="top"
         >
           <div>

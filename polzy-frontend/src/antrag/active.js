@@ -289,12 +289,12 @@ function ActiveAntrag(props) {
     }))
   }
 
-  const handleActivityDataChanged = (name, value) => {
-    //console.log('Activity Fields:')
-    //console.log(activityValues)
+  const handleActivityDataChanged = (newValues) => {
+    //console.log('Activity Field Change:')
+    //console.log(newValues)
     setActivityValues(preValues => ({
       ...preValues,
-      [name]: value,
+      ...newValues,
     }))
   }
 
@@ -392,8 +392,8 @@ function ActiveAntrag(props) {
   //console.log(partner)
   //console.log("GROUPS:")
   //console.log(groups)
-  console.log('VALUES:')
-  console.log(values)
+  //console.log('VALUES:')
+  //console.log(values)
   
   return(
     <AntragCard
