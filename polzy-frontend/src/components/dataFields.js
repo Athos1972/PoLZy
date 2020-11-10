@@ -62,29 +62,24 @@ export function DataFieldText(props) {
   const {id, data, value, onChange } = props
 
   return (
-    <Tooltip
-      title={data.tooltip}
-      placement="top"
+    <FormControl
+      classes={{root: classes.inputField}}
+      variant="outlined"
+      size="small"
+      fullWidth
+      required={data.isMandatory}
+      disabled={data.fieldType === 2}
     >
-      <FormControl
-        classes={{root: classes.inputField}}
-        variant="outlined"
-        size="small"
-        fullWidth
-        required={data.isMandatory}
-        disabled={data.fieldType === 2}
-      >
-        <InputLabel htmlFor={`${data.name}-${id}`}>
-          {data.brief}
-        </InputLabel>
-        <OutlinedInput
-          id={`${data.name}-${id}`}
-          value={value}
-          onChange={(e) => onChange({[data.name]: e.target.value})}
-          label={data.brief}
-        />
-      </FormControl>
-    </Tooltip>
+      <InputLabel htmlFor={`${data.name}-${id}`}>
+        {data.brief}
+      </InputLabel>
+      <OutlinedInput
+        id={`${data.name}-${id}`}
+        value={value}
+        onChange={(e) => onChange({[data.name]: e.target.value})}
+        label={data.brief}
+      />
+    </FormControl>
   )
 }
 
@@ -105,29 +100,24 @@ export function DataFieldNumber(props) {
   }
 
   return (
-    <Tooltip
-      title={data.tooltip}
-      placement="top"
+    <FormControl
+      classes={{root: classes.inputField}}
+      variant="outlined"
+      size="small"
+      fullWidth
+      required={data.isMandatory}
+      disabled={data.fieldType === 2}
     >
-      <FormControl
-        classes={{root: classes.inputField}}
-        variant="outlined"
-        size="small"
-        fullWidth
-        required={data.isMandatory}
-        disabled={data.fieldType === 2}
-      >
-        <InputLabel htmlFor={`${data.name}-${id}`}>
-          {data.brief}
-        </InputLabel>
-        <OutlinedInput
-          id={`${data.name}-${id}`}
-          value={value}
-          onChange={handleChange}
-          label={data.brief}
-        />
-      </FormControl>
-    </Tooltip>
+      <InputLabel htmlFor={`${data.name}-${id}`}>
+        {data.brief}
+      </InputLabel>
+      <OutlinedInput
+        id={`${data.name}-${id}`}
+        value={value}
+        onChange={handleChange}
+        label={data.brief}
+      />
+    </FormControl>
   )
 }
 
@@ -137,7 +127,7 @@ export function DataFieldNumber(props) {
 */
 export function DataFieldNumberRange(props) {
   const classes = useStyles()
-  const {id, data, value, onChange } = props
+  const {id, data, value } = props
   const {t} = useTranslation('common')
   
   // range boundaries
@@ -166,40 +156,35 @@ export function DataFieldNumberRange(props) {
   }
 
   return (
-    <Tooltip
-      title={data.tooltip}
-      placement="top"
+    <FormControl
+      classes={{root: classes.inputField}}
+      variant="outlined"
+      size="small"
+      fullWidth
+      required={data.isMandatory}
     >
-      <FormControl
-        classes={{root: classes.inputField}}
-        variant="outlined"
-        size="small"
-        fullWidth
-        required={data.isMandatory}
+      <InputLabel htmlFor={`${data.name}-${id}`}>
+        {data.brief}
+      </InputLabel>
+      <OutlinedInput
+        id={`${data.name}-${id}`}
+        value={value}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        label={data.brief}
+        inputProps={{
+          min: Number(data.inputRange[1]),
+          max: Number(data.inputRange[2]),
+          type: 'number',
+        }}
+      />
+      <FormHelperText
+        classes={{root: clsx(classes.infoText, {[classes.warningText]: helpTextWarning})}}
+        component="p"
       >
-        <InputLabel htmlFor={`${data.name}-${id}`}>
-          {data.brief}
-        </InputLabel>
-        <OutlinedInput
-          id={`${data.name}-${id}`}
-          value={value}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          label={data.brief}
-          inputProps={{
-            min: Number(data.inputRange[1]),
-            max: Number(data.inputRange[2]),
-            type: 'number',
-          }}
-        />
-        <FormHelperText
-          classes={{root: clsx(classes.infoText, {[classes.warningText]: helpTextWarning})}}
-          component="p"
-        >
-          {t('value.range') + ': ' + min + '-' + max}
-        </FormHelperText>
-      </FormControl>
-    </Tooltip>
+        {t('value.range') + ': ' + min + '-' + max}
+      </FormHelperText>
+    </FormControl>
   )
 }
 
@@ -212,27 +197,22 @@ export function DataFieldSelect(props) {
   const {id, data, value, onChange } = props
 
   return (
-    <Tooltip
-      title={data.tooltip}
-      placement="top"
-    >
-      <Autocomplete
-        classes={{root: classes.inputField}}
-        id={`${data.name}-${id}`}
-        value={value}
-        onChange={(e, v) => onChange({[data.name]: v})}
-        options={data.inputRange}
-        fullWidth
-        size="small"
-        renderInput={(params) => 
-          <TextField {...params}
-            label={data.brief}
-            variant="outlined"
-            required={data.isMandatory}
-          />
-        }
-      />
-    </Tooltip>
+    <Autocomplete
+      classes={{root: classes.inputField}}
+      id={`${data.name}-${id}`}
+      value={value}
+      onChange={(e, v) => onChange({[data.name]: v})}
+      options={data.inputRange}
+      fullWidth
+      size="small"
+      renderInput={(params) => 
+        <TextField {...params}
+          label={data.brief}
+          variant="outlined"
+          required={data.isMandatory}
+        />
+      }
+    />
   )
 }
 
@@ -262,32 +242,27 @@ export function DataFieldDate(props) {
   }
 
   return (
-    <Tooltip
-      title={data.tooltip}
-      placement="top"
+    <FormControl
+      classes={{root: classes.inputField}}
+      fullWidth
     >
-      <FormControl
-        classes={{root: classes.inputField}}
-        fullWidth
+      <MuiPickersUtilsProvider
+        utils={DateFnsUtils}
+        locale={getLocale()}
       >
-        <MuiPickersUtilsProvider
-          utils={DateFnsUtils}
-          locale={getLocale()}
-        >
-          <KeyboardDatePicker
-            id={`${data.name}-${id}`}
-            autoOk
-            size="small"
-            inputVariant="outlined"
-            label={data.brief}
-            format="yyyy-MM-dd"
-            value={parse(value, dateFormat, new Date())}
-            onChange={handleChange}
-            required={data.isMandatory}
-          />
-        </MuiPickersUtilsProvider>
-      </FormControl>
-    </Tooltip>
+        <KeyboardDatePicker
+          id={`${data.name}-${id}`}
+          autoOk
+          size="small"
+          inputVariant="outlined"
+          label={data.brief}
+          format="yyyy-MM-dd"
+          value={parse(value, dateFormat, new Date())}
+          onChange={handleChange}
+          required={data.isMandatory}
+        />
+      </MuiPickersUtilsProvider>
+    </FormControl>
   )
 }
 
@@ -421,6 +396,11 @@ export default function DataGroup(props) {
         {fields.filter((field) => (
           field.fieldDataType !== "Flag" && field.fieldType === 1 && field.fieldDataType !== "SearchEndPoint"
         )).map((field) => (
+          <Tooltip
+            key={field.name}
+            title={field.tooltip}
+            placement="top"
+          >
           <Grid 
             item
             key={field.name}
@@ -434,6 +414,7 @@ export default function DataGroup(props) {
               value={values[field.name]}
             />
           </Grid>
+          </Tooltip>
         ))}
       </Grid>
 
@@ -452,6 +433,8 @@ export default function DataGroup(props) {
             <SearchField
               {...commonProps}
               data={field}
+              value={values[field.name]}
+              address={values.address}
             />
           </Grid>
         ))}
