@@ -191,7 +191,14 @@ export default function SearchField(props) {
           </Grid>
         </Grid>
       ) : (
-        <SearchDropDown {...props} />
+        <Tooltip
+          title={partnerField.tooltip}
+          placement="top"
+        >
+          <div>
+            <SearchDropDown {...props} />
+          </div>
+        </Tooltip>
       )}
     </React.Fragment>
   )
