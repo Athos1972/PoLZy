@@ -80,8 +80,11 @@ def new_activity():
             activity.finish()
             # update policy
             policy.fetch()
-            if data['activity'] == "PoSSAuskunft":
+            if data['activity'] == "Detailauskunft":
+                print(f"returned link: {policy.returnLink()}")
                 return jsonify({"link": policy.returnLink()}), 200
+            else:
+                print(f"Activity was: {data['activity']}")
 
             return jsonify(policy.get()), 200
         
