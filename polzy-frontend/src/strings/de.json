@@ -48,14 +48,14 @@
     "select.product": "Produkt wählen"
   },
    "partner": {
-      "first.name": "Vorname",
-      "last.name": "Nachname",
+      "firstName": "Vorname",
+      "lastName": "Nachname",
       "gender": "Geschlecht",
       "gender.male": "Männlich",
       "gender.female": "Weiblich",
       "gender.float": "Anders",
-      "adress": "Adresse",
+      "address": "Adresse",
       "email": "E-Mail",
-      "phone": "Telefon"
+      "telefon": "Telefon"
    }
 }

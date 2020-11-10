@@ -12,19 +12,18 @@ import {
   Typography,
   BottomNavigation,
   BottomNavigationAction,
-  Paper,
   Collapse,
 } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import { CardActiveHide, CardActive, CardTop, hideTime } from '../styles/cards'
-import { AntragTitle, InputField, ProgressButton } from './components'
+import { AntragTitle, ProgressButton } from './components'
 import DataGroup from'../components/dataFields'
 import { removeAntrag, updateAntrag, addAntrag } from '../redux/actions'
 import { executeAntrag, cloneAntrag } from '../api'
 import { ActivityIcon } from '../components/icons'
-import PartnerCard from './partner'
+//import PartnerCard from './partner'
 
 // set styles
 const useStyles = makeStyles((theme) => ({
@@ -114,7 +113,7 @@ function ActiveAntrag(props) {
   const [values, setValues] = useState({...getValues(antrag)})
 
   React.useEffect(() => {
-    console.log('ANTRAG UPDATE')
+    //console.log('ANTRAG UPDATE')
     setGroups({...getGroups(antrag)})
     setValues({...getValues(antrag)})
   }, [antrag])
@@ -127,7 +126,7 @@ function ActiveAntrag(props) {
   const [isCalculate, setCalculate] = useState(false)
   const [isExecuting, setExecute] = useState(false)
   //const [isPartnerVisible, setPartnerVisible] = useState(false)
-  const [partner, setPartner] = useState('')
+  //const [partner, setPartner] = useState('')
 
   const getPremium = () => {
     for (const field of antrag.fields) {
@@ -190,8 +189,8 @@ function ActiveAntrag(props) {
   }
 
   const handleDataChanged = (newValues) => {
-    console.log('DATA CHANGE:')
-    console.log(newValues)
+    //console.log('DATA CHANGE:')
+    //console.log(newValues)
     setValues(preValues => ({
       ...preValues,
       ...newValues,
@@ -241,6 +240,8 @@ function ActiveAntrag(props) {
   }
 
   const executeActivity = (activity) => {
+    //console.log('EXECUTE ACTIVITY')
+    //console.log(activityValues)
     // switch calculate mode
     setExecute(true)
     // build request body
@@ -250,6 +251,8 @@ function ActiveAntrag(props) {
       values: {
         ...activityGroups,
         ...activityValues,
+        //...groups,
+        //...values,
       },
     }
 
@@ -279,6 +282,11 @@ function ActiveAntrag(props) {
       //update state
       setExecute(false)
       setActivity(null)
+
+    }).catch(error => {
+      console.log(error)
+      //update state
+      setExecute(false)
     })
   }
 
@@ -297,12 +305,12 @@ function ActiveAntrag(props) {
       ...newValues,
     }))
   }
-
+/*
   const handleExecuteClick = () => {
     //console.log('Execute Clicked')
     executeActivity(currentActivity.name)
   }
-
+*/
   const handleActivitySelect = (event, value) => {
     const newActivity = antrag.possible_activities.filter(activity => activity.name === value)[0]
 
@@ -319,18 +327,39 @@ function ActiveAntrag(props) {
     }
 
     // update activity values
+    let newActivityValues
     if ("field_groups" in newActivity) {
       const newGroups = getGroups(newActivity)
       setActivityGroups(newGroups)
-      setActivityValues(getValues(newActivity))
+      newActivityValues = {...getValues(newActivity)}
     } else {
-      setActivityValues(newActivity.fields.reduce((result, field) => ({
+      newActivityValues = {...newActivityValues, ...newActivity.fields.reduce((result, field) => ({
         ...result,
         [field.name]: field.fieldDataType === "Flag" ? field.valueChosenOrEntered === "True" : (
           field.valueChosenOrEntered === "None" ? "" : field.valueChosenOrEntered
         ),
-      }), {}))
+      }), {})}
     }
+
+    // update address values
+    if (newActivity.name === "VN festlegen") {
+      const addressKeys = [
+        "country",
+        "postCode",
+        "city",
+        "street",
+        "streetNumber",
+        "houseNumber",
+      ]
+
+      newActivityValues = {
+        ...newActivityValues,
+        ...addressKeys.reduce((result, key) => ({...result, [key]: values[key]}), {}),
+        addressNumber: values.addressNumber,
+        address: addressKeys.filter(key => values[key] !== '').reduce((label, key) => ([...label, values[key]]), []).join(' ')
+      }
+    }
+    setActivityValues({...newActivityValues})
   }
 /*
   const handleSeacrhSelect = (selectedValue) => {
@@ -343,8 +372,8 @@ function ActiveAntrag(props) {
   }
 */
   const handlePartnerSelect = (partner) => {
-    console.log('SET PARTNER:')
-    console.log(partner)
+    //console.log('SET PARTNER:')
+    //console.log(partner)
     //setPartner({...newPartner})
     if (partner === '') {
       return
@@ -556,7 +585,7 @@ function ActiveAntrag(props) {
               </div>
             </React.Fragment>
           }
-          {/*currentActivity !== null && currentActivity.fields.length > 0 &&
+          {currentActivity !== null && currentActivity.fields.length > 0 &&
             <DataGroup
               stage={props.stage}
               id={antrag.id}
@@ -576,10 +605,10 @@ function ActiveAntrag(props) {
                 </div>
               }
             />
-          */}
+          }
 
           {/* Partner Search or Create */}
-          {currentActivity !== null && currentActivity.name === "VN festlegen" &&
+          {/*currentActivity !== null && currentActivity.name === "VN festlegen" &&
             <PartnerCard
               partner={activityValues}
               stage={props.stage}
@@ -587,7 +616,7 @@ function ActiveAntrag(props) {
               data={currentActivity}
               savePartner={handlePartnerSelect}
             />
-          }
+          */}
 
           {/* bottom navigation */}
           {antrag.status !== "Neu" &&

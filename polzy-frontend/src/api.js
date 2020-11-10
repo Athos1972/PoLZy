@@ -48,7 +48,12 @@ export const executeAntrag = async (stage, antrag) => {
     body: JSON.stringify(antrag),
   })
   const data = await response.json()
-  return data
+
+  if (response.ok) {
+    return data
+  }
+
+  throw new Error(data.error)
 }
 
 // search calls
