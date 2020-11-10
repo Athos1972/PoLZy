@@ -75,10 +75,14 @@ def new_activity():
 
         # execute activity
         if policy.executeActivity(data['activity']):
+
             # update activity
             activity.finish()
             # update policy
             policy.fetch()
+            if data['activity'] == "PoSSAuskunft":
+                return jsonify({"link": policy.returnLink()}), 200
+
             return jsonify(policy.get()), 200
         
     except Exception as e:
