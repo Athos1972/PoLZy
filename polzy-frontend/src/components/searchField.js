@@ -402,8 +402,8 @@ export default function SearchField(props) {
             </Grid>
             <Grid item xs={6} lg={1}>
               <Button
-                variant="contained"
-                color="default"
+                variant="outlined"
+                color="primary"
                 fullWidth
                 onClick={handleFindOpen}
                 startIcon={<SearchIcon fontSize="small" />}
@@ -413,8 +413,8 @@ export default function SearchField(props) {
             </Grid>
             <Grid item xs={6} lg={1}>
               <Button
-                variant="contained"
-                color="default"
+                variant="outlined"
+                color="primary"
                 fullWidth
                 onClick={handleNewOpen}
                 startIcon={<AccessibilityNewIcon />}
