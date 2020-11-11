@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { LinearProgress } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
+import { useTranslation } from 'react-i18next'
 import { CardDisabled, CardTop, CardMiddle } from '../styles/cards'
 import { PolicyTitle } from './Components'
 import { updatePolicy } from '../redux/actions'
@@ -15,32 +16,33 @@ const WaitingProgress = withStyles((theme) => ({
 
 function DisabledPolicy(props) {
   const {index, policy} = props
+  const {i18n} = useTranslation()
 
   useEffect(() => {
-    //const data = await fetchPolicy(policy)
-    fetchPolicy(policy).then(data => {
-      console.log('POLICY RESPONSE:')
-      console.log(data)
-      if ('error' in data) {
-        props.updatePolicy(
-          index,
-          {
-            ...policy,
-            request_state: "failed",
-            ...data,
-          }
-        )
-      } else if ('id' in data) {
-        props.updatePolicy(
-          index,
-          {
-            request_state: "ok",
-            ...data,
-          }
-        )
-      }
-    })
-    
+    //fetch policy data on mount
+    fetchPolicy(
+      i18n.language,
+      props.stage,
+      policy,
+    ).then(data => {
+      props.updatePolicy(
+        index,
+        {
+          request_state: "ok",
+          ...data,
+        }
+      )
+    }).catch(error => {
+      console.log(error)
+      props.updatePolicy(
+        index,
+        {
+          ...policy,
+          request_state: "failed",
+          error: error.message,
+        }
+      )
+    })  
   })
 
   return(
@@ -57,4 +59,12 @@ function DisabledPolicy(props) {
 }
 
 // connect to redux store
-export default connect(null, {updatePolicy: updatePolicy})(DisabledPolicy)
+const mapStateToProps = (state) => ({
+  stage: state.user.stage,
+})
+
+const mapDispatchToProps = {
+  updatePolicy: updatePolicy,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DisabledPolicy)

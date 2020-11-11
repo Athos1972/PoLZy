@@ -208,7 +208,11 @@ class ActivePolicy extends React.Component {
       }
     }
 
-    executeActivity(executionData).then(data => {
+    executeActivity(
+      this.props.i18n.language,
+      this.props.stage,
+      executionData,
+    ).then(data => {
       console.log('EXECUTE ACTIVITY RESPONSE')
       console.log(data)
       // update state
@@ -346,6 +350,8 @@ class ActivePolicy extends React.Component {
   render(){
     const {t} = this.props
 
+    console.log(this.props)
+
   return(
     <React.Fragment>
       <PolicyCard
@@ -397,10 +403,13 @@ class ActivePolicy extends React.Component {
 const TranslatedActivePolicy = withTranslation('common', 'policy')(ActivePolicy)
 
 // connect to redux store
-export default connect(
-  null,
-  {
-    closePolicyCard: removePolicy,
-    updatePolicy: updatePolicy,
-  }
-)(TranslatedActivePolicy)
+const mapStateToProps = (state) => ({
+  stage: state.user.stage,
+})
+
+const mapDispatchToProps = {
+  closePolicyCard: removePolicy,
+  updatePolicy: updatePolicy,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TranslatedActivePolicy)

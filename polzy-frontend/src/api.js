@@ -2,13 +2,6 @@
 export const getStages = async () => {
   const response = await fetch('/stage')
   const data = await response.json()
-  return data
-}
-
-// policy calls 
-export const fetchPolicy = async (policy) => {
-  const response = await fetch(`/policy/${policy.policy_number}/${policy.effective_date}`)
-  const data = await response.json()
   
   if (response.ok) {
     return data
@@ -17,8 +10,23 @@ export const fetchPolicy = async (policy) => {
   throw new Error(data.error)
 }
 
-export const executeActivity = async (activity) => {
-  const response = await fetch('/activity', {
+// policy calls 
+export const fetchPolicy = async (lang, stage, policy) => {
+  const response = await fetch(`/${lang}/${stage}/policy/${policy.policy_number}/${policy.effective_date}`)
+  const data = await response.json()
+
+  console.log('Policy Response:')
+  console.log(response)
+  
+  if (response.ok) {
+    return data
+  }
+
+  throw new Error(data.error)
+}
+
+export const executeActivity = async (lang, stage, activity) => {
+  const response = await fetch(`/${lang}/${stage}/activity`, {
     method: 'POST',
     headers: {'content-type': 'application/json'},
     body: JSON.stringify(activity),

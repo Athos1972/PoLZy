@@ -36,6 +36,9 @@ function ErrorPolicy(props) {
     setTimeout(() => {props.closePolicyCard(index)}, hideTime)
   }
 
+  console.log('ERROR POLICY:')
+  console.log(policy)
+
   return(
     <PolicyCard
       hidden={hidden}
