@@ -21,7 +21,7 @@ import { CardActiveHide, CardActive, CardTop, hideTime } from '../styles/cards'
 import { AntragTitle, ProgressButton } from './components'
 import DataGroup from'../components/dataFields'
 import { removeAntrag, updateAntrag, addAntrag } from '../redux/actions'
-import { executeAntrag, cloneAntrag } from '../api'
+import { executeAntrag, cloneAntrag, updateAntragFields } from '../api'
 import { ActivityIcon } from '../components/icons'
 //import PartnerCard from './partner'
 
@@ -154,6 +154,18 @@ function ActiveAntrag(props) {
     return true
   }
 
+  const fieldByName = (name) => {
+    // returns antrag field by its name
+
+    for (const group of antrag.field_groups.filter(group => groups[group.name])) {
+      for (const field of antrag[group.name]) {
+        if (field.name === name)
+          return field
+      }
+    }
+    return null
+  }
+
   const handleCloseClick = () => {
     setHidden(true)
     setTimeout(() => {props.closeAntrag(props.index)}, hideTime)
@@ -189,12 +201,49 @@ function ActiveAntrag(props) {
   }
 
   const handleDataChanged = (newValues) => {
-    //console.log('DATA CHANGE:')
-    //console.log(newValues)
+    //check if fields should be updated
+    Object.keys(newValues).forEach(key => {
+      if (fieldByName(key).inputTriggers) {
+        // update antrag
+        const requestData = {
+          id: antrag.id,
+          values: {
+            ...groups,
+            ...values,
+            ...newValues,
+          }
+        }
+
+        // update antrag fields
+        updateAntragFields(i18n.language, props.stage, requestData).then(data => {
+          // update antrag
+          props.updateAntrag(
+            props.index,
+            {
+              request_state: "ok",
+              ...data,
+            }
+          )
+          //update state
+          //setCalculate(false)
+
+        }).catch(error => {
+          console.log(error)
+          //update state
+          //setCalculate(false)
+        })
+
+        return
+      }
+
+    })
+
+    // update values
     setValues(preValues => ({
       ...preValues,
       ...newValues,
     }))
+
   }
 
   const handleCalculateClick = () => {
@@ -419,14 +468,14 @@ function ActiveAntrag(props) {
     
   }
 
-  console.log("Activity Values:")
-  console.log(activityValues)
+  //console.log("Activity Values:")
+  //console.log(activityValues)
   //console.log("ANtrag Partner:")
   //console.log(partner)
   //console.log("GROUPS:")
   //console.log(groups)
-  console.log('VALUES:')
-  console.log(values)
+  //console.log('VALUES:')
+  //console.log(values)
   
   return(
     <AntragCard

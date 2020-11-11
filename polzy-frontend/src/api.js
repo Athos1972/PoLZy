@@ -66,6 +66,21 @@ export const cloneAntrag = async (lang, stage, antragId) => {
   throw new Error(data.error)
 }
 
+export const updateAntragFields = async (lang, stage, antrag) => {
+  const response = await fetch(`/${lang}/${stage}/antrag/update`, {
+    method: 'POST',
+    headers: {'content-type': 'application/json'},
+    body: JSON.stringify(antrag),
+  })
+  const data = await response.json()
+
+  if (response.ok) {
+    return data
+  }
+
+  throw new Error(data.error)
+}
+
 export const executeAntrag = async (lang, stage, antrag) => {
   const response = await fetch(`/${lang}/${stage}/antrag/execute`, {
     method: 'POST',
