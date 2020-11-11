@@ -82,6 +82,12 @@ function SearchDropDown(props) {
   }
 
   const handleValueSelect = (event, newValue) => {
+    //console.log('SELECTED:')
+    //console.log(newValue)
+    if (newValue === null){
+      return
+    }
+
     const {label, ...otherValues} = newValue
     if (newValue !== null) {
       props.onChange({

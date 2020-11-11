@@ -16,7 +16,7 @@ function NewAntrag(props) {
 
   useEffect(() => {
     getProducts(i18n.language, props.user.stage).then((data) => {
-      console.log(data)
+      //console.log(data)
       setProductList(data)
     })
   }, [props.user.stage])
@@ -31,8 +31,8 @@ function NewAntrag(props) {
     })
   }
 
-  console.log("ANTRAG PRODUCTS:")
-  console.log(productList)
+  //console.log("ANTRAG PRODUCTS:")
+  //console.log(productList)
 
   return(
     <CardNew>

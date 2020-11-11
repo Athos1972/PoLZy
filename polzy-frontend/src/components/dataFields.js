@@ -237,6 +237,8 @@ export function DataFieldDate(props) {
   }
 
   const handleChange = (date) => {
+    console.log('DATE CHANGE:')
+    console.log(date)
     const strValue = format(date, dateFormat)
     props.onChange({[data.name]: strValue})
   }
