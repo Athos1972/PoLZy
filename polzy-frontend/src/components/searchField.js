@@ -68,7 +68,13 @@ function SearchDropDown(props) {
     setLoading(true)
 
     // call backend
-    searchPortal(i18n.language, props.stage, data.endpoint, newValue).then(data => {
+    searchPortal(
+      i18n.language,
+      props.stage,
+      props.id,
+      data.endpoint,
+      newValue,
+    ).then(data => {
       setOptions(data)
       setLoading(false)
     })

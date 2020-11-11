@@ -203,7 +203,8 @@ function ActiveAntrag(props) {
   const handleDataChanged = (newValues) => {
     //check if fields should be updated
     Object.keys(newValues).forEach(key => {
-      if (fieldByName(key).inputTriggers) {
+      const field = fieldByName(key)
+      if (field && field.inputTriggers) {
         // update antrag
         const requestData = {
           id: antrag.id,

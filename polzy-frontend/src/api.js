@@ -97,8 +97,8 @@ export const executeAntrag = async (lang, stage, antrag) => {
 }
 
 // search calls
-export const searchPortal = async (lang, stage, target, value) => {
-  const response = await fetch(`/${lang}/${stage}/search`, {
+export const searchPortal = async (lang, stage, id, target, value) => {
+  const response = await fetch(`/${lang}/${stage}/search/${id}`, {
     method: 'POST',
     headers: {'content-type': 'application/json'},
     body: JSON.stringify({
