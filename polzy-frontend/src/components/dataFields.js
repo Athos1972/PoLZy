@@ -138,7 +138,7 @@ export function DataFieldNumberRange(props) {
 
   const handleChange = (event) => {
     const newValue = event.target.value
-    console.log(`Value: '${newValue}'`)
+    //console.log(`Value: '${newValue}'`)
 
     // set help text color
     setHelpTextWarning((newValue !== '' && newValue < min) || newValue > max)
@@ -237,8 +237,11 @@ export function DataFieldDate(props) {
   }
 
   const handleChange = (date) => {
-    console.log('DATE CHANGE:')
-    console.log(date)
+    if (isNaN(date) || date === null) {
+      props.onChange({[data.name]: ''})
+      return
+    }
+
     const strValue = format(date, dateFormat)
     props.onChange({[data.name]: strValue})
   }
