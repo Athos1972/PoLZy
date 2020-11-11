@@ -11,9 +11,9 @@ from . import bp
 #logger = getLogger(GlobalConstants.loggerName)
 
 
-@bp.route('/policy/<string:policy_number>/<string:effective_date>')
-@bp.route('/policy/<string:policy_number>')
-def get_policy(policy_number, effective_date=None):
+@bp.route('/<string:lang>/<string:stage>/policy/<string:policy_number>/<string:effective_date>')
+@bp.route('/<string:lang>/<string:stage>/policy/<string:policy_number>')
+def get_policy(lang, stage, policy_number, effective_date=None):
     #
     # fetches a Policy by policy_number & effective_data
     # and returns it
@@ -52,8 +52,8 @@ def get_stages():
     return jsonify(stages), 200
 
 
-@bp.route(f'/activity', methods=['POST'])
-def new_activity():
+@bp.route(f'/<string:lang>/<string:stage>/activity', methods=['POST'])
+def new_activity(lang, stage):
     #
     # create new activity
     #

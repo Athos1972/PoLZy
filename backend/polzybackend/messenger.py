@@ -8,8 +8,6 @@ class Messenger:
     def listen(self):
         q = queue.Queue(maxsize=5)
         self.listeners.append(q)
-        print('*** Messenger')
-        print(str(q))
         return q
 
     def announce(self, msg):
