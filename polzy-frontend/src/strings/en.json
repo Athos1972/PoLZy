@@ -47,15 +47,17 @@
     "re-calculate": "Re-calculate",
     "select.product": "Select Product"
   },
+
    "partner": {
-      "first.name": "First Name",
-      "last.name": "Last Name",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "birthDate": "Date of Birth",
       "gender": "Gender",
       "gender.male": "Male",
       "gender.female": "Female",
       "gender.float": "Other",
-      "adress": "Address",
+      "address": "Address",
       "email": "E-mail",
-      "phone": "Phone"
+      "telefon": "Phone"
    }
 }

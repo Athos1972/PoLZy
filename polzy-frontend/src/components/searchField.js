@@ -238,7 +238,7 @@ function NewDialog(props) {
   const initPartner = {
     firstName: '',
     lastName: '',
-    birthDate: '01.01.2000',
+    birthDate: '2000-01-01',
     gender: '',
     address: props.address === undefined ? '' : props.address,
     email: '',

@@ -11,11 +11,21 @@ const resources = {
   wi: wi
 }
 
+const userLocale = () => {
+  const locale = window.navigator.userLanguage || window.navigator.language
+  try {
+    const lng = locale.slice(0,2) || 'de'
+    return lng
+  } catch (error) {
+    return 'de'
+  }
+}
+
 i18n
   .use(initReactI18next) // passes i18n down to react-i18next
   .init({
     resources,
-    lng: "de",
+    lng: userLocale(),
 
     keySeparator: false, // we do not use keys in form messages.welcome
 

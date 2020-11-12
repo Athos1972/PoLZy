@@ -47,9 +47,11 @@
     "premium": "Prämie",
     "select.product": "Produkt wählen"
   },
+
    "partner": {
       "firstName": "Vorname",
       "lastName": "Nachname",
+      "birthDate": "Geburtsdatum",
       "gender": "Geschlecht",
       "gender.male": "Männlich",
       "gender.female": "Weiblich",

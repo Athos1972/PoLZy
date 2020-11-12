@@ -26,6 +26,7 @@ import { format, parse } from 'date-fns'
 import { useTranslation } from 'react-i18next'
 import { makeStyles } from '@material-ui/core/styles'
 import SearchField from './searchField'
+import { getLocaleDateFormat } from '../dateFormat' 
 
 // Styles
 const useStyles = makeStyles((theme) => ({
@@ -220,12 +221,11 @@ export function DataFieldSelect(props) {
 /*
 ** Date
 */
-export const dateFormat = "dd.MM.yyyy"
-
 export function DataFieldDate(props) {
   const classes = useStyles()
   const {id, data, value } = props
   const {i18n} = useTranslation()
+  const dateFormat = getLocaleDateFormat()
 
   const getLocale = () => {
     switch (i18n.language) {
@@ -242,9 +242,14 @@ export function DataFieldDate(props) {
       return
     }
 
-    const strValue = format(date, dateFormat)
+    const strValue = format(date, "yyyy-MM-dd")
     props.onChange({[data.name]: strValue})
   }
+
+  console.log('DATE:')
+  console.log(value)
+  console.log(typeof(value))
+  console.log(parse(value, "yyyy-MM-dd", new Date()))
 
   return (
     <FormControl
@@ -261,8 +266,8 @@ export function DataFieldDate(props) {
           size="small"
           inputVariant="outlined"
           label={data.brief}
-          format="yyyy-MM-dd"
-          value={parse(value, dateFormat, new Date())}
+          format={getLocaleDateFormat()}
+          value={parse(value, "yyyy-MM-dd", new Date())}
           onChange={handleChange}
           required={data.isMandatory}
         />
