@@ -1,6 +1,9 @@
-from fasifu import GlobalConstants
+#from fasifu import GlobalConstants
+#-----> we cannot iport from fasusfu to PoLZy because fasisfu is an implementation of PoLZy.
+#-----> PoLZy should be able to work with with another implementation systems.
 from . import db, auth
 from .auth import get_uuid, generate_token, get_expired
+from .utils import date_format
 from datetime import datetime, timedelta, date
 import uuid
 import json
@@ -97,7 +100,7 @@ class Activity(db.Model):
         # create activity instance
         instance = cls(
             policy_number=policy.number,
-            effective_date=datetime.strptime(policy.effective_date, GlobalConstants.dateFormat).date(),
+            effective_date=datetime.strptime(policy.effective_date, date_format).date(),
             type=data['activity'].get('name'),
             creator=current_user,
             attributes=json.dumps(data['activity'].get('fields'))
