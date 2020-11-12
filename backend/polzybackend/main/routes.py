@@ -60,8 +60,8 @@ def new_activity(lang, stage):
 
     # get post data
     data = request.get_json()
-    print(data)
-    print(current_app.config.get('POLICIES'))
+    #print(data)
+    #print(current_app.config.get('POLICIES'))
 
     # get policy and create activity 
     try:
