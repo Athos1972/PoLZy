@@ -2,11 +2,11 @@ import { createStore } from 'redux'
 import reducer from './reducer'
 
 // debug imports
-/*
-import { addPolicy, addAntrag } from './actions'
-import { policies } from '../testData/fasifu'
-import { antrags } from '../testData/antrag'
-*/
+
+//import { addPolicy, addAntrag } from './actions'
+//import { policies } from '../testData/fasifu'
+//import { antrags } from '../testData/antrag'
+
 const store = createStore(reducer)
 
 

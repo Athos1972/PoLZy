@@ -14,135 +14,105 @@ import enLocale from "date-fns/locale/en-US"
 import deLocale from "date-fns/locale/de"
 import { format } from 'date-fns'
 import SearchIcon from '@material-ui/icons/Search'
-import { withTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { CardNew, CardLogo } from '../styles/cards'
 import { addPolicy } from '../redux/actions'
 import logo from '../logo/LEZYSEM5-02.png'
+import { backendDateFormat } from '../dateFormat'
+import { DataFieldText, DataFieldDate } from '../components/dataFields'
 
 
-// Styles
-const SearchButton = withStyles((theme) => ({
-  root: {
-    //backgroundColor: "#00c853",
-    marginTop: theme.spacing(2),
-    /*'&:hover': {
-      backgroundColor: "#43a047",
-    }*/
-  },
-}))(Button)
-
-
-class NewPolicy extends React.Component {
-
-  state = {
-    policyNumber: '',
-    effectiveDate: new Date(),
+function NewPolicy(props) {
+  const defaultData = {
+    number: '',
+    date: format(new Date, backendDateFormat)
   }
 
-  getLocale = () => {
-    const { i18n } = this.props
-    switch (i18n.language) {
-      case 'en':
-        return enLocale
-      default:
-        return deLocale
+  const [policy, setPolicy] = React.useState(defaultData)
+
+  const {t, i18n} = useTranslation('policy')
+
+  const handleInputChange = (newValues) => {
+    console.log('Value Changed:')
+    console.log(newValues)
+    setPolicy(preValues => ({
+      ...preValues,
+      ...newValues,
+    }))
+  }
+
+  const validateForm = () => {
+    if (policy.number === "" || policy.date === "") {
+      return false
     }
+
+    return true
   }
 
-  handleNumberChange = event => {
-    this.setState({
-      policyNumber: event.target.value,
+  const handleSubmit = () => {
+    // add policy card
+    props.addPolicy({
+      request_state: "waiting",
+      policy_number: policy.number,
+      effective_date: policy.date,
     })
+
+    // update state to default
+    setPolicy(defaultData)
   }
 
-  handleDateChange = date => {
-    this.setState({
-      effectiveDate: date,
-    })
-  }
-
-  handleSubmit = async () => {
-    if (this.state.policyNumber) {
-      // format date
-      const effectiveDate = format(this.state.effectiveDate, "yyyy-MM-dd")
-      // add policy card
-      this.props.addPolicy({
-        request_state: "waiting",
-        policy_number: this.state.policyNumber,
-        effective_date: effectiveDate,
-      })
-      // update state to default
-      this.setState({
-        policyNumber: '',
-        effectiveDate: new Date(),
-      })
-    }
-  }
-
-  render() {
-    const {t} = this.props
-
-    return(
-      <CardNew>
-        <div style={{flex: '1 0 auto'}}>
-          <CardHeader
-            title={t("find.policy")}
-          />
-          <CardContent>
-            <Grid container spacing={2}>
-              <Grid item>
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  id="policy"
-                  label={t("policy.number")}
-                  size="small"
-                  value={this.state.policyNumber}
-                  onChange={this.handleNumberChange}
-                />
-              </Grid>
-              <Grid item>
-                <MuiPickersUtilsProvider 
-                  utils={DateFnsUtils}
-                  locale={this.getLocale()}
-                >
-                  <KeyboardDatePicker
-                    autoOk
-                    variant="inline"
-                    inputVariant="outlined"
-                    margin="normal"
-                    label={t("effective.date")}
-                    format="yyyy-MM-dd"
-                    size="small"
-                    value={this.state.effectiveDate}
-                    onChange={this.handleDateChange}
-                  />
-                </MuiPickersUtilsProvider>
-              </Grid>
-              <Grid item>
-                <SearchButton
-                  variant="contained"
-                  color="primary"
-                  endIcon={<SearchIcon />}
-                  onClick={this.handleSubmit}
-                >
-                  {t("find")}
-                </SearchButton>
-              </Grid>
-            </Grid>
-          </CardContent>
-        </div>
-        <CardLogo
-          image={logo}
-          title="LeZySEM"
+  return(
+    <CardNew>
+      <div style={{flex: '1 0 auto'}}>
+        <CardHeader
+          title={t("find.policy")}
         />
-      </CardNew>
-    )
-  }
+        <CardContent>
+          <Grid container spacing={2}>
+            <Grid item>
+              <DataFieldText
+                id="policy-number"
+                value={policy.number}
+                data={{
+                  name: "number",
+                  brief: t("policy.number")
+                }}
+                onChange={handleInputChange}
+              />
+            </Grid>
+            <Grid item>
+              <DataFieldDate
+                id="policy-date"
+                value={policy.date}
+                data={{
+                  name: "date",
+                  brief: t("effective.date")
+                }}
+                onChange={handleInputChange}
+              />
+            </Grid>
+            <Grid item>
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<SearchIcon />}
+                onClick={handleSubmit}
+                disabled={!validateForm()}
+              >
+                {t("find")}
+              </Button>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </div>
+      <CardLogo
+        image={logo}
+        title="LeZySEM"
+      />
+    </CardNew>
+  )
 }
 
-// translation
-const TranslatedNewPolicy = withTranslation('policy')(NewPolicy)
 
 // connect to redux store
-export default connect(null, {addPolicy: addPolicy})(TranslatedNewPolicy)
+export default connect(null, {addPolicy: addPolicy})(NewPolicy)

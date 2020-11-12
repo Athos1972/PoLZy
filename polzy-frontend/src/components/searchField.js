@@ -114,6 +114,7 @@ function SearchDropDown(props) {
           {...params}
           label={data.brief}
           variant="outlined"
+          required={data.isMandatory}
           InputProps={{
             ...params.InputProps,
             endAdornment: (

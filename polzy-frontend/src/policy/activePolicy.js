@@ -25,6 +25,8 @@ import { PolicyTitle } from './Components'
 import PolicyDetails from './policyDetails'
 import { removePolicy, updatePolicy } from '../redux/actions'
 import { executeActivity } from '../api'
+import DataGroup from '../components/dataFields'
+import ProgressButton from '../components/progressButton'
 
 
 const ActiveButton = withStyles((theme) => ({
@@ -59,7 +61,7 @@ const ActionControl = withStyles((theme) => ({
   root: {
     marginBottom: theme.spacing(1),
     marginRight: theme.spacing(1),
-    minWidth: 240,
+    width: 240,
   }
 }))(FormControl)
 
@@ -128,9 +130,9 @@ class ActivePolicy extends React.Component {
   state = {
     expanded: false,
     hidden: false,
-    actionExecution: false,
-    actionIndex: -1,
-    actionValues: [],
+    activityExecutes: false,
+    currentActivity: null,
+    activityValues: {},
   }
 
   actionsNotAvailable = (this.props.policy.possible_activities.length === 0)
@@ -151,75 +153,143 @@ class ActivePolicy extends React.Component {
     }))
   }
 
+  getActivityByName = (name) => {
+    // returns possible activity by its name
+    for (const activity of this.props.policy.possible_activities) {
+      if (activity.name === name) {
+        return activity
+      }
+    }
+    return null
+  }
+
+  handleActivityDataChanged = (newValues) => {
+    this.setState(prevState => ({
+      activityValues: {
+        ...prevState.activityValues,
+        ...newValues
+      }
+    }))
+  }
+
+  handleActivitySelect = (event) => {
+    //console.log('Activity Selected:')
+    //console.log(event.target.value)
+    if (event.target.value === "none") {
+      this.setState({
+        currentActivity: null,
+        activityValues: {},
+      })
+      return
+    }
+
+    const newActivity = this.getActivityByName(event.target.value)
+    //console.log('NEW ACTIVITY:')
+    //console.log(newActivity)
+
+    // update state
+    this.setState({
+      currentActivity: {...newActivity},
+      activityValues: newActivity.fields.reduce((result, field) => ({
+        ...result,
+        [field.name]: field.fieldDataType === "Flag" ? field.valueChosenOrEntered === "True" : (
+          field.valueChosenOrEntered === "None" ? "" : field.valueChosenOrEntered
+        ),
+      }), {})
+    })
+  }
+
   handleActionChange = (event) => {
     if (event.target.value >= 0) {
-      const defaultActionValues = this.props.policy.possible_activities[event.target.value].fields.map((field) => (field.valueChosenOrEntered))
+      const defaultactivityValues = this.props.policy.possible_activities[event.target.value].fields.map((field) => (field.valueChosenOrEntered))
       this.setState({
         actionIndex: event.target.value,
-        actionValues: defaultActionValues,
+        activityValues: defaultactivityValues,
       })
     } else {
       this.setState({
         actionIndex: -1,
-        actionValues: [],
+        activityValues: [],
       })
     }
   }
 
   updateActionValue = (index, value) => {
     this.setState((state) => ({
-      actionValues: [
-        ...state.actionValues.slice(0, index),
+      activityValues: [
+        ...state.activityValues.slice(0, index),
         value,
-        ...state.actionValues.slice(index + 1),
+        ...state.activityValues.slice(index + 1),
       ],
     }))
   }
 
   validateActivity = () => {
-    // check if action selected
-    if (this.state.actionIndex === -1)
+    // check if activity selected
+    if (this.state.currentActivity === null)
       return false
-    // check action values are filled
-    console.log('Validate Activity')
-    console.log(this.state.actionValues)
-    for (let index in this.state.actionValues) {
+
+    // check activity values are filled
+    //console.log('Validate Activity')
+    //console.log(this.state.activityValues)
+    for (const field of this.state.currentActivity.fields) {
+        //console.log(`${field.isMandatory ? "+" : "-"} ${field.name}: ${values[field.name]}`)
+        if (field.isMandatory && (this.state.activityValues[field.name] === "" || this.state.activityValues[field.name] === null))
+          return false
+      }
+  /*      
+    for (let index in this.state.activityValues) {
       console.log(index)
-      if (this.props.policy.possible_activities[this.state.actionIndex].fields[index].isMandatory && this.state.actionValues[index] === '')
+      if (this.props.policy.possible_activities[this.state.actionIndex].fields[index].isMandatory && this.state.activityValues[index] === '')
         return false
     }
+  */
     return true
   }
 
-  handleActionExecution = () => {
-    console.log('Action Execution')
+  handleActivityExecution = () => {
+    //console.log('Action Execution')
     this.setState({
-      actionExecution: true,
+      activityExecutes: true,
     })
-
+/*
     const executionData = {
       id: this.props.policy.id,
       activity: {
         name: this.props.policy.possible_activities[this.state.actionIndex].name,
         fields: this.props.policy.possible_activities[this.state.actionIndex].fields.map((field, index) => ({
           name: field.name,
-          value: this.state.actionValues[index],
+          value: this.state.activityValues[index],
         })),
       }
     }
+*/
+    const requestData = {
+      id: this.props.policy.id,
+      activity: {
+        name: this.state.currentActivity.name,
+        fields: this.state.currentActivity.fields.map((field) => ({
+          name: field.name,
+          value: this.state.activityValues[field.name],
+        }))
+      },
+    }
+
+    //console.log('REQUEST DATA')
+    //console.log(requestData)
 
     executeActivity(
       this.props.i18n.language,
       this.props.stage,
-      executionData,
+      requestData,
     ).then(data => {
-      console.log('EXECUTE ACTIVITY RESPONSE')
-      console.log(data)
+      //console.log('EXECUTE ACTIVITY RESPONSE')
+      //console.log(data)
       // update state
       this.setState({
-        actionExecution: false,
-        actionIndex: -1,
-        actionValues: [],
+        activityExecutes: false,
+        currentActivity: null,
+        activityValues: {},
       })
       // update policy data
       this.props.updatePolicy(
@@ -229,6 +299,14 @@ class ActivePolicy extends React.Component {
           ...data,
         }
       )
+    }).catch(error => {
+      console.log('EXECUTE ERROR:')
+      console.log(error)
+      this.setState({
+        activityExecutes: false,
+        currentActivity: null,
+        activityValues: {},
+      })
     })
   }
 
@@ -272,32 +350,40 @@ class ActivePolicy extends React.Component {
               <Select
                 labelId={`action-${this.props.index}-label`}
                 id={`action-${this.props.index}`}
-                value={this.state.actionIndex}
-                onChange={this.handleActionChange}
+                value={this.state.currentActivity === null ? "none" : this.state.currentActivity.name}
+                onChange={this.handleActivitySelect}
                 disabled={this.actionsNotAvailable}
                 label={props.t("common:action")}
               >
-                <MenuItem value={-1}>
+                <MenuItem value="none">
                   <em>{props.t("common:none")}</em>
                 </MenuItem>
                 {this.props.policy.possible_activities.map((activity, index) => (
-                  <MenuItem key={`${activity.name}-${index}`} value={index}>
+                  <MenuItem key={`${activity.name}-${index}`} value={activity.name}>
                     {activity.name}
                   </MenuItem>
                 ))}
               </Select>
             </ActionControl>
+            <ProgressButton
+              title={props.t('common:execute')}
+              loading={this.state.activityExecutes}
+              disabled={!this.validateActivity()}
+              onClick={this.handleActivityExecution}
+            />
+            {/*}
             <div style={{position: "relative"}}>
               <ActiveButton 
                 variant="contained"
                 color="primary"
-                onClick={this.handleActionExecution}
+                onClick={this.handleActivityExecution}
                 disabled={!this.validateActivity() || this.state.actionExecution}
               >
                 {props.t("common:execute")}
               </ActiveButton>
               {this.state.actionExecution && <ActivityProgress size={progressSize} />}
             </div>
+          */}
           </FormGroup>
         </Grid>
       </Grid>
@@ -322,7 +408,7 @@ class ActivePolicy extends React.Component {
           <Select
             labelId={`${props.data.name}-${this.props.index}-label`}
             id={`${props.data.name}-${this.props.index}`}
-            value={this.state.actionValues[props.index]}
+            value={this.state.activityValues[props.index]}
             onChange={(event) => this.updateActionValue(props.index, event.target.value)}
             label={props.data.name}
           >
@@ -339,7 +425,7 @@ class ActivePolicy extends React.Component {
             variant="outlined"
             size="small"
             onChange={(event) => this.updateActionValue(props.index, event.target.value)}
-            value={this.state.actionValues[props.index]}
+            value={this.state.activityValues[props.index]}
           />
       )}
     </Tooltip>
@@ -350,7 +436,8 @@ class ActivePolicy extends React.Component {
   render(){
     const {t} = this.props
 
-    console.log(this.props)
+    //console.log('STATE:')
+    //console.log(this.state)
 
   return(
     <React.Fragment>
@@ -372,17 +459,30 @@ class ActivePolicy extends React.Component {
             title={<this.RenderHeader t={t} />}
             subheader={this.props.policy.effective_date}
           />
-          {this.state.actionIndex === -1 ? ( null ) : (
+          {this.state.currentActivity !== null && 
+           this.state.currentActivity.fields.filter(field => field.fieldType === 1).length > 0 &&
             <CardContent>
+              <DataGroup 
+                id={this.props.policy.id}
+                title={this.state.currentActivity.description}
+                fields={this.state.currentActivity.fields}
+                values={this.state.activityValues}
+                stage={this.props.stage}
+                onChange={this.handleActivityDataChanged}
+              />
+            </CardContent>
+          }
+          {/*}  <CardContent>
               <Grid container spacing={2}>
                 {this.props.policy.possible_activities[this.state.actionIndex].fields.map((field, index) => (
                     <Grid item key={field.name} xs={12} md={4} lg={3}>
                       <this.RenderActivityField index={index} data={field} />
+
                     </Grid>
                 ))}
               </Grid>
             </CardContent>
-          )}
+          */}
           <CardBottom>
             <MoreButton expanded={this.state.expanded} onClick={this.handleExpandClick} />
           </CardBottom>

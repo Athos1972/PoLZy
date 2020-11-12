@@ -18,8 +18,9 @@ import CloseIcon from '@material-ui/icons/Close'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import { CardActiveHide, CardActive, CardTop, hideTime } from '../styles/cards'
-import { AntragTitle, ProgressButton } from './components'
-import DataGroup from'../components/dataFields'
+import { AntragTitle } from './components'
+import ProgressButton from '../components/progressButton'
+import DataGroup from '../components/dataFields'
 import { removeAntrag, updateAntrag, addAntrag } from '../redux/actions'
 import { executeAntrag, cloneAntrag, updateAntragFields } from '../api'
 import { ActivityIcon } from '../components/icons'
@@ -113,7 +114,6 @@ function ActiveAntrag(props) {
   const [values, setValues] = useState({...getValues(antrag)})
 
   React.useEffect(() => {
-    //console.log('ANTRAG UPDATE')
     setGroups({...getGroups(antrag)})
     setValues({...getValues(antrag)})
   }, [antrag])
@@ -125,8 +125,6 @@ function ActiveAntrag(props) {
   const [activityValues, setActivityValues] = useState({})
   const [isCalculate, setCalculate] = useState(false)
   const [isExecuting, setExecute] = useState(false)
-  //const [isPartnerVisible, setPartnerVisible] = useState(false)
-  //const [partner, setPartner] = useState('')
 
   const getPremium = () => {
     for (const field of antrag.fields) {
@@ -139,10 +137,6 @@ function ActiveAntrag(props) {
   }
 
   const validateFields = () => {
-    //console.log('GROUPS:')
-    //console.log(groups)
-    //console.log('VALIDATOR:')
-    //console.log(values)
     // checks if all mandatory fields are filled
     for (const group of antrag.field_groups.filter(group => groups[group.name])) {
       for (const field of antrag[group.name]) {
@@ -225,13 +219,9 @@ function ActiveAntrag(props) {
               ...data,
             }
           )
-          //update state
-          //setCalculate(false)
 
         }).catch(error => {
           console.log(error)
-          //update state
-          //setCalculate(false)
         })
 
         return
@@ -294,8 +284,6 @@ function ActiveAntrag(props) {
   }
 
   const executeActivity = (activity) => {
-    //console.log('EXECUTE ACTIVITY')
-    //console.log(activityValues)
     // switch calculate mode
     setExecute(true)
     // build request body
@@ -305,15 +293,11 @@ function ActiveAntrag(props) {
       values: {
         ...activityGroups,
         ...activityValues,
-        //...groups,
-        //...values,
       },
     }
 
     // execute activity
     executeAntrag(i18n.language, props.stage, requestData).then(data => {
-      //console.log('Activity Response:')
-      //console.log(data)
       
       // check response
       if (activity === "Drucken" || activity === "Deckungsuebersicht") {
@@ -352,20 +336,18 @@ function ActiveAntrag(props) {
   }
 
   const handleActivityDataChanged = (newValues) => {
-    //console.log('Activity Field Change:')
-    //console.log(newValues)
     setActivityValues(preValues => ({
       ...preValues,
       ...newValues,
     }))
   }
-/*
-  const handleExecuteClick = () => {
-    //console.log('Execute Clicked')
-    executeActivity(currentActivity.name)
-  }
-*/
+
   const handleActivitySelect = (event, value) => {
+    // check if activity is executing
+    if (isExecuting || isCalculate) {
+      return
+    }
+
     const newActivity = antrag.possible_activities.filter(activity => activity.name === value)[0]
 
     // update current activity
@@ -415,20 +397,8 @@ function ActiveAntrag(props) {
     }
     setActivityValues({...newActivityValues})
   }
-/*
-  const handleSeacrhSelect = (selectedValue) => {
-    //console.log('Activity Values:')
-    //console.log(selectedValue)
-    setActivityValues(preValues => ({
-      ...preValues,
-      PartnerID: selectedValue,
-    }))
-  }
-*/
+
   const handlePartnerSelect = (partner) => {
-    //console.log('SET PARTNER:')
-    //console.log(partner)
-    //setPartner({...newPartner})
     if (partner === '') {
       return
     }
@@ -660,17 +630,6 @@ function ActiveAntrag(props) {
               }
             />
           }
-
-          {/* Partner Search or Create */}
-          {/*currentActivity !== null && currentActivity.name === "VN festlegen" &&
-            <PartnerCard
-              partner={activityValues}
-              stage={props.stage}
-              id={antrag.id}
-              data={currentActivity}
-              savePartner={handlePartnerSelect}
-            />
-          */}
 
           {/* bottom navigation */}
           {antrag.status !== "Neu" &&

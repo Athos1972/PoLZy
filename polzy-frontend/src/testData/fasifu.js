@@ -214,6 +214,7 @@ export const policies = [
                 {
                     "name": "Stornogrund",
                     "brief": "Stornogrund",
+                    "fieldType": 1,
                     "tooltip": "Bitte w\u00e4hle einen Stornogrund aus der Liste der m\u00f6glichen Stornogr\u00fcnde. Nach Auswahl des Stornogrunds erschienen eventuell weitere Eingabefelder",
                     "type": "Text",
                     "inputRange": [
@@ -228,6 +229,7 @@ export const policies = [
                 {
                     "name": "Stornodatum",
                     "brief": "Stornodatum",
+                    "fieldType": 1,
                     "tooltip": "Per welchem Datum soll storniert werden?",
                     "type": "Datum",
                     "inputRange": [

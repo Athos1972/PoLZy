@@ -26,7 +26,7 @@ import { format, parse } from 'date-fns'
 import { useTranslation } from 'react-i18next'
 import { makeStyles } from '@material-ui/core/styles'
 import SearchField from './searchField'
-import { getLocaleDateFormat } from '../dateFormat' 
+import { getLocaleDateFormat, backendDateFormat } from '../dateFormat' 
 
 // Styles
 const useStyles = makeStyles((theme) => ({
@@ -242,14 +242,9 @@ export function DataFieldDate(props) {
       return
     }
 
-    const strValue = format(date, "yyyy-MM-dd")
+    const strValue = format(date, backendDateFormat)
     props.onChange({[data.name]: strValue})
   }
-
-  console.log('DATE:')
-  console.log(value)
-  console.log(typeof(value))
-  console.log(parse(value, "yyyy-MM-dd", new Date()))
 
   return (
     <FormControl
@@ -267,7 +262,7 @@ export function DataFieldDate(props) {
           inputVariant="outlined"
           label={data.brief}
           format={getLocaleDateFormat()}
-          value={parse(value, "yyyy-MM-dd", new Date())}
+          value={parse(value, backendDateFormat, new Date())}
           onChange={handleChange}
           required={data.isMandatory}
         />
@@ -307,8 +302,11 @@ export function DataFieldSwitch(props) {
 /*
 ** Data Field Mapper
 */
-export const DataField = React.forwardRef(function DataField(props, ref) {
+export function DataField(props) {
   const {data} = props
+
+  //console.log('DATA FIELD')
+  //console.log(props)
 
   if (data.inputRange.length > 0) {
     if (data.fieldDataType === "Zahl" && data.inputRange[0] === "range") {
@@ -330,7 +328,7 @@ export const DataField = React.forwardRef(function DataField(props, ref) {
         return <DataFieldText {...props} />
     }
   }
-})
+}
 
 
 /*
@@ -355,6 +353,7 @@ export default function DataGroup(props) {
     }
   }
 
+  //console.log('DATA GROUP')
   //console.log(props)
 
   return (
