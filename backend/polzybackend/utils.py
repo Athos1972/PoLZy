@@ -3,9 +3,6 @@ from importlib import import_module
 from .policy import Policy
 from .models import Activity
 
-# system date format
-date_format = "%Y-%m-%d"
-
 def import_class(name):
     #
     # imports class from string 'name' 

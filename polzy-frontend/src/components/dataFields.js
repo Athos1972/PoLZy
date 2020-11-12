@@ -84,6 +84,36 @@ export function DataFieldText(props) {
   )
 }
 
+
+/*
+** Long Text Input
+*/
+export function DataFieldLongText(props) {
+  const classes = useStyles()
+  const {id, data, value, onChange } = props
+
+  return (
+    <FormControl
+      classes={{root: classes.inputField}}
+      variant="outlined"
+      size="small"
+      fullWidth
+      required={data.isMandatory}
+      disabled={data.fieldType === 2}
+    >
+      <InputLabel htmlFor={`${data.name}-${id}`}>
+        {data.brief}
+      </InputLabel>
+      <OutlinedInput
+        id={`${data.name}-${id}`}
+        value={value}
+        onChange={(e) => onChange({[data.name]: e.target.value})}
+        label={data.brief}
+      />
+    </FormControl>
+  )
+}
+
 /*
 **  Number Input
 */

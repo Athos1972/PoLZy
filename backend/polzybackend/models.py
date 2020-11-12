@@ -1,13 +1,11 @@
-#from fasifu import GlobalConstants
-#-----> we cannot iport from fasusfu to PoLZy because fasisfu is an implementation of PoLZy.
-#-----> PoLZy should be able to work with with another implementation systems.
 from . import db, auth
 from .auth import get_uuid, generate_token, get_expired
-from .utils import date_format
 from datetime import datetime, timedelta, date
 import uuid
 import json
 
+# system date format
+date_format = "%Y-%m-%d"
 
 # authentication
 @auth.verify_token
