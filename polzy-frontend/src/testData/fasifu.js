@@ -216,7 +216,7 @@ export const policies = [
                     "brief": "Stornogrund",
                     "fieldType": 1,
                     "tooltip": "Bitte w\u00e4hle einen Stornogrund aus der Liste der m\u00f6glichen Stornogr\u00fcnde. Nach Auswahl des Stornogrunds erschienen eventuell weitere Eingabefelder",
-                    "type": "Text",
+                    "fieldDataType": "Text",
                     "inputRange": [
                         "9002 Wegfall",
                         "9003 Konkurs"
@@ -231,7 +231,7 @@ export const policies = [
                     "brief": "Stornodatum",
                     "fieldType": 1,
                     "tooltip": "Per welchem Datum soll storniert werden?",
-                    "type": "Datum",
+                    "fieldDataType": "Datum",
                     "inputRange": [
                         "2021-01-01",
                         "2022-01-01"
@@ -240,6 +240,18 @@ export const policies = [
                     "valueChosenOrEntered": "",
                     "inputTriggers": false,
                     "isMandatory": false
+                },
+                {
+                    "name": "Details",
+                    "brief": "Details",
+                    "fieldType": 1,
+                    "tooltip": "Please give details",
+                    "fieldDataType": "TextBox",
+                    "inputRange": [],
+                    "onlyFromRange": false,
+                    "valueChosenOrEntered": "",
+                    "inputTriggers": false,
+                    "isMandatory": true
                 }
             ]
         },

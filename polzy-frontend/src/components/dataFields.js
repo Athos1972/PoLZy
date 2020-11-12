@@ -93,24 +93,17 @@ export function DataFieldLongText(props) {
   const {id, data, value, onChange } = props
 
   return (
-    <FormControl
-      classes={{root: classes.inputField}}
-      variant="outlined"
-      size="small"
+    <TextField
+      id={`${data.name}-${id}`}
+      label={data.brief}
+      multiline
       fullWidth
+      rows={4}
+      variant="outlined"
+      value={value}
+      onChange={(e) => onChange({[data.name]: e.target.value})}
       required={data.isMandatory}
-      disabled={data.fieldType === 2}
-    >
-      <InputLabel htmlFor={`${data.name}-${id}`}>
-        {data.brief}
-      </InputLabel>
-      <OutlinedInput
-        id={`${data.name}-${id}`}
-        value={value}
-        onChange={(e) => onChange({[data.name]: e.target.value})}
-        label={data.brief}
-      />
-    </FormControl>
+    />
   )
 }
 
@@ -309,10 +302,7 @@ export function DataFieldSwitch(props) {
   const {id, data, value, onChange } = props
 
   return (
-    <Tooltip
-      title={data.tooltip}
-      placement="top"
-    >
+    
       <FormControlLabel
         control={
           <Switch
@@ -324,7 +314,7 @@ export function DataFieldSwitch(props) {
         }
         label={data.brief}
       />
-    </Tooltip>
+
   )
 }
 
@@ -410,19 +400,24 @@ export default function DataGroup(props) {
         {fields.filter((field) => (
           field.fieldDataType === "Flag" && field.fieldType === 1
         )).map((field) => (
-          <Grid
-            key={field.name}
-            item
-            xs={6}
-            md={4}
-            lg={3}
+          <Tooltip
+            title={field.tooltip}
+            placement="top"
           >
-            <DataFieldSwitch 
-              {...commonProps}
-              data={field}
-              value={values[field.name]}
-            />
-          </Grid>
+            <Grid
+              key={field.name}
+              item
+              xs={6}
+              md={4}
+              lg={3}
+            >
+              <DataFieldSwitch 
+                {...commonProps}
+                data={field}
+                value={values[field.name]}
+              />
+            </Grid>
+          </Tooltip>
         ))}
       </Grid>
 
@@ -433,49 +428,81 @@ export default function DataGroup(props) {
         spacing={2}
       >
         {fields.filter((field) => (
-          field.fieldDataType !== "Flag" && field.fieldType === 1 && field.fieldDataType !== "SearchEndPoint"
+          field.fieldDataType !== "Flag" && field.fieldType === 1 && 
+          field.fieldDataType !== "SearchEndPoint" && field.fieldDataType !== "TextBox"
         )).map((field) => (
           <Tooltip
             key={field.name}
             title={field.tooltip}
             placement="top"
           >
-          <Grid 
-            item
-            key={field.name}
-            xs={size('xs')}
-            md={size('md')}
-            lg={size('lg')}
-          >
-            <DataField
-              {...commonProps}
-              data={field}
-              value={values[field.name]}
-            />
-          </Grid>
+            <Grid 
+              item
+              key={field.name}
+              xs={size('xs')}
+              md={size('md')}
+              lg={size('lg')}
+            >
+              <DataField
+                {...commonProps}
+                data={field}
+                value={values[field.name]}
+              />
+            </Grid>
           </Tooltip>
         ))}
       </Grid>
 
-    {/* Search Fields */}
+      {/* Text Boxes */}
+      <Grid 
+        classes={{root: classes.inputGroupContainer}}
+        container
+        spacing={2}
+      >
+        {fields.filter((field) => (field.fieldDataType === "TextBox")).map((field) => (
+          <Tooltip
+            title={field.tooltip}
+            placement="top"
+          >
+            <Grid 
+              item
+              key={field.name}
+              xs={12}
+            >
+              <DataFieldLongText
+                {...commonProps}
+                data={field}
+                value={values[field.name]}
+              />
+            </Grid>
+          </Tooltip>
+        ))}
+      </Grid>
+
+      {/* Search Fields */}
       <Grid 
         classes={{root: classes.inputGroupContainer}}
         container
         spacing={2}
       >
         {fields.filter((field) => (field.fieldDataType === "SearchEndPoint")).map((field) => (
-          <Grid 
-            item
-            key={field.name}
-            xs={12}
+          <Tooltip
+            title={field.tooltip}
+            placement="top"
           >
-            <SearchField
-              {...commonProps}
-              data={field}
-              value={values[field.name]}
-              address={values.address}
-            />
-          </Grid>
+            <Grid 
+              item
+              key={field.name}
+              xs={12}
+            >
+              <SearchField
+                {...commonProps}
+                data={field}
+                value={values[field.name]}
+                address={values.address}
+              />
+            </Grid>
+          </Tooltip>
         ))}
       </Grid>
 

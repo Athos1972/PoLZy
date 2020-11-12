@@ -343,6 +343,11 @@ function ActiveAntrag(props) {
   }
 
   const handleActivitySelect = (event, value) => {
+    // check if the same acticvity selected
+    //if (value === currentActivity.name) {
+    //  return
+    //}
+
     // check if activity is executing
     if (isExecuting || isCalculate) {
       return
