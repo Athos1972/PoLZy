@@ -1,3 +1,4 @@
+from fasifu import GlobalConstants
 from . import db, auth
 from .auth import get_uuid, generate_token, get_expired
 from datetime import datetime, timedelta, date
@@ -96,14 +97,11 @@ class Activity(db.Model):
         # create activity instance
         instance = cls(
             policy_number=policy.number,
-            effective_date=datetime.strptime(policy.effective_date, '%Y-%m-%d').date(),
+            effective_date=datetime.strptime(policy.effective_date, GlobalConstants.dateFormat).date(),
             type=data['activity'].get('name'),
             creator=current_user,
             attributes=json.dumps(data['activity'].get('fields'))
         )
-        # set effective date
-        #if data.get('effective_date'):
-        #    instance.effective_date = datetime.strptime(data.get('effective_date'), '%Y-%m-%d').date()
         
         # store to db
         db.session.add(instance)
