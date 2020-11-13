@@ -14,8 +14,10 @@ import {
   BottomNavigationAction,
   Collapse,
   LinearProgress,
+  TextField,
 } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
+import AddIcon from '@material-ui/icons/Add'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import { CardActiveHide, CardActive, CardTop, hideTime } from '../styles/cards'
@@ -40,18 +42,13 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'flex-end',
   },
 
-  fieldGroup: {
-    padding: theme.spacing(1),
-    margin: theme.spacing(1),
-  },
-
-  fieldGroupCntainer: {
-    margin: 0,
-    width: "100%",
-  },
-
   customTag: {
     color: 'grey',
+    fontSize: 16,
+  },
+
+  customTagInput: {
+    width: 240,
   },
 
   premiumText: {
@@ -84,25 +81,72 @@ function AntragCard(props) {
   )
 }
 
-function CustomTag(props) {
+
+/*
+** Custom Tag
+*/
+function TagText(props) {
   const classes = useStyles()
 
   return (
-    <Grid container>
-      <Grid item xs={2}>
-        <Typography
-          className={classes.customTag}
-          component="div"
-          variant="h5"
-        >
-          Tag:
-        </Typography>
-        {props.text === "" ? (
-          "Yes"
-        ) : (
-          "No"
-        )}
+    <Typography
+      className={classes.customTag}
+      component="p"
+      variant="overline"
+    >
+      {props.text}
+    </Typography>
+  )
+}
+
+function CustomTag(props) {
+  const classes = useStyles()
+
+  const [value, setValue] = useState(props.text)
+
+  const handleValueChange = (event) => {
+    setValue(event.target.value)
+  }
+
+  const handleAddButtonClick = () => {
+    props.onChange(value)
+  }
+
+
+
+  return (
+    <Grid container spacing={2}>
+      <Grid item >
+        <TagText text="Tag:" />
       </Grid>
+      {props.text === "" ? (
+        <React.Fragment>
+        <Grid item>
+          <TextField
+            classes={{root: classes.customTagInput}}
+            label="Custom Tag"
+            variant="outlined"
+            size="small"
+            value={value}
+            onChange={handleValueChange}
+          />
+        </Grid>
+        <Grid item>
+          <Button
+            variant="outlined"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={handleAddButtonClick}
+          >
+            Add
+          </Button>
+        </Grid>
+        </React.Fragment>
+      ) : (
+        <Grid item >
+          <TagText text={props.text} />
+        </Grid>
+      )}
     </Grid>
   )
 }
@@ -158,6 +202,7 @@ function ActiveAntrag(props) {
   const [activityValues, setActivityValues] = useState({})
   const [isCalculate, setCalculate] = useState(false)
   const [isExecuting, setExecute] = useState(false)
+  const [customTag, setCustomTag] = useState('')
 
   const getPremium = () => {
     for (const field of antrag.fields) {
@@ -515,11 +560,14 @@ function ActiveAntrag(props) {
               </React.Fragment>
             }
             title={<AntragTitle product={antrag.product_line.attributes.Produkt} />}
+            subheader={
+              <CustomTag
+                text={customTag}
+                onChange={setCustomTag}
+              />
+            }
           />
           <CardContent>
-
-            {/* Custom Tag */}
-            
 
             {/* Input Group Switchers */}
             <Grid container spacing={2}>
