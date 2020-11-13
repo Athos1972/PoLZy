@@ -69,7 +69,7 @@ export function DataFieldText(props) {
       size="small"
       fullWidth
       required={data.isMandatory}
-      disabled={data.fieldType === 2}
+      disabled={props.disabled}
     >
       <InputLabel htmlFor={`${data.name}-${id}`}>
         {data.brief}
@@ -79,6 +79,7 @@ export function DataFieldText(props) {
         value={value}
         onChange={(e) => onChange({[data.name]: e.target.value})}
         label={data.brief}
+        endAdornment={props.endAdornment}
       />
     </FormControl>
   )
@@ -486,23 +487,18 @@ export default function DataGroup(props) {
         spacing={2}
       >
         {fields.filter((field) => (field.fieldDataType === "SearchEndPoint")).map((field) => (
-          <Tooltip
-            title={field.tooltip}
-            placement="top"
+          <Grid 
+            item
+            key={field.name}
+            xs={12}
           >
-            <Grid 
-              item
-              key={field.name}
-              xs={12}
-            >
-              <SearchField
-                {...commonProps}
-                data={field}
-                value={values[field.name]}
-                address={values.address}
-              />
-            </Grid>
-          </Tooltip>
+            <SearchField
+              {...commonProps}
+              data={field}
+              value={values[field.name]}
+              address={values.address}
+            />
+          </Grid>
         ))}
       </Grid>
 

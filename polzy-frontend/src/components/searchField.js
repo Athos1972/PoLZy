@@ -53,6 +53,7 @@ function SearchDropDown(props) {
   const {id, data} = props
   const [options, setOptions] = useState([])
   const [loading, setLoading] = useState(false)
+  const classes = useStyles()
 
   const handleInputChange = (event, newValue, reason) => {
 
@@ -99,6 +100,7 @@ function SearchDropDown(props) {
 
   return (
     <Autocomplete
+      classes={{root: classes.inputField}}
       id={`${data.name}-${id}`}
       fullWidth
       size="small"
@@ -177,6 +179,10 @@ function PartnerCreateField(props) {
     },
   ]
 
+  const handleClearClick = () => {
+    props.onSelect({address: ""})
+  }
+
   switch (props.data.name) {
     case 'birthDate':
       return <DataFieldDate {...props} />
@@ -184,7 +190,22 @@ function PartnerCreateField(props) {
       return <InputRadio {...props} options={genderOptions} />
     case 'address':
       if (props.address) {
-        return <DataFieldText {...props} value={props.address} />
+        return (
+          <DataFieldText
+            {...props}
+            value={props.address}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  edge="end"
+                  onClick={handleClearClick}
+                >
+                  <ClearIcon fontSize="small" />
+                </IconButton>
+              </InputAdornment>
+            }
+          />
+        )
       }
 
       return (
@@ -377,6 +398,12 @@ export default function SearchField(props) {
     setNewOpen(false)
   }
 
+  const handleClearClick = () => {
+    console.log('CLEAR CLICKED')
+    console.log(props)
+    props.onChange({[data.name]: ""})
+  }
+
   //console.log('Search Field props:')
   //console.log(props)
 
@@ -386,6 +413,22 @@ export default function SearchField(props) {
         <React.Fragment>
           <Grid container spacing={1}>
             <Grid item xs={12} lg={10}>
+              <DataFieldText
+                disabled={value === ""}
+                data={data}
+                value={value}
+                endAdornment={value !== "" &&
+                    <InputAdornment position="end">
+                      <IconButton
+                        edge="end"
+                        onClick={handleClearClick}
+                      >
+                        <ClearIcon fontSize="small" />
+                      </IconButton>
+                    </InputAdornment>
+                  }
+              />
+              {/*}
               <FormControl
                 classes={{root: classes.inputField}}
                 variant="outlined"
@@ -412,6 +455,7 @@ export default function SearchField(props) {
                   label={data.brief}
                 />
               </FormControl>
+            */}
             </Grid>
             <Grid item xs={6} lg={1}>
               <Button
