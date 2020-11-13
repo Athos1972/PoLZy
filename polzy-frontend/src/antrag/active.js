@@ -254,7 +254,11 @@ function ActiveAntrag(props) {
 
   const handleCloneClick = () => {
     // request antrag copy
-    cloneAntrag(props.stage, antrag.id).then(data => {
+    cloneAntrag(
+      i18n.langage,
+      props.stage,
+      antrag.id,
+    ).then(data => {
       props.newAntrag(
         {
           request_state: "ok",
@@ -262,6 +266,8 @@ function ActiveAntrag(props) {
           ...data,
         }
       )
+    }).catch(error => {
+      console.log(error)
     })
   }
 
