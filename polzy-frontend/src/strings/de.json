@@ -41,6 +41,7 @@
     "fast.offer": "Schnellrechner",
     "invalid.antrag": "Ungültige Anfrage",
     "partner.saved": "Partner übernommen",
+    "partner.find": "Partner finden",
     "partner.created": "Partner gespeichert",
     "partner.new": "Neu anlegen",
     "re-calculate": "Neu rechnen",
@@ -49,6 +50,7 @@
   },
 
    "partner": {
+      "person": "Person",
       "firstName": "Vorname",
       "lastName": "Nachname",
       "birthDate": "Geburtsdatum",
@@ -56,6 +58,10 @@
       "gender.male": "Männlich",
       "gender.female": "Weiblich",
       "gender.float": "Anders",
+      "company": "Firma",
+      "companyName": "Firmenname",
+      "registrationNumber": "Firmenbuchnummer",
+      "companyType": "Unternehmenstyp",
       "address": "Adresse",
       "email": "E-Mail",
       "telefon": "Telefon"

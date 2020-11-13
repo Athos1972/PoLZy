@@ -38,19 +38,27 @@
     "fast.offer": "Schnörechna",
     "invalid.antrag": "Do stimmt wos ned",
     "partner.new": "TypIn neich auleg'n",
+    "partner.find": "TypIn suachn",
     "partner.saved": "TypIn übanomma",
     "partner.created": "TypIn gspeichat",
     "premium": "Prämie",
     "re-calculate": "Noamoi rechna",
     "select.product": "Wöcha Vasicharung?"
-  },"partner": {
-      "first.name": "Voanauman",
-      "last.name": "Nochnauman",
+  },
+  "partner": {
+      "person": "TypInnen",
+      "firstName": "Voanauman",
+      "lastName": "Nochnauman",
+      "birthDate": "Geboren?",
       "gender": "Bua/Madl?",
       "gender.male": "Bua",
       "gender.female": "Madl",
       "gender.float": "Nix/Aundas",
       "adress": "wo wohnt TypIn",
+      "company": "Bude",
+      "companyName": "Nauman von da Bude",
+      "registrationNumber": "Firmenbuchnummer",
+      "companyType": "Was via a Bude?",
       "email": "Mehl",
       "phone": "Händy"
    }

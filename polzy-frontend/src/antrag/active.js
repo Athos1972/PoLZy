@@ -50,6 +50,10 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
   },
 
+  customTag: {
+    color: 'grey',
+  },
+
   premiumText: {
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
@@ -58,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
   linearProgress: {
     marginLeft: theme.spacing(3),
     marginRight: theme.spacing(3),
-  }
+  },
 
 }));
 
@@ -77,6 +81,29 @@ function AntragCard(props) {
         </CardActive>
       )}
     </React.Fragment>
+  )
+}
+
+function CustomTag(props) {
+  const classes = useStyles()
+
+  return (
+    <Grid container>
+      <Grid item xs={2}>
+        <Typography
+          className={classes.customTag}
+          component="div"
+          variant="h5"
+        >
+          Tag:
+        </Typography>
+        {props.text === "" ? (
+          "Yes"
+        ) : (
+          "No"
+        )}
+      </Grid>
+    </Grid>
   )
 }
 
@@ -490,6 +517,9 @@ function ActiveAntrag(props) {
             title={<AntragTitle product={antrag.product_line.attributes.Produkt} />}
           />
           <CardContent>
+
+            {/* Custom Tag */}
+            
 
             {/* Input Group Switchers */}
             <Grid container spacing={2}>

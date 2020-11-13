@@ -4,11 +4,6 @@ from ..policy import Policy
 from ..models import Activity, ActivityType
 from ..utils import get_policy_class, get_all_stages, get_activity_class
 from . import bp
-#from fasifu.GlobalConstants import GlobalConstants
-#from logging import getLogger
-
-# Flask app has its logger: current_app.logger
-#logger = getLogger(GlobalConstants.loggerName)
 
 
 @bp.route('/<string:lang>/<string:stage>/policy/<string:policy_number>/<string:effective_date>')
@@ -26,6 +21,9 @@ def get_policy(lang, stage, policy_number, effective_date=None):
     try:
         # get Policy
         policy = get_policy_class()(policy_number, effective_date)
+        policy.setStage(stage)
+        policy.setLanguage(lang)
+        current_app.logger.warning(f"Stage={stage}, lang={lang}")
 
         if policy.fetch():
             current_app.config['POLICIES'][policy.uuid] = policy
@@ -40,10 +38,11 @@ def get_policy(lang, stage, policy_number, effective_date=None):
 
 
     except Exception as e:
-        current_app.logger.warning(f'Fetch plolicy {policy_number} {effective_date} failed: {e}')
+        current_app.logger.exception(f'Fetch policy {policy_number} {effective_date} failed: {e}')
         return jsonify({'error': str(e)}), 400
 
     return jsonify({'error': 'Policy not found'}), 404
+
 
 @bp.route('/stage')
 def get_stages():
@@ -87,6 +86,9 @@ def new_activity(lang, stage):
             # update activity
             activity.finish()
             # update policy
+            current_app.logger.warning(f"Stage={stage}, lang={lang}")
+            policy.setStage(stage)
+            policy.setLanguage(lang)
             policy.fetch()
             if data['activity'] == "Detailauskunft":
                 print(f"returned link: {policy.returnLink()}")
