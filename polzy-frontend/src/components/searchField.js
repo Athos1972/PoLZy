@@ -238,7 +238,7 @@ function FindDialog(props) {
       aria-labelledby={`find-${props.data.endpoint}-${props.id}`}
     >
       <DialogTitle id={`find-${props.data.endpoint}-${props.id}`}>
-        {t("common:find") + " " + t(`antrag:${props.data.endpoint}`)}
+        {t("antrag:partner.find")}
       </DialogTitle>
       <DialogContent>
         <SearchDropDown {...props} />
