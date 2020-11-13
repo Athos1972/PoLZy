@@ -26,9 +26,19 @@ def get_policy(lang, stage, policy_number, effective_date=None):
     try:
         # get Policy
         policy = get_policy_class()(policy_number, effective_date)
+
         if policy.fetch():
             current_app.config['POLICIES'][policy.uuid] = policy
-            return jsonify(policy.get()), 200
+            result = policy.get()
+            # DEBUG
+            #import json 
+            #print(json.dumps(result, indent=2))
+            
+            # set response
+            response_code = 400 if 'error' in result else 200
+            return jsonify(result), response_code
+
+
     except Exception as e:
         current_app.logger.warning(f'Fetch plolicy {policy_number} {effective_date} failed: {e}')
         return jsonify({'error': str(e)}), 400
@@ -60,8 +70,6 @@ def new_activity(lang, stage):
 
     # get post data
     data = request.get_json()
-    #print(data)
-    #print(current_app.config.get('POLICIES'))
 
     # get policy and create activity 
     try:
