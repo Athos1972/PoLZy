@@ -50,6 +50,7 @@
   },
 
    "partner": {
+      "person": "Person",
       "firstName": "First Name",
       "lastName": "Last Name",
       "birthDate": "Date of Birth",
@@ -57,6 +58,10 @@
       "gender.male": "Male",
       "gender.female": "Female",
       "gender.float": "Other",
+      "company": "Company",
+      "companyName": "Company Name",
+      "registrationNumber": "Registration Number",
+      "companyType": "Type of Company",
       "address": "Address",
       "email": "E-mail",
       "telefon": "Phone"

@@ -18,10 +18,14 @@ import {
   FormControlLabel,
   RadioGroup,
   Radio,
+  Tabs,
+  Tab,
 } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import ClearIcon from '@material-ui/icons/Clear'
 import SearchIcon from '@material-ui/icons/Search'
+import PersonIcon from '@material-ui/icons/Person'
+import BusinessIcon from '@material-ui/icons/Business'
 import AccessibilityNewIcon from '@material-ui/icons/AccessibilityNew'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
@@ -39,6 +43,14 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-around",
+  },
+
+  newDialogTitle: {
+    paddingBottom: 0,
+  },
+
+  dialogTabs: {
+    marginBottom: theme.spacing(2),
   },
 }))
 
@@ -252,23 +264,49 @@ function FindDialog(props) {
   )
 }
 
+function TabPanel(props) {
+  const { children, name, value } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={name !== value}
+      id={`tabpanel-${name}`}
+      aria-labelledby={`tab-${name}`}
+    >
+      { name === value && children }
+    </div>
+  )
+}
 
 function NewDialog(props) {
+  const classes = useStyles()
   const {t} = useTranslation("common", "antrag", "partner")
 
   // initial values
   const initPartner = {
-    firstName: '',
-    lastName: '',
-    birthDate: '2000-01-01',
-    gender: '',
-    address: props.address === undefined ? '' : props.address,
-    email: '',
-    telefon: '',
+    person: {
+      firstName: '',
+      lastName: '',
+      birthDate: '2000-01-01',
+      gender: '',
+      address: props.address === undefined ? '' : props.address,
+      email: '',
+      telefon: '',
+    },
+    company: {
+      companyName: '',
+      registrationNumber: '',
+      companyType: '',
+      address: props.address === undefined ? '' : props.address,
+      email: '',
+      telefon: '',
+    },
   }
 
   // state vars
-  const [partner, setPartner] = useState({...initPartner})
+  const [partner, setPartner] = useState({...initPartner.person})
+  const [partnerType, setPartnerType] = useState('person')
 
   // address updater
   React.useEffect(() => {
@@ -278,6 +316,10 @@ function NewDialog(props) {
     }))
   }, [props.address])
 
+  const handleTabChange = (event, value) => {
+    setPartner({...initPartner[value]})
+    setPartnerType(value)
+  }
 
   const handleDataChange = (newValues) => {
     //console.log('NEW DIALOG change')
@@ -289,19 +331,28 @@ function NewDialog(props) {
   }
 
   const handleCreateClick = () => {
-    const partnerLabelKeys = [
-      'lastName',
-      'firstName',
-      'birthDate',
-      'address',
-    ]
+    const partnerLabelKeys = {
+      person: [
+        'lastName',
+        'firstName',
+        'birthDate',
+        'address',
+      ],
+      company: [
+        'companyName',
+        'registrationNumber',
+        'address',
+      ],
+    }
 
-    const partnerLabel = partnerLabelKeys.reduce((label, key) => 
+    const partnerLabel = partnerLabelKeys[partnerType].reduce((label, key) => 
       ([...label, partner[key]]), []
     ).join(' ')
 
     props.onChange({
       partnerNumber: '',
+      ...initPartner.person,
+      ...initPartner.company,
       ...partner,
       [props.data.name]: partnerLabel,
     })
@@ -335,10 +386,36 @@ function NewDialog(props) {
       onClose={props.onClose}
       aria-labelledby={`new-partner-title-${props.id}`}
     >
-      <DialogTitle id={`new-partner-title-${props.id}`}>
+      <DialogTitle
+        classes={{root: classes.newDialogTitle}}
+        id={`new-partner-title-${props.id}`}
+      >
         {t("antrag:partner.new")}
       </DialogTitle>
       <DialogContent>
+        <Tabs 
+          classes={{root: classes.dialogTabs}}
+          value={partnerType}
+          onChange={handleTabChange}
+          indicatorColor="secondary"
+          textColor="primary"
+          variant="fullWidth"
+        >
+          <Tab
+            label={t('partnet:person')}
+            icon={<PersonIcon />}
+            value="person"
+            id="create-tab-person"
+            aria-controls="tabpanel-person"
+          />
+          <Tab
+            label={t('partner:company')}
+            icon={<BusinessIcon />}
+            value="company"
+            id="create-tab-company"
+            aria-controls="tabpanel-company"
+          />
+        </Tabs>
         <Grid container spacing={2}>
           {Object.keys(partner).map(key => (
             <Grid item xs={12} key={key}>
