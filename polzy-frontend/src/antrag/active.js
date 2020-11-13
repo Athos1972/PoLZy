@@ -13,6 +13,7 @@ import {
   BottomNavigation,
   BottomNavigationAction,
   Collapse,
+  LinearProgress,
 } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import { makeStyles } from '@material-ui/core/styles'
@@ -34,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   flexContainerRight: {
-    margin: theme.spacing(1),
+    margin: theme.spacing(2),
     display: 'flex',
     justifyContent: 'flex-end',
   },
@@ -53,6 +54,11 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
   },
+
+  linearProgress: {
+    marginLeft: theme.spacing(3),
+    marginRight: theme.spacing(3),
+  }
 
 }));
 
@@ -557,6 +563,7 @@ function ActiveAntrag(props) {
           </CardActions>
 
           {/* Activity Fields */}
+          {/* Activity with Field Groups */}
           {currentActivity !== null && ("field_groups" in currentActivity) && currentActivity.field_groups.length > 0 &&
             <React.Fragment>
               {/* Input Group Switchers */}
@@ -614,6 +621,8 @@ function ActiveAntrag(props) {
               </div>
             </React.Fragment>
           }
+
+          {/* Activity without Groups */}
           {currentActivity !== null && currentActivity.fields.length > 0 &&
             <DataGroup
               stage={props.stage}
@@ -634,6 +643,11 @@ function ActiveAntrag(props) {
                 </div>
               }
             />
+          }
+
+          {/* Loading animation */}
+          {isExecuting && 
+            <LinearProgress classes={{root: classes.linearProgress}} />
           }
 
           {/* bottom navigation */}
