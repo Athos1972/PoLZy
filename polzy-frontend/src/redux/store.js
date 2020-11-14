@@ -18,7 +18,7 @@ const store = createStore(reducer)
 policies.map(item => {
 	store.dispatch(addPolicy(item))
 })
-
+/*
 // antrags
 antrags.map(item => {
 	store.dispatch(addAntrag(item))

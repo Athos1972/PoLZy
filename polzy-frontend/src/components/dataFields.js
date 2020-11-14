@@ -15,6 +15,7 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  TextareaAutosize,
 } from '@material-ui/core'
 import clsx from 'clsx'
 import Autocomplete from '@material-ui/lab/Autocomplete'
@@ -99,12 +100,38 @@ export function DataFieldLongText(props) {
       label={data.brief}
       multiline
       fullWidth
-      rows={4}
       variant="outlined"
       value={value}
       onChange={(e) => onChange({[data.name]: e.target.value})}
       required={data.isMandatory}
+      size="small"
     />
+  )
+}
+
+export function DataFieldTextBox(props) {
+  const classes = useStyles()
+  const {id, data, value, onChange } = props
+
+  return (
+    <FormControl
+      classes={{root: classes.inputField}}
+      variant="outlined"
+      size="small"
+      fullWidth
+      required={data.isMandatory}
+    >
+      <InputLabel htmlFor={`${data.name}-${id}`}>
+        {data.brief}
+      </InputLabel>
+      <TextField
+        id={`${data.name}-${id}`}
+        multiline
+        value={value}
+        onChange={(e) => onChange({[data.name]: e.target.value})}
+        label={data.brief}
+      />
+    </FormControl>
   )
 }
 
@@ -341,10 +368,8 @@ export function DataField(props) {
         return <DataFieldNumber {...props} />
       case "Datum":
         return <DataFieldDate {...props} />
-      /*
-      case "SearchEndPoint":
-        return <SearchPartner {...props} />
-      */
+      case "TextBox":
+        return <DataFieldLongText {...props} />
       default:
         return <DataFieldText {...props} />
     }
@@ -430,7 +455,7 @@ export default function DataGroup(props) {
       >
         {fields.filter((field) => (
           field.fieldDataType !== "Flag" && field.fieldType === 1 && 
-          field.fieldDataType !== "SearchEndPoint" && field.fieldDataType !== "TextBox"
+          field.fieldDataType !== "SearchEndPoint" //&& field.fieldDataType !== "TextBox"
         )).map((field) => (
           <Tooltip
             key={field.name}
@@ -442,35 +467,9 @@ export default function DataGroup(props) {
               key={field.name}
               xs={size('xs')}
               md={size('md')}
-              lg={size('lg')}
+              lg={field.fieldDataType === "TextBox" ? 2*size('lg') : size('lg')}
             >
               <DataField
-                {...commonProps}
-                data={field}
-                value={values[field.name]}
-              />
-            </Grid>
-          </Tooltip>
-        ))}
-      </Grid>
-
-      {/* Text Boxes */}
-      <Grid 
-        classes={{root: classes.inputGroupContainer}}
-        container
-        spacing={2}
-      >
-        {fields.filter((field) => (field.fieldDataType === "TextBox")).map((field) => (
-          <Tooltip
-            title={field.tooltip}
-            placement="top"
-          >
-            <Grid 
-              item
-              key={field.name}
-              xs={12}
-            >
-              <DataFieldLongText
                 {...commonProps}
                 data={field}
                 value={values[field.name]}
