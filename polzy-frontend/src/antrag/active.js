@@ -239,11 +239,18 @@ function ActiveAntrag(props) {
     return true
   }
 
-  const fieldByName = (name) => {
-    // returns antrag field by its name
+  const getFieldByName = (instance, name) => {
+    // returns field of instace by its name
 
-    for (const group of antrag.field_groups.filter(group => groups[group.name])) {
-      for (const field of antrag[group.name]) {
+    // check fields
+    for (const field of instance.fields) {
+      if (field.name === name)
+        return field
+    }
+
+    // check groups
+    for (const group of instance.field_groups) {
+      for (const field of instance[group.name]) {
         if (field.name === name)
           return field
       }
@@ -303,7 +310,7 @@ function ActiveAntrag(props) {
   const handleDataChanged = (newValues) => {
     //check if fields should be updated
     Object.keys(newValues).forEach(key => {
-      const field = fieldByName(key)
+      const field = getFieldByName(antrag, key)
       if (field && field.inputTriggers) {
         // update antrag
         const requestData = {
@@ -777,6 +784,7 @@ function ActiveAntrag(props) {
                 values={activityValues}
                 onChange={handleActivityDataChanged}
                 onSelect={handlePartnerSelect}
+                companyTypes={getFieldByName(currentActivity, "firmenArten")}
                 actions={
                   <div className={classes.flexContainerRight} >
                     <ProgressButton

@@ -427,11 +427,11 @@ export default function DataGroup(props) {
           field.fieldDataType === "Flag" && field.fieldType === 1
         )).map((field) => (
           <Tooltip
+            key={field.name}
             title={field.tooltip}
             placement="top"
           >
             <Grid
-              key={field.name}
               item
               xs={6}
               md={4}

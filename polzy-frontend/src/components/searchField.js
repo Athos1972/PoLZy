@@ -29,7 +29,7 @@ import BusinessIcon from '@material-ui/icons/Business'
 import AccessibilityNewIcon from '@material-ui/icons/AccessibilityNew'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
-import { DataFieldText, DataFieldDate } from './dataFields'
+import { DataFieldText, DataFieldDate, DataFieldSelect } from './dataFields'
 import { searchPortal } from '../api'
 
 
@@ -198,8 +198,10 @@ function PartnerCreateField(props) {
   switch (props.data.name) {
     case 'birthDate':
       return <DataFieldDate {...props} />
+
     case 'gender':
       return <InputRadio {...props} options={genderOptions} />
+
     case 'address':
       if (props.address) {
         return (
@@ -230,6 +232,22 @@ function PartnerCreateField(props) {
           onChange={props.onSelect}
         />
       )
+
+    case 'companyType':
+      if (props.companyTypes !== null) {
+        return (
+          <DataFieldSelect 
+            {...props}
+            data={{
+              ...props.data,
+              inputRange: props.companyTypes.inputRange,
+            }}
+          />
+        )
+      }
+
+      return <DataFieldText {...props} />
+
     default:
       return <DataFieldText {...props} />
   }
@@ -340,6 +358,7 @@ function NewDialog(props) {
       ],
       company: [
         'companyName',
+        'companyType',
         'registrationNumber',
         'address',
       ],
