@@ -131,7 +131,6 @@ function CustomTag(props) {
         <TextField
           classes={{root: classes.customTagInput}}
           placeholder={props.label}
-          variant="outlined"
           size="small"
           value={textValue}
           onChange={handleValueChange}
