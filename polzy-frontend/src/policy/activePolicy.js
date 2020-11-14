@@ -1,5 +1,4 @@
 import React from 'react'
-import clsx from 'clsx'
 import { connect } from 'react-redux'
 import { 
   CardContent,
@@ -25,6 +24,7 @@ import { PolicyTitle } from './Components'
 import PolicyDetails from './policyDetails'
 import { removePolicy, updatePolicy } from '../redux/actions'
 import { executeActivity } from '../api'
+import ExpandButton from '../components/expandButton'
 import DataGroup from '../components/dataFields'
 import ProgressButton from '../components/progressButton'
 
@@ -102,26 +102,6 @@ function PolicyCard(props) {
         </CardActive>
       )}
     </React.Fragment>
-  )
-}
-
-function MoreButton(props) {
-  const classes = useStyles()
-  const {t} = useTranslation('common')
-
-  return(
-    <Tooltip title={props.expanded ? (t("common:collapse")) : (t("common:expand"))}>
-      <IconButton
-        className={clsx(classes.expand, {
-          [classes.expandOpen]: props.expanded,
-        })}
-        onClick={props.onClick}
-        aria-expanded={props.expanded}
-        aria-label="view details"
-      >
-        <ExpandMoreIcon />
-      </IconButton>
-    </Tooltip>
   )
 }
 
@@ -484,7 +464,7 @@ class ActivePolicy extends React.Component {
             </CardContent>
           */}
           <CardBottom>
-            <MoreButton expanded={this.state.expanded} onClick={this.handleExpandClick} />
+            <ExpandButton expanded={this.state.expanded} onClick={this.handleExpandClick} />
           </CardBottom>
           <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
             <CardContent>

@@ -23,8 +23,9 @@ import LocalOfferOutlinedIcon from '@material-ui/icons/LocalOfferOutlined'
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
-import { CardActiveHide, CardActive, CardTop, hideTime } from '../styles/cards'
+import { CardActiveHide, CardActive, CardTop, CardBottom, hideTime } from '../styles/cards'
 import { AntragTitle } from './components'
+import ExpandButton from '../components/expandButton'
 import ProgressButton from '../components/progressButton'
 import DataGroup from '../components/dataFields'
 import { removeAntrag, updateAntrag, addAntrag } from '../redux/actions'
@@ -214,6 +215,7 @@ function ActiveAntrag(props) {
   const [isExecuting, setExecute] = useState(false)
   const [customTag, setCustomTag] = useState('')
   const [customTagText, setCustomTagText] = useState('')
+  const [expanded, setExpanded] = useState(false)
 
   const getPremium = () => {
     for (const field of antrag.fields) {
@@ -624,86 +626,19 @@ function ActiveAntrag(props) {
               </React.Fragment>
             }
           />
-          <CardContent>
 
-            {/* Input Group Switchers */}
-            <Grid container spacing={2}>
-              {antrag.field_groups.filter((field) => (
-                field.fieldType === 1 && field.fieldDataType === "Flag"
-              )).map((field) => (
-                <Grid item key={field.name} xs={6} md={4} lg={3}>
-                  <Tooltip
-                    title={field.tooltip}
-                    placement="top"
-                  >
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={groups[field.name]}
-                          onChange={(e) => updateGroupVisibility(field.name, e.target.checked)}
-                          name={field.name}
-                          color="primary"
-                        />
-                      }
-                      label={field.brief}
-                    />
-                  </Tooltip>
-                </Grid>
-              ))}
-            </Grid>
+        {/* Expand Button */}
+          <CardBottom>
+            <ExpandButton expanded={expanded} onClick={() => setExpanded(!expanded)} />
+          </CardBottom>
+                    
+        {/* Collapsible Area */}
+          <Collapse in={expanded} timeout="auto" unmountOnExit>
+            <CardContent>
 
-            {/* Input Groups */}
-            <div className={classes.flexContainerVertical}>
-                {antrag.field_groups.map(group => (
-                  <Collapse
-                    key={group.name}
-                    in={groups[group.name]}
-                    timeout="auto"
-                    unmountOnExit
-                  >
-                    <DataGroup 
-                      id={antrag.id}
-                      title={group.tooltip}
-                      fields={antrag[group.name]}
-                      values={values}
-                      stage={props.stage}
-                      onChange={handleDataChanged}
-                    />
-                  </Collapse>
-                ))}
-            </div>
-
-            {/* Premium Field */}
-            {antrag.status !== "Neu" && (
-              <div className={classes.flexContainerRight}>
-                <Typography
-                  className={classes.verticalMargin}
-                  component="div"
-                  variant="h5"
-                >
-                  {`${t("antrag:premium")}: € ${getPremium()}`}
-                </Typography>
-              </div>
-            )}
-            </CardContent>
-
-          {/* Calculate Button */}
-          <CardActions classes={{root: classes.flexContainerRight}} >
-            <ProgressButton
-              title={antrag.status === "Neu" ? t('antrag:calculate') : t('antrag:re-calculate')}
-              loading={isCalculate}
-              disabled={!validateFields()}
-              onClick={handleCalculateClick}
-            />
-          </CardActions>
-
-          {/* Activity Fields */}
-          {/* Activity with Field Groups */}
-          {currentActivity !== null && ("field_groups" in currentActivity) && currentActivity.field_groups.length > 0 &&
-            <React.Fragment>
               {/* Input Group Switchers */}
               <Grid container spacing={2}>
-                {currentActivity.field_groups.filter((field) => (
+                {antrag.field_groups.filter((field) => (
                   field.fieldType === 1 && field.fieldDataType === "Flag"
                 )).map((field) => (
                   <Grid item key={field.name} xs={6} md={4} lg={3}>
@@ -714,8 +649,8 @@ function ActiveAntrag(props) {
                       <FormControlLabel
                         control={
                           <Switch
-                            checked={activityGroups[field.name]}
-                            onChange={(e) => updateActivityGroupVisibility(field.name, e.target.checked)}
+                            checked={groups[field.name]}
+                            onChange={(e) => updateGroupVisibility(field.name, e.target.checked)}
                             name={field.name}
                             color="primary"
                           />
@@ -729,45 +664,98 @@ function ActiveAntrag(props) {
 
               {/* Input Groups */}
               <div className={classes.flexContainerVertical}>
-                  {currentActivity.field_groups.map(group => (
+                  {antrag.field_groups.map(group => (
                     <Collapse
                       key={group.name}
-                      in={activityGroups[group.name]}
+                      in={groups[group.name]}
                       timeout="auto"
                       unmountOnExit
                     >
                       <DataGroup 
                         id={antrag.id}
                         title={group.tooltip}
-                        fields={currentActivity[group.name]}
-                        values={activityValues}
-                        onChange={handleActivityDataChanged}
+                        fields={antrag[group.name]}
+                        values={values}
+                        stage={props.stage}
+                        onChange={handleDataChanged}
                       />
                     </Collapse>
                   ))}
               </div>
-              <div className={classes.flexContainerRight} >
-                <ProgressButton
-                  title={t('common:execute')}
-                  loading={isExecuting}
-                  disabled={!validateActivityFields()}
-                  onClick={(e) => executeActivity(currentActivity.name)}
-                />
-              </div>
-            </React.Fragment>
-          }
 
-          {/* Activity without Groups */}
-          {currentActivity !== null && currentActivity.fields.length > 0 &&
-            <DataGroup
-              stage={props.stage}
-              id={antrag.id}
-              title={currentActivity.description}
-              fields={currentActivity.fields}
-              values={activityValues}
-              onChange={handleActivityDataChanged}
-              onSelect={handlePartnerSelect}
-              actions={
+              {/* Premium Field */}
+              {antrag.status !== "Neu" && (
+                <div className={classes.flexContainerRight}>
+                  <Typography
+                    className={classes.verticalMargin}
+                    component="div"
+                    variant="h5"
+                  >
+                    {`${t("antrag:premium")}: € ${getPremium()}`}
+                  </Typography>
+                </div>
+              )}
+              </CardContent>
+
+            {/* Calculate Button */}
+            <CardActions classes={{root: classes.flexContainerRight}} >
+              <ProgressButton
+                title={antrag.status === "Neu" ? t('antrag:calculate') : t('antrag:re-calculate')}
+                loading={isCalculate}
+                disabled={!validateFields()}
+                onClick={handleCalculateClick}
+              />
+            </CardActions>
+
+            {/* Activity Fields */}
+            {/* Activity with Field Groups */}
+            {currentActivity !== null && ("field_groups" in currentActivity) && currentActivity.field_groups.length > 0 &&
+              <React.Fragment>
+                {/* Input Group Switchers */}
+                <Grid container spacing={2}>
+                  {currentActivity.field_groups.filter((field) => (
+                    field.fieldType === 1 && field.fieldDataType === "Flag"
+                  )).map((field) => (
+                    <Grid item key={field.name} xs={6} md={4} lg={3}>
+                      <Tooltip
+                        title={field.tooltip}
+                        placement="top"
+                      >
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={activityGroups[field.name]}
+                              onChange={(e) => updateActivityGroupVisibility(field.name, e.target.checked)}
+                              name={field.name}
+                              color="primary"
+                            />
+                          }
+                          label={field.brief}
+                        />
+                      </Tooltip>
+                    </Grid>
+                  ))}
+                </Grid>
+
+                {/* Input Groups */}
+                <div className={classes.flexContainerVertical}>
+                    {currentActivity.field_groups.map(group => (
+                      <Collapse
+                        key={group.name}
+                        in={activityGroups[group.name]}
+                        timeout="auto"
+                        unmountOnExit
+                      >
+                        <DataGroup 
+                          id={antrag.id}
+                          title={group.tooltip}
+                          fields={currentActivity[group.name]}
+                          values={activityValues}
+                          onChange={handleActivityDataChanged}
+                        />
+                      </Collapse>
+                    ))}
+                </div>
                 <div className={classes.flexContainerRight} >
                   <ProgressButton
                     title={t('common:execute')}
@@ -776,36 +764,59 @@ function ActiveAntrag(props) {
                     onClick={(e) => executeActivity(currentActivity.name)}
                   />
                 </div>
-              }
-            />
-          }
+              </React.Fragment>
+            }
 
-          {/* Loading animation */}
-          {isExecuting && 
-            <LinearProgress classes={{root: classes.linearProgress}} />
-          }
-
-          {/* bottom navigation */}
-          {antrag.status !== "Neu" &&
-            <CardContent>
-              <BottomNavigation
-                value={currentActivity !== null && currentActivity.name}
-                showLabels
-                onChange={handleActivitySelect}
-              >
-                {antrag.possible_activities.filter(activity => (
-                  activity.name !== "Berechnen" && activity.name !== "Clone"
-                )).map((activity, index) => (
-                    <BottomNavigationAction
-                      key={index}
-                      label={activity.name}
-                      value={activity.name}
-                      icon={<ActivityIcon icon={activity.icon} />}
+            {/* Activity without Groups */}
+            {currentActivity !== null && currentActivity.fields.length > 0 &&
+              <DataGroup
+                stage={props.stage}
+                id={antrag.id}
+                title={currentActivity.description}
+                fields={currentActivity.fields}
+                values={activityValues}
+                onChange={handleActivityDataChanged}
+                onSelect={handlePartnerSelect}
+                actions={
+                  <div className={classes.flexContainerRight} >
+                    <ProgressButton
+                      title={t('common:execute')}
+                      loading={isExecuting}
+                      disabled={!validateActivityFields()}
+                      onClick={(e) => executeActivity(currentActivity.name)}
                     />
-                ))}
-              </BottomNavigation>
-            </CardContent>
-          }
+                  </div>
+                }
+              />
+            }
+
+            {/* Loading animation */}
+            {isExecuting && 
+              <LinearProgress classes={{root: classes.linearProgress}} />
+            }
+
+            {/* bottom navigation */}
+            {antrag.status !== "Neu" &&
+              <CardContent>
+                <BottomNavigation
+                  value={currentActivity !== null && currentActivity.name}
+                  showLabels
+                  onChange={handleActivitySelect}
+                >
+                  {antrag.possible_activities.filter(activity => (
+                    activity.name !== "Berechnen" && activity.name !== "Clone"
+                  )).map((activity, index) => (
+                      <BottomNavigationAction
+                        key={index}
+                        label={activity.name}
+                        value={activity.name}
+                        icon={<ActivityIcon icon={activity.icon} />}
+                      />
+                  ))}
+                </BottomNavigation>
+              </CardContent>
+            }
+          </Collapse>
         </React.Fragment>
       }
     />
