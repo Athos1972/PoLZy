@@ -15,9 +15,12 @@ import {
   Collapse,
   LinearProgress,
   TextField,
+  Chip,
 } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
-import AddIcon from '@material-ui/icons/Add'
+import SaveIcon from '@material-ui/icons/Save'
+import LocalOfferOutlinedIcon from '@material-ui/icons/LocalOfferOutlined'
+import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import { CardActiveHide, CardActive, CardTop, hideTime } from '../styles/cards'
@@ -42,18 +45,25 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'flex-end',
   },
 
-  customTag: {
-    color: 'grey',
-    fontSize: 16,
-  },
-
   customTagInput: {
     width: 240,
   },
 
-  premiumText: {
+  horizontalMargin: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+  },
+
+  verticalMargin: {
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
+  },
+
+  marginSizeSmall: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    marginTop: -theme.spacing(1)/2,
+    marginBottom: -theme.spacing(1)/2,
   },
 
   linearProgress: {
@@ -135,7 +145,7 @@ function CustomTag(props) {
           <Button
             variant="outlined"
             color="primary"
-            startIcon={<AddIcon />}
+            startIcon={<SaveIcon />}
             onClick={handleAddButtonClick}
           >
             Add
@@ -203,6 +213,7 @@ function ActiveAntrag(props) {
   const [isCalculate, setCalculate] = useState(false)
   const [isExecuting, setExecute] = useState(false)
   const [customTag, setCustomTag] = useState('')
+  const [customTagText, setCustomTagText] = useState('')
 
   const getPremium = () => {
     for (const field of antrag.fields) {
@@ -269,6 +280,15 @@ function ActiveAntrag(props) {
     }).catch(error => {
       console.log(error)
     })
+  }
+
+  const handleCustomTagAdd = () => {
+    setCustomTag(customTagText)
+    setCustomTagText('')
+  }
+
+  const handleCustomTagDelete = () => {
+    setCustomTag('')
   }
 
   const updateGroupVisibility = (name, value) => {
@@ -545,6 +565,20 @@ function ActiveAntrag(props) {
           <CardTop
             action={
               <React.Fragment>
+
+              {/* Custom Tag */}
+                {customTag !== "" &&
+                  <Chip
+                    classes={{root: classes.horizontalMargin}}
+                    label={customTag}
+                    onDelete={handleCustomTagDelete}
+                    color="primary"
+                    variant="outlined"
+                    icon={<LocalOfferOutlinedIcon />}
+                  />
+                }
+
+              {/* Clone Button */}
                 {isCloneAvailable() &&
                   <Button
                     variant="outlined"
@@ -555,6 +589,8 @@ function ActiveAntrag(props) {
                     {t("common:copy")}
                   </Button>
                 }
+
+              {/* Close Button */}
                 <Tooltip title={t("common:close")}>
                   <IconButton 
                     onClick={handleCloseClick}
@@ -566,11 +602,26 @@ function ActiveAntrag(props) {
               </React.Fragment>
             }
             title={<AntragTitle product={antrag.product_line.attributes.Produkt} />}
-            subheader={
-              <CustomTag
-                text={customTag}
-                onChange={setCustomTag}
-              />
+            subheader={customTag === "" &&
+              <React.Fragment>
+                <TextField
+                  classes={{root: classes.customTagInput}}
+                  label={t("antrag:tag")}
+                  variant="outlined"
+                  size="small"
+                  value={customTagText}
+                  onChange={(v) => setCustomTagText(v.target.value)}
+                />
+                {customTagText !== '' &&
+                  <IconButton
+                    className={classes.marginSizeSmall}
+                    onClick={handleCustomTagAdd}
+                    aria-label="custom-tag"
+                  >
+                    <SaveIcon />
+                  </IconButton>
+                }
+              </React.Fragment>
             }
           />
           <CardContent>
@@ -626,7 +677,7 @@ function ActiveAntrag(props) {
             {antrag.status !== "Neu" && (
               <div className={classes.flexContainerRight}>
                 <Typography
-                  className={classes.premiumText}
+                  className={classes.verticalMargin}
                   component="div"
                   variant="h5"
                 >
