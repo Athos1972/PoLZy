@@ -48,6 +48,8 @@ const useStyles = makeStyles((theme) => ({
 
   customTagInput: {
     width: 240,
+    verticalAlign: "middle",
+    marginRight: theme.spacing(1),
   },
 
   horizontalMargin: {
@@ -96,70 +98,57 @@ function AntragCard(props) {
 /*
 ** Custom Tag
 */
-function TagText(props) {
-  const classes = useStyles()
-
-  return (
-    <Typography
-      className={classes.customTag}
-      component="p"
-      variant="overline"
-    >
-      {props.text}
-    </Typography>
-  )
-}
-
 function CustomTag(props) {
   const classes = useStyles()
 
-  const [value, setValue] = useState(props.text)
+  const [textValue, setTextValue] = useState('')
 
   const handleValueChange = (event) => {
-    setValue(event.target.value)
+    setTextValue(event.target.value)
   }
 
-  const handleAddButtonClick = () => {
-    props.onChange(value)
+  const handleTagAdd = () => {
+    setTextValue('')
+    props.onChange(textValue)
   }
 
+  const handleTagDelete = () => {
+    setTextValue('')
+    props.onChange('')
+  }
 
-
-  return (
-    <Grid container spacing={2}>
-      <Grid item >
-        <TagText text="Tag:" />
-      </Grid>
-      {props.text === "" ? (
-        <React.Fragment>
-        <Grid item>
-          <TextField
-            classes={{root: classes.customTagInput}}
-            label="Custom Tag"
-            variant="outlined"
-            size="small"
-            value={value}
-            onChange={handleValueChange}
-          />
-        </Grid>
-        <Grid item>
-          <Button
-            variant="outlined"
-            color="primary"
-            startIcon={<SaveIcon />}
-            onClick={handleAddButtonClick}
+  if (props.text === '') {
+    return (
+      <React.Fragment>
+        {textValue !== '' &&
+          <IconButton
+            onClick={handleTagAdd}
+            aria-label="custom-tag"
           >
-            Add
-          </Button>
-        </Grid>
-        </React.Fragment>
-      ) : (
-        <Grid item >
-          <TagText text={props.text} />
-        </Grid>
-      )}
-    </Grid>
-  )
+            <SaveIcon />
+          </IconButton>
+        }
+        <TextField
+          classes={{root: classes.customTagInput}}
+          placeholder={props.label}
+          size="small"
+          value={textValue}
+          onChange={handleValueChange}
+        />
+      </React.Fragment>
+    )
+  } else {
+    return (
+      <Chip
+        classes={{root: classes.horizontalMargin}}
+        label={props.text}
+        onDelete={handleTagDelete}
+        color="primary"
+        variant="outlined"
+        icon={<LocalOfferOutlinedIcon />}
+      />
+    )
+  }
 }
 
 function ActiveAntrag(props) {
@@ -214,8 +203,7 @@ function ActiveAntrag(props) {
   const [isCalculate, setCalculate] = useState(false)
   const [isExecuting, setExecute] = useState(false)
   const [customTag, setCustomTag] = useState('')
-  const [customTagText, setCustomTagText] = useState('')
-  const [expanded, setExpanded] = useState(false)
+  const [expanded, setExpanded] = useState(true)
 
   const getPremium = () => {
     for (const field of antrag.fields) {
@@ -289,15 +277,6 @@ function ActiveAntrag(props) {
     }).catch(error => {
       console.log(error)
     })
-  }
-
-  const handleCustomTagAdd = () => {
-    setCustomTag(customTagText)
-    setCustomTagText('')
-  }
-
-  const handleCustomTagDelete = () => {
-    setCustomTag('')
   }
 
   const updateGroupVisibility = (name, value) => {
@@ -576,16 +555,11 @@ function ActiveAntrag(props) {
               <React.Fragment>
 
               {/* Custom Tag */}
-                {customTag !== "" &&
-                  <Chip
-                    classes={{root: classes.horizontalMargin}}
-                    label={customTag}
-                    onDelete={handleCustomTagDelete}
-                    color="primary"
-                    variant="outlined"
-                    icon={<LocalOfferOutlinedIcon />}
-                  />
-                }
+                <CustomTag
+                  label={t("antrag:tag")}
+                  text={customTag}
+                  onChange={setCustomTag}
+                />
 
               {/* Clone Button */}
                 {isCloneAvailable() &&
@@ -611,27 +585,6 @@ function ActiveAntrag(props) {
               </React.Fragment>
             }
             title={<AntragTitle product={antrag.product_line.attributes.Produkt} />}
-            subheader={customTag === "" &&
-              <React.Fragment>
-                <TextField
-                  classes={{root: classes.customTagInput}}
-                  label={t("antrag:tag")}
-                  variant="outlined"
-                  size="small"
-                  value={customTagText}
-                  onChange={(v) => setCustomTagText(v.target.value)}
-                />
-                {customTagText !== '' &&
-                  <IconButton
-                    className={classes.marginSizeSmall}
-                    onClick={handleCustomTagAdd}
-                    aria-label="custom-tag"
-                  >
-                    <SaveIcon />
-                  </IconButton>
-                }
-              </React.Fragment>
-            }
           />
 
         {/* Expand Button */}

@@ -22,6 +22,7 @@ import { backendDateFormat } from '../dateFormat'
 import { DataFieldText, DataFieldDate } from '../components/dataFields'
 
 
+
 function NewPolicy(props) {
   const defaultData = {
     number: '',
@@ -63,13 +64,13 @@ function NewPolicy(props) {
 
   return(
     <CardNew>
-      <div style={{flex: '1 0 auto'}}>
+      <div style={{display: 'flex', flexDirection: 'column', flex: "1"}}>
         <CardHeader
           title={t("find.policy")}
         />
         <CardContent>
           <Grid container spacing={2}>
-            <Grid item>
+            <Grid item xs={11} md={3}>
               <DataFieldText
                 id="policy-number"
                 value={policy.number}
@@ -80,7 +81,7 @@ function NewPolicy(props) {
                 onChange={handleInputChange}
               />
             </Grid>
-            <Grid item>
+            <Grid item xs={11} md={3}>
               <DataFieldDate
                 id="policy-date"
                 value={policy.date}
@@ -91,10 +92,11 @@ function NewPolicy(props) {
                 onChange={handleInputChange}
               />
             </Grid>
-            <Grid item>
+            <Grid item xs={11} md={2}>
               <Button
                 variant="contained"
                 color="primary"
+                fullWidth
                 startIcon={<SearchIcon />}
                 onClick={handleSubmit}
                 disabled={!validateForm()}
@@ -105,10 +107,12 @@ function NewPolicy(props) {
           </Grid>
         </CardContent>
       </div>
+      <div style={{width: 120}}>
       <CardLogo
         image={logo}
         title="LeZySEM"
       />
+      </div>
     </CardNew>
   )
 }

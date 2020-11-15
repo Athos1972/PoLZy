@@ -1,10 +1,20 @@
 import React from 'react'
 import { Paper, Grid, Typography } from '@material-ui/core'
-import { Table, TableHead, TableBody, TableRow, TableCell, Tooltip, Link } from '@material-ui/core'
+import { 
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  Tooltip,
+  Link,
+  Collapse,
+} from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import DoneIcon from '@material-ui/icons/Done'
 import CloseIcon from '@material-ui/icons/Close'
 import { useTranslation } from 'react-i18next'
+import ExpandButton from '../components/expandButton'
 
 
 // Styles for policy status
@@ -50,6 +60,10 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.common.black,
     paddingLeft: theme.spacing(2),
   },
+
+  divFlex: {
+    display: "flex",
+  }
 }));
 
 
@@ -227,24 +241,34 @@ function Clauses(props) {
   // renders clauses
   const {data} = props
   const {t} = useTranslation('policy')
+  const classes = useStyles()
+  const [open, setOpen] = React.useState(false)
 
-  console.log("Clauses")
-  console.log(data)
+  //console.log("Clauses")
+  //console.log(data)
 
   return(
     <React.Fragment>
       <Section>
-        <Title title={t("clauses")} />
-        <Table size="small">
-          <TableBody>
-            {data.map((clause) => (
-              <MakeClauseRow
-                key={clause.number} 
-                clause={clause} 
-              />
-            ))}
-          </TableBody>
-        </Table>
+        <div className={classes.divFlex}>
+          <Title title={t("clauses")} />
+          <ExpandButton
+            expanded={open}
+            onClick={() => setOpen(!open)}
+          />
+        </div>
+        <Collapse in={open} timeout="auto">
+          <Table size="small">
+            <TableBody>
+              {data.map((clause) => (
+                <MakeClauseRow
+                  key={clause.number} 
+                  clause={clause} 
+                />
+              ))}
+            </TableBody>
+          </Table>
+        </Collapse>
       </Section>
     </React.Fragment>
   )
