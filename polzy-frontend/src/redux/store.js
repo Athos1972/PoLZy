@@ -3,8 +3,8 @@ import reducer from './reducer'
 
 // debug imports
 
-//import { addPolicy, addAntrag } from './actions'
-//import { policies } from '../testData/fasifu'
+import { addPolicy, addAntrag } from './actions'
+import { policies } from '../testData/fasifu'
 //import { antrags } from '../testData/antrag'
 
 const store = createStore(reducer)
@@ -13,7 +13,7 @@ const store = createStore(reducer)
 /*
 ** DEBUG ITEMS
 */
-/*
+
 // policies
 policies.map(item => {
 	store.dispatch(addPolicy(item))
