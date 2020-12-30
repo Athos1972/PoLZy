@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/PoLZy.iml" filepath="$PROJECT_DIR$/.idea/PoLZy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../PoLZy_Showcase/.idea/PoLZy_Showcase.iml" filepath="$PROJECT_DIR$/../PoLZy_Showcase/.idea/PoLZy_Showcase.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../fasifu/.idea/fasifu.iml" filepath="$PROJECT_DIR$/../fasifu/.idea/fasifu.iml" />
+    </modules>
+  </component>
+</project>

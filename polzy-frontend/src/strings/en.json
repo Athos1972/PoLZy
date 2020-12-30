@@ -1,0 +1,116 @@
+{
+  "auth": {
+    "signin.button": "Press to Sign In",
+    "signout.button": "Sign Out",
+    "stage": "Stage",
+    "user": "E-mail",
+    "company": "Company",
+    "submit.company": "Continue",
+    "not.allowed": "You are not allowed to see the content"
+  },
+
+  "common": {
+    "action": "Action",
+    "cancel": "Cancel",
+    "close": "Close",
+    "collapse": "Collapse",
+    "confirm": "Confirm",
+    "copy": "Copy",
+    "create": "Create",
+    "edit": "Edit",
+    "email": "E-mail",
+    "execute": "Execute",
+    "expand": "Expand",
+    "find": "Find",
+    "name": "Name",
+    "new": "New",
+    "none": "None",
+    "remove": "Remove",
+    "submit": "Submit",
+    "value.range": "Value in range"
+  },
+
+  "admin": {
+    "pannel": "Admin Pannel",
+    "quit": "Home",
+    "actions": "Actions",
+    "roles": "Roles",
+    "roles.error": "At least one role should be set",
+    "user": "User",
+    "user.add": "Add User",
+    "user.edit": "Edit User",
+    "user.email": "E-mail",
+    "user.plural": "Users",
+    "company": "Company",
+    "company.add": "Add Company",
+    "company.children": "Child Companies",
+    "attributes": "Attributes",
+    "attributes.error": "Invalid JSON"
+  },
+
+  "policy": {
+    "clauses": "Clauses",
+    "effective.date": "Effective Date",
+    "find": "Find",
+    "find.policy": "Find Policy",
+    "insured.object": "Insured Object",
+    "invalid": "Invalid Policy Data",
+    "policy": "Policy",
+    "policy.number": "Policy Number",
+    "policy not found": "Policy not Found",
+    "premium.payer": "Premium Payer",
+    "product.line": "Product Line",
+    "status": "Status",
+    "type": "Type"
+  },
+
+  "antrag": {
+    "calculate": "Calculate",
+    "fast.offer": "Fast Offer",
+    "invalid.antrag": "Invalid Request",
+    "partner.find": "Find Partner",
+    "partner.new": "New Partner",
+    "partner.created": "New Partner Saved",
+    "partner.saved": "Partner Saved",
+    "premium": "Premium",
+    "re-calculate": "Re-calculate",
+    "select.product": "Select Product",
+    "tag": "Add Custom Tag"
+  },
+
+  "partner": {
+    "person": "Person",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "birthDate": "Date of Birth",
+    "gender": "Gender",
+    "gender.male": "Male",
+    "gender.female": "Female",
+    "gender.float": "Other",
+    "company": "Company",
+    "companyName": "Company Name",
+    "registrationNumber": "Registration Number",
+    "companyType": "Type of Company",
+    "address": "Address",
+    "email": "E-mail",
+    "telefon": "Phone"
+  },
+
+  "views": {
+    "policy": "Policy",
+    "antrag": "Fast Offer"
+  },
+
+  "feedback": {
+    "report.problem": "Report Problem",
+    "title": "It looks like we’re having issues",
+    "subtitle": "Our team has been notified.",
+    "subtitle2": "If you’d like to help, tell us what happened below.",
+    "comment": "What happened?",
+    "error": "An unknown error occurred while submitting your report. Please try again.",
+    "error.form": "Some fields were invalid. Please correct the errors and try again.",
+    "success": "Your feedback has been sent. Thank you!",
+    "manual.title": "Report Problem",
+    "manual.subtitle": "Tell us what happened below"
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "auth": {
+    "signin.button": "Lossts mi´ eine!",
+    "signout.button": "Ausse von do!",
+    "stage": "Stage",
+    "user": "Benutza",
+    "company": "Bude",
+    "submit.company": "Eini do!",
+    "not.allowed": "Du deafst des ned seg'n"
+  },
+
+  "common": {
+    "action": "Wos moch ma?",
+    "cancel": "O´brechn",
+    "close": "Weg damit",
+    "collapse": "Eiklopp'n",
+    "confirm": "Jo, isso!",
+    "copy": "Kopiern",
+    "create": "Neich",
+    "edit": "Ändan",
+    "email": "I-Mehl",
+    "execute": "Mochn",
+    "expand": "mehr zeign",
+    "find": "Suach!",
+    "name": "Nauman",
+    "new": "Neich",
+    "none": "nix",
+    "remove": "Weg damit",
+    "submit": "Submit",
+    "value.range": "Nur des darfst"
+  },
+
+  "admin": {
+    "pannel": "Usa vawaltn",
+    "quit": "Z'ruck",
+    "actions": "Mochn",
+    "roles": "Rojn",
+    "roles.error": "Irgandwos sollt a tuan diafn, heast!",
+    "user": "Usa",
+    "user.add": "Neicha Usa",
+    "user.edit": "Usa fummeln",
+    "user.email": "E-mail",
+    "user.plural": "Usas",
+    "company": "Bude",
+    "company.add": "Neiche Bude",
+    "company.children": "Vabundane Bude(n)",
+    "attributes": "Eignschoftn",
+    "attributes.error": "Kaunnst ka richtiges JSON schrifeln?"
+  },
+
+  "policy": {
+    "clauses": "Kla'ndruckt's",
+    "effective.date": "Wirksamkeitsdatum",
+    "find": "Findn",
+    "find.policy": "Polizzn suchn",
+    "insured.object": "Schodnpotential",
+    "invalid": "Polizzendaten san ned guad!",
+    "policy": "Polizzn",
+    "policy.number": "Polizzn",
+    "policy not found": "Polizzn ned do",
+    "premium.payer": "TypInnen in da Polizzn",
+    "product.line": "LOB",
+    "status": "Status",
+    "type": "Art"
+  },
+
+  "antrag": {
+    "calculate": "Rechna",
+    "fast.offer": "Schnörechna",
+    "invalid.antrag": "Do stimmt wos ned",
+    "partner.new": "TypIn neich auleg'n",
+    "partner.find": "TypIn suachn",
+    "partner.saved": "TypIn übanomma",
+    "partner.created": "TypIn gspeichat",
+    "premium": "Prämie",
+    "re-calculate": "Noamoi rechna",
+    "select.product": "Wöcha Vasicharung?",
+    "tag": "Märka setzn"
+  },
+
+  "partner": {
+      "person": "TypInnen",
+      "firstName": "Voanauman",
+      "lastName": "Nochnauman",
+      "birthDate": "Geboren?",
+      "gender": "Bua/Madl?",
+      "gender.male": "Bua",
+      "gender.female": "Madl",
+      "gender.float": "Nix/Aundas",
+      "address": "wo wohnt TypIn",
+      "company": "Bude",
+      "companyName": "Nauman von da Bude",
+      "registrationNumber": "Firmenbuchnumma",
+      "companyType": "Was via a Bude?",
+      "email": "Mehl",
+      "telefon": "Hendinumma"
+   },
+
+  "views": {
+    "policy": "Polizzn",
+    "antrag": "Schnörechna"
+  },
+
+  "feedback": {
+    "report.problem": "Problem mödn",
+    "title": "Irgendwos geht ned",
+    "subtitle": "De Entwickler hobn an Alört kriagt",
+    "subtitle2": "Geh bitte sog, wos'd g'mocht host",
+    "comment": "Wos is passiert?",
+    "error": "Bled jetzt owa a. Beim mödn vom Föhla is a Föhla passiert.",
+    "error.form": "Do stimmt wos ned. Mochs richtig und schick's no amoi bitte.",
+    "success": "Bravo, daunke. Wir kümman uns drum.",
+    "manual.title": "Klumpad geht ned",
+    "manual.subtitle": "Föhlamödung aufmochn"
+  }
+}

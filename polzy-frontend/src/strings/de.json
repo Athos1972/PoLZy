@@ -1,0 +1,116 @@
+{
+  "auth": {
+    "signin.button": "Anmelden",
+    "signout.button": "Abmelden",
+    "stage": "Stage",
+    "user": "Benutzer",
+    "company": "Firma",
+    "submit.company": "Einloggen",
+    "not.allowed": "Keine Berechtigung für diesen Inhalt"
+  },
+
+  "common": {
+    "action": "Aktivität",
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "collapse": "Einklappen",
+    "confirm": "Bestätigen",
+    "copy": "Kopieren",
+    "create": "Anlegen",
+    "edit": "Ändern",
+    "email": "E-mail",
+    "execute": "Ausführen",
+    "expand": "Erweitern",
+    "find": "Finden",
+    "name": "Name",
+    "new": "Neu",
+    "none": "Keine",
+    "remove": "Entfernen",
+    "submit": "Submit",
+    "value.range": "Wertebereich"
+  },
+
+  "admin": {
+    "pannel": "Administration",
+    "quit": "Startschirm",
+    "actions": "Aktivitäten",
+    "roles": "Rollen",
+    "roles.error": "Mindestens eine Rolle braucht man",
+    "user": "Benutzer",
+    "user.add": "Hinzufügen",
+    "user.edit": "Ändern",
+    "user.email": "E-mail",
+    "user.plural": "Benutzer",
+    "company": "Firma",
+    "company.add": "Firma hinzufügen",
+    "company.children": "Verbundene Unternehmen",
+    "attributes": "Attribute",
+    "attributes.error": "JSON ist nicht gültig"
+  },
+
+  "policy": {
+    "clauses": "Klauseln",
+    "effective.date": "Wirksamkeitsdatum",
+    "find": "Finden",
+    "find.policy": "Finde Polizze",
+    "insured.object": "Versichertes Risiko",
+    "invalid": "Ungültige Polizzendaten",
+    "policy": "Polizze",
+    "policy.number": "Polizze",
+    "policy not found": "Polizze nicht gefunden",
+    "premium.payer": "Wichtige Partner",
+    "product.line": "LOB",
+    "status": "Status",
+    "type": "Art"
+  },
+
+  "antrag": {
+    "calculate": "Berechnung",
+    "fast.offer": "Schnellrechner",
+    "invalid.antrag": "Ungültige Anfrage",
+    "partner.saved": "Partner übernommen",
+    "partner.find": "Partner finden",
+    "partner.created": "Partner gespeichert",
+    "partner.new": "Neu anlegen",
+    "re-calculate": "Neu rechnen",
+    "premium": "Prämie",
+    "select.product": "Produkt wählen",
+    "tag": "Gedächtnisstütze / Anmerkung"
+  },
+
+   "partner": {
+      "person": "Person",
+      "firstName": "Vorname",
+      "lastName": "Nachname",
+      "birthDate": "Geburtsdatum",
+      "gender": "Geschlecht",
+      "gender.male": "Männlich",
+      "gender.female": "Weiblich",
+      "gender.float": "Anders",
+      "company": "Firma",
+      "companyName": "Firmenname",
+      "registrationNumber": "Firmenbuchnummer",
+      "companyType": "Unternehmenstyp",
+      "address": "Adresse",
+      "email": "E-Mail",
+      "telefon": "Telefon"
+   },
+
+  "views": {
+    "policy": "Polizze",
+    "antrag": "Schnellrechner"
+  },
+
+  "feedback": {
+    "report.problem": "Problem melden",
+    "title": "Es gibt scheinbar Probleme auf unserer Seite",
+    "subtitle": "Unser Team wurde hierüber benachrichtigt.",
+    "subtitle2": "Wenn Sie uns helfen möchten, teilen Sie uns bitte unten mit, was geschehen ist.",
+    "comment": "Was ist passiert?",
+    "error": "Ein unbekannter Fehler ist passiert. Bitte versuchen Sie es erneut.",
+    "error.form": "Die Angaben sind ungültig. Bitte korrigieren Sie und versuchen Sie es erneut.",
+    "success": "Vielen Dank, Dein Feedback wurde verschickt!",
+    "manual.title": "Problem melden",
+    "manual.subtitle": "Bitte geben Sie uns Details zum Problem"
+  }
+}
