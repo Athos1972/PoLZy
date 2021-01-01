@@ -1,7 +1,7 @@
 import React from 'react'
 import { apiHost } from '../utils'
 
-const uriLogo = apiHost + 'logo/'
+const uriLogo = apiHost + 'api/logo/'
 
 export const getCompanyLogo = (attributes, target) => {
   if (attributes && attributes.logo) {

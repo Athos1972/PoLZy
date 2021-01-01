@@ -3,7 +3,7 @@
 */
 
 export const reportProblem = async (user, payload) => {
-  const response = await fetch("/report", {
+  const response = await fetch("/api/report", {
     method: 'POST',
     headers: {
       'authorization': `Bearer ${user.accessToken}`,

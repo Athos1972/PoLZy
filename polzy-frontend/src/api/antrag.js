@@ -3,9 +3,7 @@
 */
 
 export const getProducts = async (user) => {
-  //console.log('GET PRODUCTS API:')
-  //console.log(user)
-  const response = await fetch('/antrag/products', {
+  const response = await fetch('/api/antrag/products', {
     headers: {'authorization': `Bearer ${user.accessToken}`},
   })
   const data = await response.json()
@@ -18,7 +16,7 @@ export const getProducts = async (user) => {
 }
 
 export const fetchAntrag = async (user, antrag) => {
-  const response = await fetch(`/antrag/new/${antrag.product_line.name}`, {
+  const response = await fetch(`/api/antrag/new/${antrag.product_line.name}`, {
     headers: {'authorization': `Bearer ${user.accessToken}`},
   })
   const data = await response.json()
@@ -31,7 +29,7 @@ export const fetchAntrag = async (user, antrag) => {
 }
 
 export const cloneAntrag = async (user, antragId) => {
-  const response = await fetch(`/antrag/clone/${antragId}`, {
+  const response = await fetch(`/api/antrag/clone/${antragId}`, {
     headers: {'authorization': `Bearer ${user.accessToken}`},
   })
   const data = await response.json()
@@ -44,7 +42,7 @@ export const cloneAntrag = async (user, antragId) => {
 }
 
 export const updateAntragFields = async (user, antrag) => {
-  const response = await fetch(`/antrag/update`, {
+  const response = await fetch(`/api/antrag/update`, {
     method: 'POST',
     headers: {
       'authorization': `Bearer ${user.accessToken}`,
@@ -65,7 +63,7 @@ export const updateAntragFields = async (user, antrag) => {
 }
 
 export const executeAntrag = async (user, antrag) => {
-  const response = await fetch(`/antrag/execute`, {
+  const response = await fetch(`/api/antrag/execute`, {
     method: 'POST',
     headers: {
       'authorization': `Bearer ${user.accessToken}`,
@@ -86,7 +84,7 @@ export const executeAntrag = async (user, antrag) => {
 export const searchPortal = async (user, id, target, value) => {
   //console.log('SERACH API:')
   //console.log(user)
-  const response = await fetch(`/search/${id}`, {
+  const response = await fetch(`/api/search/${id}`, {
     method: 'POST',
     headers: {
       'authorization': `Bearer ${user.accessToken}`,

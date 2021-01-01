@@ -3,7 +3,7 @@
 */
 
 export const fetchAdminData = async (user) => {
-  const response = await fetch("/admin", {
+  const response = await fetch("/api/admin", {
     headers: {'authorization': `Bearer ${user.accessToken}`},
   })
   const data = await response.json()
@@ -16,7 +16,7 @@ export const fetchAdminData = async (user) => {
 }
 
 export const manageUserInCompany = async(user, action, payload) => {
-  const response = await fetch(`/admin/user-company/${action}`, {
+  const response = await fetch(`/api/admin/user-company/${action}`, {
     method: 'POST',
     headers: {
       'authorization': `Bearer ${user.accessToken}`,
@@ -34,7 +34,7 @@ export const manageUserInCompany = async(user, action, payload) => {
 }
 
 export const manageChildCompany = async(user, action, payload) => {
-  const response = await fetch(`/admin/child-company/${action}`, {
+  const response = await fetch(`/api/admin/child-company/${action}`, {
     method: 'POST',
     headers: {
       'authorization': `Bearer ${user.accessToken}`,

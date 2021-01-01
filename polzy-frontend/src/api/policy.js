@@ -2,7 +2,7 @@
 ** Policy Calls
 */ 
 export const fetchPolicy = async (user, policy) => {
-  const response = await fetch(`/policy/${policy.policy_number}/${policy.effective_date}`, {
+  const response = await fetch(`/api/policy/${policy.policy_number}/${policy.effective_date}`, {
     headers: {'authorization': `Bearer ${user.accessToken}`},
   })
   const data = await response.json()
@@ -15,7 +15,7 @@ export const fetchPolicy = async (user, policy) => {
 }
 
 export const executeActivity = async (user, activity) => {
-  const response = await fetch('/policy/activity', {
+  const response = await fetch('/api/policy/activity', {
     method: 'POST',
     headers: {
       'authorization': `Bearer ${user.accessToken}`,
