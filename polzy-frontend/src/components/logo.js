@@ -1,7 +1,6 @@
 import React from 'react'
-import { apiHost } from '../utils'
 
-const uriLogo = apiHost + 'api/logo/'
+const uriLogo = (process.env.API_HOST ? process.env.API_HOST : 'http://localhost:5000/') + 'api/logo/'
 
 export const getCompanyLogo = (attributes, target) => {
   if (attributes && attributes.logo) {

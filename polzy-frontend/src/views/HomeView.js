@@ -16,8 +16,6 @@ import AntragView from './AntragView'
 import NotAllowedView from './NotAllowedView'
 import Header from'../components/header'
 import Copyright from '../components/copyright'
-//import { ErrorBoundary } from '../errorHandle'
-//import * as Sentry from "@sentry/react"
 
 // set styles
 const useStyles = makeStyles((theme) => ({
@@ -95,7 +93,8 @@ function HomeView(props) {
 
   // get toasts
   useEffect(() => {
-    const eventSource = new EventSource("http://localhost:5000/listen")
+    const apiHost = process.env.API_HOST ? process.env.API_HOST : 'http://localhost:5000/'
+    const eventSource = new EventSource(apiHost + "api/listen")
     eventSource.onmessage = (e) => {
       const {text, ...toastProps} = JSON.parse(e.data)
       enqueueSnackbar(
