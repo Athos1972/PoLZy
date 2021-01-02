@@ -26,26 +26,27 @@ def get_policy(policy_number, effective_date=None):
         # update policy stage and language
         policy.setStage(auth.current_user().stage)
         policy.setLanguage(auth.current_user().language)
-        current_app.logger.warning(f"Stage={policy.stage}, lang={policy.language}")
+        policy.set_user(auth.current_user())
+        current_app.logger.info(f"Policy={policy_number}, Stage={policy.stage}, lang={policy.language}")
 
-        print(f'FETCH: {policy.fetch()}')
+        # print(f'FETCH: {policy.fetch()}')
         if policy.fetch():
             policy.set_user(auth.current_user())
             current_app.config['POLICIES'][policy.id] = policy
             result = policy.get()
             # DEBUG
             import json
-            print('RESULT:')
-            print(result)
-            print(json.dumps(result, indent=2))
+            # print('RESULT:')
+            # print(result)
+            # print(json.dumps(result, indent=2))
 
             # save activity to DB
             Activity.read_policy(policy_number, effective_date, auth.current_user())
             
             # set response
             response_code = 400 if 'error' in result else 200
-            if response_code == 200:
-                update_achievement()
+            # if response_code == 200:
+            #    update_achievement()
             return jsonify(result), response_code
 
     except Exception as e:

@@ -363,6 +363,12 @@ class GamificationActivity(db.Model):
         # create instance based on the provided data
         #
 
+        if not isinstance(event, GamificationEvent):
+            if isinstance(event, int):
+                event = db.session.query(GamificationEvent).filter_by(id=event).first()
+            elif isinstance(event, str):
+                event = db.session.query(GamificationEvent).filter_by(name=event).first()
+
         instance = cls(
             user=user,
             company=user.company.company,

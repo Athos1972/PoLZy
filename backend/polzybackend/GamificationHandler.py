@@ -13,6 +13,9 @@ header = None
 
 
 def get_token():
+    # fixme: This is the old gamification implementation, which should be completely removed
+    return None
+
     global token, header
     res = requests.post(base_url + "auth/login", json={"email": "admin@fasifu.com", "password": "admin@fasifu"})
     token = json.loads(res.content).get("token")
@@ -22,6 +25,9 @@ def get_token():
 
 
 def update_achievement(variable="policy_inquiry", user_id="1"):
+    # fixme: This is the old gamification implementation, which should be completely removed
+    return None
+
     if not token:
         try:
             get_token()
