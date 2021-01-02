@@ -369,9 +369,13 @@ class GamificationActivity(db.Model):
             elif isinstance(event, str):
                 event = db.session.query(GamificationEvent).filter_by(name=event).first()
 
+        print(f"new GamificationActivity. user.id = {user.id}, event = {event.name}, event_details = {event_details}")
+        lUser = db.session.query(User).filter_by(id=user.id).first()
+        print(f"new GamificationActivity. lUser.id = {lUser.id}")   # He still finds lUser here. Everything looks fine.
+
         instance = cls(
-            user=user,
-            company=user.company.company,
+            user=lUser,
+            company=lUser.company.company,
             event=event,
             event_details=event_details,
         )
