@@ -25,7 +25,6 @@ def create_app(config=None):
         default='sqlite:///' + os.path.join(os.path.abspath(os.path.dirname(__file__)), 'polzy.db'),
     )
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['APPLICATION_ROOT'] = '/api'
     app.config.from_object(config)
 
     # policy store
