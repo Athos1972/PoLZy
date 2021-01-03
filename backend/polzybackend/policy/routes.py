@@ -85,7 +85,7 @@ def new_activity():
             # update policy
             policy.setStage(auth.current_user().stage)
             policy.setLanguage(auth.current_user().language)
-            current_app.logger.warning(f"Stage={policy.stage}, lang={policy.language}")
+            current_app.logger.info(f"Stage={policy.stage}, lang={policy.language}")
 
             # check if activity returns not bool result
             if result is not True:
@@ -97,7 +97,7 @@ def new_activity():
             return jsonify(policy.get()), 200
         
     except Exception as e:
-        current_app.logger.warning(f'Execution activity {data.get("name")} for policy {policy.number} faild: {e}')
+        current_app.logger.exception(f'Execution activity {data.get("name")} for policy {policy.number} faild: {e}')
         return jsonify({'error': 'Bad Request'}), 400
 
     return jsonify({
