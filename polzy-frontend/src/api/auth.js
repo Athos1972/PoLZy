@@ -4,7 +4,7 @@
 
 // get available stages
 export const getStages = async () => {
-  const response = await fetch('/stages')
+  const response = await fetch('/api/stages')
   const data = await response.json()
   
   if (response.ok) {
@@ -16,7 +16,7 @@ export const getStages = async () => {
 
 // login
 export const login = async (email, stage, language) => {
-  const response = await fetch('/login', {
+  const response = await fetch('/api/login', {
     method: 'POST',
     headers: {'content-type': 'application/json'},
     body: JSON.stringify({
@@ -36,7 +36,7 @@ export const login = async (email, stage, language) => {
 
 // update current company
 export const getPermissions = async(user, company)=>{
-  const response = await fetch('/permissions', {
+  const response = await fetch('/api/permissions', {
     method: 'POST',
     headers:{ 
       'authorization': `Bearer ${user.accessToken}`,

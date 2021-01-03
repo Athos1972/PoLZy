@@ -20,3 +20,6 @@ size-snapshot.json
 *.log
 .eslintcache
 tests
+
+# Backend dist-folder
+/backend/dist
