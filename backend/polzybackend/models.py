@@ -279,7 +279,7 @@ class Activity(db.Model):
             policy_number=policy.number,
             effective_date=datetime.strptime(policy.effective_date, date_format).date(),
             type=data['activity'].get('name'),
-            creator=current_user,
+            creator=current_user.id,
             attributes=json.dumps(data['activity'].get('fields'))
         )
         
