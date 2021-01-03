@@ -1,7 +1,7 @@
 from polzybackend import db, auth
 from polzybackend.utils import generate_id, date_format
 from polzybackend.utils.auth_utils import generate_token, get_expired, is_supervisor, load_attributes
-from datetime import datetime, timedelta, date
+from datetime import datetime, date
 from sqlalchemy import and_
 from functools import reduce
 import json
@@ -31,6 +31,7 @@ user_company_roles = db.Table(
     db.Column('role_id', db.Integer, db.ForeignKey('roles.id'), primary_key=True)
 )
 
+
 class CompanyToCompany(db.Model):
     #
     # association object between companies
@@ -43,6 +44,7 @@ class CompanyToCompany(db.Model):
     # relationships
     parent = db.relationship('Company', backref='child_companies', foreign_keys=[parent_id])
     child = db.relationship('Company', backref='parent_companies', foreign_keys=[child_id])
+
 
 class UserToCompany(db.Model):
     #
@@ -64,15 +66,11 @@ class UserToCompany(db.Model):
     )
 
     def to_json(self):
-        # JSON-string to dict 
-        #load_json = lambda string: json.loads(string) if string else None
         return {
             'id': self.company.id,
             'name': self.company.name,
             'displayedName': str(self.company),
-            #'roles': [role.name for role in self.roles],
             'attributes': load_attributes(self.company.attributes),
-            #'userAttributes': load_json(self.attributes),
         }
 
     def to_admin_json(self):
@@ -94,6 +92,7 @@ class UserToCompany(db.Model):
             } for u in self.company.users],
         }
 
+
 class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
@@ -109,9 +108,9 @@ class User(db.Model):
     displayed_name = db.Column(db.String(64), nullable=True)
     first_name = db.Column(db.String(64), nullable=True)
     last_name = db.Column(db.String(64), nullable=True)
-    #oauth_provider_id = db.Column(db.Integer, db.ForeignKey('oauth_providers.id'), nullable=False)
-    #oauth_user_id = db.Column(db.String(128), nullable=False)
-    #oauth_token = db.Column(db.String(128), nullable=False)
+    # oauth_provider_id = db.Column(db.Integer, db.ForeignKey('oauth_providers.id'), nullable=False)
+    # oauth_user_id = db.Column(db.String(128), nullable=False)
+    # oauth_token = db.Column(db.String(128), nullable=False)
     access_key = db.Column(db.String(128), nullable=False, default=generate_token)
     key_expired = db.Column(db.DateTime, nullable=False, default=get_expired)
     # current session attributes
@@ -120,10 +119,10 @@ class User(db.Model):
     company_id = db.Column(db.String(56), db.ForeignKey('companies.id'), nullable=True)
 
     # relationships
-    #oauth_provider = db.relationship(
+    # oauth_provider = db.relationship(
     #    'OAuthProvider',
     #    foreign_keys=[oauth_provider_id],
-    #)
+    # )
     company = db.relationship(
         'UserToCompany',
         primaryjoin=and_(
@@ -211,6 +210,7 @@ class User(db.Model):
             )],
         }
 
+
 '''
 class OAuthProvider(db.Model):
     __tablename__ = 'oauth_providers'
@@ -223,11 +223,12 @@ class OAuthProvider(db.Model):
         return self.name
 '''
 
+
 #
 # Company Model
 #
 class Company(db.Model):
-    __tablename__="companies"
+    __tablename__ = "companies"
     id = db.Column(db.String(56), primary_key=True, default=generate_id)
     created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     name = db.Column(db.String(128), unique=True, nullable=False)
@@ -310,7 +311,6 @@ class Activity(db.Model):
         
         return instance
 
-
     def finish(self, status):
         #
         # sets is_finished to True 
@@ -318,7 +318,6 @@ class Activity(db.Model):
         self.status = status
         self.finished = datetime.utcnow()
         db.session.commit()
-
 
 
 #
@@ -356,7 +355,6 @@ class GamificationActivity(db.Model):
         else:
             return f'{msg} - NOT processed'
 
-
     @classmethod
     def new(cls, user, event, event_details):
         # 
@@ -370,8 +368,6 @@ class GamificationActivity(db.Model):
                 event = db.session.query(GamificationEvent).filter_by(name=event).first()
 
         print(f"new GamificationActivity. user.id = {user.id}, event = {event.name}, event_details = {event_details}")
-        #lUser = db.session.query(User).filter_by(id=user.id).first()
-        #print(f"new GamificationActivity. lUser.id = {lUser.id}")   # He still finds lUser here. Everything looks fine.
 
         instance = cls(
             user_id=user.id,
@@ -396,6 +392,3 @@ class GamificationActivity(db.Model):
 
         # save to db
         db.session.commit()
-
-
-    
