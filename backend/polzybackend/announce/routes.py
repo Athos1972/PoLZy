@@ -17,6 +17,7 @@ def listen():
         headers={
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept",
+            "X-Accel-Buffering": "no",
         },
         mimetype='text/event-stream',
     )

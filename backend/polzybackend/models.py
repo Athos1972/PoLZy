@@ -10,8 +10,11 @@ import json
 # authentication
 @auth.verify_token
 def verify_token(token):
-    user = User.query.filter_by(access_key=token).first()
+    #user = User.query.filter_by(access_key=token).first()
+    user = db.session.query(User).filter_by(access_key=token).first()
     if user and user.key_expired > datetime.utcnow():
+        #db.session.expire_on_commit = False
+        db.session.expunge(user)
         return user
 
 
@@ -56,10 +59,21 @@ class UserToCompany(db.Model):
     attributes = db.Column(db.String(1024), nullable=True)
 
     # relationships
-    user = db.relationship('User', backref='companies', foreign_keys=[user_id])
-    company = db.relationship('Company', backref='users', foreign_keys=[company_id])
+    user = db.relationship(
+        'User',
+        lazy='subquery',
+        backref='companies',
+        foreign_keys=[user_id],
+    )
+    company = db.relationship(
+        'Company',
+        lazy='subquery',
+        backref='users',
+        foreign_keys=[company_id],
+    )
     roles = db.relationship(
         'Role',
+        lazy='subquery',
         secondary=user_company_roles,
         primaryjoin=and_(user_id == user_company_roles.c.user_id, company_id == user_company_roles.c.company_id),
         backref=db.backref('user_to_companies'),
@@ -130,6 +144,7 @@ class User(db.Model):
             company_id == UserToCompany.company_id,
         ),
         uselist=False,
+        lazy='subquery',
     )
 
     def __str__(self):
@@ -280,7 +295,7 @@ class Activity(db.Model):
             policy_number=policy.number,
             effective_date=datetime.strptime(policy.effective_date, date_format).date(),
             type=data['activity'].get('name'),
-            creator=current_user.id,
+            creator_id=current_user.id,
             attributes=json.dumps(data['activity'].get('fields'))
         )
         

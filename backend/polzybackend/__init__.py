@@ -8,7 +8,7 @@ import flask_monitoringdashboard as dashboard
 
 
 # initialization
-db = SQLAlchemy()
+db = SQLAlchemy(session_options={"expire_on_commit": False})
 migrate = Migrate()
 auth = HTTPTokenAuth(scheme='Bearer')
 messenger = Messenger()

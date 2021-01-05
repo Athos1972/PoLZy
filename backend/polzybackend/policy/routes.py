@@ -97,7 +97,7 @@ def new_activity():
             return jsonify(policy.get()), 200
         
     except Exception as e:
-        current_app.logger.exception(f'Execution activity {data.get("name")} for policy {policy.number} faild: {e}')
+        current_app.logger.exception(f'Execution activity {data.get("name")} for policy {data["id"]} faild: {e}')
         return jsonify({'error': 'Bad Request'}), 400
 
     return jsonify({
