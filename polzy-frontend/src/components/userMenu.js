@@ -96,17 +96,14 @@ function UserMenu(props) {
     props.signOut()
   }
 
-  const invisibleBadge = () => {
+  const getUnseenBadgeNumber = () => {
     if (!(props.user.badges instanceof Array)) {
-      return false
-    }
-    for (const badge of props.user.badges) {
-      if (!badge.isSeen) {
-        return false
-      }
+      return 0
     }
 
-    return true
+    const unseenBadges = props.user.badges.filter(badge => !badge.isSeen)
+
+    return unseenBadges.length
   }
 
   console.log('USER:')
@@ -116,7 +113,12 @@ function UserMenu(props) {
     <React.Fragment>
 
     {/* Toggle Button */}
-      <Badge color="secondary" variant="dot" invisible={invisibleBadge()}>
+      <Badge
+        color="secondary"
+        badgeContent={getUnseenBadgeNumber()}
+        invisible={getUnseenBadgeNumber() == 0}
+        overlap="circle"
+      >
         <Button
           onClick={() => setOpenMenu(true)}
         >
