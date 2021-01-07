@@ -8,6 +8,7 @@ import {
   ListItemIcon,
   ListItemText,
   Divider,
+  Badge,
 } from '@material-ui/core'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp'
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount'
@@ -16,7 +17,8 @@ import ReportProblemIcon from '@material-ui/icons/ReportProblem'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import LanguageSelector from '../components/languageSelector'
-import { signOut, clearPolicy, clearAntrag } from '../redux/actions'
+import { getBadges } from '../api/gamification'
+import { signOut, updateUser, clearPolicy, clearAntrag } from '../redux/actions'
 import { ErrorBoundary } from "@sentry/react"
 import { getManualDialogOptions, getManualReportContext, getUser } from '../sentry/utils'
 
@@ -70,6 +72,17 @@ function UserMenu(props) {
 
   const [openMenu, setOpenMenu] = React.useState(false)
 
+  // update user badges
+  React.useEffect(() => {
+    getBadges(props.user).then((data) => {
+      console.log('BADGES:')
+      console.log(data)
+      props.setBadges(data)
+    }).catch(error => {
+      console.log(error)
+    })
+  }, [])
+
   const handleToggleAdminPannel = () => {
     props.openAdmin(!props.adminActive)
     setOpenMenu(false)
@@ -83,15 +96,33 @@ function UserMenu(props) {
     props.signOut()
   }
 
+  const invisibleBadge = () => {
+    if (!(props.user.badges instanceof Array)) {
+      return false
+    }
+    for (const badge of props.user.badges) {
+      if (!badge.isSeen) {
+        return false
+      }
+    }
+
+    return true
+  }
+
+  console.log('USER:')
+  console.log(props.user)
+
   return (
     <React.Fragment>
 
     {/* Toggle Button */}
-      <Button
-        onClick={() => setOpenMenu(true)}
-      >
-        {props.user.name}
-      </Button>
+      <Badge color="secondary" variant="dot" invisible={invisibleBadge()}>
+        <Button
+          onClick={() => setOpenMenu(true)}
+        >
+          {props.user.name}
+        </Button>
+      </Badge>
 
     {/* User Menu */}
       <Drawer 
@@ -167,6 +198,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   signOut: signOut,
+  setBadges: updateUser,
   clearPolicy: clearPolicy,
   clearAntrag: clearAntrag,
 }

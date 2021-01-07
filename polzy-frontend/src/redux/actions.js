@@ -2,6 +2,7 @@
 //action types
 export const SIGN_IN = 'SIGN_IN'
 export const SIGN_OUT = 'SIGN_OUT'
+export const UPDATE_USER = 'UPDATE_USER'
 
 export const ADD_POLICY = 'ADD_POLICY'
 export const UPDATE_POLICY = 'UPDATE_POLICY'
@@ -22,6 +23,11 @@ export const signIn = (user) => ({
 export const signOut = () => ({
   type: SIGN_OUT,
   payload: {},
+})
+
+export const updateUser = (updateData) => ({
+  type: UPDATE_USER,
+  payload: updateData,
 })
 
 // policy actions

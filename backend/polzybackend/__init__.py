@@ -46,6 +46,9 @@ def create_app(config=None):
     from polzybackend.administration import bp as bp_admin
     app.register_blueprint(bp_admin)
 
+    from polzybackend.gamification import bp as bp_gamification
+    app.register_blueprint(bp_gamification)
+
     from polzybackend.announce import bp as bp_announce
     app.register_blueprint(bp_announce)
 

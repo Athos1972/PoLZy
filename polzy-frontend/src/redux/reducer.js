@@ -2,6 +2,7 @@ import { combineReducers } from 'redux'
 import { 
   SIGN_IN,
   SIGN_OUT,
+  UPDATE_USER,
   ADD_POLICY,
   UPDATE_POLICY,
   REMOVE_POLICY,
@@ -19,6 +20,11 @@ const userReducer = (state = {}, action) => {
       return action.payload
     case SIGN_OUT:
       return {}
+    case UPDATE_USER:
+      return {
+        ...state,
+        badges: [...action.payload],
+      }
     default:
       return state
   }

@@ -58,21 +58,26 @@ def login():
 @auth.login_required
 def user_permissions():
     # get request data
-    data = request.get_json()
-
-    # get company id
-    company_id = data.get('id')
-    if company_id is None:
-        return {'error': 'Company data does not contain company id'}, 400
-
-    # update company
-    user = auth.current_user()
     try:
-        company_details = user.set_company(company_id=company_id)
-    except Exception as e:
-        return {'error': f'Set company failed: {e}'}, 400
+        data = request.get_json()
 
-    return jsonify({
-        'permissions': permissions(user),
-        'company': company_details,
-    }), 200
+        # get company id
+        company_id = data.get('id')
+        if company_id is None:
+            current_app.logger.warning(f'Payload does not contain company id. Payload: {data}')
+            raise Exception('Payload does not contain company id')
+
+        # update company
+        user = auth.current_user()
+        company_details = user.set_company(company_id=company_id)
+
+        print('*** Permissions:')
+        print(permissions(user))
+        
+        return jsonify({
+            'permissions': permissions(user),
+            'company': company_details,
+        }), 200
+
+    except Exception as e:
+        return {'error': f'Failed to set company: {e}'}, 400

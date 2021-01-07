@@ -10,11 +10,11 @@ import json
 # authentication
 @auth.verify_token
 def verify_token(token):
-    #user = User.query.filter_by(access_key=token).first()
-    user = db.session.query(User).filter_by(access_key=token).first()
+    user = User.query.filter_by(access_key=token).first()
+    #user = db.session.query(User).filter_by(access_key=token).first()
     if user and user.key_expired > datetime.utcnow():
         #db.session.expire_on_commit = False
-        db.session.expunge(user)
+        #db.session.expunge(user)
         return user
 
 
@@ -78,6 +78,13 @@ class UserToCompany(db.Model):
         primaryjoin=and_(user_id == user_company_roles.c.user_id, company_id == user_company_roles.c.company_id),
         backref=db.backref('user_to_companies'),
     )
+    #badges = db.relationship(
+    #    'GamificationBadge',
+    #    lazy='subquery',
+    #    primaryjoin="and_(UserToCompany.user_id==GamificationBadge.user_id, "
+    #                     "UserToCompany.company_id==GamificationBadge.company_id)"
+    #)
+
 
     def to_json(self):
         return {
@@ -145,6 +152,11 @@ class User(db.Model):
         ),
         uselist=False,
         lazy='subquery',
+    )
+    badges = db.relationship(
+        'GamificationBadge',
+        primaryjoin="and_(User.id==GamificationBadge.user_id, "
+                         "User.company_id==GamificationBadge.company_id)"
     )
 
     def __str__(self):
@@ -407,3 +419,49 @@ class GamificationActivity(db.Model):
 
         # save to db
         db.session.commit()
+
+
+class GamificationBadgeLevel(db.Model):
+    __tablename__ = 'gamification_bage_levels'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(32), unique=True, nullable=False)
+    level = db.Column(db.Integer, nullable=False)
+
+    def __str__(self):
+        return self.name
+
+
+class GamificationBadgeType(db.Model):
+    __tablename__ = 'gamification_badge_types'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(32), unique=True, nullable=False)
+
+    def __str__(self):
+        return self.name
+
+
+class GamificationBadge(db.Model):
+    __tablename__ = 'gamification_badges'
+    id = db.Column(db.Integer, primary_key=True)  
+    user_id = db.Column(db.String(56), db.ForeignKey('users.id'), nullable=False)
+    company_id = db.Column(db.String(56), db.ForeignKey('companies.id'), nullable=False)
+    type_id = db.Column(db.Integer, db.ForeignKey('gamification_badge_types.id'), nullable=False)
+    level_id = db.Column(db.Integer, db.ForeignKey('gamification_bage_levels.id'), nullable=False)
+    achieved_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    is_seen = db.Column(db.Boolean, nullable=False, default=False)
+
+    # relationships
+    user = db.relationship('User', backref='gamification_badges', foreign_keys=[user_id])
+    company = db.relationship('Company', foreign_keys=[company_id])
+    type = db.relationship('GamificationBadgeType', foreign_keys=[type_id])
+    level = db.relationship('GamificationBadgeLevel', foreign_keys=[level_id])
+
+    def __str__(self):
+        return f'Badge {self.level.name} {self.type.name} for {self.user.email}'
+
+    def to_json(self):
+        return {
+            'type': self.type.name,
+            'level': self.level.name,
+            'isSeen': self.is_seen,
+        }
