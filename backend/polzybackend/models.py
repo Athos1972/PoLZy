@@ -10,11 +10,8 @@ import json
 # authentication
 @auth.verify_token
 def verify_token(token):
-    #user = User.query.filter_by(access_key=token).first()
-    user = db.session.query(User).filter_by(access_key=token).first()
+    user = User.query.filter_by(access_key=token).first()
     if user and user.key_expired > datetime.utcnow():
-        #db.session.expire_on_commit = False
-        db.session.expunge(user)
         return user
 
 
