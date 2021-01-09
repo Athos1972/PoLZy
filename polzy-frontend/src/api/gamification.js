@@ -1,6 +1,19 @@
 /*
-** Gamification API Calls
+** Gamification Badges API Calls
 */
+
+export const getBadgeTypes = async (user) => {
+  const response = await fetch("/api/badges/types", {
+    headers: {'authorization': `Bearer ${user.accessToken}`},
+  })
+  const data = await response.json()
+  
+  if (response.ok) {
+    return data
+  }
+
+  throw new Error(data.error)
+}
 
 export const getBadges = async (user) => {
   const response = await fetch("/api/badges", {

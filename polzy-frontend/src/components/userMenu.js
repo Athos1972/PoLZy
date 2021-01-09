@@ -12,6 +12,7 @@ import {
 } from '@material-ui/core'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp'
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount'
+import LoyaltyIcon from '@material-ui/icons/Loyalty'
 import HomeIcon from '@material-ui/icons/Home'
 import ReportProblemIcon from '@material-ui/icons/ReportProblem'
 import { makeStyles } from '@material-ui/core/styles'
@@ -21,6 +22,7 @@ import { getBadges } from '../api/gamification'
 import { signOut, updateUser, clearPolicy, clearAntrag } from '../redux/actions'
 import { ErrorBoundary } from "@sentry/react"
 import { getManualDialogOptions, getManualReportContext, getUser } from '../sentry/utils'
+import { VIEW_HOME, VIEW_ADMIN, VIEW_BADGE } from '../views/HomeView'
 
 
 const useStyles = makeStyles({
@@ -83,9 +85,19 @@ function UserMenu(props) {
     })
   }, [])
 
-  const handleToggleAdminPannel = () => {
-    props.openAdmin(!props.adminActive)
-    setOpenMenu(false)
+  const handleGoToHome = () => {
+    props.onChange(VIEW_HOME)
+    //setOpenMenu(false)
+  }
+
+  const handleShowAdmin = () => {
+    props.onChange(VIEW_ADMIN)
+    //setOpenMenu(false)
+  }
+
+  const handleShowBadges = () => {
+    props.onChange(VIEW_BADGE)
+    //setOpenMenu(false)
   }
 
   const handleSignOut = () => {
@@ -106,8 +118,8 @@ function UserMenu(props) {
     return unseenBadges.length
   }
 
-  console.log('USER:')
-  console.log(props.user)
+  console.log('USER MENU:')
+  console.log(props)
 
   return (
     <React.Fragment>
@@ -160,20 +172,42 @@ function UserMenu(props) {
             />
           </ErrorBoundary>
 
-          {/* Admin Pannel */}
-          {props.user.isSupervisor &&
+          {/* Go To Home */}
+          {props.currentView !== VIEW_HOME &&
             <ListItem
               button
-              onClick={handleToggleAdminPannel}
+              onClick={handleGoToHome}
             >
               <ListItemIcon>
-                {props.adminActive ? (
-                  <HomeIcon />
-                ) : (
-                  <SupervisorAccountIcon />
-                )}
+                <HomeIcon />
               </ListItemIcon>
-              <ListItemText primary={props.adminActive ? t('admin:quit') : t('admin:pannel')} />
+              <ListItemText primary={t('admin:quit')} />
+            </ListItem>
+          }
+
+          {/* Admin Pannel */}
+          {props.currentView !== VIEW_ADMIN && props.user.isSupervisor &&
+            <ListItem
+              button
+              onClick={handleShowAdmin}
+            >
+              <ListItemIcon>
+                <SupervisorAccountIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('admin:pannel')} />
+            </ListItem>
+          }
+
+          {/* Badges */}
+          {props.currentView !== VIEW_BADGE &&
+            <ListItem
+              button
+              onClick={handleShowBadges}
+            >
+              <ListItemIcon>
+                <LoyaltyIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('admin:badges')} />
             </ListItem>
           }
 

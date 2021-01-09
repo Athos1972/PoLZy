@@ -11,12 +11,20 @@ import { useSnackbar } from 'notistack'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import AdminView from './AdminView'
+import BadgeView from './BadgeView'
 import PolicyView from './PolicyView'
 import AntragView from './AntragView'
 import NotAllowedView from './NotAllowedView'
 import Header from'../components/header'
 import Copyright from '../components/copyright'
 import { apiHost } from '../utils'
+
+/*
+** Avalable Views
+*/
+export const VIEW_HOME = 'home'
+export const VIEW_ADMIN = 'admin'
+export const VIEW_BADGE = 'badge'
 
 // set styles
 const useStyles = makeStyles((theme) => ({
@@ -43,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function GetView(props) {
+function GetTabView(props) {
 
   switch(props.view) {
     case 'policy':
@@ -70,13 +78,14 @@ function TabPanel(props) {
   )
 }
 
-function HomeView(props) {
+function HomeViewBase(props) {
   const classes = useStyles()
   const {t} = useTranslation('policy', 'antrag')
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar()
+  //const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
   const [tab, setTab] = useState()
-  const [openAdmin, setOpenAdmin] = useState(false)
+  //const [openAdmin, setOpenAdmin] = useState(false)
+  //const [openBadges, setOpenBadges] = useState(true)
   const [allowedViews, setAllowedViews] = useState([])
 
   // update allowed views
@@ -85,6 +94,120 @@ function HomeView(props) {
     setAllowedViews(views)
     setTab(views.length > 0 ? views[0] : null)
   }, [props.permissions])
+/*
+  const closeToast = (key) => (
+    <IconButton onClick={() => {closeSnackbar(key)}}>
+      <CloseIcon />
+    </IconButton>
+  )
+
+  // get toasts
+  useEffect(() => {
+    const eventSource = new EventSource(apiHost + "api/listen")
+    eventSource.onmessage = (e) => {
+      const {text, ...toastProps} = JSON.parse(e.data)
+      enqueueSnackbar(
+        text,
+        {
+          ...toastProps,
+          preventDuplicate: true,
+          action: closeToast,
+        },
+        
+      )
+    }
+  }, [])
+*/  
+
+  return(
+    <React.Fragment>
+      {allowedViews.length > 1 ? (
+        <React.Fragment>
+          <Tabs 
+            value={tab}
+            onChange={(e, v) => {setTab(v)}}
+            indicatorColor="secondary"
+            textColor="primary"
+            variant="fullWidth"
+          >
+            {allowedViews.map((view) => (
+              <Tab
+                key={view}
+                label={t(`views:${view}`)}
+                value={view}
+                id={`tab-${view}`}
+                aria-controls={`tabpanel-${view}`}
+              />
+            ))}
+          </Tabs>
+          {allowedViews.map((view) => (
+            <TabPanel
+              key={view}
+              name={view}
+              value={tab}
+            >
+              <GetTabView view={view} />
+            </TabPanel>
+          ))}
+        </React.Fragment>
+      ) : (
+        <React.Fragment>
+          {allowedViews.length === 1 ? (
+            <GetTabView view={allowedViews[0]} />
+          ) : (
+            <NotAllowedView />
+          )}
+        </React.Fragment>
+      )}
+    </React.Fragment>
+  )
+}
+
+// connect to redux store
+const HomeView = connect((state) => ({
+  permissions: state.user.permissions,
+}))(HomeViewBase)
+
+
+/*
+** Main View
+*/
+function CurrentView(props) {
+  //const {view, ...otherProps} = props
+
+  switch(props.view) {
+    case VIEW_ADMIN:
+      return <AdminView onClose={props.onClose} />
+    case VIEW_BADGE:
+      return <BadgeView onClose={props.onClose} />
+    default:
+      return <HomeView />
+  }
+}
+
+export default function MainView(props) {
+  const classes = useStyles()
+  //const {t} = useTranslation('policy', 'antrag')
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar()
+
+  const [view, setView] = useState(VIEW_HOME)
+
+  const [tab, setTab] = useState()
+  //const [openAdmin, setOpenAdmin] = useState(false)
+  //const [openBadges, setOpenBadges] = useState(true)
+  //const [allowedViews, setAllowedViews] = useState([])
+
+  // update allowed views
+  /*
+  useEffect(() => {
+    const views = Object.keys(props.permissions).filter(item => props.permissions[item])
+    setAllowedViews(views)
+    setTab(views.length > 0 ? views[0] : null)
+  }, [props.permissions])
+  */
+  const goToHome = () => {
+    setView(VIEW_HOME)
+  } 
 
   const closeToast = (key) => (
     <IconButton onClick={() => {closeSnackbar(key)}}>
@@ -109,61 +232,19 @@ function HomeView(props) {
     }
   }, [])
   
-
   return(
     <React.Fragment>
       <Container maxWidth="lg">
         <Header
-          adminActive={openAdmin}
-          openAdmin={setOpenAdmin}
-          currentView={tab}
+          currentTab={tab}
+          currentView={view}
+          onChange={setView}
         />
-        {openAdmin ? (
-          <AdminView
-            closeAdmin={() => setOpenAdmin(false)}
-          />
-        ) : (
-          <React.Fragment>
-            {allowedViews.length > 1 ? (
-              <React.Fragment>
-                <Tabs 
-                  value={tab}
-                  onChange={(e, v) => {setTab(v)}}
-                  indicatorColor="secondary"
-                  textColor="primary"
-                  variant="fullWidth"
-                >
-                  {allowedViews.map((view) => (
-                    <Tab
-                      key={view}
-                      label={t(`views:${view}`)}
-                      value={view}
-                      id={`tab-${view}`}
-                      aria-controls={`tabpanel-${view}`}
-                    />
-                  ))}
-                </Tabs>
-                {allowedViews.map((view) => (
-                  <TabPanel
-                    key={view}
-                    name={view}
-                    value={tab}
-                  >
-                    <GetView view={view} />
-                  </TabPanel>
-                ))}
-              </React.Fragment>
-            ) : (
-              <React.Fragment>
-                {allowedViews.length === 1 ? (
-                  <GetView view={allowedViews[0]} />
-                ) : (
-                  <NotAllowedView />
-                )}
-              </React.Fragment>
-            )}
-          </React.Fragment>
-        )}
+        <CurrentView
+          view={view}
+          onClose={goToHome}
+          onChange={setView}
+        />
       </Container>
       <footer className={classes.footer}>
         <Copyright />
@@ -171,8 +252,3 @@ function HomeView(props) {
     </React.Fragment>
   )
 }
-
-// connect to redux store
-export default connect((state) => ({
-  permissions: state.user.permissions,
-}))(HomeView)

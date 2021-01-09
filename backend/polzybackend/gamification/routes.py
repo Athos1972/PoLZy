@@ -1,6 +1,6 @@
 from flask import jsonify, request, current_app
 from polzybackend.gamification import bp
-from polzybackend.models import GamificationBadge
+from polzybackend.models import GamificationBadge, GamificationBadgeType
 from polzybackend import auth
 
 
@@ -44,3 +44,17 @@ def make_badge_seen():
         current_app.logger.exception(f'Making Gamification Badge seen fails: Badge={badge}\n{e}')
         return jsonify({'error': 'Bad Request'}), 400
 
+
+@bp.route('/badges/types')
+@auth.login_required
+def badge_types():
+    #
+    # returns list of available types of badges
+    #
+
+    try:
+        badge_types = GamificationBadgeType.query.order_by('id').all()
+        return jsonify([badge.to_json() for badge in badge_types]), 200
+    except Exception as e:
+        current_app.logger.exception(f'Faild to get Gamification Badge Types: {e}')
+        return jsonify({'error': 'Bad Request'}), 400
