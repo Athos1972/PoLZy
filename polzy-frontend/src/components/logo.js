@@ -16,10 +16,6 @@ export function EmblemLogo(props) {
   const srcLogo = Boolean(props.logo) ? props.logo : 
     'default/' + (Boolean(props.target) ? props.target : 'default')
 
-  console.log('API HOST:')
-  console.log(process.env.REACT_APP_API_HOST)
-  console.log(uriLogo)
-
   return <img src={uriLogo + srcLogo} height={props.size} alt={`${props.target}Logo`} />
 }
 

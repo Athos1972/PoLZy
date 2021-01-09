@@ -8,9 +8,6 @@ import HomeView from './views/HomeView'
 
 function App(props) {
 
-  console.log('APP ROOT:')
-  console.log(props.user)
-
   if (props.user.accessToken === undefined) {
     return (
       <ThemeProvider theme={polzyTheme()}>
@@ -20,9 +17,6 @@ function App(props) {
   }
 
   const {attributes} = props.user.company
-  console.log('APP ROOT:')
-  console.log(attributes)
-  console.log(props.user)
 
   return (
     <ThemeProvider theme={polzyTheme(attributes ? attributes.theme : null)}>
@@ -31,7 +25,6 @@ function App(props) {
       </SnackbarProvider>
     </ThemeProvider>
   )
-
 }
 
 // connect to redux store
