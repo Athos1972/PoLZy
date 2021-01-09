@@ -29,7 +29,7 @@ export const getBadges = async (user) => {
 }
 
 export const makeBadgeSeen = async (user, payload) => {
-  const response = await fetch("/api/badges", {
+  const response = await fetch("/api/badges/seen", {
   	method: 'POST',
     headers: {
       'authorization': `Bearer ${user.accessToken}`,

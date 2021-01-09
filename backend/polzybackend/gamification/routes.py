@@ -34,11 +34,16 @@ def make_badge_seen():
         if badge is None:
             raise Exception('Badge data not found in request')
 
+        # find badge in user badges
+        userBadge = list(filter(lambda x: x.type.id == badge.get('type'), auth.current_user().badges))
+        if len(userBadge) == 0:
+            raise Exception(f"Badge Type {badge.type} not found in user's badges")
+
         # update badge instance
-        GamificationBadge.make_seen(badge)
+        userBadge[0].set_seen()
 
         # return updated lit of badges
-        return jsonify(auth.current_user().get_badges()), 200
+        return jsonify([badge.to_json() for badge in auth.current_user().badges]), 200
 
     except Exception as e:
         current_app.logger.exception(f'Making Gamification Badge seen fails: Badge={badge}\n{e}')

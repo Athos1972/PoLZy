@@ -462,9 +462,13 @@ class GamificationBadge(db.Model):
     def __str__(self):
         return f'Badge {self.level.name} {self.type.name} for {self.user.email}'
 
+    def set_seen(self):
+        self.is_seen = True
+        db.session.commit()
+
     def to_json(self):
         return {
-            'type': self.type.name,
+            'type': self.type.id,
             'level': self.level.name,
             'isSeen': self.is_seen,
         }

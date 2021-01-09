@@ -19,10 +19,10 @@ import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import LanguageSelector from '../components/languageSelector'
 import { getBadges } from '../api/gamification'
+import { VIEW_HOME, VIEW_ADMIN, VIEW_BADGE } from '../views/HomeView'
 import { signOut, updateUser, clearPolicy, clearAntrag } from '../redux/actions'
 import { ErrorBoundary } from "@sentry/react"
 import { getManualDialogOptions, getManualReportContext, getUser } from '../sentry/utils'
-import { VIEW_HOME, VIEW_ADMIN, VIEW_BADGE } from '../views/HomeView'
 
 
 const useStyles = makeStyles({
@@ -87,17 +87,17 @@ function UserMenu(props) {
 
   const handleGoToHome = () => {
     props.onChange(VIEW_HOME)
-    //setOpenMenu(false)
+    setOpenMenu(false)
   }
 
   const handleShowAdmin = () => {
     props.onChange(VIEW_ADMIN)
-    //setOpenMenu(false)
+    setOpenMenu(false)
   }
 
   const handleShowBadges = () => {
     props.onChange(VIEW_BADGE)
-    //setOpenMenu(false)
+    setOpenMenu(false)
   }
 
   const handleSignOut = () => {
