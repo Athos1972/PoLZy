@@ -20,7 +20,7 @@ class Policy:
         self.user = None
 
     def set_user(self, user):
-        self.user = user
+        self.user = deepcopy(user)
 
     def setStage(self, stage):
         self.stage = stage
@@ -66,7 +66,7 @@ class Antrag:
     def __init__(self, product_name, user):
         self.id = generate_id()
         self.product_name = product_name
-        self.user = user
+        self.user = deepcopy(user)
         self.instance = None
 
 

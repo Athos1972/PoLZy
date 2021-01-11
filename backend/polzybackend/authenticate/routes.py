@@ -72,6 +72,11 @@ def user_permissions():
     except Exception as e:
         return {'error': f'Set company failed: {e}'}, 400
 
+    print('*** Permissions:')
+    print(permissions(user))
+    print('*** User:')
+    print(user.company.to_json())
+
     return jsonify({
         'permissions': permissions(user),
         'company': company_details,
