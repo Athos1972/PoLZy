@@ -70,9 +70,6 @@ def user_permissions():
         # update company
         user = auth.current_user()
         company_details = user.set_company(company_id=company_id)
-
-        print('*** Permissions:')
-        print(permissions(user))
         
         return jsonify({
             'permissions': permissions(user),

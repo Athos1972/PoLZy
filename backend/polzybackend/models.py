@@ -168,7 +168,7 @@ class User(db.Model):
         db.session.commit()
 
     def set_company(self, company_id=None, company=None):
-        # check if either company data is provided
+        # check if company data is provided
         if company_id is None and company is None:
             raise Exception('Neither Company ID nor Company provided')
 
@@ -432,14 +432,16 @@ class GamificationBadgeType(db.Model):
     __tablename__ = 'gamification_badge_types'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32), unique=True, nullable=False)
+    description = db.Column(db.String(32), nullable=False)
 
     def __str__(self):
         return self.name
 
     def to_json(self):
         return {
-            'id': self.id,
+            #'id': self.id,
             'name': self.name,
+            'description': self.description,
         }
 
 
@@ -468,7 +470,7 @@ class GamificationBadge(db.Model):
 
     def to_json(self):
         return {
-            'type': self.type.id,
+            'type': self.type.name,
             'level': self.level.name,
             'isSeen': self.is_seen,
         }

@@ -35,7 +35,7 @@ def make_badge_seen():
             raise Exception('Badge data not found in request')
 
         # find badge in user badges
-        userBadge = list(filter(lambda x: x.type.id == badge.get('type'), auth.current_user().badges))
+        userBadge = list(filter(lambda x: x.type.name == badge.get('type'), auth.current_user().badges))
         if len(userBadge) == 0:
             raise Exception(f"Badge Type {badge.type} not found in user's badges")
 
