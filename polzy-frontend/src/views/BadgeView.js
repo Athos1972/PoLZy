@@ -11,11 +11,13 @@ import {
 import { makeStyles } from '@material-ui/core/styles'
 import { getBadgeTypes, makeBadgeSeen } from '../api/gamification'
 import { updateUser } from '../redux/actions'
+import { apiHost } from '../utils'
 
+const uriBadge = apiHost + 'api/badge/'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    height: 140,
+    //height: 140,
     textAlign: 'center',
   },
 
@@ -31,8 +33,26 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
     textAlign: 'center',
+    width: 300,
   },
 }))
+
+
+function BadgeImage(props) {
+
+  const srcBadge = Boolean(props.type) ? (
+    props.isSeen ? `${props.type.toLowerCase()}/${props.level.toLowerCase()}` : "new"
+  ) : "disabled"
+  const altBadge = Boolean(props.type) ? `${props.level} ${props.type}` : "Disabled"
+
+  return (
+    <img
+      src={uriBadge + srcBadge}
+      width="60%"
+      alt={altBadge}
+    />
+  )
+}
 
 function RenderBadge(props) {
   
@@ -49,25 +69,14 @@ function RenderBadge(props) {
     }
   }
 
+  //console.log(props)
+
   return(
     <Paper
       className={classes.paper}
       onClick={handleBadgeClick}
     >
-      {Boolean(badge) ? (
-        badge.level
-      ) : (
-        "Disabled"
-      )}
-      {badge && !badge.isSeen &&
-        <Typography
-          variant="button"
-          component="div"
-          color="error"
-        >
-          NOT SEEN
-        </Typography>
-      }
+      <BadgeImage {...badge} />
       <Typography
         variant="subtitle1"
         component="div"
@@ -96,7 +105,7 @@ function BadgeView(props) {
   }, [])
 
   const getBadgeByType = (type) => {
-    const result = props.user.badges.filter(badge => badge.type === type.id)
+    const result = props.user.badges.filter(badge => badge.type === type.name)
 
     if (result.length === 0) {
       return null
@@ -122,6 +131,9 @@ function BadgeView(props) {
   const handleCloseBadge = () => {
     setOpenBadge(false)
   }
+
+  console.log('CURRENT BADGE:')
+  console.log(currentBadge)
 
   return (
     <React.Fragment>
@@ -156,8 +168,8 @@ function BadgeView(props) {
       >
         <Fade in={openBadge}>
           <div className={classes.badgePaper}>
-            <h2 id="badge-title">{currentBadge && currentBadge.type.name}</h2>
-            <p id="badge-description">{currentBadge && currentBadge.badge.level}</p>
+            <BadgeImage {...currentBadge.badge} />
+            <p id="badge-description">{currentBadge && currentBadge.type.description}</p>
           </div>
         </Fade>
       </Modal>
