@@ -40,14 +40,24 @@ const useStyles = makeStyles((theme) => ({
 
 function BadgeImage(props) {
 
-  const srcBadge = Boolean(props.type) ? (
-    props.isSeen ? `${props.type.toLowerCase()}/${props.level.toLowerCase()}` : "new"
-  ) : "disabled"
   const altBadge = Boolean(props.type) ? `${props.level} ${props.type}` : "Disabled"
+
+  const getBadgeSrc = () => {
+    // not rewarded badges
+    if (!Boolean(props.type)) {
+      return "disabled"
+    }
+
+    if (!props.isSeen && !Boolean(props.overlay)) {
+      return "new"
+    }
+    
+    return `${props.type.toLowerCase()}/${props.level.toLowerCase()}`
+  }
 
   return (
     <img
-      src={uriBadge + srcBadge}
+      src={uriBadge + getBadgeSrc()}
       width="60%"
       alt={altBadge}
     />
