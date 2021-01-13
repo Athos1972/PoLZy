@@ -418,32 +418,62 @@ class GamificationActivity(db.Model):
         db.session.commit()
 
 
+## Badges
+
+class GamificationBadgeDescription(db.Model):
+    #
+    # Badge earn requirements for given Type and Level
+    #
+    __tablename__ = 'gamification_bage_descriptions'
+    type_id = db.Column(db.Integer, db.ForeignKey('gamification_badge_types.id'), primary_key=True)
+    level_id = db.Column(db.Integer, db.ForeignKey('gamification_bage_levels.id'), primary_key=True)
+    description = db.Column(db.String(512), nullable=False)
+
+    # relationships
+    type = db.relationship('GamificationBadgeType', foreign_keys=[type_id])
+    level = db.relationship('GamificationBadgeLevel', foreign_keys=[level_id])
+
 class GamificationBadgeLevel(db.Model):
     __tablename__ = 'gamification_bage_levels'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32), unique=True, nullable=False)
-    level = db.Column(db.Integer, nullable=False)
+    next_level_id = db.Column(db.Integer, db.ForeignKey('gamification_bage_levels.id'), nullable=True)
+
+    #relationships
+    next_level = db.relationship('GamificationBadgeLevel', remote_side=[next_level_id], uselist=False)
 
     def __str__(self):
         return self.name
+
+    def get_next_level_name(self):
+        if self.next_level:
+            return self.next_level.name
 
 
 class GamificationBadgeType(db.Model):
     __tablename__ = 'gamification_badge_types'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32), unique=True, nullable=False)
-    description = db.Column(db.String(32), nullable=False)
+    title = db.Column(db.String(32), nullable=False)
 
+    # reletionaships
+    descriptions = db.relationship(
+        'GamificationBadgeDescription',
+        primaryjoin="GamificationBadgeType.id==GamificationBadgeDescription.type_id",
+    )
+    
+    def get_description(self):
+        return {d.level.name: d.description for d in self.descriptions}
+    
     def __str__(self):
         return self.name
 
     def to_json(self):
         return {
-            #'id': self.id,
             'name': self.name,
-            'description': self.description,
+            'title': self.title,
+            'description': self.get_description(),
         }
-
 
 class GamificationBadge(db.Model):
     __tablename__ = 'gamification_badges'
@@ -472,5 +502,6 @@ class GamificationBadge(db.Model):
         return {
             'type': self.type.name,
             'level': self.level.name,
+            'next_level': self.level.get_next_level_name(),
             'isSeen': self.is_seen,
         }
