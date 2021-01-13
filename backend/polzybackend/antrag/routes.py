@@ -16,8 +16,7 @@ def get_antrag_products():
 
     except Exception as e:
         current_app.logger.exception(f"Error during get_antrag_products: {e}")
-    
-    return jsonify({'error': f'Failed get antrag products: {e}'}), 400
+        return jsonify({'error': f'Failed get antrag products: {e}'}), 400
 
 
 @bp.route('/antrag/new/<string:product_type>')
