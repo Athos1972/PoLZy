@@ -12,6 +12,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import { getBadgeTypes, makeBadgeSeen } from '../api/gamification'
 import { updateUser } from '../redux/actions'
 import { apiHost } from '../utils'
+import confetti from 'canvas-confetti'
+
 
 const uriBadge = apiHost + 'api/badge/'
 
@@ -36,6 +38,47 @@ const useStyles = makeStyles((theme) => ({
     width: 300,
   },
 }))
+
+
+/*
+** Confetti
+*/
+const launchConfetti = () => {
+
+  const endTime = Date.now() + 2000
+  const colors = ['#bb0000', '#0000bb', '#00bb00', '#ffffff']
+
+  const frame = () => {
+      confetti({
+        particleCount: 3,
+        angle: 60,
+        spread: 55,
+        origin: { 
+          x: 0,
+          y: 0.7
+        },
+        colors: colors,
+      })
+
+      confetti({
+        particleCount: 3,
+        angle: 120,
+        spread: 55,
+        origin: {
+          x: 1,
+          y: 0.7,
+        },
+        colors: colors,
+      })
+
+      if (Date.now() < endTime) {
+        requestAnimationFrame(frame)
+      }
+    }
+
+    requestAnimationFrame(frame)
+
+}
 
 
 function BadgeImage(props) {
@@ -91,7 +134,7 @@ function RenderBadge(props) {
         variant="subtitle1"
         component="div"
       >
-        {type.name}
+        {type.title}
       </Typography>
 
     </Paper>
@@ -102,7 +145,7 @@ function BadgeView(props) {
   const classes = useStyles()
 
   const [badgeTypes, setBadgeTypes] = React.useState([])
-  const [currentBadge, setCurrentBadge] = React.useState(null)
+  const [currentBadge, setCurrentBadge] = React.useState({})
   const [openBadge, setOpenBadge] = React.useState(false)
 
   React.useEffect(() => {
@@ -118,7 +161,7 @@ function BadgeView(props) {
     const result = props.user.badges.filter(badge => badge.type === type.name)
 
     if (result.length === 0) {
-      return null
+      return {}
     }
 
     return result[0]
@@ -140,6 +183,10 @@ function BadgeView(props) {
 
   const handleCloseBadge = () => {
     setOpenBadge(false)
+  }
+
+  if (openBadge && currentBadge.badge.isSeen == false) {
+    launchConfetti()
   }
 
   console.log('CURRENT BADGE:')
@@ -178,8 +225,29 @@ function BadgeView(props) {
       >
         <Fade in={openBadge}>
           <div className={classes.badgePaper}>
-            <BadgeImage {...currentBadge.badge} />
-            <p id="badge-description">{currentBadge && currentBadge.type.description}</p>
+            <BadgeImage {...currentBadge.badge} overlay />
+            {currentBadge.type &&
+              <React.Fragment>
+                <Typography
+                  id="badge-title"
+                  variant="h6"
+                  component="div"
+                >
+                  {currentBadge.type.title}
+                </Typography>
+                <Typography
+                  id="badge-description"
+                  variant="subtitle2"
+                  component="div"
+                >
+                  {Boolean(currentBadge.badge.next_level) ? 
+                    currentBadge.type.description[currentBadge.badge.next_level] : 
+                    'Completed'
+                  }
+                </Typography>
+              </React.Fragment>
+            }
+            {/*<p id="badge-description">{currentBadge.type && currentBadge.type.description}</p>*/}
           </div>
         </Fade>
       </Modal>
