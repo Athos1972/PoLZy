@@ -418,6 +418,63 @@ class GamificationActivity(db.Model):
         db.session.commit()
 
 
+class GamificationStatistics(db.Model):
+    __tablename__ = 'gamification_statistics'
+    user_id = db.Column(db.String(56), db.ForeignKey('users.id'), primary_key=True, nullable=False)
+    company_id = db.Column(db.String(56), db.ForeignKey('companies.id'), nullable=False)
+    daily = db.Column(db.Integer, default=0)
+    weekly = db.Column(db.Integer, default=0)
+    monthly = db.Column(db.Integer, default=0)
+    yearly = db.Column(db.Integer, default=0)
+    last_updated = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
+
+    user = db.relationship('User', backref='gamification_statistics', foreign_keys=[user_id])
+    company = db.relationship('Company', backref='gamification_statistics', foreign_keys=[company_id])
+
+    def check_timeline(self):
+        if self.last_updated.date() < datetime.now().date():
+            self.daily = 0
+        if self.last_updated.date().isocalender()[1] < datetime.now().date().isocalendar()[1]:
+            self.weekly = 0
+        if self.last_updated.date().month < datetime.now().date().month:
+            self.monthly = 0
+        if self.last_updated.date().year < datetime.now().date().year:
+            self.yearly = 0
+
+    def add_points(self, points=1):
+        self.check_timeline()
+        self.daily += points
+        self.weekly += points
+        self.monthly += points
+        self.yearly += points
+
+    def get_user_statistics(self):
+        self.check_timeline()
+        json_data = {"daily": self.daily, "weekly": self.weekly, "monthly": self.monthly, "yearly": self.yearly}
+        return json_data
+
+    def get_company_statistics(self):
+        users = [x.user_id for x in db.session.query(UserToCompany).filter_by(company_id=self.company_id).all()]
+        json_data = []
+        for user in users:
+            dic = {}
+            dic["user"] = db.session.query(User).filter_by(id=user).first().to_json()
+            dic["statistic"] = db.session.query(GamificationStatistics).filter_by(user).first().get_user_statistics()
+            json_data.append(dic)
+        return json_data
+
+    @classmethod
+    def new(cls, user_id, company_id):
+        instance = cls(
+            user_id=user_id,
+            company_id=company_id
+        )
+        db.session.add(instance)
+        db.session.commit()
+
+        return instance
+
+
 class GamificationBadgeLevel(db.Model):
     __tablename__ = 'gamification_bage_levels'
     id = db.Column(db.Integer, primary_key=True)
