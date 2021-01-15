@@ -17,6 +17,7 @@ import AntragView from './AntragView'
 import NotAllowedView from './NotAllowedView'
 import Header from'../components/header'
 import Copyright from '../components/copyright'
+import { BadgeToast } from '../components/toasts'
 import { apiHost } from '../utils'
 
 /*
@@ -81,11 +82,8 @@ function TabPanel(props) {
 function HomeViewBase(props) {
   const classes = useStyles()
   const {t} = useTranslation('policy', 'antrag')
-  //const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
   const [tab, setTab] = useState()
-  //const [openAdmin, setOpenAdmin] = useState(false)
-  //const [openBadges, setOpenBadges] = useState(true)
   const [allowedViews, setAllowedViews] = useState([])
 
   // update allowed views
@@ -94,30 +92,6 @@ function HomeViewBase(props) {
     setAllowedViews(views)
     setTab(views.length > 0 ? views[0] : null)
   }, [props.permissions])
-/*
-  const closeToast = (key) => (
-    <IconButton onClick={() => {closeSnackbar(key)}}>
-      <CloseIcon />
-    </IconButton>
-  )
-
-  // get toasts
-  useEffect(() => {
-    const eventSource = new EventSource(apiHost + "api/listen")
-    eventSource.onmessage = (e) => {
-      const {text, ...toastProps} = JSON.parse(e.data)
-      enqueueSnackbar(
-        text,
-        {
-          ...toastProps,
-          preventDuplicate: true,
-          action: closeToast,
-        },
-        
-      )
-    }
-  }, [])
-*/  
 
   return(
     <React.Fragment>
@@ -187,24 +161,12 @@ function CurrentView(props) {
 
 export default function MainView(props) {
   const classes = useStyles()
-  //const {t} = useTranslation('policy', 'antrag')
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
   const [view, setView] = useState(VIEW_HOME)
-
   const [tab, setTab] = useState()
-  //const [openAdmin, setOpenAdmin] = useState(false)
-  //const [openBadges, setOpenBadges] = useState(true)
-  //const [allowedViews, setAllowedViews] = useState([])
+  const [updateBadges, setUpdateBadges] = useState(true)
 
-  // update allowed views
-  /*
-  useEffect(() => {
-    const views = Object.keys(props.permissions).filter(item => props.permissions[item])
-    setAllowedViews(views)
-    setTab(views.length > 0 ? views[0] : null)
-  }, [props.permissions])
-  */
   const goToHome = () => {
     setView(VIEW_HOME)
   } 
@@ -218,6 +180,25 @@ export default function MainView(props) {
   // get toasts
   useEffect(() => {
     const eventSource = new EventSource(apiHost + "api/listen")
+
+    eventSource.addEventListener("newbadge", (e) => {
+      const {text, uri, ...toastProps} = JSON.parse(e.data)
+
+      // enqueue toast
+      enqueueSnackbar(
+        <BadgeToast text={text} uri={uri} />,
+        {
+          ...toastProps,
+          variant: 'default',
+          preventDuplicate: true,
+          action: closeToast,
+        },       
+      )
+
+      // update user badges
+      setUpdateBadges(true)
+    })
+
     eventSource.onmessage = (e) => {
       const {text, ...toastProps} = JSON.parse(e.data)
       enqueueSnackbar(
@@ -227,10 +208,13 @@ export default function MainView(props) {
           preventDuplicate: true,
           action: closeToast,
         },
-        
       )
     }
   }, [])
+
+  const handleOnBadgesUpdated = () => {
+    setUpdateBadges(false)
+  }
   
   return(
     <React.Fragment>
@@ -239,6 +223,8 @@ export default function MainView(props) {
           currentTab={tab}
           currentView={view}
           onChange={setView}
+          updateBadges={updateBadges}
+          onBadgesUpdated={handleOnBadgesUpdated}
         />
         <CurrentView
           view={view}

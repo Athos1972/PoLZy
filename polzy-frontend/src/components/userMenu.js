@@ -69,21 +69,30 @@ function ReportButton(props) {
 }
 
 function UserMenu(props) {
-  const {t} = useTranslation('auth', 'admin', 'common', 'feedback')
+  const {t} = useTranslation('auth', 'admin', 'common', 'feedback', 'badge')
   const classes = useStyles()
 
   const [openMenu, setOpenMenu] = React.useState(false)
 
   // update user badges
   React.useEffect(() => {
+    if (!props.updateBadges) {
+      return
+    }
+
     getBadges(props.user).then((data) => {
       console.log('BADGES:')
       console.log(data)
+      // set user badges
       props.setBadges(data)
+      // disable bdges update
+      props.onBadgesUpdated()
     }).catch(error => {
+      // disable badges update
+      props.onBadgesUpdated()
       console.log(error)
     })
-  }, [])
+  }, [props.updateBadges])
 
   const handleGoToHome = () => {
     props.onChange(VIEW_HOME)
@@ -205,9 +214,15 @@ function UserMenu(props) {
               onClick={handleShowBadges}
             >
               <ListItemIcon>
+              <Badge
+        color="secondary"
+        badgeContent={getUnseenBadgeNumber()}
+        invisible={getUnseenBadgeNumber() == 0}
+      >
                 <LoyaltyIcon />
+                </Badge>
               </ListItemIcon>
-              <ListItemText primary={t('admin:badges')} />
+              <ListItemText primary={t('badge:menu.title')} />
             </ListItem>
           }
 

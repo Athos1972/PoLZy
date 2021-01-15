@@ -437,6 +437,7 @@ class GamificationBadgeLevel(db.Model):
     __tablename__ = 'gamification_bage_levels'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32), unique=True, nullable=False)
+    is_lowest = db.Column(db.Boolean, nullable=False, default=False,)
     next_level_id = db.Column(db.Integer, db.ForeignKey('gamification_bage_levels.id'), nullable=True)
 
     #relationships
@@ -463,7 +464,7 @@ class GamificationBadgeType(db.Model):
     )
     
     def get_description(self):
-        return {d.level.name: d.description for d in self.descriptions}
+        return {(d.level.name if not d.level.is_lowest else 'lowest'): d.description for d in self.descriptions}
     
     def __str__(self):
         return self.name

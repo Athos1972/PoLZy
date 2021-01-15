@@ -112,5 +112,10 @@
     "success": "Your feedback has been sent. Thank you!",
     "manual.title": "Report Problem",
     "manual.subtitle": "Tell us what happened below"
+  },
+
+  "badge": {
+    "menu.title": "Badges",
+    "completed": "Completed"
   }
 }

@@ -9,6 +9,7 @@ import {
   Fade,
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
+import { useTranslation } from 'react-i18next'
 import { getBadgeTypes, makeBadgeSeen } from '../api/gamification'
 import { updateUser } from '../redux/actions'
 import { apiHost } from '../utils'
@@ -84,6 +85,7 @@ const launchConfetti = () => {
 function BadgeImage(props) {
 
   const altBadge = Boolean(props.type) ? `${props.level} ${props.type}` : "Disabled"
+  const width = props.overlay ? "80%" : "50%"
 
   const getBadgeSrc = () => {
     // not rewarded badges
@@ -101,7 +103,7 @@ function BadgeImage(props) {
   return (
     <img
       src={uriBadge + getBadgeSrc()}
-      width="60%"
+      width={width}
       alt={altBadge}
     />
   )
@@ -122,10 +124,8 @@ function RenderBadge(props) {
     }
   }
 
-  //console.log(props)
-
   return(
-    <Paper
+    <div
       className={classes.paper}
       onClick={handleBadgeClick}
     >
@@ -137,12 +137,13 @@ function RenderBadge(props) {
         {type.title}
       </Typography>
 
-    </Paper>
+    </div>
   )
 }
 
 function BadgeView(props) {
   const classes = useStyles()
+  const {t} = useTranslation('badge')
 
   const [badgeTypes, setBadgeTypes] = React.useState([])
   const [currentBadge, setCurrentBadge] = React.useState({})
@@ -240,14 +241,18 @@ function BadgeView(props) {
                   variant="subtitle2"
                   component="div"
                 >
-                  {Boolean(currentBadge.badge.next_level) ? 
-                    currentBadge.type.description[currentBadge.badge.next_level] : 
-                    'Completed'
+                  {currentBadge.badge.type ? (
+                    currentBadge.badge.next_level ? (
+                      currentBadge.type.description[currentBadge.badge.next_level]
+                    ) : ( 
+                      t('badge:completed')
+                    )) : (
+                      currentBadge.type.description['lowest']
+                    )
                   }
                 </Typography>
               </React.Fragment>
             }
-            {/*<p id="badge-description">{currentBadge.type && currentBadge.type.description}</p>*/}
           </div>
         </Fade>
       </Modal>
