@@ -72,6 +72,10 @@ def rankings():
     # returns user's rankings
     #
 
+    # waiting delay
+    from time import sleep
+    sleep(3)
+
     rank_categories = [
         'weekly',
         'monthly',
