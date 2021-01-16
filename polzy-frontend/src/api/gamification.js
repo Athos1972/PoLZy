@@ -45,3 +45,16 @@ export const makeBadgeSeen = async (user, payload) => {
 
   throw new Error(data.error)
 }
+
+export const getRankings = async (user) => {
+  const response = await fetch("/api/rankings", {
+    headers: {'authorization': `Bearer ${user.accessToken}`},
+  })
+  const data = await response.json()
+  
+  if (response.ok) {
+    return data
+  }
+
+  throw new Error(data.error)
+}

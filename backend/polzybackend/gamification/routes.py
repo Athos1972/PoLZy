@@ -63,3 +63,35 @@ def badge_types():
     except Exception as e:
         current_app.logger.exception(f'Faild to get Gamification Badge Types: {e}')
         return jsonify({'error': 'Bad Request'}), 400
+
+
+@bp.route('/rankings')
+@auth.login_required
+def rankings():
+    #
+    # returns user's rankings
+    #
+
+    rank_categories = [
+        'weekly',
+        'monthly',
+        'annual',
+    ]
+
+    rank_topics = [
+        "KFZ FastOffer",
+        "Wohnen Fastofffer",
+        "Policy Cancellations",
+    ]
+
+    # generate random ranking
+    from random import randrange
+    ranking_data = {category: [
+        {
+            'name': f'{category.capitalize()} {topic}',
+            'operations': randrange(10000),
+            'rank': randrange(100),
+        } for topic in rank_topics 
+    ] for category in rank_categories}
+
+    return jsonify(ranking_data), 200

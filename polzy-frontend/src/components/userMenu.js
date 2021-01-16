@@ -94,7 +94,7 @@ function UserMenu(props) {
       console.log(error)
     })
   }, [props.updateBadges])
-
+/*
   const handleGoToHome = () => {
     props.onChange(VIEW_HOME)
     setOpenMenu(false)
@@ -109,7 +109,7 @@ function UserMenu(props) {
     props.onChange(VIEW_BADGE)
     setOpenMenu(false)
   }
-
+*/
   const handleShowView = (view) => {
     props.onChange(view)
     setOpenMenu(false)
@@ -191,7 +191,7 @@ function UserMenu(props) {
           {props.currentView !== VIEW_HOME &&
             <ListItem
               button
-              onClick={handleGoToHome}
+              onClick={() => handleShowView(VIEW_HOME)}
             >
               <ListItemIcon>
                 <HomeIcon />
@@ -204,7 +204,7 @@ function UserMenu(props) {
           {props.currentView !== VIEW_ADMIN && props.user.isSupervisor &&
             <ListItem
               button
-              onClick={handleShowAdmin}
+              onClick={() => handleShowView(VIEW_ADMIN)}
             >
               <ListItemIcon>
                 <SupervisorAccountIcon />
@@ -217,7 +217,7 @@ function UserMenu(props) {
           {props.currentView !== VIEW_BADGE &&
             <ListItem
               button
-              onClick={handleShowBadges}
+              onClick={() => handleShowView(VIEW_BADGE)}
             >
               <ListItemIcon>
                 <Badge
