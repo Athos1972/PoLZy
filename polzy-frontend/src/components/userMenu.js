@@ -15,11 +15,12 @@ import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount'
 import LoyaltyIcon from '@material-ui/icons/Loyalty'
 import HomeIcon from '@material-ui/icons/Home'
 import ReportProblemIcon from '@material-ui/icons/ReportProblem'
+import TrendingUpIcon from '@material-ui/icons/TrendingUp'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import LanguageSelector from '../components/languageSelector'
 import { getBadges } from '../api/gamification'
-import { VIEW_HOME, VIEW_ADMIN, VIEW_BADGE } from '../views/HomeView'
+import { VIEW_HOME, VIEW_ADMIN, VIEW_BADGE, VIEW_RANKING } from '../views/HomeView'
 import { signOut, updateUser, clearPolicy, clearAntrag } from '../redux/actions'
 import { ErrorBoundary } from "@sentry/react"
 import { getManualDialogOptions, getManualReportContext, getUser } from '../sentry/utils'
@@ -106,6 +107,11 @@ function UserMenu(props) {
 
   const handleShowBadges = () => {
     props.onChange(VIEW_BADGE)
+    setOpenMenu(false)
+  }
+
+  const handleShowView = (view) => {
+    props.onChange(view)
     setOpenMenu(false)
   }
 
@@ -214,15 +220,28 @@ function UserMenu(props) {
               onClick={handleShowBadges}
             >
               <ListItemIcon>
-              <Badge
-        color="secondary"
-        badgeContent={getUnseenBadgeNumber()}
-        invisible={getUnseenBadgeNumber() == 0}
-      >
-                <LoyaltyIcon />
+                <Badge
+                  color="secondary"
+                  badgeContent={getUnseenBadgeNumber()}
+                  invisible={getUnseenBadgeNumber() == 0}
+                >
+                  <LoyaltyIcon />
                 </Badge>
               </ListItemIcon>
               <ListItemText primary={t('gamification:badges')} />
+            </ListItem>
+          }
+
+          {/* Ranking */}
+          {props.currentView !== VIEW_RANKING &&
+            <ListItem
+              button
+              onClick={() => handleShowView(VIEW_RANKING)}
+            >
+              <ListItemIcon>
+                <TrendingUpIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('gamification:ranking')} />
             </ListItem>
           }
 

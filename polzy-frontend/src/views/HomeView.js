@@ -12,6 +12,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import AdminView from './AdminView'
 import BadgeView from './BadgeView'
+import RankingView from './RankingView'
 import PolicyView from './PolicyView'
 import AntragView from './AntragView'
 import NotAllowedView from './NotAllowedView'
@@ -26,6 +27,7 @@ import { apiHost } from '../utils'
 export const VIEW_HOME = 'home'
 export const VIEW_ADMIN = 'admin'
 export const VIEW_BADGE = 'badge'
+export const VIEW_RANKING = 'ranking'
 
 // set styles
 const useStyles = makeStyles((theme) => ({
@@ -154,6 +156,8 @@ function CurrentView(props) {
       return <AdminView onClose={props.onClose} />
     case VIEW_BADGE:
       return <BadgeView onClose={props.onClose} />
+    case VIEW_RANKING:
+      return <RankingView onClose={props.onClose} />
     default:
       return <HomeView />
   }
