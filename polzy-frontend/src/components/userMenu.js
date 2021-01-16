@@ -69,7 +69,7 @@ function ReportButton(props) {
 }
 
 function UserMenu(props) {
-  const {t} = useTranslation('auth', 'admin', 'common', 'feedback', 'badge')
+  const {t} = useTranslation('auth', 'admin', 'common', 'feedback', 'gamification')
   const classes = useStyles()
 
   const [openMenu, setOpenMenu] = React.useState(false)
@@ -222,7 +222,7 @@ function UserMenu(props) {
                 <LoyaltyIcon />
                 </Badge>
               </ListItemIcon>
-              <ListItemText primary={t('badge:menu.title')} />
+              <ListItemText primary={t('gamification:badges')} />
             </ListItem>
           }
 

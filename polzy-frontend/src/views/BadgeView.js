@@ -143,7 +143,7 @@ function RenderBadge(props) {
 
 function BadgeView(props) {
   const classes = useStyles()
-  const {t} = useTranslation('badge')
+  const {t} = useTranslation('gamification')
 
   const [badgeTypes, setBadgeTypes] = React.useState([])
   const [currentBadge, setCurrentBadge] = React.useState({})
@@ -245,7 +245,7 @@ function BadgeView(props) {
                     currentBadge.badge.next_level ? (
                       currentBadge.type.description[currentBadge.badge.next_level]
                     ) : ( 
-                      t('badge:completed')
+                      t('gamification:completed')
                     )) : (
                       currentBadge.type.description['lowest']
                     )

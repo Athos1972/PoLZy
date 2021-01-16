@@ -114,8 +114,12 @@
     "manual.subtitle": "Tell us what happened below"
   },
 
-  "badge": {
-    "menu.title": "Badges",
-    "completed": "Completed"
+  "gamification": {
+    "badges": "Badges",
+    "completed": "Completed",
+    "rnacking": "Rancking",
+    "weekly": "Weekly",
+    "monthly": "Monthly",
+    "annual": "Annual"
   }
 }
