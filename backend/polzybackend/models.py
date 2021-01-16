@@ -432,14 +432,18 @@ class GamificationStatistics(db.Model):
     company = db.relationship('Company', backref='gamification_statistics', foreign_keys=[company_id])
 
     def check_timeline(self):
-        if self.last_updated.date() < datetime.now().date():
+        year_is_changed = self.last_updated.date().year < datetime.now().date().year
+        # year_is_changed used when year changed but month or week number is same
+        if self.last_updated.date() < datetime.now().date() or year_is_changed:
             self.daily = 0
-        if self.last_updated.date().isocalender()[1] < datetime.now().date().isocalendar()[1]:
+        if self.last_updated.date().isocalendar()[1] < datetime.now().date().isocalendar()[1] or year_is_changed:
             self.weekly = 0
-        if self.last_updated.date().month < datetime.now().date().month:
+        if self.last_updated.date().month < datetime.now().date().month or year_is_changed:
             self.monthly = 0
-        if self.last_updated.date().year < datetime.now().date().year:
+        if year_is_changed:
             self.yearly = 0
+        self.last_updated = datetime.now()
+        db.session.commit()
 
     def add_points(self, points=1):
         self.check_timeline()
@@ -447,6 +451,7 @@ class GamificationStatistics(db.Model):
         self.weekly += points
         self.monthly += points
         self.yearly += points
+        db.session.commit()
 
     def get_user_statistics(self):
         self.check_timeline()
@@ -459,7 +464,8 @@ class GamificationStatistics(db.Model):
         for user in users:
             dic = {}
             dic["user"] = db.session.query(User).filter_by(id=user).first().to_json()
-            dic["statistic"] = db.session.query(GamificationStatistics).filter_by(user).first().get_user_statistics()
+            dic["statistic"] = db.session.query(GamificationStatistics
+                                                ).filter_by(user_id=user).first().get_user_statistics()
             json_data.append(dic)
         return json_data
 
