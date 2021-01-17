@@ -7,6 +7,7 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  Typography,
 } from '@material-ui/core'
 import Skeleton from '@material-ui/lab/Skeleton'
 import { makeStyles } from '@material-ui/core/styles'
@@ -39,6 +40,7 @@ function RankingView(props) {
   const [rankingData, setRankingData] = React.useState()
   const [loading, setLoading] = React.useState(true)
   const [rankingLines, setRankingLines] = React.useState(3)
+  const [errorData, setErrorData] = React.useState(false)
 
   // generate waiting animation
   const getWaitingRows = () => {
@@ -76,6 +78,7 @@ function RankingView(props) {
         setRankingLines(data[tab].length)
       }
     }).catch(error => {
+      setErrorData(true)
       console.log(error)
     }).finally(() => {
       setLoading(false)
@@ -96,59 +99,74 @@ function RankingView(props) {
     setTab(value)
   }
 
+  console.log(props.user)
+
   return(
     <React.Fragment>
+      {errorData ? (
+         <Typography
+            className={classes.formItem}
+            variant="h3"
+            component="div"
+            align="center"
+          >
+            {t('common:na')}
+          </Typography>
+      ) : (
+        <React.Fragment>
 
-      {/* Ranking Tabs */}
-      <Tabs 
-        value={tab}
-        onChange={handleTabChange}
-        indicatorColor="secondary"
-        textColor="primary"
-        variant="fullWidth"
-      >
-        {rankingTabList.map((rankingTab) => (
-          <Tab
-            key={rankingTab}
-            label={t(`gamification:${rankingTab}`)}
-            value={rankingTab}
-            id={`tab-${rankingTab}`}
-          />
-        ))}
-      </Tabs>
+          {/* Ranking Tabs */}
+          <Tabs 
+            value={tab}
+            onChange={handleTabChange}
+            indicatorColor="secondary"
+            textColor="primary"
+            variant="fullWidth"
+          >
+            {rankingTabList.map((rankingTab) => (
+              <Tab
+                key={rankingTab}
+                label={t(`gamification:${rankingTab}`)}
+                value={rankingTab}
+                id={`tab-${rankingTab}`}
+              />
+            ))}
+          </Tabs>
 
-      {/* Ranking Table */}
-      <Table>
-        <colgroup>
-          <col style={{width:'40%'}}/>
-          <col style={{width:'30%'}}/>
-          <col style={{width:'35%'}}/>
-        </colgroup>
-        <TableBody>
-          {loading ? (
-            getWaitingRows()
-          ) : (
-            <React.Fragment>
-              {rankingData[tab].map((data, index) => (
-                <TableRow key={index}>
-                  <TableCell align='left'>{data.name}</TableCell>
-                  <TableCell align='center'>{formatNumberWithCommas(data.operations)}</TableCell>
-                  <TableCell align='center'>{data.rank}%</TableCell>
-                </TableRow>
-              ))}
-            </React.Fragment>
-          )}
-        </TableBody>
-      </Table>
+          {/* Ranking Table */}
+          <Table>
+            <colgroup>
+              <col style={{width:'40%'}}/>
+              <col style={{width:'30%'}}/>
+              <col style={{width:'35%'}}/>
+            </colgroup>
+            <TableBody>
+              {loading ? (
+                getWaitingRows()
+              ) : (
+                <React.Fragment>
+                  {rankingData[tab].map((data, index) => (
+                    <TableRow key={index}>
+                      <TableCell align='left'>{data.name}</TableCell>
+                      <TableCell align='center'>{formatNumberWithCommas(data.operations)}</TableCell>
+                      <TableCell align='center'>{data.rank}%</TableCell>
+                    </TableRow>
+                  ))}
+                </React.Fragment>
+              )}
+            </TableBody>
+          </Table>
 
-      {/* Update Button */}
-      <div className={classes.updateButtonContainer} >
-        <ProgressButton
-          title={t('gamification:update')}
-          loading={loading}
-          onClick={handleUpdateRankings}
-        />
-      </div>
+          {/* Update Button */}
+          <div className={classes.updateButtonContainer} >
+            <ProgressButton
+              title={t('gamification:update')}
+              loading={loading}
+              onClick={handleUpdateRankings}
+            />
+          </div>
+        </React.Fragment>
+      )}
     </React.Fragment>
   )
 }

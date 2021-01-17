@@ -133,8 +133,8 @@ function UserMenu(props) {
     return unseenBadges.length
   }
 
-  console.log('USER MENU:')
-  console.log(props)
+  //console.log('USER MENU:')
+  //console.log(props)
 
   return (
     <React.Fragment>
@@ -233,7 +233,7 @@ function UserMenu(props) {
           }
 
           {/* Ranking */}
-          {props.currentView !== VIEW_RANKING &&
+          {props.user.company.attributes && props.user.company. attributes.hitList && props.currentView !== VIEW_RANKING &&
             <ListItem
               button
               onClick={() => handleShowView(VIEW_RANKING)}
