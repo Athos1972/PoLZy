@@ -38,23 +38,29 @@ function RankingView(props) {
   const [tab, setTab] = React.useState(rankingTabList[0])
   const [rankingData, setRankingData] = React.useState()
   const [loading, setLoading] = React.useState(true)
+  const [rankingLines, setRankingLines] = React.useState(3)
 
-  // create waiting animation
-  const waitingRows = []
-  for (let row = 0; row < 3; row++) {
-    waitingRows.push(
-      <TableRow key={row}>
-        <TableCell>
-          <Skeleton />
-        </TableCell>
-        <TableCell>
-          <Skeleton />
-        </TableCell>
-        <TableCell>
-          <Skeleton />
-        </TableCell>
-      </TableRow>
-    )
+  // generate waiting animation
+  const getWaitingRows = () => {
+    const waitingRows = []
+    
+    for (let row = 0; row < rankingLines; row++) {
+      waitingRows.push(
+        <TableRow key={row}>
+          <TableCell>
+            <Skeleton />
+          </TableCell>
+          <TableCell>
+            <Skeleton />
+          </TableCell>
+          <TableCell>
+            <Skeleton />
+          </TableCell>
+        </TableRow>
+      )
+    }
+
+    return waitingRows
   }
 
   //console.log(waitingRows)
@@ -62,6 +68,13 @@ function RankingView(props) {
   const updateRankings = () => {
     getRankings(props.user).then(data => {
       setRankingData(data)
+
+      console.log('Ranking Data:')
+      console.log(data[tab])
+      
+      if (data[tab]) {
+        setRankingLines(data[tab].length)
+      }
     }).catch(error => {
       console.log(error)
     }).finally(() => {
@@ -107,18 +120,18 @@ function RankingView(props) {
       {/* Ranking Table */}
       <Table>
         <colgroup>
-          <col style={{width:'45%'}}/>
-          <col style={{width:'10%'}}/>
-          <col style={{width:'45%'}}/>
+          <col style={{width:'40%'}}/>
+          <col style={{width:'30%'}}/>
+          <col style={{width:'35%'}}/>
         </colgroup>
         <TableBody>
           {loading ? (
-            waitingRows
+            getWaitingRows()
           ) : (
             <React.Fragment>
               {rankingData[tab].map((data, index) => (
                 <TableRow key={index}>
-                  <TableCell align='center'>{data.name}</TableCell>
+                  <TableCell align='left'>{data.name}</TableCell>
                   <TableCell align='center'>{formatNumberWithCommas(data.operations)}</TableCell>
                   <TableCell align='center'>{data.rank}%</TableCell>
                 </TableRow>
