@@ -112,5 +112,15 @@
     "success": "Bravo, daunke. Wir kümman uns drum.",
     "manual.title": "Klumpad geht ned",
     "manual.subtitle": "Föhlamödung aufmochn"
+  },
+
+  "gamification": {
+    "badges": "Obzeichn",
+    "completed": "Darwischt",
+    "ranking": "",
+    "weekly": "in da Woch'n",
+    "monthly": "im Monat",
+    "annual": "im Joar",
+    "update": "Neich lod'n"
   }
 }

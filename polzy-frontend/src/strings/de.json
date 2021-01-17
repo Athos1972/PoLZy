@@ -112,5 +112,15 @@
     "success": "Vielen Dank, Dein Feedback wurde verschickt!",
     "manual.title": "Problem melden",
     "manual.subtitle": "Bitte geben Sie uns Details zum Problem"
+  },
+
+  "gamification": {
+    "badges": "Abzeichen",
+    "completed": "Erledigt",
+    "ranking": "Hitliste",
+    "weekly": "Wöchentlich",
+    "monthly": "Monatlich",
+    "annual": "Jährlich",
+    "update": "Neu laden"
   }
 }
