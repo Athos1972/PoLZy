@@ -23,3 +23,5 @@ tests
 
 # Backend dist-folder
 /backend/dist
+
+.idea
