@@ -421,7 +421,7 @@ class GamificationActivity(db.Model):
 class GamificationUserStats(db.Model):
     __tablename__ = 'gamification_statistics'
     user_id = db.Column(db.String(56), db.ForeignKey('users.id'), primary_key=True, nullable=False)
-    company_id = db.Column(db.String(56), db.ForeignKey('companies.id'), nullable=False)
+    company_id = db.Column(db.String(56), db.ForeignKey('companies.id'), primary_key=True, nullable=False)
     daily = db.Column(db.Integer, default=0)
     weekly = db.Column(db.Integer, default=0)
     monthly = db.Column(db.Integer, default=0)
@@ -456,6 +456,7 @@ class GamificationUserStats(db.Model):
         db.session.commit()
         company = self.get_or_make_company()
         company.add_points(points)
+        return self.get_user_statistics()
 
     def get_or_make_company(self):
         company = db.session.query(GamificationCompanyStatistics).filter_by(company_id=self.company_id).first()
@@ -480,9 +481,11 @@ class GamificationUserStats(db.Model):
         json_data["Users"] = []
         for user in users:
             dic = {}
-            dic["User ID"] = db.session.query(User).filter_by(id=user).first().id
-            dic["statistic"] = db.session.query(GamificationUserStats
-                                                ).filter_by(user_id=user).first().get_user_statistics()
+            dic["User ID"] = user
+            dic["Statistic"] = db.session.query(GamificationUserStats
+                                                ).filter(GamificationUserStats.user_id == user and
+                                                         GamificationUserStats.company_id == self.company_id
+                                                         ).first().get_user_statistics()
             json_data["Users"].append(dic)
         return json_data
 
