@@ -418,7 +418,7 @@ class GamificationActivity(db.Model):
         db.session.commit()
 
 
-class GamificationStatistics(db.Model):
+class GamificationUserStats(db.Model):
     __tablename__ = 'gamification_statistics'
     user_id = db.Column(db.String(56), db.ForeignKey('users.id'), primary_key=True, nullable=False)
     company_id = db.Column(db.String(56), db.ForeignKey('companies.id'), nullable=False)
@@ -426,6 +426,7 @@ class GamificationStatistics(db.Model):
     weekly = db.Column(db.Integer, default=0)
     monthly = db.Column(db.Integer, default=0)
     yearly = db.Column(db.Integer, default=0)
+    all_time = db.Column(db.Integer, default=0)
     last_updated = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
     user = db.relationship('User', backref='gamification_statistics', foreign_keys=[user_id])
@@ -451,28 +452,96 @@ class GamificationStatistics(db.Model):
         self.weekly += points
         self.monthly += points
         self.yearly += points
+        self.all_time += points
         db.session.commit()
+        company = self.get_or_make_company()
+        company.add_points(points)
+
+    def get_or_make_company(self):
+        company = db.session.query(GamificationCompanyStatistics).filter_by(company_id=self.company_id).first()
+        if not company:
+            company = GamificationCompanyStatistics.new(self.company_id)
+        return company
 
     def get_user_statistics(self):
         self.check_timeline()
-        json_data = {"daily": self.daily, "weekly": self.weekly, "monthly": self.monthly, "yearly": self.yearly}
+        json_data = {"daily": self.daily, "weekly": self.weekly, "monthly": self.monthly,
+                     "yearly": self.yearly, "all time": self.all_time}
         return json_data
 
     def get_company_statistics(self):
+        company = self.get_or_make_company()
+        return company.get_company_statistics()
+
+    def get_organization_statistics(self):
         users = [x.user_id for x in db.session.query(UserToCompany).filter_by(company_id=self.company_id).all()]
-        json_data = []
+        json_data = {}
+        json_data["Company"] = self.get_or_make_company().get_company_statistics()
+        json_data["Users"] = []
         for user in users:
             dic = {}
-            dic["user"] = db.session.query(User).filter_by(id=user).first().to_json()
-            dic["statistic"] = db.session.query(GamificationStatistics
+            dic["User ID"] = db.session.query(User).filter_by(id=user).first().id
+            dic["statistic"] = db.session.query(GamificationUserStats
                                                 ).filter_by(user_id=user).first().get_user_statistics()
-            json_data.append(dic)
+            json_data["Users"].append(dic)
         return json_data
 
     @classmethod
     def new(cls, user_id, company_id):
         instance = cls(
             user_id=user_id,
+            company_id=company_id
+        )
+        db.session.add(instance)
+        db.session.commit()
+
+        return instance
+
+
+class GamificationCompanyStatistics(db.Model):
+    __tablename__ = 'gamification_company_statistics'
+    company_id = db.Column(db.String(56), db.ForeignKey('companies.id'), primary_key=True, nullable=False)
+    daily = db.Column(db.Integer, default=0)
+    weekly = db.Column(db.Integer, default=0)
+    monthly = db.Column(db.Integer, default=0)
+    yearly = db.Column(db.Integer, default=0)
+    all_time = db.Column(db.Integer, default=0)
+    last_updated = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
+
+    company = db.relationship('Company', backref='gamification_company_statistics', foreign_keys=[company_id])
+
+    def check_timeline(self):
+        year_is_changed = self.last_updated.date().year < datetime.now().date().year
+        # year_is_changed used when year changed but month or week number is same
+        if self.last_updated.date() < datetime.now().date() or year_is_changed:
+            self.daily = 0
+        if self.last_updated.date().isocalendar()[1] < datetime.now().date().isocalendar()[1] or year_is_changed:
+            self.weekly = 0
+        if self.last_updated.date().month < datetime.now().date().month or year_is_changed:
+            self.monthly = 0
+        if year_is_changed:
+            self.yearly = 0
+        self.last_updated = datetime.now()
+        db.session.commit()
+
+    def add_points(self, points=1):
+        self.check_timeline()
+        self.daily += points
+        self.weekly += points
+        self.monthly += points
+        self.yearly += points
+        self.all_time += points
+        db.session.commit()
+
+    def get_company_statistics(self):
+        self.check_timeline()
+        json_data = {"daily": self.daily, "weekly": self.weekly, "monthly": self.monthly,
+                     "yearly": self.yearly, "all time": self.all_time}
+        return json_data
+
+    @classmethod
+    def new(cls, company_id):
+        instance = cls(
             company_id=company_id
         )
         db.session.add(instance)
