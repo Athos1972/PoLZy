@@ -36,7 +36,6 @@ def all_stages():
     if current_app.config.get('CLASSNAME_STAGES'):
         lClass = import_class(current_app.config.get('CLASSNAME_STAGES'))()
         return lClass.getAllStages
-        # return import_class(current_app.config.get('METHOD_GET_STAGES'))
 
     raise Exception('Method to Get Stages NOT defined')
 
