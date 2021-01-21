@@ -36,14 +36,13 @@ def all_stages():
     if current_app.config.get('CLASSNAME_STAGES'):
         lClass = import_class(current_app.config.get('CLASSNAME_STAGES'))()
         return lClass.getAllStages
-        # return import_class(current_app.config.get('METHOD_GET_STAGES'))
 
     raise Exception('Method to Get Stages NOT defined')
 
 
 def permissions(user):
     #
-    # return user's permissions
+    # returns user's permissions
     #
 
     if current_app.config.get('METHOD_GET_PERMISSIONS'):
@@ -84,3 +83,14 @@ def antrag_products():
         return import_class(current_app.config['CLASSNAME_PRODUCTS'])
 
     raise Exception('Class NOT difined to derive products')
+
+def gamification_ranking(user):
+    #
+    # returns user's gamification ranking
+    #
+
+    if current_app.config.get('CLASSNAME_GAMIFICATION_HITLIST'):
+        lClass = import_class(current_app.config.get('CLASSNAME_GAMIFICATION_HITLIST'))()
+        return lClass.deriveUserRanking(user)
+
+    raise Exception("Class NOT difined to derive user's ranking")

@@ -2,6 +2,7 @@ from flask import jsonify, request, current_app
 from polzybackend.gamification import bp
 from polzybackend.models import GamificationBadge, GamificationBadgeType
 from polzybackend import auth
+from polzybackend.utils.import_utils import gamification_ranking
 
 
 @bp.route('/badges')
@@ -62,7 +63,8 @@ def badge_types():
         return jsonify([badge.to_json() for badge in badge_types]), 200
     except Exception as e:
         current_app.logger.exception(f'Faild to get Gamification Badge Types: {e}')
-        return jsonify({'error': 'Bad Request'}), 400
+    
+    return jsonify({'error': 'Bad Request'}), 400
 
 
 @bp.route('/rankings')
@@ -72,30 +74,11 @@ def rankings():
     # returns user's rankings
     #
 
-    # waiting delay
-    from time import sleep
-    sleep(3)
+    try:
+        return jsonify(gamification_ranking(auth.current_user())), 200
+    except Exception as e:
+        current_app.logger.exception(f"Faild to get user's gamification rankings: {e}")
+    
+    return jsonify({'error': 'Bad Request'}), 400
 
-    rank_categories = [
-        'weekly',
-        'monthly',
-        'annual',
-    ]
 
-    rank_topics = [
-        "KFZ FastOffer",
-        "Wohnen Fastofffer",
-        "Policy Cancellations",
-    ]
-
-    # generate random ranking
-    from random import randrange
-    ranking_data = {category: [
-        {
-            'name': f'{category.capitalize()} {topic}',
-            'operations': randrange(10000),
-            'rank': randrange(100),
-        } for topic in rank_topics 
-    ] for category in rank_categories}
-
-    return jsonify(ranking_data), 200
