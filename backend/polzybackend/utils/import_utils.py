@@ -33,8 +33,8 @@ def all_stages():
     # returns list of all stages
     #
 
-    if current_app.config.get('METHOD_GET_STAGES'):
-        lClass = import_class(current_app.config.get('METHOD_GET_STAGES'))()
+    if current_app.config.get('CLASSNAME_STAGES'):
+        lClass = import_class(current_app.config.get('CLASSNAME_STAGES'))()
         return lClass.getAllStages
         # return import_class(current_app.config.get('METHOD_GET_STAGES'))
 
