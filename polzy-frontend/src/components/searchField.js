@@ -113,8 +113,9 @@ function SearchDropDownBase(props) {
     }
   }
 
-  console.log('Seach Drop Down:')
-  console.log(props)
+  //****** DEBUG OUTPUT
+  //console.log('Seach Drop Down:')
+  //console.log(props)
 
   return (
     <Autocomplete
@@ -499,7 +500,7 @@ export default function SearchField(props) {
     props.onChange({[data.name]: ""})
   }
 
-  //console.log('Search Field props:')
+  //console.log(`Search Field '${data.name}' props:`)
   //console.log(props)
 
   return (

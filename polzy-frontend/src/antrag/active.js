@@ -175,7 +175,7 @@ function ActiveAntrag(props) {
       [field.name]: field.fieldDataType === "Flag" ? (
         field.valueChosenOrEntered === "True"
       ) : (
-        field.valueChosenOrEntered === "None" ? "" : field.valueChosenOrEntered
+        field.valueChosenOrEntered === undefined || field.valueChosenOrEntered === "None" ? "" : field.valueChosenOrEntered
       ),
     }), {})
     return obj.field_groups.reduce((result, group) => ({
@@ -185,7 +185,7 @@ function ActiveAntrag(props) {
       ).reduce((groupFields, field) => ({
         ...groupFields,
         [field.name]: field.fieldDataType === "Flag" ? field.valueChosenOrEntered === "True" : (
-          field.valueChosenOrEntered === "None" ? "" : field.valueChosenOrEntered
+          field.valueChosenOrEntered === undefined || field.valueChosenOrEntered === "None" ? "" : field.valueChosenOrEntered
         ),
       }), {}),
     }), {...commonFields})
@@ -212,7 +212,7 @@ function ActiveAntrag(props) {
       ).reduce((result, field) => ({
         ...result,
         [field.name]: field.fieldDataType === "Flag" ? field.valueChosenOrEntered === "True" : (
-          field.valueChosenOrEntered === "None" ? "" : field.valueChosenOrEntered
+          field.valueChosenOrEntered === undefined || field.valueChosenOrEntered === "None" ? "" : field.valueChosenOrEntered
         ),
       }), {})}
     }
@@ -662,6 +662,10 @@ function ActiveAntrag(props) {
     }
     
   }
+
+  //***** BEBUG OUTPUT
+  //console.log('Antrag Props:')
+  //console.log(props)
   
   return(
     <AntragCard

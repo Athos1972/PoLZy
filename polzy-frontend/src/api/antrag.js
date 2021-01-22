@@ -52,8 +52,8 @@ export const updateAntragFields = async (user, antrag) => {
   })
   const data = await response.json()
 
-  console.log('update response')
-  console.log(data)
+  //console.log('update response')
+  //console.log(data)
 
   if (response.ok) {
     return data
@@ -72,6 +72,9 @@ export const executeAntrag = async (user, antrag) => {
     body: JSON.stringify(antrag),
   })
   const data = await response.json()
+
+  //console.log('Execute Antrag Response:')
+  //console.log(response)
 
   if (response.ok) {
     return data

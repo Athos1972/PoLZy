@@ -185,9 +185,6 @@ export function DataFieldNumber(props) {
     }
   }
 
-  //console.log('NUMBER FIELD')
-  //console.log(props)
-
   return (
     <FormControl
       classes={{root: classes.inputField}}
@@ -253,10 +250,6 @@ export function DataFieldNumberRange(props) {
 
   const handleChange = (event) => {
     const newValue = event.target.value
-    //console.log(`Value: '${newValue}'`)
-
-    // set help text color
-    //setHelpTextWarning((newValue !== '' && newValue < min) || newValue > max)
 
     // update value
     props.onChange({[data.name]: newValue})
@@ -443,6 +436,28 @@ export function DataFieldSwitch(props) {
   )
 }
 
+/*
+** Field with Tooltip
+*/
+
+export function TooltipField(props) {
+
+  return(
+    <React.Fragment>
+      {props.tooltip ? (
+        <Tooltip
+          title={props.tooltip}
+          placement="top"
+        >
+          {props.content}
+        </Tooltip>
+      ) : (
+        props.content
+      )}
+    </React.Fragment>
+  )
+}
+
 
 /*
 ** Data Field Mapper
@@ -453,7 +468,7 @@ export function DataField(props) {
   //console.log('DATA FIELD')
   //console.log(props)
 
-  if (data.inputRange.length > 0) {
+  if (data.inputRange && data.inputRange.length > 0) {
     if (data.fieldDataType === "Zahl" && data.inputRange[0] === "range") {
       return <DataFieldNumberRange {...props} />
     } else {
@@ -539,24 +554,26 @@ export default function DataGroup(props) {
         {fields.filter((field) => (
           field.fieldDataType === "Flag" && field.fieldType === 1
         )).map((field) => (
-          <Tooltip
+          <Grid
+            item
             key={field.name}
-            title={field.tooltip}
-            placement="top"
+            xs={6}
+            md={4}
+            lg={3}
           >
-            <Grid
-              item
-              xs={6}
-              md={4}
-              lg={3}
-            >
-              <DataFieldSwitch 
-                {...commonProps}
-                data={field}
-                value={values[field.name]}
-              />
-            </Grid>
-          </Tooltip>
+            <TooltipField
+              tooltip={field.tooltip}
+              content={
+                <div>
+                  <DataFieldSwitch 
+                    {...commonProps}
+                    data={field}
+                    value={values[field.name]}
+                  />
+                </div>
+              }
+            />
+          </Grid>
         ))}
       </Grid>
 
@@ -570,25 +587,26 @@ export default function DataGroup(props) {
           field.fieldDataType !== "Flag" && field.fieldType === 1 && 
           field.fieldDataType !== "SearchEndPoint" && field.fieldDataType !== "Table"
         )).map((field) => (
-          <Tooltip
+          <Grid 
+            item
             key={field.name}
-            title={field.tooltip}
-            placement="top"
+            xs={size('xs')}
+            md={size('md')}
+            lg={field.fieldDataType === "TextBox" ? 2*size('lg') : size('lg')}
           >
-            <Grid 
-              item
-              key={field.name}
-              xs={size('xs')}
-              md={size('md')}
-              lg={field.fieldDataType === "TextBox" ? 2*size('lg') : size('lg')}
-            >
-              <DataField
-                {...commonProps}
-                data={field}
-                value={values[field.name]}
-              />
-            </Grid>
-          </Tooltip>
+            <TooltipField
+              tooltip={field.tooltip}
+              content={
+                <div>
+                  <DataField
+                    {...commonProps}
+                    data={field}
+                    value={values[field.name]}
+                  />
+                </div>
+              }
+            />
+          </Grid>
         ))}
       </Grid>
 
@@ -643,18 +661,18 @@ export default function DataGroup(props) {
       <Table>
         <TableBody>
           {fields.filter((field) => (field.fieldType === 2)).map((field) => (
-            <Tooltip
-              key={field.name}
-              title={field.tooltip}
-              placement="top"
-            >
-              <TableRow hover>
-                <TableCell>{field.brief}</TableCell>
-                <TableCell>
-                  {field.valueChosenOrEntered}
-                </TableCell>
-              </TableRow>
-            </Tooltip>
+            <TooltipField
+            key={field.name}
+              tooltip={field.tooltip}
+              content={
+                <TableRow hover>
+                  <TableCell>{field.brief}</TableCell>
+                  <TableCell>
+                    {field.valueChosenOrEntered}
+                  </TableCell>
+                </TableRow>
+              }
+            />
           ))}
         </TableBody>
       </Table>
