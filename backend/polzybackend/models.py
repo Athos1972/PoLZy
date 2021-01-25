@@ -2,7 +2,7 @@ from polzybackend import db, auth
 from polzybackend.utils import generate_id, date_format
 from polzybackend.utils.auth_utils import generate_token, get_expired, is_supervisor, load_attributes
 from datetime import datetime, date
-from sqlalchemy import and_
+from sqlalchemy import and_, or_
 from functools import reduce
 import json
 
@@ -428,9 +428,12 @@ class GamificationUserStats(db.Model):
     yearly = db.Column(db.Integer, default=0)
     all_time = db.Column(db.Integer, default=0)
     last_updated = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
+    activity_id = db.Column(db.Integer, db.ForeignKey('gamification_activities.id'), nullable=False)
 
     user = db.relationship('User', backref='gamification_statistics', foreign_keys=[user_id])
     company = db.relationship('Company', backref='gamification_statistics', foreign_keys=[company_id])
+    activity = db.relationship('GamificationActivity', backref='gamification_company_statistics',
+                               foreign_keys=[activity_id])
 
     def check_timeline(self):
         year_is_changed = self.last_updated.date().year < datetime.now().date().year
@@ -456,6 +459,7 @@ class GamificationUserStats(db.Model):
         db.session.commit()
         company = self.get_or_make_company()
         company.add_points(points)
+        self.update_badge()
         return self.get_user_statistics()
 
     def get_or_make_company(self):
@@ -490,15 +494,46 @@ class GamificationUserStats(db.Model):
         return json_data
 
     @classmethod
-    def new(cls, user_id, company_id):
+    def new(cls, user_id, company_id, activity_id):
         instance = cls(
             user_id=user_id,
-            company_id=company_id
+            company_id=company_id,
+            activity_id=activity_id
         )
         db.session.add(instance)
         db.session.commit()
 
         return instance
+
+    def update_badge(self):
+        level_id = self.get_level_id()
+        type_id = self.get_type_id()
+        badge = db.session.query(GamificationBadge).filter_by(user_id=self.user_id).filter_by(
+            company_id=self.company_id).filter_by(type_id=type_id).first()
+        if badge:
+            if badge.level_id == level_id:
+                return
+            badge.level_id = level_id
+            badge.achieved_at = datetime.utcnow()
+        else:
+            badge = GamificationBadge(
+                user_id=self.user_id, company_id=self.company_id, type_id=type_id, level_id=level_id)
+        db.session.add(badge)
+        db.session.commit()
+
+    def get_level_id(self):
+        level = db.session.query(GamificationBadgeLevel).filter(and_(self.all_time >= GamificationBadgeLevel.min_level,
+                    or_(self.all_time <= GamificationBadgeLevel.max_level, not GamificationBadgeLevel))).first()
+        return level.id
+
+    def get_type_id(self):
+        event_details = json.loads(self.activity.event_details)
+        eventType = event_details["lineOfBusiness"]
+        if not event_details.get("Activity") and "polizzenNummer" in event_details:
+            eventTypeID = db.session.query(GamificationBadgeType).filter_by(name=f"Polizze {eventType}").first().id
+        elif "antrag" in event_details["Activity"].lower():
+            eventTypeID = db.session.query(GamificationBadgeType).filter_by(name=f"Antrag {eventType}").first().id
+        return eventTypeID
 
 
 class GamificationCompanyStatistics(db.Model):
@@ -572,6 +607,8 @@ class GamificationBadgeLevel(db.Model):
     __tablename__ = 'gamification_bage_levels'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32), unique=True, nullable=False)
+    min_level = db.Column(db.Integer, unique=True, nullable=False)
+    max_level = db.Column(db.Integer, unique=True, nullable=True)
     is_lowest = db.Column(db.Boolean, nullable=False, default=False,)
     next_level_id = db.Column(db.Integer, db.ForeignKey('gamification_bage_levels.id'), nullable=True)
 
@@ -581,9 +618,18 @@ class GamificationBadgeLevel(db.Model):
     def __str__(self):
         return self.name
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.max_level = self.get_next_level_min()
+
     def get_next_level_name(self):
         if self.next_level:
             return self.next_level.name
+
+    def get_next_level_min(self):
+        if self.next_level:
+            return self.next_level.min_level - 1
+        return None
 
 
 class GamificationBadgeType(db.Model):
