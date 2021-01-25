@@ -100,16 +100,10 @@ function FilterMenu(props) {
   }
 
   const handleSliderChange = (index) => (event, value) => {
-    //console.log('SLIDER:')
-    //console.log(index)
-    //console.log(value)
     updateNumberInFilterList(index, value)
   }
 
   const handleChangeMin = (index) => (event) => {
-    console.log('MIN VALUE:')
-    //console.log(index)
-    //console.log(event.target.value)
     updateNumberInFilterList(
       index, [
         event.target.value,
@@ -119,9 +113,6 @@ function FilterMenu(props) {
   }
 
   const handleChangeMax = (index) => (event) => {
-    //console.log('MAX VALUE:')
-    //console.log(index)
-    //console.log(event.target.value)
     updateNumberInFilterList(
       index,
       [
@@ -133,9 +124,6 @@ function FilterMenu(props) {
 
   const validateMin = (index) => {
     const {min, range} = filterList[index].values
-    //console.log('VALIDATE MIN:')
-    //console.log(min)
-    //console.log(range)
     return range[0] >= min && range[0] < range[1]
   }
 
@@ -501,8 +489,8 @@ export default function EnhancedTable(props) {
     props.onCloseActivity()
   }
 
-  //console.log('ENHANCED TABLE:')
-  //console.log(data)
+  console.log('ENHANCED TABLE:')
+  console.log(props)
   //console.log('FILTER LIST')
   //console.log(filterList)
   //console.log(props)
