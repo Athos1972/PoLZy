@@ -222,6 +222,7 @@ export function DataFieldNumberRange(props) {
   const {t} = useTranslation('common')
   const [error, setError] = React.useState(false)
   const [helperText, setHelperText] = React.useState('')
+  const [typingTimeout, setTypingTimeout] = React.useState(null)
   
   // range boundaries
   const min = Number(data.inputRange[1])
@@ -234,38 +235,70 @@ export function DataFieldNumberRange(props) {
       setError(true)
       return
     }
-
+/*
     // set default range message
     setHelperText(t('value.range') + ': ' + min + '-' + max)
 
     // check if value in range
-    if ((Boolean(value) && value < min) || value > max) {
+    if ((Boolean(value) && value <= min) || value >= max) {
       setError(true)
       return
     } 
-
+*/
     // update error state
-    setError(false)
+    if (!Boolean(value) || (value > min && value < max)) {
+      setError(false)
+    }
   }, [value])
 
+  const valueInRange = (newValue) => {
+    // set default range message
+    setHelperText(t('value.range') + ': ' + min + '-' + max)
+
+    // validate value in range
+    if (newValue !== '' && newValue < min) {
+      setError(true)
+      return min
+    }
+
+    if (newValue > max) {
+      setError(true)
+      return max
+    }
+
+    return newValue
+  }
+
   const handleChange = (event) => {
-    const newValue = event.target.value
+    const newValue = valueInRange(event.target.value)
 
     // update value
     props.onChange({[data.name]: newValue})
+
+    // input triggers
+    if (data.inputTriggers) {
+      if (typingTimeout) {
+        clearTimeout(typingTimeout)
+      }
+
+      setTypingTimeout(setTimeout(() => {
+          props.onBlur(data.name, {[data.name]: newValue})
+        }, 500))
+    }
   }
 
   const handleBlur = () => {
-    if (value !== '' && value < min) {
-      props.onChange({[data.name]: min})
-    } else if (value > max) {
-      props.onChange({[data.name]: max})
-    }
+    props.onChange({[data.name]: valueInRange(value)})
 
+/*
     if (Boolean(props.onBlur)) {
       props.onBlur(data.name)
     }
+*/
   }
+
+  console.log('Numeric Field:')
+  console.log(props)
 
   return (
     <FormControl
