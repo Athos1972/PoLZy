@@ -69,9 +69,6 @@ export function DataFieldText(props) {
     }
   }
 
-  //console.log('TEXT FIELD')
-  //console.log(props)
-
   return (
     <FormControl
       classes={{root: classes.inputField}}
@@ -228,6 +225,10 @@ export function DataFieldNumberRange(props) {
   const min = Number(data.inputRange[1])
   const max = Number(data.inputRange[2])
 
+  const validateValue = (value=value) => {
+    return Boolean(value) && value >= min && value <= max
+  }
+
   React.useEffect(() => {
     // check if error comes from backend
     if (Boolean(data.errorMessage)) {
@@ -235,70 +236,48 @@ export function DataFieldNumberRange(props) {
       setError(true)
       return
     }
-/*
+
     // set default range message
     setHelperText(t('value.range') + ': ' + min + '-' + max)
 
     // check if value in range
-    if ((Boolean(value) && value <= min) || value >= max) {
+    if ((Boolean(value) && value < min) || value > max) {
       setError(true)
       return
     } 
-*/
+
     // update error state
-    if (!Boolean(value) || (value > min && value < max)) {
+    if (!Boolean(value) || (value >= min && value <= max)) {
       setError(false)
     }
   }, [value])
 
-  const valueInRange = (newValue) => {
-    // set default range message
-    setHelperText(t('value.range') + ': ' + min + '-' + max)
-
-    // validate value in range
-    if (newValue !== '' && newValue < min) {
-      setError(true)
-      return min
-    }
-
-    if (newValue > max) {
-      setError(true)
-      return max
-    }
-
-    return newValue
-  }
-
   const handleChange = (event) => {
-    const newValue = valueInRange(event.target.value)
+    //const newValue = valueInRange(event.target.value)
+    const newValue = event.target.value
 
     // update value
     props.onChange({[data.name]: newValue})
 
-    // input triggers
-    if (data.inputTriggers) {
-      if (typingTimeout) {
-        clearTimeout(typingTimeout)
-      }
-
-      setTypingTimeout(setTimeout(() => {
-          props.onBlur(data.name, {[data.name]: newValue})
-        }, 500))
+    // check if typing is NOT finished
+    if (typingTimeout) {
+      clearTimeout(typingTimeout)
     }
+
+    // set timeout for typing finished
+    setTypingTimeout(setTimeout(() => {
+      // check for input trigger and valid value
+      if (data.inputTriggers && validateValue(newValue)) {
+        props.onInputTrigger({[data.name]: newValue})
+      }
+    }, 500))
   }
 
   const handleBlur = () => {
-    props.onChange({[data.name]: valueInRange(value)})
-
-/*
     if (Boolean(props.onBlur)) {
       props.onBlur(data.name)
     }
-*/
   }
-
-  console.log('Numeric Field:')
-  console.log(props)
 
   return (
     <FormControl

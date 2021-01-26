@@ -271,10 +271,25 @@ function ActiveAntrag(props) {
   const validateFields = () => {
     // checks if all mandatory fields are filled
     for (const group of antrag.field_groups.filter(group => groups[group.name])) {
-      for (const field of antrag[group.name]) {
+      for (const field of antrag[group.name].filter(field => field.fieldType === 1)) {
         //console.log(`${field.isMandatory ? "+" : "-"} ${field.name}: ${values[field.name]}`)
-        if (field.isMandatory && (values[field.name] === "" || values[field.name] === null))
+
+        // mandatory fields
+        if (field.isMandatory && (values[field.name] === "" || !Boolean(values[field.name]))){
           return false
+        }
+        
+        // numeric values in range
+        if (
+          values[field.name] &&
+          field.fieldDataType === "Zahl" &&
+          field.inputRange &&
+          field.inputRange[0] === "range" &&
+          (values[field.name] < Number(field.inputRange[1]) || values[field.name] > Number(field.inputRange[2]))
+        ) {
+          return false
+        }
+
       }
     }
     return true
@@ -430,41 +445,44 @@ function ActiveAntrag(props) {
     })
   }
 
-  const handleFieldBlurred = (fieldName, newValues={}) => {
+
+
+  const handleFieldBlurred = (newValues={}) => {
     // check if calculate conditions are met
     if (antrag.status === "Neu" && validateFields()) {
       calculateAntrag(newValues)
       return
     }
+  }
 
-    const field = getFieldByName(antrag, fieldName)
-    if (field && field.inputTriggers) {
-      
-      /* update antrag fields */
-      // build request body
-      const requestData = {
-        id: antrag.id,
-        values: {
-          ...groups,
-          ...values,
-          ...newValues,
-        }
+  const handleInputTrigger = (newValues={}) => {
+    /*
+    ** update antrag fields 
+    */
+
+    // build request body
+    const requestData = {
+      id: antrag.id,
+      values: {
+        ...groups,
+        ...values,
+        ...newValues,
       }
-
-      // call update end-point
-      updateAntragFields(props.user, requestData).then(data => {
-        // update antrag
-        props.updateAntrag(
-          props.index,
-          {
-            request_state: "ok",
-            ...data,
-          }
-        )
-      }).catch(error => {
-        console.log(error)
-      })
     }
+
+    // call update end-point
+    updateAntragFields(props.user, requestData).then(data => {
+      // update antrag
+      props.updateAntrag(
+        props.index,
+        {
+          request_state: "ok",
+          ...data,
+        }
+      )
+    }).catch(error => {
+      console.log(error)
+    })
   }
 
   const handleDataChanged = (newValues) => {
@@ -484,10 +502,27 @@ function ActiveAntrag(props) {
     // check if activity selected
     if (currentActivity === null)
       return false
-    // check if required activity fields are filled
-    for (const field of currentActivity.fields) {
-      if(field.isMandatory && activityValues[field.name] === '')
-        return false
+
+    // check if required activity fields are filled correctely
+    for (const group of currentActivity.field_groups.filter(group => groups[group.name]).concat({name: 'fields'})) {
+      for (const field of currentActivity[group.name].filter(field => field.fieldType === 1)) {
+
+        // mandatory fields
+        if(field.isMandatory && activityValues[field.name] === '') {
+          return false
+        }
+
+        // numeric values in range
+        if (
+          activityValues[field.name] &&
+          field.fieldDataType === "Zahl" &&
+          field.inputRange &&
+          field.inputRange[0] === "range" &&
+          (activityValues[field.name] < Number(field.inputRange[1]) || activityValues[field.name] > Number(field.inputRange[2]))
+        ) {
+          return false
+        }
+      }
     }
     return true
   }
@@ -559,36 +594,35 @@ function ActiveAntrag(props) {
     }))
   }
 
-  const handleActivityFieldBlurred = (fieldName, newValues={}) => {
-    const field = getFieldByName(currentActivity, fieldName)
-    if (field && field.inputTriggers) {
-      
-      /* update antrag fields */
-      // build request body
-      const requestData = {
-        id: antrag.id,
-        activity: currentActivity.name,
-        values: {
-          ...activityGroups,
-          ...activityValues,
-          ...newValues,
-        },
-      }
+  const handleActivityInputTrigger = (newValues={}) => {
+    /* 
+    ** update antrag fields
+    */
 
-      // call update end-point
-      updateAntragFields(props.user, requestData).then(data => {
-        // update antrag
-        props.updateAntrag(
-          props.index,
-          {
-            request_state: "ok",
-            ...data,
-          }
-        )
-      }).catch(error => {
-        console.log(error)
-      })
+    // build request body
+    const requestData = {
+      id: antrag.id,
+      activity: currentActivity.name,
+      values: {
+        ...activityGroups,
+        ...activityValues,
+        ...newValues,
+      },
     }
+
+    // call update end-point
+    updateAntragFields(props.user, requestData).then(data => {
+      // update antrag
+      props.updateAntrag(
+        props.index,
+        {
+          request_state: "ok",
+          ...data,
+        }
+      )
+    }).catch(error => {
+      console.log(error)
+    })
   }
 
   const handleActivityDataChanged = (newValues) => {
@@ -765,6 +799,7 @@ function ActiveAntrag(props) {
                           stage={props.stage}
                           onChange={handleDataChanged}
                           onBlur={handleFieldBlurred}
+                          onInputTrigger={handleInputTrigger}
                         />
                       </Collapse>
                     }
@@ -841,7 +876,7 @@ function ActiveAntrag(props) {
                           fields={currentActivity[group.name]}
                           values={activityValues}
                           onChange={handleActivityDataChanged}
-                          onBlur={handleActivityFieldBlurred}
+                          onInputTrigger={handleActivityInputTrigger}
                           onGlobalChange={handleDataChanged}
                           updateAntrag={updateAntrag}
                           onCloseActivity={() => setActivity(null)}
@@ -870,7 +905,7 @@ function ActiveAntrag(props) {
                 values={activityValues}
                 onGlobalChange={handleDataChanged}
                 onChange={handleActivityDataChanged}
-                onBlur={handleActivityFieldBlurred}
+                onInputTrigger={handleActivityInputTrigger}
                 onSelect={handlePartnerSelect}
                 companyTypes={getFieldByName(currentActivity, "firmenArten")}
                 actions={
