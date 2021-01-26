@@ -422,6 +422,7 @@ class GamificationUserStats(db.Model):
     __tablename__ = 'gamification_statistics'
     user_id = db.Column(db.String(56), db.ForeignKey('users.id'), primary_key=True, nullable=False)
     company_id = db.Column(db.String(56), db.ForeignKey('companies.id'), primary_key=True, nullable=False)
+    type_id = db.Column(db.Integer, db.ForeignKey('gamification_badge_types.id'), primary_key=True)
     daily = db.Column(db.Integer, default=0)
     weekly = db.Column(db.Integer, default=0)
     monthly = db.Column(db.Integer, default=0)
@@ -434,6 +435,10 @@ class GamificationUserStats(db.Model):
     company = db.relationship('Company', backref='gamification_statistics', foreign_keys=[company_id])
     activity = db.relationship('GamificationActivity', backref='gamification_company_statistics',
                                foreign_keys=[activity_id])
+    type = db.relationship('GamificationBadgeType', backref="gamification_badge_types", foreign_keys=[type_id])
+
+    def __str__(self):
+        return self.user_id + f" - {self.type_id} -" + " -- " + str(self.get_user_statistics())
 
     def check_timeline(self):
         year_is_changed = self.last_updated.date().year < datetime.now().date().year
@@ -494,10 +499,11 @@ class GamificationUserStats(db.Model):
         return json_data
 
     @classmethod
-    def new(cls, user_id, company_id, activity_id):
+    def new(cls, user_id, company_id, type_id, activity_id):
         instance = cls(
             user_id=user_id,
             company_id=company_id,
+            type_id=type_id,
             activity_id=activity_id
         )
         db.session.add(instance)
@@ -507,33 +513,48 @@ class GamificationUserStats(db.Model):
 
     def update_badge(self):
         level_id = self.get_level_id()
-        type_id = self.get_type_id()
         badge = db.session.query(GamificationBadge).filter_by(user_id=self.user_id).filter_by(
-            company_id=self.company_id).filter_by(type_id=type_id).first()
-        if badge:
-            if badge.level_id == level_id:
-                return
-            badge.level_id = level_id
-            badge.achieved_at = datetime.utcnow()
-        else:
+            company_id=self.company_id).filter_by(type_id=self.type_id).filter_by(level_id=level_id).first()
+        if not badge:
             badge = GamificationBadge(
-                user_id=self.user_id, company_id=self.company_id, type_id=type_id, level_id=level_id)
-        db.session.add(badge)
-        db.session.commit()
+                user_id=self.user_id, company_id=self.company_id, type_id=self.type_id, level_id=level_id)
+            db.session.add(badge)
+            db.session.commit()
 
     def get_level_id(self):
         level = db.session.query(GamificationBadgeLevel).filter(and_(self.all_time >= GamificationBadgeLevel.min_level,
                     or_(self.all_time <= GamificationBadgeLevel.max_level, not GamificationBadgeLevel))).first()
         return level.id
 
-    def get_type_id(self):
-        event_details = json.loads(self.activity.event_details)
+    @staticmethod
+    def get_type_id(event: GamificationEvent, event_details):
+        eventName = event.name.lower()
+        event_details = json.loads(event_details)
         eventType = event_details["lineOfBusiness"]
-        if not event_details.get("Activity") and "polizzenNummer" in event_details:
-            eventTypeID = db.session.query(GamificationBadgeType).filter_by(name=f"Polizze {eventType}").first().id
-        elif "antrag" in event_details["Activity"].lower():
-            eventTypeID = db.session.query(GamificationBadgeType).filter_by(name=f"Antrag {eventType}").first().id
-        return eventTypeID
+        if "policy" in eventName:
+            return db.session.query(GamificationBadgeType).filter_by(name=f"Polizze {eventType}").first().id
+        elif "antrag" in eventName:
+            return db.session.query(GamificationBadgeType).filter_by(name=f"Antrag {eventType}").first().id
+        elif "login" in eventName:
+            return db.session.query(GamificationBadgeType).filter_by(name="Login").first().id
+        else:
+            print(f"{eventName} event is ignored.")
+            return None
+
+    @classmethod
+    def create_or_update_row(cls, activity: GamificationActivity):
+        type_id = cls.get_type_id(activity.event, activity.event_details)
+        if not type_id:
+            return None
+        user_id = activity.user_id
+        company_id = activity.company_id
+        user_stats = db.session.query(GamificationUserStats).filter_by(user_id=user_id
+                                                ).filter_by(company_id=company_id).filter_by(type_id=type_id).first()
+        if not user_stats:
+            print(f"No user found for current activity in Statistics Table. Creating a new row with this id.")
+            user_stats = GamificationUserStats.new(user_id=user_id, company_id=activity.company_id, type_id=type_id,
+                                                   activity_id=activity.id)
+        return user_stats
 
 
 class GamificationCompanyStatistics(db.Model):
@@ -687,3 +708,10 @@ class GamificationBadge(db.Model):
             'next_level': self.level.get_next_level_name(),
             'isSeen': self.is_seen,
         }
+
+    @classmethod
+    def get_user_stats(cls, user_id=user_id):
+        user = db.session.query(cls).filter_by(user_id=user_id).all()
+        json_data = [data.to_json() for data in user]
+        return json_data
+
