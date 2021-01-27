@@ -40,11 +40,16 @@ def all_stages():
     raise Exception('Method to Get Stages NOT defined')
 
 
+def record_login(user):
+    if current_app.config.get('LOGIN_RECORDER'):
+        import_class(current_app.config.get('LOGIN_RECORDER'))(user).record_login_activity()
+
+
 def permissions(user):
     #
     # returns user's permissions
     #
-
+    record_login(user)
     if current_app.config.get('METHOD_GET_PERMISSIONS'):
         permissions_method = import_class(current_app.config['METHOD_GET_PERMISSIONS'])
         return permissions_method(user)
