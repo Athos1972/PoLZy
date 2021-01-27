@@ -8,18 +8,12 @@ import {
 } from '@material-ui/core'
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined'
 import { makeStyles } from '@material-ui/core/styles'
-import humanBody from '../img/human_body.jpg'
 import { formatNumberWithCommas } from '../utils'
 
 
 const useStyles = makeStyles(theme => ({
   container: {
     padding: theme.spacing(2),
-    //margin: (theme.spacing(2), 0),
-  },
-
-  textContainer: {
-    flex: 1,
   },
 
   imageContainer: {
@@ -57,9 +51,6 @@ export default function MappedImage(props) {
 
   const handleMouseMove = (event) => {
     const target = event.target.id
-
-    console.log('Mouse Over:')
-    console.log(target)
 
     if (target) {
       setCurrentArea(data.valueChosenOrEntered.areas[target])
