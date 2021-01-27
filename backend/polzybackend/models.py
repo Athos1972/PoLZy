@@ -530,7 +530,7 @@ class GamificationUserStats(db.Model):
     def get_type_id(event: GamificationEvent, event_details):
         eventName = event.name.lower()
         event_details = json.loads(event_details)
-        eventType = event_details["lineOfBusiness"]
+        eventType = event_details.get("lineOfBusiness")
         if "policy" in eventName:
             return db.session.query(GamificationBadgeType).filter_by(name=f"Polizze {eventType}").first().id
         elif "antrag" in eventName:
