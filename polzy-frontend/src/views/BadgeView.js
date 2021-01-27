@@ -93,10 +93,10 @@ function BadgeImage(props) {
       return "disabled"
     }
 
-    if (!props.isSeen && !Boolean(props.overlay)) {
+    /*if (!props.isSeen && !Boolean(props.overlay)) {
       return "new"
-    }
-    
+    }*/
+
     return `${props.type.toLowerCase()}/${props.level.toLowerCase()}`
   }
 
@@ -164,8 +164,12 @@ function BadgeView(props) {
     if (result.length === 0) {
       return {}
     }
-
-    return result[0]
+    for (var i = 0; i < result.length; i++) {
+        if (result[i].isSeen === false) {
+            return result[i]
+        }
+    }
+    return result[result.length - 1]
   }
 
   const handleBadgeClick = (target) => {

@@ -20,6 +20,11 @@ def badges():
         return jsonify({'error': 'Bad Request'}), 400
 
 
+def filter_badge(x, badge):
+    if x.type.name == badge.get('type') and x.level.name == badge.get('level'):
+        return x
+
+
 @bp.route('/badges/seen', methods=['POST'])
 @auth.login_required
 def make_badge_seen():
@@ -36,7 +41,7 @@ def make_badge_seen():
             raise Exception('Badge data not found in request')
 
         # find badge in user badges
-        userBadge = list(filter(lambda x: x.type.name == badge.get('type'), auth.current_user().badges))
+        userBadge = list(filter(lambda x: filter_badge(x, badge), auth.current_user().badges))
         if len(userBadge) == 0:
             raise Exception(f"Badge Type {badge.get('type')} not found in user's badges")
 

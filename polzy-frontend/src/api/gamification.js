@@ -7,7 +7,7 @@ export const getBadgeTypes = async (user) => {
     headers: {'authorization': `Bearer ${user.accessToken}`},
   })
   const data = await response.json()
-  
+
   if (response.ok) {
     return data
   }
@@ -38,7 +38,7 @@ export const makeBadgeSeen = async (user, payload) => {
     body: JSON.stringify(payload),
   })
   const data = await response.json()
-  
+
   if (response.ok) {
     return data
   }
