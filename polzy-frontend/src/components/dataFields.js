@@ -65,7 +65,7 @@ export function DataFieldText(props) {
 
   const handleBlur = () => {
     if (Boolean(props.onBlur)) {
-      props.onBlur(data.name)
+      props.onBlur()
     }
   }
 
@@ -106,7 +106,7 @@ export function DataFieldLongText(props) {
 
   const handleBlur = () => {
     if (Boolean(props.onBlur)) {
-      props.onBlur(data.name)
+      props.onBlur()
     }
   }
 
@@ -132,7 +132,7 @@ export function DataFieldTextBox(props) {
 
   const handleBlur = () => {
     if (Boolean(props.onBlur)) {
-      props.onBlur(data.name)
+      props.onBlur()
     }
   }
 
@@ -178,7 +178,7 @@ export function DataFieldNumber(props) {
 
   const handleBlur = () => {
     if (Boolean(props.onBlur)) {
-      props.onBlur(data.name)
+      props.onBlur()
     }
   }
 
@@ -275,7 +275,7 @@ export function DataFieldNumberRange(props) {
 
   const handleBlur = () => {
     if (Boolean(props.onBlur)) {
-      props.onBlur(data.name)
+      props.onBlur()
     }
   }
 
@@ -323,8 +323,13 @@ export function DataFieldSelect(props) {
     const newValue = {[data.name]: value}
     props.onChange(newValue)
 
+    // update on input trigger
+    if (data.inputTriggers) {
+      props.onInputTrigger(newValue)
+    }
+
     if (Boolean(props.onBlur)) {
-      props.onBlur(data.name, newValue)
+      props.onBlur(newValue)
     }
   }
 
@@ -381,7 +386,7 @@ export function DataFieldDate(props) {
 
   const handleBlur = () => {
     if (Boolean(props.onBlur)) {
-      props.onBlur(data.name)
+      props.onBlur()
     }
   }
 
@@ -427,7 +432,7 @@ export function DataFieldSwitch(props) {
     props.onChange(newValue)
 
     if (Boolean(props.onBlur)) {
-      props.onBlur(data.name, newValue)
+      props.onBlur(newValue)
     }
   } 
 
