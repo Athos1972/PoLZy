@@ -26,6 +26,7 @@ import { useTranslation } from 'react-i18next'
 import { makeStyles } from '@material-ui/core/styles'
 import SearchField from './searchField'
 import EnhancedTable from './enhancedTable'
+import MappedImage from './mappedImage'
 import { getLocaleDateFormat, backendDateFormat } from '../dateFormat' 
 
 // Styles
@@ -675,9 +676,11 @@ export default function DataGroup(props) {
       </Grid>
 
       {/* Output Fields */}
+
+      {/* Text */}
       <Table>
         <TableBody>
-          {fields.filter((field) => (field.fieldType === 2)).map((field) => (
+          {fields.filter((field) => (field.fieldType === 2 && field.fieldDataType === "Text")).map((field) => (
             <TooltipField
             key={field.name}
               tooltip={field.tooltip}
@@ -693,6 +696,15 @@ export default function DataGroup(props) {
           ))}
         </TableBody>
       </Table>
+
+      {/* Mapped Images */}
+      {fields.filter((field) => (field.fieldType === 2 && field.fieldDataType === "Image")).map((field) => (
+        <MappedImage
+          key={field.name}
+          data={field}
+        />
+      ))}
+
       {actions}
     </Paper>
   )

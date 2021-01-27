@@ -270,9 +270,6 @@ function LoginView(props) {
     setUser(userData)
   }
 
-  //console.log('LOGIN VIEW:')
-  //console.log(user)
-
   return (
     <React.Fragment>
       {user === null ? (
