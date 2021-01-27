@@ -523,7 +523,7 @@ class GamificationUserStats(db.Model):
 
     def get_level_id(self):
         level = db.session.query(GamificationBadgeLevel).filter(and_(self.all_time >= GamificationBadgeLevel.min_level,
-                    or_(self.all_time <= GamificationBadgeLevel.max_level, not GamificationBadgeLevel))).first()
+            (or_(self.all_time <= GamificationBadgeLevel.max_level, GamificationBadgeLevel.max_level == None)))).first()
         return level.id
 
     @staticmethod
