@@ -15,7 +15,6 @@ import Copyright from '../components/copyright'
 import LanguageSelector from '../components/languageSelector'
 import { signIn } from '../redux/actions'
 import { getStages, login, getPermissions } from '../api/auth'
-import SVGView from './SVGView'
 
 // styles
 const useStyles = makeStyles({
@@ -271,10 +270,6 @@ function LoginView(props) {
     setUser(userData)
   }
 
-  //console.log('LOGIN VIEW:')
-  //console.log(user)
-
-/******************* DEBUG COMMENT
   return (
     <React.Fragment>
       {user === null ? (
@@ -287,8 +282,7 @@ function LoginView(props) {
       )}
     </React.Fragment>
   )
-*****************************/
-  return <SVGView />
+
 }
 
 // connect to redux store
