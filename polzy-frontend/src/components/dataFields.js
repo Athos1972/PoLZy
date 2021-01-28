@@ -216,11 +216,12 @@ export function DataFieldNumber(props) {
 */
 export function DataFieldNumberRange(props) {
   const classes = useStyles()
-  const {id, data, value } = props
+  const {id, data } = props
   const {t} = useTranslation('common')
   const [error, setError] = React.useState(false)
   const [helperText, setHelperText] = React.useState('')
   const [typingTimeout, setTypingTimeout] = React.useState(null)
+  const [value, setValue] = React.useState(props.value)
   
   // range boundaries
   const min = Number(data.inputRange[1])
@@ -258,7 +259,7 @@ export function DataFieldNumberRange(props) {
     const newValue = event.target.value
 
     // update value
-    props.onChange({[data.name]: newValue})
+    setValue(newValue)
 
     // check if typing is NOT finished
     if (typingTimeout) {
@@ -268,8 +269,12 @@ export function DataFieldNumberRange(props) {
     // set timeout for typing finished
     setTypingTimeout(setTimeout(() => {
       // check for input trigger and valid value
-      if (data.inputTriggers && validateValue(newValue)) {
+      if (data.inputTriggers && validateValue(newValue)) {  
+        // input trigger
         props.onInputTrigger({[data.name]: newValue})
+      } else {
+        // update antrag value
+        props.onChange({[data.name]: newValue})
       }
     }, 500))
   }
@@ -320,18 +325,31 @@ export function DataFieldSelect(props) {
   const {id, data, value } = props
   const error = Boolean(data.errorMessage)
 
+  React.useEffect(() => {
+    if (Boolean(value)) {
+      props.onBlur()
+    }
+  }, [value])
+
   const handleChange = (event, value) => {
     const newValue = {[data.name]: value}
-    props.onChange(newValue)
+    
 
     // update on input trigger
     if (data.inputTriggers) {
       props.onInputTrigger(newValue)
+    } else {
+      // update antrag value
+      props.onChange(newValue)
     }
-
+/*
     if (Boolean(props.onBlur)) {
+      console.log(`On Blur: ${data.name}`)
+      console.log(value)
+      console.log(newValue)
       props.onBlur(newValue)
     }
+*/  
   }
 
   return (
@@ -431,10 +449,11 @@ export function DataFieldSwitch(props) {
   const handleChange = (event) => {
     const newValue = {[data.name]: event.target.checked}
     props.onChange(newValue)
-
+/*
     if (Boolean(props.onBlur)) {
       props.onBlur(newValue)
     }
+*/
   } 
 
   return (
@@ -529,9 +548,9 @@ export default function DataGroup(props) {
     }
   }
 
-  const getTableData = (dataString) => {
-    //console.log('TABLE STRING:')
-    //console.log(dataString)
+  const parseJSONString = (dataString) => {
+    console.log('JSON STRING:')
+    console.log(dataString)
 
     if (dataString === "None" || dataString === null) {
       return null
@@ -665,7 +684,7 @@ export default function DataGroup(props) {
             <EnhancedTable
               name={field.name}
               title={field.brief}
-              data={getTableData(field.valueChosenOrEntered)}
+              data={parseJSONString(field.valueChosenOrEntered)}
               value={values[field.name]}
               onChange={props.onGlobalChange}
               updateAntrag={props.updateAntrag}
@@ -701,7 +720,11 @@ export default function DataGroup(props) {
       {fields.filter((field) => (field.fieldType === 2 && field.fieldDataType === "Image")).map((field) => (
         <MappedImage
           key={field.name}
-          data={field}
+          name={field.name}
+          title={field.brief}
+          image={field.icon}
+          tooltip={field.tooltip}
+          data={parseJSONString(field.valueChosenOrEntered)}
         />
       ))}
 

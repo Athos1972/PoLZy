@@ -159,6 +159,7 @@ function ActiveAntrag(props) {
   const classes = useStyles()
 
   const [hidden, setHidden] = useState(false)
+  const [autoCalculateDisabled, setAutoCalculateDisabled] = useState(false)
 
   // groups states
   const getGroups = (obj) => {
@@ -269,13 +270,18 @@ function ActiveAntrag(props) {
   }
 
   const validateFields = () => {
+    console.log('VALIDATE GROUPS:')
+    console.log(groups)
     // checks if all mandatory fields are filled
     for (const group of antrag.field_groups.filter(group => groups[group.name])) {
       for (const field of antrag[group.name].filter(field => field.fieldType === 1)) {
         //console.log(`${field.isMandatory ? "+" : "-"} ${field.name}: ${values[field.name]}`)
 
         // mandatory fields
-        if (field.isMandatory && (values[field.name] === "" || !Boolean(values[field.name]))){
+        if (field.isMandatory && (values[field.name] === "" || values[field.name] === null)){
+          console.log(`Validation Mandatory: ${field.name}`)
+          console.log(field)
+          console.log(values)
           return false
         }
         
@@ -445,14 +451,29 @@ function ActiveAntrag(props) {
     })
   }
 
+  /*
+  ** Auto Calculate
+  */
+  React.useEffect(() => {
+    console.log('AUTOCALCULATE')
+    console.log(!autoCalculateDisabled)
+    if (antrag.status === "Neu" && !autoCalculateDisabled && validateFields()) {
+      console.log('Make autocalculation')
+      calculateAntrag()
+    }
+  }, [antrag, values, groups, autoCalculateDisabled])
+
 
 
   const handleFieldBlurred = (newValues={}) => {
+    return
+    /*
     // check if calculate conditions are met
     if (antrag.status === "Neu" && validateFields()) {
       calculateAntrag(newValues)
       return
     }
+    */
   }
 
   const handleInputTrigger = (newValues={}) => {
@@ -472,6 +493,8 @@ function ActiveAntrag(props) {
 
     // call update end-point
     updateAntragFields(props.user, requestData).then(data => {
+      // disable auto calculation
+      setAutoCalculateDisabled(true)
       // update antrag
       props.updateAntrag(
         props.index,
@@ -482,6 +505,9 @@ function ActiveAntrag(props) {
       )
     }).catch(error => {
       console.log(error)
+    }).finally(() => {
+      console.log('FINALLY')
+      setAutoCalculateDisabled(false)
     })
   }
 
