@@ -391,16 +391,13 @@ class GamificationActivity(db.Model):
             elif isinstance(event, str):
                 event = db.session.query(GamificationEvent).filter_by(name=event).first()
 
-        print(f"new GamificationActivity. user.id = {user.id}, event = {event.name}, event_details = {event_details}")
-
         instance = cls(
             user_id=user.id,
             company_id=user.company.company_id,
             event=event,
             event_details=event_details,
         )
-        
-        # store to db
+
         db.session.add(instance)
         db.session.commit()
         
