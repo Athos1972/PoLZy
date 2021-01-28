@@ -9,7 +9,9 @@ import {
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined'
 import { makeStyles } from '@material-ui/core/styles'
 import { formatNumberWithCommas } from '../utils'
+import { apiHost } from '../utils'
 
+const uriImages = apiHost + 'api/images/'
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -128,7 +130,7 @@ export default function MappedImage(props) {
         >
           <img
             className={classes.png}
-            src={data.icon}
+            src={uriImages + data.icon}
           />
           <svg
             className={classes.svg}
