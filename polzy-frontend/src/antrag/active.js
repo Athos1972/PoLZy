@@ -270,18 +270,19 @@ function ActiveAntrag(props) {
   }
 
   const validateFields = () => {
-    console.log('VALIDATE GROUPS:')
-    console.log(groups)
-    // checks if all mandatory fields are filled
-    for (const group of antrag.field_groups.filter(group => groups[group.name])) {
-      for (const field of antrag[group.name].filter(field => field.fieldType === 1)) {
-        //console.log(`${field.isMandatory ? "+" : "-"} ${field.name}: ${values[field.name]}`)
+    // build 'check' groups
+    const fieldGroups = antrag.field_groups ? (
+      antrag.field_groups.filter(group => groups[group.name]).concat({name: 'fields'})
+    ):(
+      [{name: 'fields'}]
+    )
 
+    // checks if all mandatory fields are filled
+    for (const group of fieldGroups) {
+      for (const field of antrag[group.name].filter(field => field.fieldType === 1)) {
+        
         // mandatory fields
         if (field.isMandatory && (values[field.name] === "" || values[field.name] === null)){
-          console.log(`Validation Mandatory: ${field.name}`)
-          console.log(field)
-          console.log(values)
           return false
         }
         
@@ -464,23 +465,10 @@ function ActiveAntrag(props) {
   }, [antrag, values, groups, autoCalculateDisabled])
 
 
-
-  const handleFieldBlurred = (newValues={}) => {
-    return
-    /*
-    // check if calculate conditions are met
-    if (antrag.status === "Neu" && validateFields()) {
-      calculateAntrag(newValues)
-      return
-    }
-    */
-  }
-
+  /*
+  ** update antrag on input trigger
+  */
   const handleInputTrigger = (newValues={}) => {
-    /*
-    ** update antrag fields 
-    */
-
     // build request body
     const requestData = {
       id: antrag.id,
@@ -529,8 +517,15 @@ function ActiveAntrag(props) {
     if (currentActivity === null)
       return false
 
+    // build 'check' groups
+    const fieldGroups = currentActivity.field_groups ? (
+      currentActivity.field_groups.filter(group => activityGroups[group.name]).concat({name: 'fields'})
+    ):(
+      [{name: 'fields'}]
+    )
+
     // check if required activity fields are filled correctely
-    for (const group of currentActivity.field_groups.filter(group => groups[group.name]).concat({name: 'fields'})) {
+    for (const group of fieldGroups) {
       for (const field of currentActivity[group.name].filter(field => field.fieldType === 1)) {
 
         // mandatory fields
@@ -824,7 +819,6 @@ function ActiveAntrag(props) {
                           values={values}
                           stage={props.stage}
                           onChange={handleDataChanged}
-                          onBlur={handleFieldBlurred}
                           onInputTrigger={handleInputTrigger}
                         />
                       </Collapse>

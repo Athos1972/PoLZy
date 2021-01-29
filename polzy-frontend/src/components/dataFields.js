@@ -64,12 +64,6 @@ export function DataFieldText(props) {
   const {id, data, value, onChange } = props
   const error = Boolean(data.errorMessage)
 
-  const handleBlur = () => {
-    if (Boolean(props.onBlur)) {
-      props.onBlur()
-    }
-  }
-
   return (
     <FormControl
       classes={{root: classes.inputField}}
@@ -87,7 +81,6 @@ export function DataFieldText(props) {
         id={`${data.name}-${id}`}
         value={value}
         onChange={(e) => onChange({[data.name]: e.target.value})}
-        onBlur={handleBlur}
         label={data.brief}
         endAdornment={props.endAdornment}
       />
@@ -105,12 +98,6 @@ export function DataFieldText(props) {
 export function DataFieldLongText(props) {
   const {id, data, value, onChange } = props
 
-  const handleBlur = () => {
-    if (Boolean(props.onBlur)) {
-      props.onBlur()
-    }
-  }
-
   return (
     <TextField
       id={`${data.name}-${id}`}
@@ -120,7 +107,6 @@ export function DataFieldLongText(props) {
       variant="outlined"
       value={value}
       onChange={(e) => onChange({[data.name]: e.target.value})}
-      onBlur={handleBlur}
       required={data.isMandatory}
       size="small"
     />
@@ -130,12 +116,6 @@ export function DataFieldLongText(props) {
 export function DataFieldTextBox(props) {
   const classes = useStyles()
   const {id, data, value, onChange } = props
-
-  const handleBlur = () => {
-    if (Boolean(props.onBlur)) {
-      props.onBlur()
-    }
-  }
 
   return (
     <FormControl
@@ -153,7 +133,6 @@ export function DataFieldTextBox(props) {
         multiline
         value={value}
         onChange={(e) => onChange({[data.name]: e.target.value})}
-        onBlur={handleBlur}
         label={data.brief}
       />
     </FormControl>
@@ -177,12 +156,6 @@ export function DataFieldNumber(props) {
     }
   }
 
-  const handleBlur = () => {
-    if (Boolean(props.onBlur)) {
-      props.onBlur()
-    }
-  }
-
   return (
     <FormControl
       classes={{root: classes.inputField}}
@@ -200,7 +173,6 @@ export function DataFieldNumber(props) {
         id={`${data.name}-${id}`}
         value={value}
         onChange={handleChange}
-        onBlur={handleBlur}
         label={data.brief}
       />
       <FormHelperText>
@@ -230,6 +202,10 @@ export function DataFieldNumberRange(props) {
   const validateValue = (value=value) => {
     return Boolean(value) && value >= min && value <= max
   }
+
+  React.useEffect(() => {
+    setValue(props.value)
+  }, [props])
 
   React.useEffect(() => {
     // check if error comes from backend
@@ -279,12 +255,6 @@ export function DataFieldNumberRange(props) {
     }, 500))
   }
 
-  const handleBlur = () => {
-    if (Boolean(props.onBlur)) {
-      props.onBlur()
-    }
-  }
-
   return (
     <FormControl
       classes={{root: classes.inputField}}
@@ -301,7 +271,6 @@ export function DataFieldNumberRange(props) {
         id={`${data.name}-${id}`}
         value={value}
         onChange={handleChange}
-        onBlur={handleBlur}
         label={data.brief}
         inputProps={{
           min: Number(data.inputRange[1]),
@@ -325,31 +294,16 @@ export function DataFieldSelect(props) {
   const {id, data, value } = props
   const error = Boolean(data.errorMessage)
 
-  React.useEffect(() => {
-    if (Boolean(value)) {
-      props.onBlur()
-    }
-  }, [value])
-
   const handleChange = (event, value) => {
     const newValue = {[data.name]: value}
     
-
     // update on input trigger
     if (data.inputTriggers) {
       props.onInputTrigger(newValue)
     } else {
       // update antrag value
       props.onChange(newValue)
-    }
-/*
-    if (Boolean(props.onBlur)) {
-      console.log(`On Blur: ${data.name}`)
-      console.log(value)
-      console.log(newValue)
-      props.onBlur(newValue)
-    }
-*/  
+    } 
   }
 
   return (
@@ -403,12 +357,6 @@ export function DataFieldDate(props) {
     props.onChange({[data.name]: strValue})
   }
 
-  const handleBlur = () => {
-    if (Boolean(props.onBlur)) {
-      props.onBlur()
-    }
-  }
-
   return (
     <FormControl
       classes={{root: classes.inputField}}
@@ -428,7 +376,6 @@ export function DataFieldDate(props) {
           format={getLocaleDateFormat()}
           value={parse(value, backendDateFormat, new Date())}
           onChange={handleChange}
-          onBlur={handleBlur}
           required={data.isMandatory}
         />
       </MuiPickersUtilsProvider>
@@ -449,11 +396,6 @@ export function DataFieldSwitch(props) {
   const handleChange = (event) => {
     const newValue = {[data.name]: event.target.checked}
     props.onChange(newValue)
-/*
-    if (Boolean(props.onBlur)) {
-      props.onBlur(newValue)
-    }
-*/
   } 
 
   return (
