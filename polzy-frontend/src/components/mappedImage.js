@@ -37,9 +37,10 @@ const useStyles = makeStyles(theme => ({
   },
 
   bodyPart: {
-    fill: "#0000",
+    fill: theme.palette.primary.main,
+    fillOpacity: 0,
     "&:hover": {
-      fill: "#8008",
+      fillOpacity: 0.5,
     },
   },
 }))
