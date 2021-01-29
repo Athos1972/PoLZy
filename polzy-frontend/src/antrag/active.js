@@ -804,7 +804,7 @@ function ActiveAntrag(props) {
 
               {/* Input Groups */}
               <div className={classes.flexContainerVertical}>
-                  {antrag.field_groups.map(group => (
+                  {antrag.field_groups.map((group, index) => (
                     <React.Fragment key={group.name}>
                     {antrag[group.name].filter(field => field.fieldType < 3).length > 0 &&
                       <Collapse
@@ -820,6 +820,7 @@ function ActiveAntrag(props) {
                           stage={props.stage}
                           onChange={handleDataChanged}
                           onInputTrigger={handleInputTrigger}
+                          positionEven={index%2 === 0}
                         />
                       </Collapse>
                     }
