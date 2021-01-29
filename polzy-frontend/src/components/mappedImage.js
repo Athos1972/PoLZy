@@ -170,7 +170,7 @@ export default function MappedImage(props) {
                   variant="body1"
                   component="div"
                 >
-                  Value: €{formatNumberWithCommas(currentArea.value)}
+                  {formatNumberWithCommas(currentArea.value)}
                 </Typography>
               </Grid>
             </React.Fragment>
