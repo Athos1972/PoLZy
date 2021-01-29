@@ -102,7 +102,15 @@ function SearchDropDownBase(props) {
       ...otherValues,
       [data.name]: label,
     }
-    props.onChange(updateValues)
+
+    // update on input trigger
+    if (data.inputTriggers) {
+      props.onInputTrigger(newValue)
+    } else {
+      // update antrag value
+      props.onChange(newValue)
+    }
+    //props.onChange(updateValues)
   }
 
   return (

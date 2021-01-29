@@ -37,9 +37,10 @@ const useStyles = makeStyles(theme => ({
   },
 
   bodyPart: {
-    fill: "#0000",
+    fill: theme.palette.primary.main,
+    fillOpacity: 0,
     "&:hover": {
-      fill: "#8008",
+      fillOpacity: 0.5,
     },
   },
 }))
@@ -165,14 +166,16 @@ export default function MappedImage(props) {
                   {currentArea.title}
                 </Typography>
               </Grid>
-              <Grid item>
-                <Typography
-                  variant="body1"
-                  component="div"
-                >
-                  {formatNumberWithCommas(currentArea.value)}
-                </Typography>
-              </Grid>
+              {currentArea.value.map(value => (
+                <Grid key={value} item>
+                  <Typography
+                    variant="body1"
+                    component="div"
+                  >
+                    {value}
+                  </Typography>
+                </Grid>
+              ))}
             </React.Fragment>
           }
         </Grid>
