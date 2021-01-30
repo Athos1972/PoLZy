@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next'
 import ProgressButton from '../components/progressButton'
 import { getRankings } from '../api/gamification'
 import { formatNumberWithCommas } from '../utils'
+import { formatRankWithSuffix } from '../utils'
 
 
 const rankingTabList = [
@@ -149,7 +150,7 @@ function RankingView(props) {
                     <TableRow key={index}>
                       <TableCell align='left'>{data.name}</TableCell>
                       <TableCell align='center'>{formatNumberWithCommas(data.operations)}</TableCell>
-                      <TableCell align='center'>{data.rank}%</TableCell>
+                      <TableCell align='center'>{data.rank}<sup>{formatRankWithSuffix(data.rank)}</sup></TableCell>
                     </TableRow>
                   ))}
                 </React.Fragment>
