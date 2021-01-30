@@ -48,13 +48,18 @@ const useStyles = makeStyles((theme) => ({
   inputGroup: {
     padding: theme.spacing(1),
     margin: theme.spacing(1),
-    backgroundColor: props => props.positionEven ? theme.palette.cardBackground.even : theme.palette.cardBackground.odd,
+    backgroundColor: props => props.backgroundColor ? props.backgroundColor : "#fff",
   },
 
   inputGroupContainer: {
     margin: 0,
     width: "100%",
   },
+
+  inputGroupSubtitle: {
+    marginTop: theme.spacing(2),
+    marginLeft: theme.spacing(2),
+  }
 
 }))
 
@@ -476,13 +481,18 @@ export function DataField(props) {
 */
 export default function DataGroup(props) {
   const {title, fields, values, actions, ...commonProps} = props
-  const classes = useStyles(props)
+  const classes = useStyles({backgroundColor: props.backgroundColor})
 
   const [expanded, setExpanded] = React.useState(true)
+  const [subtitles, setSubtitles] = React.useState([])
 
   const handleExpanded = () => {
     setExpanded(!expanded)
   }
+
+  React.useEffect(() => {
+    setSubtitles(props.subtitles ? [undefined, ...props.subtitles] : [undefined])
+  }, [props.subtitles])
 
   const size = (screen) => {
     if (title.includes('suchen')) {
@@ -515,8 +525,9 @@ export default function DataGroup(props) {
     }
   }
 
-  //console.log('DATA GROUP')
-  //console.log(props)
+  console.log('DATA GROUP')
+  console.log(props)
+  console.log(subtitles)
 
   return (
     <Paper 
@@ -553,153 +564,195 @@ export default function DataGroup(props) {
       <Collapse
         in={expanded}
         timeout="auto"
-        unmountOnExit
       >
 
-        {/* Flags */}
-        <Grid 
-          classes={{root: classes.inputGroupContainer}}
-          container
-          spacing={2}
-        >
-          {fields.filter((field) => (
-            field.fieldDataType === "Flag" && field.fieldType === 1
-          )).map((field) => (
-            <Grid
+        {/* subsections */}
+        {subtitles.map((subtitle, index) => (
+          <Grid
+            key={`${props.id}-section-${index}`}
+            container
+          >
+
+            {/* Subtitle */}
+            {subtitle && 
+              <Grid
+                item
+                xs={12}
+              >
+                <Typography 
+                  className={classes.inputGroupSubtitle}
+                  gutterBottom
+                  variant="h5"
+                  component="p"
+                >
+                  {subtitle}
+                </Typography>
+              </Grid>
+            }
+
+            {/* Flags */}
+            <Grid 
+              classes={{root: classes.inputGroupContainer}}
               item
-              key={field.name}
-              xs={6}
-              md={4}
-              lg={3}
+              container
+              spacing={2}
             >
-              <TooltipField
-                tooltip={field.tooltip}
-                content={
-                  <div>
-                    <DataFieldSwitch 
-                      {...commonProps}
-                      data={field}
-                      value={values[field.name]}
+              {fields.filter((field) => (
+                field.subsection === subtitle && field.fieldDataType === "Flag" && field.fieldType === 1
+              )).map((field) => (
+                <Grid
+                  item
+                  key={field.name}
+                  xs={6}
+                  md={4}
+                  lg={3}
+                >
+                  <TooltipField
+                    tooltip={field.tooltip}
+                    content={
+                      <div>
+                        <DataFieldSwitch 
+                          {...commonProps}
+                          data={field}
+                          value={values[field.name]}
+                        />
+                      </div>
+                    }
+                  />
+                </Grid>
+              ))}
+            </Grid>
+
+            {/* Input Fields */}
+            <Grid 
+              classes={{root: classes.inputGroupContainer}}
+              item
+              container
+              spacing={2}
+            >
+              {fields.filter((field) => (
+                field.subsection === subtitle && field.fieldDataType !== "Flag" && field.fieldType === 1 && 
+                field.fieldDataType !== "SearchEndPoint" && field.fieldDataType !== "Table"
+              )).map((field) => (
+                <Grid 
+                  item
+                  key={field.name}
+                  xs={size('xs')}
+                  md={size('md')}
+                  lg={field.fieldDataType === "TextBox" ? 2*size('lg') : size('lg')}
+                >
+                  <TooltipField
+                    tooltip={field.tooltip}
+                    content={
+                      <div>
+                        <DataField
+                          {...commonProps}
+                          data={field}
+                          value={values[field.name]}
+                        />
+                      </div>
+                    }
+                  />
+                </Grid>
+              ))}
+            </Grid>
+
+            {/* Search Fields */}
+            <Grid 
+              classes={{root: classes.inputGroupContainer}}
+              item
+              container
+              spacing={2}
+            >
+              {fields.filter((field) => (
+                field.subsection === subtitle && field.fieldDataType === "SearchEndPoint" && field.fieldType === 1
+              )).map((field) => (
+                <Grid 
+                  item
+                  key={field.name}
+                  xs={12}
+                >
+                  <SearchField
+                    {...commonProps}
+                    data={field}
+                    value={values[field.name]}
+                    address={values.address}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+
+            {/* Table Fields */}
+            <Grid 
+              classes={{root: classes.inputGroupContainer}}
+              item
+              container
+              spacing={2}
+            >
+              {fields.filter((field) => (
+                field.subsection === subtitle && field.fieldDataType === "Table" && field.fieldType === 1
+              )).map((field) => (
+                <Grid 
+                  item
+                  key={field.name}
+                  xs={12}
+                >
+                  <EnhancedTable
+                    name={field.name}
+                    title={field.brief}
+                    data={parseJSONString(field.valueChosenOrEntered)}
+                    value={values[field.name]}
+                    onChange={props.onGlobalChange}
+                    updateAntrag={props.updateAntrag}
+                    onCloseActivity={props.onCloseActivity}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+
+            {/* Output Fields */}
+
+            {/* Text */}
+            <Grid item>
+              <Table>
+                <TableBody>
+                  {fields.filter((field) => (
+                    field.subsection === subtitle && field.fieldType === 2 && field.fieldDataType === "Text"
+                  )).map((field) => (
+                    <TooltipField
+                    key={field.name}
+                      tooltip={field.tooltip}
+                      content={
+                        <TableRow hover>
+                          <TableCell>{field.brief}</TableCell>
+                          <TableCell>
+                            {field.valueChosenOrEntered}
+                          </TableCell>
+                        </TableRow>
+                      }
                     />
-                  </div>
-                }
-              />
+                  ))}
+                </TableBody>
+              </Table>
             </Grid>
-          ))}
-        </Grid>
 
-        {/* Input Fields */}
-        <Grid 
-          classes={{root: classes.inputGroupContainer}}
-          container
-          spacing={2}
-        >
-          {fields.filter((field) => (
-            field.fieldDataType !== "Flag" && field.fieldType === 1 && 
-            field.fieldDataType !== "SearchEndPoint" && field.fieldDataType !== "Table"
-          )).map((field) => (
-            <Grid 
-              item
-              key={field.name}
-              xs={size('xs')}
-              md={size('md')}
-              lg={field.fieldDataType === "TextBox" ? 2*size('lg') : size('lg')}
-            >
-              <TooltipField
-                tooltip={field.tooltip}
-                content={
-                  <div>
-                    <DataField
-                      {...commonProps}
-                      data={field}
-                      value={values[field.name]}
-                    />
-                  </div>
-                }
-              />
+            {/* Mapped Images */}
+            <Grid item>
+              {fields.filter((field) => (
+                field.subsection === subtitle && field.fieldType === 2 && field.fieldDataType === "Image"
+              )).map((field) => (
+                <MappedImage
+                  key={field.name}
+                  name={field.name}
+                  title={field.brief}
+                  image={field.icon}
+                  tooltip={field.tooltip}
+                  data={parseJSONString(field.valueChosenOrEntered)}
+                />
+              ))}
             </Grid>
-          ))}
-        </Grid>
 
-        {/* Search Fields */}
-        <Grid 
-          classes={{root: classes.inputGroupContainer}}
-          container
-          spacing={2}
-        >
-          {fields.filter((field) => (field.fieldDataType === "SearchEndPoint" && field.fieldType === 1)).map((field) => (
-            <Grid 
-              item
-              key={field.name}
-              xs={12}
-            >
-              <SearchField
-                {...commonProps}
-                data={field}
-                value={values[field.name]}
-                address={values.address}
-              />
-            </Grid>
-          ))}
-        </Grid>
-
-        {/* Table Fields */}
-        <Grid 
-          classes={{root: classes.inputGroupContainer}}
-          container
-          spacing={2}
-        >
-          {fields.filter((field) => (field.fieldDataType === "Table" && field.fieldType === 1)).map((field) => (
-            <Grid 
-              item
-              key={field.name}
-              xs={12}
-            >
-              <EnhancedTable
-                name={field.name}
-                title={field.brief}
-                data={parseJSONString(field.valueChosenOrEntered)}
-                value={values[field.name]}
-                onChange={props.onGlobalChange}
-                updateAntrag={props.updateAntrag}
-                onCloseActivity={props.onCloseActivity}
-              />
-            </Grid>
-          ))}
-        </Grid>
-
-        {/* Output Fields */}
-
-        {/* Text */}
-        <Table>
-          <TableBody>
-            {fields.filter((field) => (field.fieldType === 2 && field.fieldDataType === "Text")).map((field) => (
-              <TooltipField
-              key={field.name}
-                tooltip={field.tooltip}
-                content={
-                  <TableRow hover>
-                    <TableCell>{field.brief}</TableCell>
-                    <TableCell>
-                      {field.valueChosenOrEntered}
-                    </TableCell>
-                  </TableRow>
-                }
-              />
-            ))}
-          </TableBody>
-        </Table>
-
-        {/* Mapped Images */}
-        {fields.filter((field) => (field.fieldType === 2 && field.fieldDataType === "Image")).map((field) => (
-          <MappedImage
-            key={field.name}
-            name={field.name}
-            title={field.brief}
-            image={field.icon}
-            tooltip={field.tooltip}
-            data={parseJSONString(field.valueChosenOrEntered)}
-          />
+          </Grid>
         ))}
 
         {actions}

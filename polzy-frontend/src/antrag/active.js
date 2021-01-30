@@ -345,7 +345,6 @@ function ActiveAntrag(props) {
       props.newAntrag(
         {
           request_state: "ok",
-          stage: props.stage,
           ...data,
         }
       )
@@ -804,7 +803,7 @@ function ActiveAntrag(props) {
 
               {/* Input Groups */}
               <div className={classes.flexContainerVertical}>
-                  {antrag.field_groups.map((group, index) => (
+                  {antrag.field_groups.map((group) => (
                     <React.Fragment key={group.name}>
                     {antrag[group.name].filter(field => field.fieldType < 3).length > 0 &&
                       <Collapse
@@ -817,10 +816,10 @@ function ActiveAntrag(props) {
                           title={group.tooltip}
                           fields={antrag[group.name]}
                           values={values}
-                          stage={props.stage}
                           onChange={handleDataChanged}
                           onInputTrigger={handleInputTrigger}
-                          positionEven={index%2 === 0}
+                          backgroundColor={group.backgroundColor}
+                          subtitles={group.subtitles}
                         />
                       </Collapse>
                     }
@@ -919,7 +918,6 @@ function ActiveAntrag(props) {
             {/* Activity without Groups */}
             {currentActivity !== null && currentActivity.fields.filter(field => field.fieldType < 3).length > 0 &&
               <DataGroup
-                stage={props.stage}
                 id={antrag.id}
                 title={currentActivity.description}
                 fields={currentActivity.fields}
