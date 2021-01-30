@@ -1,16 +1,8 @@
 
 import { createMuiTheme } from '@material-ui/core/styles'
 
-const CardPalleteDefault = {
-  cardBackground: {
-    even: '#fff3e0',
-    odd: '#e8f5e9',
-  },
-}
-
 const paletteDefault = {
   palette: {
-    ...CardPalleteDefault,
     primary: {
       light: '#5efc82',
       main: '#00c853',
@@ -35,11 +27,6 @@ export const polzyTheme = (theme) => {
 
   
   if (theme) {
-    // update card background
-    theme.palette = {
-      ...CardPalleteDefault,
-      ...theme.palette,
-    }
     return createMuiTheme(theme)
   }
 
