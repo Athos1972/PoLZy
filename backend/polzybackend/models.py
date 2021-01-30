@@ -420,18 +420,16 @@ class GamificationUserStats(db.Model):
     user_id = db.Column(db.String(56), db.ForeignKey('users.id'), primary_key=True, nullable=False)
     company_id = db.Column(db.String(56), db.ForeignKey('companies.id'), primary_key=True, nullable=False)
     type_id = db.Column(db.Integer, db.ForeignKey('gamification_badge_types.id'), primary_key=True)
+    weightage_id = db.Column(db.Integer, primary_key=True, nullable=True)
     daily = db.Column(db.Integer, default=0)
     weekly = db.Column(db.Integer, default=0)
     monthly = db.Column(db.Integer, default=0)
     yearly = db.Column(db.Integer, default=0)
     all_time = db.Column(db.Integer, default=0)
     last_updated = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
-    activity_id = db.Column(db.Integer, db.ForeignKey('gamification_activities.id'), nullable=False)
 
     user = db.relationship('User', backref='gamification_statistics', foreign_keys=[user_id])
     company = db.relationship('Company', backref='gamification_statistics', foreign_keys=[company_id])
-    activity = db.relationship('GamificationActivity', backref='gamification_company_statistics',
-                               foreign_keys=[activity_id])
     type = db.relationship('GamificationBadgeType', backref="gamification_badge_types", foreign_keys=[type_id])
 
     def __str__(self):
@@ -496,12 +494,12 @@ class GamificationUserStats(db.Model):
         return json_data
 
     @classmethod
-    def new(cls, user_id, company_id, type_id, activity_id):
+    def new(cls, user_id, company_id, type_id, weightage_id):
         instance = cls(
             user_id=user_id,
             company_id=company_id,
             type_id=type_id,
-            activity_id=activity_id
+            weightage_id=weightage_id
         )
         db.session.add(instance)
         db.session.commit()
@@ -528,29 +526,50 @@ class GamificationUserStats(db.Model):
         eventName = event.name.lower()
         event_details = json.loads(event_details)
         eventType = event_details.get("lineOfBusiness")
-        if "policy" in eventName:
+        if "policy" in eventName and eventType:
             return db.session.query(GamificationBadgeType).filter_by(name=f"Polizze {eventType}").first().id
-        elif "antrag" in eventName:
+        elif "antrag" in eventName and eventType:
             return db.session.query(GamificationBadgeType).filter_by(name=f"Antrag {eventType}").first().id
         elif "login" in eventName:
             return db.session.query(GamificationBadgeType).filter_by(name="Login").first().id
+        elif "policy" in eventName:
+            return db.session.query(GamificationBadgeType).filter_by(name=f"Policy").first().id
+        elif "antrag" in eventName:
+            return db.session.query(GamificationBadgeType).filter_by(name=f"Antrag").first().id
         else:
             print(f"{eventName} event is ignored.")
             return None
 
+    @staticmethod
+    def get_weight_id(event: GamificationEvent, event_details):
+        eventName = event.name
+        event_details = json.loads(event_details)
+        lob = event_details.get("lineOfBusiness", "")
+        activityName = event_details.get("Activity")
+        if lob and activityName:
+            id_ = db.session.query(GamificationActivityWeight).filter(and_(
+                GamificationActivityWeight.activity_name == activityName,
+                GamificationActivityWeight.line_of_business == lob)).first()
+        else:
+            id_ = db.session.query(GamificationActivityWeight).filter_by(activity_name=eventName).first()
+        if id_:
+            return id_.id
+        return None
+
     @classmethod
     def create_or_update_row(cls, activity: GamificationActivity):
         type_id = cls.get_type_id(activity.event, activity.event_details)
+        weightage_id = cls.get_weight_id(activity.event, activity.event_details)
         if not type_id:
             return None
         user_id = activity.user_id
         company_id = activity.company_id
         user_stats = db.session.query(GamificationUserStats).filter_by(user_id=user_id
-                                                ).filter_by(company_id=company_id).filter_by(type_id=type_id).first()
+            ).filter_by(company_id=company_id).filter_by(type_id=type_id).filter_by(weightage_id=weightage_id).first()
         if not user_stats:
             print(f"No user found for current activity in Statistics Table. Creating a new row with this id.")
             user_stats = GamificationUserStats.new(user_id=user_id, company_id=activity.company_id, type_id=type_id,
-                                                   activity_id=activity.id)
+                                                   weightage_id=weightage_id)
         return user_stats
 
 
@@ -612,9 +631,9 @@ class GamificationBadgeDescription(db.Model):
     #
     # Badge earn requirements for given Type and Level
     #
-    __tablename__ = 'gamification_bage_descriptions'
+    __tablename__ = 'gamification_badge_descriptions'
     type_id = db.Column(db.Integer, db.ForeignKey('gamification_badge_types.id'), primary_key=True)
-    level_id = db.Column(db.Integer, db.ForeignKey('gamification_bage_levels.id'), primary_key=True)
+    level_id = db.Column(db.Integer, db.ForeignKey('gamification_badge_levels.id'), primary_key=True)
     description = db.Column(db.String(512), nullable=False)
 
     # relationships
@@ -622,13 +641,13 @@ class GamificationBadgeDescription(db.Model):
     level = db.relationship('GamificationBadgeLevel', foreign_keys=[level_id])
 
 class GamificationBadgeLevel(db.Model):
-    __tablename__ = 'gamification_bage_levels'
+    __tablename__ = 'gamification_badge_levels'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32), unique=True, nullable=False)
     min_level = db.Column(db.Integer, unique=True, nullable=False)
     max_level = db.Column(db.Integer, unique=True, nullable=True)
     is_lowest = db.Column(db.Boolean, nullable=False, default=False,)
-    next_level_id = db.Column(db.Integer, db.ForeignKey('gamification_bage_levels.id'), nullable=True)
+    next_level_id = db.Column(db.Integer, db.ForeignKey('gamification_badge_levels.id'), nullable=True)
 
     #relationships
     next_level = db.relationship('GamificationBadgeLevel', remote_side=[next_level_id], uselist=False)
@@ -681,7 +700,7 @@ class GamificationBadge(db.Model):
     user_id = db.Column(db.String(56), db.ForeignKey('users.id'), nullable=False)
     company_id = db.Column(db.String(56), db.ForeignKey('companies.id'), nullable=False)
     type_id = db.Column(db.Integer, db.ForeignKey('gamification_badge_types.id'), nullable=False)
-    level_id = db.Column(db.Integer, db.ForeignKey('gamification_bage_levels.id'), nullable=False)
+    level_id = db.Column(db.Integer, db.ForeignKey('gamification_badge_levels.id'), nullable=False)
     achieved_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     is_seen = db.Column(db.Boolean, nullable=False, default=False)
 
@@ -712,3 +731,26 @@ class GamificationBadge(db.Model):
         json_data = [data.to_json() for data in user]
         return json_data
 
+
+class GamificationActivityWeight(db.Model):
+    __table_name__ = "gamification_activity_weight"
+    __table_args__ = (db.UniqueConstraint('activity_name', 'line_of_business', name='unique'),)
+    id = db.Column(db.Integer, primary_key=True)
+    activity_name = db.Column(db.String(32), nullable=False)
+    line_of_business = db.Column(db.String(16), nullable=True)
+    points = db.Column(db.Integer, nullable=False)
+
+    @classmethod
+    def get_points(cls, id):
+        if id:
+            weight = cls.query.filter(cls.id == id).first()
+            if weight:
+                return weight.points
+        print("Weightage id is either not supplied or not found in Weightage table. Returned default value of 1")
+        return 1
+
+    @classmethod
+    def new(cls, activity_name, line_of_business, points=1):
+        instance = cls(activity_name=activity_name, line_of_business=line_of_business, points=points)
+        db.session.add(instance)
+        db.session.commit()
