@@ -311,7 +311,7 @@ export function DataFieldSelect(props) {
     } else {
       // update antrag value
       props.onChange(newValue)
-    } 
+    }
   }
 
   return (
@@ -404,6 +404,11 @@ export function DataFieldSwitch(props) {
   const handleChange = (event) => {
     const newValue = {[data.name]: event.target.checked}
     props.onChange(newValue)
+    
+    // update on input trigger
+    if (data.inputTriggers) {
+      props.onInputTrigger(newValue)
+    } 
   } 
 
   return (
