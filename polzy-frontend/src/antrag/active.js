@@ -159,6 +159,7 @@ function ActiveAntrag(props) {
   const classes = useStyles()
 
   const [hidden, setHidden] = useState(false)
+  const [autoCalculateDisabled, setAutoCalculateDisabled] = useState(false)
 
   // groups states
   const getGroups = (obj) => {
@@ -269,13 +270,19 @@ function ActiveAntrag(props) {
   }
 
   const validateFields = () => {
-    // checks if all mandatory fields are filled
-    for (const group of antrag.field_groups.filter(group => groups[group.name])) {
-      for (const field of antrag[group.name].filter(field => field.fieldType === 1)) {
-        //console.log(`${field.isMandatory ? "+" : "-"} ${field.name}: ${values[field.name]}`)
+    // build 'check' groups
+    const fieldGroups = antrag.field_groups ? (
+      antrag.field_groups.filter(group => groups[group.name]).concat({name: 'fields'})
+    ):(
+      [{name: 'fields'}]
+    )
 
+    // checks if all mandatory fields are filled
+    for (const group of fieldGroups) {
+      for (const field of antrag[group.name].filter(field => field.fieldType === 1)) {
+        
         // mandatory fields
-        if (field.isMandatory && (values[field.name] === "" || !Boolean(values[field.name]))){
+        if (field.isMandatory && (values[field.name] === "" || values[field.name] === null)){
           return false
         }
         
@@ -445,21 +452,23 @@ function ActiveAntrag(props) {
     })
   }
 
-
-
-  const handleFieldBlurred = (newValues={}) => {
-    // check if calculate conditions are met
-    if (antrag.status === "Neu" && validateFields()) {
-      calculateAntrag(newValues)
-      return
+  /*
+  ** Auto Calculate
+  */
+  React.useEffect(() => {
+    console.log('AUTOCALCULATE')
+    console.log(!autoCalculateDisabled)
+    if (antrag.status === "Neu" && !autoCalculateDisabled && validateFields()) {
+      console.log('Make autocalculation')
+      calculateAntrag()
     }
-  }
+  }, [antrag, values, groups, autoCalculateDisabled])
 
+
+  /*
+  ** update antrag on input trigger
+  */
   const handleInputTrigger = (newValues={}) => {
-    /*
-    ** update antrag fields 
-    */
-
     // build request body
     const requestData = {
       id: antrag.id,
@@ -472,6 +481,8 @@ function ActiveAntrag(props) {
 
     // call update end-point
     updateAntragFields(props.user, requestData).then(data => {
+      // disable auto calculation
+      setAutoCalculateDisabled(true)
       // update antrag
       props.updateAntrag(
         props.index,
@@ -482,6 +493,9 @@ function ActiveAntrag(props) {
       )
     }).catch(error => {
       console.log(error)
+    }).finally(() => {
+      console.log('FINALLY')
+      setAutoCalculateDisabled(false)
     })
   }
 
@@ -503,8 +517,15 @@ function ActiveAntrag(props) {
     if (currentActivity === null)
       return false
 
+    // build 'check' groups
+    const fieldGroups = currentActivity.field_groups ? (
+      currentActivity.field_groups.filter(group => activityGroups[group.name]).concat({name: 'fields'})
+    ):(
+      [{name: 'fields'}]
+    )
+
     // check if required activity fields are filled correctely
-    for (const group of currentActivity.field_groups.filter(group => groups[group.name]).concat({name: 'fields'})) {
+    for (const group of fieldGroups) {
       for (const field of currentActivity[group.name].filter(field => field.fieldType === 1)) {
 
         // mandatory fields
@@ -783,7 +804,7 @@ function ActiveAntrag(props) {
 
               {/* Input Groups */}
               <div className={classes.flexContainerVertical}>
-                  {antrag.field_groups.map(group => (
+                  {antrag.field_groups.map((group, index) => (
                     <React.Fragment key={group.name}>
                     {antrag[group.name].filter(field => field.fieldType < 3).length > 0 &&
                       <Collapse
@@ -798,8 +819,8 @@ function ActiveAntrag(props) {
                           values={values}
                           stage={props.stage}
                           onChange={handleDataChanged}
-                          onBlur={handleFieldBlurred}
                           onInputTrigger={handleInputTrigger}
+                          positionEven={index%2 === 0}
                         />
                       </Collapse>
                     }

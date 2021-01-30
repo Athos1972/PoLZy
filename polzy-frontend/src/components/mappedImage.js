@@ -37,9 +37,10 @@ const useStyles = makeStyles(theme => ({
   },
 
   bodyPart: {
-    fill: "#0000",
+    fill: theme.palette.primary.main,
+    fillOpacity: 0,
     "&:hover": {
-      fill: "#8008",
+      fillOpacity: 0.5,
     },
   },
 }))
@@ -47,7 +48,7 @@ const useStyles = makeStyles(theme => ({
 export default function MappedImage(props) {
 
   const { data } = props
-  const classes = useStyles(data.valueChosenOrEntered)
+  const classes = useStyles(data)
   const [currentArea, setCurrentArea] = React.useState()
   const [infoOpen, setInfoOpen] = React.useState(false)
 
@@ -55,7 +56,7 @@ export default function MappedImage(props) {
     const target = event.target.id
 
     if (target) {
-      setCurrentArea(data.valueChosenOrEntered.areas[target])
+      setCurrentArea(data.areas[target])
     }
   }
 
@@ -71,6 +72,8 @@ export default function MappedImage(props) {
     setInfoOpen(false)
   }
 
+  console.log('Mapped Image:')
+  console.log(props)
 
   return(
     <Grid
@@ -89,7 +92,7 @@ export default function MappedImage(props) {
             variant="h6"
             component="div"
           >
-            {data.brief}
+            {props.title}
           </Typography>
         </Grid>
         <Grid item>
@@ -104,7 +107,7 @@ export default function MappedImage(props) {
                 disableFocusListener
                 disableHoverListener
                 disableTouchListener
-                title={data.tooltip}
+                title={props.tooltip}
                 placement="top"
               >
                 <IconButton
@@ -130,22 +133,22 @@ export default function MappedImage(props) {
         >
           <img
             className={classes.png}
-            src={uriImages + data.icon}
+            src={uriImages + props.image}
           />
           <svg
             className={classes.svg}
-            viewBox={data.valueChosenOrEntered.viewBox}
+            viewBox={data.viewBox}
             xmlns="http://www.w3.org/2000/svg"
           >
             <g
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
             >
-              {Object.keys(data.valueChosenOrEntered.areas).map(key => (
+              {Object.keys(data.areas).map(key => (
                 <path
                   key={key}
                   id={key}
-                  d={data.valueChosenOrEntered.areas[key].path}
+                  d={data.areas[key].path}
                   className={classes.bodyPart}
                 />
               ))}
@@ -163,14 +166,16 @@ export default function MappedImage(props) {
                   {currentArea.title}
                 </Typography>
               </Grid>
-              <Grid item>
-                <Typography
-                  variant="body1"
-                  component="div"
-                >
-                  Value: €{formatNumberWithCommas(currentArea.value)}
-                </Typography>
-              </Grid>
+              {currentArea.value.map(value => (
+                <Grid key={value} item>
+                  <Typography
+                    variant="body1"
+                    component="div"
+                  >
+                    {value}
+                  </Typography>
+                </Grid>
+              ))}
             </React.Fragment>
           }
         </Grid>

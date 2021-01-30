@@ -15,6 +15,7 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  Collapse,
 } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers'
@@ -27,6 +28,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import SearchField from './searchField'
 import EnhancedTable from './enhancedTable'
 import MappedImage from './mappedImage'
+import ExpandButton from './expandButton'
 import { getLocaleDateFormat, backendDateFormat } from '../dateFormat' 
 
 // Styles
@@ -46,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
   inputGroup: {
     padding: theme.spacing(1),
     margin: theme.spacing(1),
+    backgroundColor: props => props.positionEven ? theme.palette.cardBackground.even : theme.palette.cardBackground.odd,
   },
 
   inputGroupContainer: {
@@ -64,12 +67,6 @@ export function DataFieldText(props) {
   const {id, data, value, onChange } = props
   const error = Boolean(data.errorMessage)
 
-  const handleBlur = () => {
-    if (Boolean(props.onBlur)) {
-      props.onBlur()
-    }
-  }
-
   return (
     <FormControl
       classes={{root: classes.inputField}}
@@ -87,7 +84,6 @@ export function DataFieldText(props) {
         id={`${data.name}-${id}`}
         value={value}
         onChange={(e) => onChange({[data.name]: e.target.value})}
-        onBlur={handleBlur}
         label={data.brief}
         endAdornment={props.endAdornment}
       />
@@ -105,12 +101,6 @@ export function DataFieldText(props) {
 export function DataFieldLongText(props) {
   const {id, data, value, onChange } = props
 
-  const handleBlur = () => {
-    if (Boolean(props.onBlur)) {
-      props.onBlur()
-    }
-  }
-
   return (
     <TextField
       id={`${data.name}-${id}`}
@@ -120,7 +110,6 @@ export function DataFieldLongText(props) {
       variant="outlined"
       value={value}
       onChange={(e) => onChange({[data.name]: e.target.value})}
-      onBlur={handleBlur}
       required={data.isMandatory}
       size="small"
     />
@@ -130,12 +119,6 @@ export function DataFieldLongText(props) {
 export function DataFieldTextBox(props) {
   const classes = useStyles()
   const {id, data, value, onChange } = props
-
-  const handleBlur = () => {
-    if (Boolean(props.onBlur)) {
-      props.onBlur()
-    }
-  }
 
   return (
     <FormControl
@@ -153,7 +136,6 @@ export function DataFieldTextBox(props) {
         multiline
         value={value}
         onChange={(e) => onChange({[data.name]: e.target.value})}
-        onBlur={handleBlur}
         label={data.brief}
       />
     </FormControl>
@@ -177,12 +159,6 @@ export function DataFieldNumber(props) {
     }
   }
 
-  const handleBlur = () => {
-    if (Boolean(props.onBlur)) {
-      props.onBlur()
-    }
-  }
-
   return (
     <FormControl
       classes={{root: classes.inputField}}
@@ -200,7 +176,6 @@ export function DataFieldNumber(props) {
         id={`${data.name}-${id}`}
         value={value}
         onChange={handleChange}
-        onBlur={handleBlur}
         label={data.brief}
       />
       <FormHelperText>
@@ -216,11 +191,12 @@ export function DataFieldNumber(props) {
 */
 export function DataFieldNumberRange(props) {
   const classes = useStyles()
-  const {id, data, value } = props
+  const {id, data } = props
   const {t} = useTranslation('common')
   const [error, setError] = React.useState(false)
   const [helperText, setHelperText] = React.useState('')
   const [typingTimeout, setTypingTimeout] = React.useState(null)
+  const [value, setValue] = React.useState(props.value)
   
   // range boundaries
   const min = Number(data.inputRange[1])
@@ -229,6 +205,10 @@ export function DataFieldNumberRange(props) {
   const validateValue = (value=value) => {
     return Boolean(value) && value >= min && value <= max
   }
+
+  React.useEffect(() => {
+    setValue(props.value)
+  }, [props])
 
   React.useEffect(() => {
     // check if error comes from backend
@@ -258,7 +238,7 @@ export function DataFieldNumberRange(props) {
     const newValue = event.target.value
 
     // update value
-    props.onChange({[data.name]: newValue})
+    setValue(newValue)
 
     // check if typing is NOT finished
     if (typingTimeout) {
@@ -268,16 +248,14 @@ export function DataFieldNumberRange(props) {
     // set timeout for typing finished
     setTypingTimeout(setTimeout(() => {
       // check for input trigger and valid value
-      if (data.inputTriggers && validateValue(newValue)) {
+      if (data.inputTriggers && validateValue(newValue)) {  
+        // input trigger
         props.onInputTrigger({[data.name]: newValue})
+      } else {
+        // update antrag value
+        props.onChange({[data.name]: newValue})
       }
     }, 500))
-  }
-
-  const handleBlur = () => {
-    if (Boolean(props.onBlur)) {
-      props.onBlur()
-    }
   }
 
   return (
@@ -296,7 +274,6 @@ export function DataFieldNumberRange(props) {
         id={`${data.name}-${id}`}
         value={value}
         onChange={handleChange}
-        onBlur={handleBlur}
         label={data.brief}
         inputProps={{
           min: Number(data.inputRange[1]),
@@ -322,16 +299,14 @@ export function DataFieldSelect(props) {
 
   const handleChange = (event, value) => {
     const newValue = {[data.name]: value}
-    props.onChange(newValue)
-
+    
     // update on input trigger
     if (data.inputTriggers) {
       props.onInputTrigger(newValue)
-    }
-
-    if (Boolean(props.onBlur)) {
-      props.onBlur(newValue)
-    }
+    } else {
+      // update antrag value
+      props.onChange(newValue)
+    } 
   }
 
   return (
@@ -385,12 +360,6 @@ export function DataFieldDate(props) {
     props.onChange({[data.name]: strValue})
   }
 
-  const handleBlur = () => {
-    if (Boolean(props.onBlur)) {
-      props.onBlur()
-    }
-  }
-
   return (
     <FormControl
       classes={{root: classes.inputField}}
@@ -410,7 +379,6 @@ export function DataFieldDate(props) {
           format={getLocaleDateFormat()}
           value={parse(value, backendDateFormat, new Date())}
           onChange={handleChange}
-          onBlur={handleBlur}
           required={data.isMandatory}
         />
       </MuiPickersUtilsProvider>
@@ -431,10 +399,6 @@ export function DataFieldSwitch(props) {
   const handleChange = (event) => {
     const newValue = {[data.name]: event.target.checked}
     props.onChange(newValue)
-
-    if (Boolean(props.onBlur)) {
-      props.onBlur(newValue)
-    }
   } 
 
   return (
@@ -512,7 +476,13 @@ export function DataField(props) {
 */
 export default function DataGroup(props) {
   const {title, fields, values, actions, ...commonProps} = props
-  const classes = useStyles()
+  const classes = useStyles(props)
+
+  const [expanded, setExpanded] = React.useState(true)
+
+  const handleExpanded = () => {
+    setExpanded(!expanded)
+  }
 
   const size = (screen) => {
     if (title.includes('suchen')) {
@@ -529,9 +499,9 @@ export default function DataGroup(props) {
     }
   }
 
-  const getTableData = (dataString) => {
-    //console.log('TABLE STRING:')
-    //console.log(dataString)
+  const parseJSONString = (dataString) => {
+    console.log('JSON STRING:')
+    console.log(dataString)
 
     if (dataString === "None" || dataString === null) {
       return null
@@ -554,158 +524,186 @@ export default function DataGroup(props) {
       elevation={2}
     >
 
-      {/* Title */}
-      <Typography 
-        gutterBottom
-        variant="h5"
-        component="p"
-      >
-        {title}
-      </Typography>
-
-      {/* Flags */}
-      <Grid 
-        classes={{root: classes.inputGroupContainer}}
+      <Grid
         container
-        spacing={2}
+        spacing={1}
       >
-        {fields.filter((field) => (
-          field.fieldDataType === "Flag" && field.fieldType === 1
-        )).map((field) => (
-          <Grid
-            item
-            key={field.name}
-            xs={6}
-            md={4}
-            lg={3}
+
+        {/* Expand Button */}
+        <Grid item>
+          <ExpandButton
+            expanded={expanded}
+            onClick={handleExpanded}
+            size="small"
+          />
+        </Grid>
+
+        {/* Title */}
+        <Grid item>
+          <Typography 
+            gutterBottom
+            variant="h5"
+            component="p"
           >
-            <TooltipField
-              tooltip={field.tooltip}
-              content={
-                <div>
-                  <DataFieldSwitch 
-                    {...commonProps}
-                    data={field}
-                    value={values[field.name]}
-                  />
-                </div>
-              }
-            />
-          </Grid>
-        ))}
+            {title}
+          </Typography>
+        </Grid>
       </Grid>
 
-      {/* Input Fields */}
-      <Grid 
-        classes={{root: classes.inputGroupContainer}}
-        container
-        spacing={2}
+      <Collapse
+        in={expanded}
+        timeout="auto"
+        unmountOnExit
       >
-        {fields.filter((field) => (
-          field.fieldDataType !== "Flag" && field.fieldType === 1 && 
-          field.fieldDataType !== "SearchEndPoint" && field.fieldDataType !== "Table"
-        )).map((field) => (
-          <Grid 
-            item
-            key={field.name}
-            xs={size('xs')}
-            md={size('md')}
-            lg={field.fieldDataType === "TextBox" ? 2*size('lg') : size('lg')}
-          >
-            <TooltipField
-              tooltip={field.tooltip}
-              content={
-                <div>
-                  <DataField
-                    {...commonProps}
-                    data={field}
-                    value={values[field.name]}
-                  />
-                </div>
-              }
-            />
-          </Grid>
-        ))}
-      </Grid>
 
-      {/* Search Fields */}
-      <Grid 
-        classes={{root: classes.inputGroupContainer}}
-        container
-        spacing={2}
-      >
-        {fields.filter((field) => (field.fieldDataType === "SearchEndPoint" && field.fieldType === 1)).map((field) => (
-          <Grid 
-            item
-            key={field.name}
-            xs={12}
-          >
-            <SearchField
-              {...commonProps}
-              data={field}
-              value={values[field.name]}
-              address={values.address}
-            />
-          </Grid>
-        ))}
-      </Grid>
-
-      {/* Table Fields */}
-      <Grid 
-        classes={{root: classes.inputGroupContainer}}
-        container
-        spacing={2}
-      >
-        {fields.filter((field) => (field.fieldDataType === "Table" && field.fieldType === 1)).map((field) => (
-          <Grid 
-            item
-            key={field.name}
-            xs={12}
-          >
-            <EnhancedTable
-              name={field.name}
-              title={field.brief}
-              data={getTableData(field.valueChosenOrEntered)}
-              value={values[field.name]}
-              onChange={props.onGlobalChange}
-              updateAntrag={props.updateAntrag}
-              onCloseActivity={props.onCloseActivity}
-            />
-          </Grid>
-        ))}
-      </Grid>
-
-      {/* Output Fields */}
-
-      {/* Text */}
-      <Table>
-        <TableBody>
-          {fields.filter((field) => (field.fieldType === 2 && field.fieldDataType === "Text")).map((field) => (
-            <TooltipField
-            key={field.name}
-              tooltip={field.tooltip}
-              content={
-                <TableRow hover>
-                  <TableCell>{field.brief}</TableCell>
-                  <TableCell>
-                    {field.valueChosenOrEntered}
-                  </TableCell>
-                </TableRow>
-              }
-            />
+        {/* Flags */}
+        <Grid 
+          classes={{root: classes.inputGroupContainer}}
+          container
+          spacing={2}
+        >
+          {fields.filter((field) => (
+            field.fieldDataType === "Flag" && field.fieldType === 1
+          )).map((field) => (
+            <Grid
+              item
+              key={field.name}
+              xs={6}
+              md={4}
+              lg={3}
+            >
+              <TooltipField
+                tooltip={field.tooltip}
+                content={
+                  <div>
+                    <DataFieldSwitch 
+                      {...commonProps}
+                      data={field}
+                      value={values[field.name]}
+                    />
+                  </div>
+                }
+              />
+            </Grid>
           ))}
-        </TableBody>
-      </Table>
+        </Grid>
 
-      {/* Mapped Images */}
-      {fields.filter((field) => (field.fieldType === 2 && field.fieldDataType === "Image")).map((field) => (
-        <MappedImage
-          key={field.name}
-          data={field}
-        />
-      ))}
+        {/* Input Fields */}
+        <Grid 
+          classes={{root: classes.inputGroupContainer}}
+          container
+          spacing={2}
+        >
+          {fields.filter((field) => (
+            field.fieldDataType !== "Flag" && field.fieldType === 1 && 
+            field.fieldDataType !== "SearchEndPoint" && field.fieldDataType !== "Table"
+          )).map((field) => (
+            <Grid 
+              item
+              key={field.name}
+              xs={size('xs')}
+              md={size('md')}
+              lg={field.fieldDataType === "TextBox" ? 2*size('lg') : size('lg')}
+            >
+              <TooltipField
+                tooltip={field.tooltip}
+                content={
+                  <div>
+                    <DataField
+                      {...commonProps}
+                      data={field}
+                      value={values[field.name]}
+                    />
+                  </div>
+                }
+              />
+            </Grid>
+          ))}
+        </Grid>
 
-      {actions}
+        {/* Search Fields */}
+        <Grid 
+          classes={{root: classes.inputGroupContainer}}
+          container
+          spacing={2}
+        >
+          {fields.filter((field) => (field.fieldDataType === "SearchEndPoint" && field.fieldType === 1)).map((field) => (
+            <Grid 
+              item
+              key={field.name}
+              xs={12}
+            >
+              <SearchField
+                {...commonProps}
+                data={field}
+                value={values[field.name]}
+                address={values.address}
+              />
+            </Grid>
+          ))}
+        </Grid>
+
+        {/* Table Fields */}
+        <Grid 
+          classes={{root: classes.inputGroupContainer}}
+          container
+          spacing={2}
+        >
+          {fields.filter((field) => (field.fieldDataType === "Table" && field.fieldType === 1)).map((field) => (
+            <Grid 
+              item
+              key={field.name}
+              xs={12}
+            >
+              <EnhancedTable
+                name={field.name}
+                title={field.brief}
+                data={parseJSONString(field.valueChosenOrEntered)}
+                value={values[field.name]}
+                onChange={props.onGlobalChange}
+                updateAntrag={props.updateAntrag}
+                onCloseActivity={props.onCloseActivity}
+              />
+            </Grid>
+          ))}
+        </Grid>
+
+        {/* Output Fields */}
+
+        {/* Text */}
+        <Table>
+          <TableBody>
+            {fields.filter((field) => (field.fieldType === 2 && field.fieldDataType === "Text")).map((field) => (
+              <TooltipField
+              key={field.name}
+                tooltip={field.tooltip}
+                content={
+                  <TableRow hover>
+                    <TableCell>{field.brief}</TableCell>
+                    <TableCell>
+                      {field.valueChosenOrEntered}
+                    </TableCell>
+                  </TableRow>
+                }
+              />
+            ))}
+          </TableBody>
+        </Table>
+
+        {/* Mapped Images */}
+        {fields.filter((field) => (field.fieldType === 2 && field.fieldDataType === "Image")).map((field) => (
+          <MappedImage
+            key={field.name}
+            name={field.name}
+            title={field.brief}
+            image={field.icon}
+            tooltip={field.tooltip}
+            data={parseJSONString(field.valueChosenOrEntered)}
+          />
+        ))}
+
+        {actions}
+      </Collapse>
     </Paper>
   )
 }

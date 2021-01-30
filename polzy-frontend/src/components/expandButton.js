@@ -34,6 +34,7 @@ export default function MoreButton(props) {
         onClick={props.onClick}
         aria-expanded={props.expanded}
         aria-label="view details"
+        size={props.size ? props.size: 'medium'}
       >
         <ExpandMoreIcon />
       </IconButton>

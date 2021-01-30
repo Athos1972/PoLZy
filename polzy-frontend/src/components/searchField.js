@@ -102,20 +102,16 @@ function SearchDropDownBase(props) {
       ...otherValues,
       [data.name]: label,
     }
-    props.onChange(updateValues)
-    props.onBlur(data.name, updateValues)
 
-  }
-
-  const handleBlur = () => {
-    if (Boolean(props.onBlur)) {
-      props.onBlur(data.name)
+    // update on input trigger
+    if (data.inputTriggers) {
+      props.onInputTrigger(newValue)
+    } else {
+      // update antrag value
+      props.onChange(newValue)
     }
+    //props.onChange(updateValues)
   }
-
-  //****** DEBUG OUTPUT
-  //console.log('Seach Drop Down:')
-  //console.log(props)
 
   return (
     <Autocomplete
@@ -128,7 +124,6 @@ function SearchDropDownBase(props) {
       filterOptions={(options) => options}
       onInputChange={handleInputChange}
       onChange={handleValueSelect}
-      onBlur={handleBlur}
       options={options}
       loading={loading}
       renderInput={(params) => (
