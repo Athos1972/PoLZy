@@ -77,11 +77,6 @@ def update_antrag():
     # get post data
     data = request.get_json()
 
-    ###### DEBUG OUTPUT
-    print('\n**** Antrag Update:')
-    import json
-    print(json.dumps(data, indent=2))
-
     # get antrag and update its values
     try:
         # get antrag from app store

@@ -100,8 +100,8 @@ function SearchDropDownBase(props) {
       return
     }
 
-    console.log('Search Select:')
-    console.log(newValue)
+    //console.log('Search Select:')
+    //console.log(newValue)
 
     const {label, ...otherValues} = newValue
     const updateValues = {
