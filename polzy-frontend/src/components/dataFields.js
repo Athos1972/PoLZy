@@ -515,8 +515,8 @@ export default function DataGroup(props) {
   }
 
   const parseJSONString = (dataString) => {
-    console.log('JSON STRING:')
-    console.log(dataString)
+    //console.log('JSON STRING:')
+    //console.log(dataString)
 
     if (dataString === "None" || dataString === null) {
       return null
@@ -530,9 +530,10 @@ export default function DataGroup(props) {
     }
   }
 
-  console.log('DATA GROUP')
-  console.log(props)
-  console.log(subtitles)
+  console.log('DATA GROUP Search Fields:')
+  console.log(fields.filter((field) => (field.fieldDataType === "SearchEndPoint")))
+  //console.log(props)
+  //console.log(subtitles)
 
   return (
     <Paper 
