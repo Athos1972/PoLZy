@@ -754,3 +754,18 @@ class GamificationActivityWeight(db.Model):
         instance = cls(activity_name=activity_name, line_of_business=line_of_business, points=points)
         db.session.add(instance)
         db.session.commit()
+
+    def to_json(self):
+        js = {
+            "id": self.id,
+            "activity_name": self.activity_name,
+            "line_of_business": self.line_of_business,
+            "points": self.points
+        }
+        return js
+
+    @classmethod
+    def get_all_id_points(cls):
+        all_rows = cls.query.all()
+        all_data = {row.id: row.points for row in all_rows}
+        return all_data
