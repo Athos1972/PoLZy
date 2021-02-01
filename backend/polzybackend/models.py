@@ -554,7 +554,10 @@ class GamificationUserStats(db.Model):
             id_ = db.session.query(GamificationActivityWeight).filter_by(activity_name=eventName).first()
         if id_:
             return id_.id
-        return None
+        else:
+            print(f"Combination of activityName: {str(activityName)}, lineOfBusiness: {str(lob)} or "
+                  f"event: {str(eventName)} not found in Weight table. Using default value 10.")
+            return db.session.query(GamificationActivityWeight).filter_by(activity_name="default").first().id
 
     @classmethod
     def create_or_update_row(cls, activity: GamificationActivity):
