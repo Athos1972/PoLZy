@@ -87,6 +87,9 @@ function SearchDropDownBase(props) {
       newValue,
     ).then(data => {
       setOptions(data)
+    }).catch(error => {
+      console.log(error)
+    }).finally(() => {
       setLoading(false)
     })
 
@@ -97,6 +100,9 @@ function SearchDropDownBase(props) {
       return
     }
 
+    //console.log('Search Select:')
+    //console.log(newValue)
+
     const {label, ...otherValues} = newValue
     const updateValues = {
       ...otherValues,
@@ -105,10 +111,10 @@ function SearchDropDownBase(props) {
 
     // update on input trigger
     if (data.inputTriggers) {
-      props.onInputTrigger(newValue)
+      props.onInputTrigger(updateValues)
     } else {
       // update antrag value
-      props.onChange(newValue)
+      props.onChange(updateValues)
     }
     //props.onChange(updateValues)
   }
