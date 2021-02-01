@@ -10,13 +10,13 @@ import {
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
-import { getBadgeTypes, makeBadgeSeen } from '../api/gamification'
+import { getBadgeTypes, makeBadgeSeen, getBadgeImage } from '../api/gamification'
 import { updateUser } from '../redux/actions'
 import { apiHost } from '../utils'
 import confetti from 'canvas-confetti'
 
 
-const uriBadge = apiHost + 'api/badge/'
+//const uriBadge = apiHost + 'api/badge/'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -82,27 +82,39 @@ const launchConfetti = () => {
 }
 
 
-function BadgeImage(props) {
+function BadgeImageBase(props) {
+
+  const [badgeSrc, setBadgeSrc] = React.useState('')
 
   const altBadge = Boolean(props.type) ? `${props.level} ${props.type}` : "Disabled"
   const width = props.overlay ? "80%" : "50%"
 
-  const getBadgeSrc = () => {
-    // not rewarded badges
-    if (!Boolean(props.type)) {
-      return "disabled"
-    }
+  React.useEffect(() => {
+    // get route to bage
+    const badgeRoute = Boolean(props.type) ? `${props.type.toLowerCase()}/${props.level.toLowerCase()}` : "disabled"
+    
 
     /*if (!props.isSeen && !Boolean(props.overlay)) {
       return "new"
     }*/
 
-    return `${props.type.toLowerCase()}/${props.level.toLowerCase()}`
-  }
+    fetch(`/api/badge/${badgeRoute}`, {
+      // fetch image resource
+      headers: {'authorization': `Bearer ${props.user.accessToken}`},
+    }).then(response => {
+      // get blob
+      return response.blob()
+    }).then(blob => {
+      // convert blob to URL containing the blob
+      setBadgeSrc(URL.createObjectURL(blob))
+    }).catch(error => {
+      console.log(error)
+    })
+  }, [])
 
   return (
     <img
-      src={uriBadge + getBadgeSrc()}
+      src={badgeSrc}
       width={width}
       alt={altBadge}
     />
@@ -176,8 +188,11 @@ function BadgeView(props) {
     setCurrentBadge(target)
     setOpenBadge(true)
 
+    console.log('Badge Clicked:')
+    console.log(target)
+
     // update seen prop
-    if (!target.badge.isSeen) {
+    if (target.badge.isSeen === false) {
       makeBadgeSeen(props.user, target).then(data => {
         props.updateBadges(data)
       }).catch(error => {
@@ -196,6 +211,8 @@ function BadgeView(props) {
 
   console.log('CURRENT BADGE:')
   console.log(currentBadge)
+  console.log('Badge Types:')
+  console.log(badgeTypes)
 
   return (
     <React.Fragment>
@@ -274,4 +291,5 @@ const mapDispatchToProps = {
   updateBadges: updateUser,
 }
 
+const BadgeImage = connect(mapStateToProps)(BadgeImageBase)
 export default connect(mapStateToProps, mapDispatchToProps)(BadgeView)

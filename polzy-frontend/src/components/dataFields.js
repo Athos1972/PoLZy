@@ -530,9 +530,9 @@ export default function DataGroup(props) {
     }
   }
 
-  //console.log('DATA GROUP Search Fields:')
+  console.log('DATA GROUP:')
   //console.log(fields.filter((field) => (field.fieldDataType === "SearchEndPoint")))
-  //console.log(props)
+  console.log(props)
   //console.log(subtitles)
 
   return (

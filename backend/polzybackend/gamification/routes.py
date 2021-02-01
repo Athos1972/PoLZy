@@ -40,6 +40,11 @@ def make_badge_seen():
         if badge is None:
             raise Exception('Badge data not found in request')
 
+        ###### DEUG OUTPUT
+        print("\n**** Badge Seen:")
+        import json
+        print(json.dumps(data, indent=2))
+
         # find badge in user badges
         userBadge = list(filter(lambda x: filter_badge(x, badge), auth.current_user().badges))
         if len(userBadge) == 0:
