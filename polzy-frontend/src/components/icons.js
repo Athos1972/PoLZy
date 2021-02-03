@@ -102,8 +102,8 @@ export function ProductIconSvg(props) {
 export function ActivityIcon(props) {
   const {icon} = props
 
-  console.log('Activity Icon:')
-  console.log(props)
+  //console.log('Activity Icon:')
+  //console.log(props)
 
   switch (icon) {
     case 'calculate.svg':

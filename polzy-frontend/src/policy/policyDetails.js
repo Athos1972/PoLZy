@@ -244,8 +244,8 @@ function Clauses(props) {
   const classes = useStyles()
   const [open, setOpen] = React.useState(false)
 
-  console.log("Clauses")
-  console.log(data)
+  //console.log("Clauses")
+  //console.log(data)
 
   return(
     <React.Fragment>
