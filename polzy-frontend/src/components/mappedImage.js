@@ -72,8 +72,8 @@ export default function MappedImage(props) {
     setInfoOpen(false)
   }
 
-  console.log('Mapped Image:')
-  console.log(props)
+  //console.log('Mapped Image:')
+  //console.log(props)
 
   return(
     <Grid

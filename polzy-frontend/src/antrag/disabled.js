@@ -41,8 +41,8 @@ function DisabledAntrag(props) {
     })
   })
 
-  console.log('Disabled Antrag:')
-  console.log(props)
+  //console.log('Disabled Antrag:')
+  //console.log(props)
 
   return(
     <CardDisabled>

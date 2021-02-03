@@ -493,7 +493,7 @@ function ActiveAntrag(props) {
     }).catch(error => {
       console.log(error)
     }).finally(() => {
-      console.log('FINALLY')
+      //console.log('FINALLY')
       setAutoCalculateDisabled(false)
     })
   }

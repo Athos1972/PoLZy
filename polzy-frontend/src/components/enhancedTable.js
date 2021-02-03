@@ -454,7 +454,7 @@ export default function EnhancedTable(props) {
   }
 
   const handleUpdateFilter = (newFilterList) => {
-    console.log('CLOSE:')
+    //console.log('CLOSE:')
     
     setOpenFilterMenu(false)
     setFilterList(newFilterList)
@@ -473,8 +473,8 @@ export default function EnhancedTable(props) {
       } : result
     ), {})
 
-    console.log('row click')
-    console.log(hiddenValues)
+    //console.log('row click')
+    //console.log(hiddenValues)
 
     setSelectedRow(row)
     props.onChange(hiddenValues)
@@ -489,8 +489,8 @@ export default function EnhancedTable(props) {
     props.onCloseActivity()
   }
 
-  console.log('ENHANCED TABLE:')
-  console.log(props)
+  //console.log('ENHANCED TABLE:')
+  //console.log(props)
   //console.log('FILTER LIST')
   //console.log(filterList)
   //console.log(props)
