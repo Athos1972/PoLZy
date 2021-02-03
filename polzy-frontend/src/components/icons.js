@@ -25,6 +25,9 @@ import { ReactComponent as Calculate } from '../icons/calculate.svg'
 import { ReactComponent as Pdf } from '../icons/pdf.svg'
 import { ReactComponent as Partnersearch } from '../icons/partnersearch.svg'
 import { ReactComponent as SaveToVNG } from '../icons/saveToVNG.svg'
+import { ReactComponent as iconSaveRecommendation } from '../icons/iconSaveRecommendation.svg'
+import { ReactComponent as iconSearchEurotax } from '../icons/iconSearchEurotax.svg'
+import { ReactComponent as iconSearchPerson } from '../icons/iconSearchPerson.svg'
 
 const useStyles = makeStyles({
   svgIcon: {
@@ -124,6 +127,21 @@ export function ActivityIcon(props) {
           <SaveToVNG />
         </SvgIcon>
       )
+    case 'iconSaveRecommendation.svg':
+      return (<SvgIcon>
+          <iconSaveRecommendation />
+        </SvgIcon>
+        )
+    case 'iconSearchEurotax.svg':
+      return (<SvgIcon>
+          <iconSearchEurotax />
+        </SvgIcon>
+        )
+    case 'iconSearchPerson.svg':
+      return (<SvgIcon>
+          <iconSearchPerson />
+        </SvgIcon>
+        )
     default:
       return <Handshake />
   }
