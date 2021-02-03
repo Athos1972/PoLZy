@@ -403,7 +403,7 @@ class GamificationActivity(db.Model):
         
         return instance
 
-    def set_processed(self):
+    def set_processed(self, commit=True):
         #
         # set activity as processed
         #
@@ -412,7 +412,8 @@ class GamificationActivity(db.Model):
         self.is_processed = True
 
         # save to db
-        db.session.commit()
+        if commit:
+            db.session.commit()
 
 
 class GamificationUserStats(db.Model):
@@ -420,7 +421,6 @@ class GamificationUserStats(db.Model):
     user_id = db.Column(db.String(56), db.ForeignKey('users.id'), primary_key=True, nullable=False)
     company_id = db.Column(db.String(56), db.ForeignKey('companies.id'), primary_key=True, nullable=False)
     type_id = db.Column(db.Integer, db.ForeignKey('gamification_badge_types.id'), primary_key=True)
-    weightage_id = db.Column(db.Integer, primary_key=True, nullable=True)
     daily = db.Column(db.Integer, default=0)
     weekly = db.Column(db.Integer, default=0)
     monthly = db.Column(db.Integer, default=0)
@@ -438,68 +438,46 @@ class GamificationUserStats(db.Model):
     def check_timeline(self):
         year_is_changed = self.last_updated.date().year < datetime.now().date().year
         # year_is_changed used when year changed but month or week number is same
+        changes = False
         if self.last_updated.date() < datetime.now().date() or year_is_changed:
             self.daily = 0
+            changes = True
         if self.last_updated.date().isocalendar()[1] < datetime.now().date().isocalendar()[1] or year_is_changed:
             self.weekly = 0
+            changes = True
         if self.last_updated.date().month < datetime.now().date().month or year_is_changed:
             self.monthly = 0
+            changes = True
         if year_is_changed:
             self.yearly = 0
-        self.last_updated = datetime.now()
-        db.session.commit()
+            changes = True
+        if changes:  # only update last_update time when it is needed
+            self.last_updated = datetime.now()
+            db.session.commit()
 
-    def add_points(self, points=1):
+    def add_points(self, points=1, weight=1):
         self.check_timeline()
-        self.daily += points
-        self.weekly += points
-        self.monthly += points
-        self.yearly += points
-        self.all_time += points
-        db.session.commit()
-        company = self.get_or_make_company()
-        company.add_points(points)
+        weighted_point = points * weight
+        self.daily += weighted_point
+        self.weekly += weighted_point
+        self.monthly += weighted_point
+        self.yearly += weighted_point
+        self.all_time += weighted_point
         self.update_badge()
-        return self.get_user_statistics()
-
-    def get_or_make_company(self):
-        company = db.session.query(GamificationCompanyStatistics).filter_by(company_id=self.company_id).first()
-        if not company:
-            company = GamificationCompanyStatistics.new(self.company_id)
-        return company
+        return {"all time": self.all_time}
 
     def get_user_statistics(self):
         self.check_timeline()
         json_data = {"daily": self.daily, "weekly": self.weekly, "monthly": self.monthly,
-                     "yearly": self.yearly, "all time": self.all_time}
-        return json_data
-
-    def get_company_statistics(self):
-        company = self.get_or_make_company()
-        return company.get_company_statistics()
-
-    def get_organization_statistics(self):
-        users = [x.user_id for x in db.session.query(UserToCompany).filter_by(company_id=self.company_id).all()]
-        json_data = {}
-        json_data["Company"] = self.get_or_make_company().get_company_statistics()
-        json_data["Users"] = []
-        for user in users:
-            dic = {}
-            dic["User ID"] = user
-            dic["Statistic"] = db.session.query(GamificationUserStats
-                                                ).filter(GamificationUserStats.user_id == user and
-                                                         GamificationUserStats.company_id == self.company_id
-                                                         ).first().get_user_statistics()
-            json_data["Users"].append(dic)
+                     "annual": self.yearly, "all time": self.all_time}
         return json_data
 
     @classmethod
-    def new(cls, user_id, company_id, type_id, weightage_id):
+    def new(cls, user_id, company_id, type_id):
         instance = cls(
             user_id=user_id,
             company_id=company_id,
             type_id=type_id,
-            weightage_id=weightage_id
         )
         db.session.add(instance)
         db.session.commit()
@@ -514,7 +492,7 @@ class GamificationUserStats(db.Model):
             badge = GamificationBadge(
                 user_id=self.user_id, company_id=self.company_id, type_id=self.type_id, level_id=level_id)
             db.session.add(badge)
-            db.session.commit()
+            #db.session.commit()
 
     def get_level_id(self):
         level = db.session.query(GamificationBadgeLevel).filter(and_(self.all_time >= GamificationBadgeLevel.min_level,
@@ -541,7 +519,7 @@ class GamificationUserStats(db.Model):
             return None
 
     @staticmethod
-    def get_weight_id(event: GamificationEvent, event_details):
+    def get_weight(event: GamificationEvent, event_details):
         eventName = event.name
         event_details = json.loads(event_details)
         lob = event_details.get("lineOfBusiness", "")
@@ -551,82 +529,40 @@ class GamificationUserStats(db.Model):
                 GamificationActivityWeight.activity_name == activityName,
                 GamificationActivityWeight.line_of_business == lob)).first()
         else:
-            id_ = db.session.query(GamificationActivityWeight).filter_by(activity_name=eventName).first()
-        if id_:
-            return id_.id
-        else:
+            if lob and eventName:
+                id_ = db.session.query(GamificationActivityWeight).filter(and_(
+                    GamificationActivityWeight.activity_name == eventName,
+                    GamificationActivityWeight.line_of_business == lob)).first()
+            else:
+                id_ = db.session.query(GamificationActivityWeight).filter_by(activity_name=eventName).first()
+        if not id_:
             print(f"Combination of activityName: {str(activityName)}, lineOfBusiness: {str(lob)} or "
                   f"event: {str(eventName)} not found in Weight table. Using default value 10.")
-            return db.session.query(GamificationActivityWeight).filter_by(activity_name="default").first().id
+            id_ = db.session.query(GamificationActivityWeight).filter_by(activity_name="default").first().points
+        return id_.points
 
     @classmethod
-    def create_or_update_row(cls, activity: GamificationActivity):
+    def create_or_update_row(cls, activity: GamificationActivity, commit=True):
         type_id = cls.get_type_id(activity.event, activity.event_details)
-        weightage_id = cls.get_weight_id(activity.event, activity.event_details)
+        weightage = cls.get_weight(activity.event, activity.event_details)
         if not type_id:
             return None
         user_id = activity.user_id
         company_id = activity.company_id
         user_stats = db.session.query(GamificationUserStats).filter_by(user_id=user_id
-            ).filter_by(company_id=company_id).filter_by(type_id=type_id).filter_by(weightage_id=weightage_id).first()
+            ).filter_by(company_id=company_id).filter_by(type_id=type_id).first()
+        if user_stats:
+            user_stats.add_points(weight=weightage)
         if not user_stats:
-            print(f"No user found for current activity in Statistics Table. Creating a new row with this id.")
-            user_stats = GamificationUserStats.new(user_id=user_id, company_id=activity.company_id, type_id=type_id,
-                                                   weightage_id=weightage_id)
-        return user_stats
+            user_stats = GamificationUserStats.new(user_id=user_id, company_id=company_id, type_id=type_id)
+            user_stats.add_points(weight=weightage)
+        if commit:
+            db.session.commit()
+        return user_id
 
-
-class GamificationCompanyStatistics(db.Model):
-    __tablename__ = 'gamification_company_statistics'
-    company_id = db.Column(db.String(56), db.ForeignKey('companies.id'), primary_key=True, nullable=False)
-    daily = db.Column(db.Integer, default=0)
-    weekly = db.Column(db.Integer, default=0)
-    monthly = db.Column(db.Integer, default=0)
-    yearly = db.Column(db.Integer, default=0)
-    all_time = db.Column(db.Integer, default=0)
-    last_updated = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
-
-    company = db.relationship('Company', backref='gamification_company_statistics', foreign_keys=[company_id])
-
-    def check_timeline(self):
-        year_is_changed = self.last_updated.date().year < datetime.now().date().year
-        # year_is_changed used when year changed but month or week number is same
-        if self.last_updated.date() < datetime.now().date() or year_is_changed:
-            self.daily = 0
-        if self.last_updated.date().isocalendar()[1] < datetime.now().date().isocalendar()[1] or year_is_changed:
-            self.weekly = 0
-        if self.last_updated.date().month < datetime.now().date().month or year_is_changed:
-            self.monthly = 0
-        if year_is_changed:
-            self.yearly = 0
-        self.last_updated = datetime.now()
+    @staticmethod
+    def commit():
         db.session.commit()
-
-    def add_points(self, points=1):
-        self.check_timeline()
-        self.daily += points
-        self.weekly += points
-        self.monthly += points
-        self.yearly += points
-        self.all_time += points
-        db.session.commit()
-
-    def get_company_statistics(self):
-        self.check_timeline()
-        json_data = {"daily": self.daily, "weekly": self.weekly, "monthly": self.monthly,
-                     "yearly": self.yearly, "all time": self.all_time}
-        return json_data
-
-    @classmethod
-    def new(cls, company_id):
-        instance = cls(
-            company_id=company_id
-        )
-        db.session.add(instance)
-        db.session.commit()
-
-        return instance
-
 
 ## Badges
 
