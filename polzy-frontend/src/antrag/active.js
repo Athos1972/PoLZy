@@ -718,8 +718,8 @@ function ActiveAntrag(props) {
   }
 
   //***** BEBUG OUTPUT
-  //console.log('Antrag Props:')
-  //console.log(props)
+  console.log('Antrag Props:')
+  console.log(props)
   
   return(
     <AntragCard

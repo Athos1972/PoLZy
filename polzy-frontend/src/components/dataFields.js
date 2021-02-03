@@ -29,7 +29,8 @@ import SearchField from './searchField'
 import EnhancedTable from './enhancedTable'
 import MappedImage from './mappedImage'
 import ExpandButton from './expandButton'
-import { getLocaleDateFormat, backendDateFormat } from '../dateFormat' 
+import { getLocaleDateFormat, backendDateFormat } from '../dateFormat'
+import { formatNumberWithCommas } from '../utils'
 
 // Styles
 const useStyles = makeStyles((theme) => ({
@@ -70,7 +71,11 @@ const useStyles = makeStyles((theme) => ({
 export function DataFieldText(props) {
   const classes = useStyles()
   const {id, data, value, onChange } = props
-  const error = Boolean(data.errorMessage)
+  const [error, setError] = React.useState()
+
+  React.useEffect(() => {
+    setError(Boolean(data.errorMessage))
+  }, [data.errorMessage])
 
   return (
     <FormControl
@@ -153,7 +158,11 @@ export function DataFieldTextBox(props) {
 export function DataFieldNumber(props) {
   const classes = useStyles()
   const {id, data, value } = props
-  const error = Boolean(data.errorMessage)
+  const [error, setError] = React.useState()
+
+  React.useEffect(() => {
+    setError(Boolean(data.errorMessage))
+  }, [data.errorMessage])
 
   const handleChange = (event) => {
     const newValue = event.target.value
@@ -224,7 +233,7 @@ export function DataFieldNumberRange(props) {
     }
 
     // set default range message
-    setHelperText(t('value.range') + ': ' + min + '-' + max)
+    setHelperText(t('value.range') + ': ' + formatNumberWithCommas(min) + '-' + formatNumberWithCommas(max))
 
     // check if value in range
     if ((Boolean(value) && value < min) || value > max) {
@@ -236,7 +245,7 @@ export function DataFieldNumberRange(props) {
     if (!Boolean(value) || (value >= min && value <= max)) {
       setError(false)
     }
-  }, [value])
+  }, [value, data.errorMessage])
 
   const handleChange = (event) => {
     //const newValue = valueInRange(event.target.value)
@@ -300,7 +309,11 @@ export function DataFieldNumberRange(props) {
 export function DataFieldSelect(props) {
   const classes = useStyles()
   const {id, data, value } = props
-  const error = Boolean(data.errorMessage)
+  const [error, setError] = React.useState()
+
+  React.useEffect(() => {
+    setError(Boolean(data.errorMessage))
+  }, [data.errorMessage])
 
   const handleChange = (event, value) => {
     const newValue = {[data.name]: value}
@@ -344,7 +357,11 @@ export function DataFieldDate(props) {
   const classes = useStyles()
   const {id, data, value } = props
   const {i18n} = useTranslation()
-  const error = Boolean(data.errorMessage)
+  const [error, setError] = React.useState()
+
+  React.useEffect(() => {
+    setError(Boolean(data.errorMessage))
+  }, [data.errorMessage])
 
   const getLocale = () => {
     switch (i18n.language) {
