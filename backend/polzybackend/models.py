@@ -538,7 +538,7 @@ class GamificationUserStats(db.Model):
         if not id_:
             print(f"Combination of activityName: {str(activityName)}, lineOfBusiness: {str(lob)} or "
                   f"event: {str(eventName)} not found in Weight table. Using default value 10.")
-            id_ = db.session.query(GamificationActivityWeight).filter_by(activity_name="default").first().points
+            id_ = db.session.query(GamificationActivityWeight).filter_by(activity_name="default").first()
         return id_.points
 
     @classmethod
