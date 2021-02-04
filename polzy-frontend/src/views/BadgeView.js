@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
-import { getBadgeTypes, makeBadgeSeen, getBadgeImage } from '../api/gamification'
+import { getBadgeTypes, makeBadgeSeen } from '../api/gamification'
 import { updateUser } from '../redux/actions'
 import { apiHost } from '../utils'
 import confetti from 'canvas-confetti'
@@ -209,10 +209,10 @@ function BadgeView(props) {
     launchConfetti()
   }
 
-  console.log('CURRENT BADGE:')
-  console.log(currentBadge)
-  console.log('Badge Types:')
-  console.log(badgeTypes)
+  //console.log('CURRENT BADGE:')
+  //console.log(currentBadge)
+  //console.log('Badge Types:')
+  //console.log(badgeTypes)
 
   return (
     <React.Fragment>

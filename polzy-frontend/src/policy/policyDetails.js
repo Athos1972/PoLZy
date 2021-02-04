@@ -260,9 +260,9 @@ function Clauses(props) {
         <Collapse in={open} timeout="auto">
           <Table size="small">
             <TableBody>
-              {data.map((clause) => (
+              {data.map((clause, index) => (
                 <MakeClauseRow
-                  key={clause.number} 
+                  key={`${clause.name}-${index}`} 
                   clause={clause} 
                 />
               ))}

@@ -455,8 +455,8 @@ function ActiveAntrag(props) {
   ** Auto Calculate
   */
   React.useEffect(() => {
-    console.log('AUTOCALCULATE')
-    console.log(!autoCalculateDisabled)
+    //console.log('AUTOCALCULATE')
+    //console.log(!autoCalculateDisabled)
     if (antrag.status === "Neu" && !autoCalculateDisabled && validateFields()) {
       console.log('Make autocalculation')
       calculateAntrag()
@@ -493,7 +493,7 @@ function ActiveAntrag(props) {
     }).catch(error => {
       console.log(error)
     }).finally(() => {
-      console.log('FINALLY')
+      //console.log('FINALLY')
       setAutoCalculateDisabled(false)
     })
   }
@@ -569,10 +569,10 @@ function ActiveAntrag(props) {
     // execute activity
     executeAntrag(props.user, requestData).then(data => {
 
-      console.log('EXECUTION ACTIVITY:')
-      console.log(activity)
-      console.log('RESPONSE DATA:')
-      console.log(data)
+      //console.log('EXECUTION ACTIVITY:')
+      //console.log(activity)
+      //console.log('RESPONSE DATA:')
+      //console.log(data)
       
       // post define behavior
       switch (activity.postExecution) {
@@ -718,8 +718,8 @@ function ActiveAntrag(props) {
   }
 
   //***** BEBUG OUTPUT
-  //console.log('Antrag Props:')
-  //console.log(props)
+  console.log('Antrag Props:')
+  console.log(props)
   
   return(
     <AntragCard
