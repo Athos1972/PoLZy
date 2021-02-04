@@ -35,22 +35,6 @@ const useStyles = makeStyles({
   flagIcon: {
     minWidth: "56px",
   },
-
-  noBorders: {
-    root: {
-      "& $notchedOutline": {
-        border: "none",
-      },
-      "&:hover $notchedOutline": {
-        border: "none",
-      },
-      "&$focused $notchedOutline": {
-        border: "none",
-      }
-    },
-    focused: {},
-    notchedOutline: {},
-  },
 })
 
 // bordless input field

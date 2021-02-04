@@ -157,7 +157,7 @@ const mapStateToProps = (state) => ({
   user: state.user,
 })
 
-const SearchDropDown = connect(mapStateToProps)(SearchDropDownBase)
+export const SearchDropDown = connect(mapStateToProps)(SearchDropDownBase)
 
 
 function InputRadio(props) {
