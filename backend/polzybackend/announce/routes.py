@@ -27,7 +27,7 @@ def listen():
     )
 
 
-@bp.route("/notifications", methods=["POST"])
+@bp.route("/notifications")#, methods=["POST"])
 @auth.login_required
 def notifications():
     user = auth.current_user()

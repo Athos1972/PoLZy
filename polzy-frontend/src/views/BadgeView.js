@@ -102,15 +102,20 @@ function BadgeImageBase(props) {
       // fetch image resource
       headers: {'authorization': `Bearer ${props.user.accessToken}`},
     }).then(response => {
+      console.log(response)
       // get blob
       return response.blob()
     }).then(blob => {
+      console.log(blob)
       // convert blob to URL containing the blob
       setBadgeSrc(URL.createObjectURL(blob))
     }).catch(error => {
       console.log(error)
     })
   }, [])
+
+  console.log('Iamge URL:')
+  console.log(badgeSrc)
 
   return (
     <img
