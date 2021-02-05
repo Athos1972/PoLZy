@@ -31,3 +31,22 @@ export const executeActivity = async (user, activity) => {
 
   throw new Error(data.error)
 }
+
+
+export const getCustomers = async (user, string) => {
+  const response = await fetch('/api/customers', {
+    method: 'POST',
+    headers: {
+      'authorization': `Bearer ${user.accessToken}`,
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify({query: string}),
+  })
+  const data = await response.json()
+  
+  if (response.ok) {
+    return data
+  }
+
+  throw new Error(data.error)
+}

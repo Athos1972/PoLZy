@@ -10,7 +10,9 @@ import {
   Select,
   OutlinedInput,
   MenuItem,
+  TextField,
 } from '@material-ui/core'
+import Autocomplete from '@material-ui/lab/Autocomplete'
 import { makeStyles } from '@material-ui/core/styles'
 import { format } from 'date-fns'
 import SearchIcon from '@material-ui/icons/Search'
@@ -20,7 +22,8 @@ import { addPolicy } from '../redux/actions'
 import { getCompanyLogo, EmblemLogo } from '../components/logo'
 import { backendDateFormat } from '../dateFormat'
 import { DataFieldText, DataFieldDate } from '../components/dataFields'
-import { SearchDropDown } from '../components/searchField'
+import { getCustomers } from '../api/policy'
+//import { SearchDropDown } from '../components/searchField'
 import { capitalizeFirstChar } from '../utils'
 // styles
 const useStyles = makeStyles(theme => ({
@@ -46,6 +49,12 @@ const noBordersStyle = makeStyles((theme) => ({
   focused: {},
   notchedOutline: {},
 }))
+
+// search options
+const searchOptions = [
+  "policy",
+  "customer",
+]
 
 function NewPolicyHeader(props) {
   const {t} = useTranslation('policy')
@@ -108,44 +117,60 @@ function NewPolicy(props) {
     customer: '',
   }
 
-  const searchOptions = [
-    "policy",
-    "customer",
-  ]
-
-  const [policy, setPolicy] = React.useState(defaultData)
-  //const [customer, setCustomer] = React.useState()
+  const [values, setValues] = React.useState(defaultData)
+  //const [customerString, setCustomerString] = React.useState('')
+  const [customerList, setCustomerList] = React.useState([])
+  const [customerText, setCustomerText] = React.useState('')
   const [searchFor, setSearchFor] = React.useState(searchOptions[0])
 
   const {t} = useTranslation('policy')
 
   const handleInputChange = (newValues) => {
-    //console.log('Value Changed:')
-    //console.log(newValues)
-    setPolicy(preValues => ({
+    setValues(preValues => ({
       ...preValues,
       ...newValues,
     }))
   }
 
   const validateForm = () => {
-    if (policy.number === "" || policy.date === "") {
-      return false
+    if (searchFor === "policy" && values.number && values.date) {
+      return true
     }
 
-    return true
+    if (searchFor === "customer" && values.customer) {
+      return true
+    }
+
+    return false
   }
 
   const handleSubmit = () => {
-    // add policy card
-    props.addPolicy({
-      request_state: "waiting",
-      policy_number: policy.number,
-      effective_date: policy.date,
-    })
+    switch (searchFor) {
+      case "policy":
+        // add policy card
+        props.addPolicy({
+          request_state: "waiting",
+          policy_number: values.number,
+          effective_date: values.date,
+        })
 
-    // update state to default
-    setPolicy(defaultData)
+        // update state to default
+        setValues(defaultData)
+        return
+      case "customer":
+        getCustomers(props.user, values.customerString).then(data => {
+          setCustomerList(data)
+        }).catch(error => {
+          console.log(error)
+        })
+        return
+      default:
+        return
+    }
+  }
+
+  const handleCustomerSelect = (event, value) => {
+    console.log(value)
   }
 
   return(
@@ -161,59 +186,89 @@ function NewPolicy(props) {
           }
         />
         <CardContent>
-          {searchFor === "policy" ? (
-            <Grid container spacing={2}>
-              <Grid item xs={11} md={3}>
+          <Grid container direction="column">
+          <Grid container item spacing={2}>
+            {searchFor === "policy" ? (
+              <React.Fragment>
+                <Grid item xs={12} md={3}>
+                  <DataFieldText
+                    id="policy-number"
+                    value={values.number}
+                    data={{
+                      name: "number",
+                      brief: t("policy.number")
+                    }}
+                    onChange={handleInputChange}
+                  />
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <DataFieldDate
+                    id="policy-date"
+                    value={values.date}
+                    data={{
+                      name: "date",
+                      brief: t("effective.date")
+                    }}
+                    onChange={handleInputChange}
+                  />
+                </Grid>
+              </React.Fragment>
+            ) : (
+              <Grid item xs={12} md={6}>
                 <DataFieldText
-                  id="policy-number"
-                  value={policy.number}
+                  id="customer-serch"
+                  value={values.customer}
                   data={{
-                    name: "number",
-                    brief: t("policy.number")
+                    name: "customer",
+                    brief: t("policy.customer")
                   }}
                   onChange={handleInputChange}
                 />
               </Grid>
-              <Grid item xs={11} md={3}>
-                <DataFieldDate
-                  id="policy-date"
-                  value={policy.date}
-                  data={{
-                    name: "date",
-                    brief: t("effective.date")
-                  }}
-                  onChange={handleInputChange}
-                />
-              </Grid>
-              <Grid item xs={11} md={2}>
-                <Button
-                  variant="contained"
-                  color="primary"
+            )}
+            <Grid item xs={12} md={2}>
+              <Button
+                variant="contained"
+                color="primary"
+                fullWidth
+                startIcon={<SearchIcon />}
+                onClick={handleSubmit}
+                disabled={!validateForm()}
+              >
+                {t("find")}
+              </Button>
+            </Grid>
+          </Grid>
+
+          {/* Customer Seach Results */}
+          {searchFor === "customer" &&
+            <Grid container item spacing={2}>
+              <Grid item xs={12} md={6}>
+                <Autocomplete
+                  id="customer-list"
+                  options={customerList}
+                  getOptionLabel={(option) => option.name}
                   fullWidth
-                  startIcon={<SearchIcon />}
-                  onClick={handleSubmit}
-                  disabled={!validateForm()}
-                >
-                  {t("find")}
-                </Button>
+                  size="small"
+                  onChange={handleCustomerSelect}
+                  renderInput={(params) => 
+                    <TextField 
+                      {...params}
+                      label={t("policy:select.customer")}
+                      variant="outlined"
+                    />
+                  }
+                />
               </Grid>
             </Grid>
-          ) : (
-            <SearchDropDown
-              data={{
-                name: "customer",
-                brief: "Customer data",
-                endpoint: "partner",
-              }}
-              onChange={setPolicy}
-            />
-          )}
+          }
+          </Grid>
         </CardContent>
       </div>
       <div style={{width: 120}}>
       <CardLogo>
         <EmblemLogo
-          logo={getCompanyLogo(props.companyAttributes, "policy")}
+          logo={getCompanyLogo(props.user.company.attributes, "policy")}
           target="policy"
           size={170}
         />
@@ -226,7 +281,7 @@ function NewPolicy(props) {
 
 // connect to redux store
 const mapStateToProps = (state) => ({
-  companyAttributes: state.user.company.attributes,
+  user: state.user,
 })
 
 const mapDispatchToProps = {
