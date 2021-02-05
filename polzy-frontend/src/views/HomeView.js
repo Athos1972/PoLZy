@@ -156,7 +156,7 @@ function RenderCurrentView(props) {
     case VIEW_ADMIN:
       return <AdminView onClose={props.onClose} />
     case VIEW_BADGE:
-      return <BadgeView onClose={props.onClose} />
+      return <BadgeView {...props} />
     case VIEW_RANKING:
       return <RankingView onClose={props.onClose} />
     default:
@@ -244,6 +244,8 @@ function MainViewBase(props) {
           view={view}
           onClose={goToHome}
           onChange={setView}
+          updateBadges={updateBadges}
+          onBadgesUpdated={handleOnBadgesUpdated}
         />
       </Container>
       <footer className={classes.footer}>

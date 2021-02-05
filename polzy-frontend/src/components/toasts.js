@@ -11,22 +11,13 @@ function BadgeToastBase(props) {
   const [badgeSrc, setBadgeSrc] = React.useState('')
 
   React.useEffect(() => {
-    // get route to bage
-    //const badgeRoute = Boolean(props.type) ? `${props.type.toLowerCase()}/${props.level.toLowerCase()}` : "disabled"
-    
-
+    // get bage src
     getBadgeSrc(props.user, props.uri).then(src => {
-      console.log('BadgeView src:')
-      console.log(src)
       setBadgeSrc(src)
     }).catch(error => {
       console.log(error)
     })
-
   }, [])
-
-  console.log('Badge Toast')
-  console.log(props)
 
   return (
     <Grid container spacing={2}>

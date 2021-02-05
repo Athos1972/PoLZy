@@ -89,47 +89,17 @@ function BadgeImageBase(props) {
   const altBadge = Boolean(props.type) ? `${props.level} ${props.type}` : "Disabled"
   const width = props.overlay ? "80%" : "50%"
 
-  //console.log('URL:')
-  //console.log(window.URL)
-  //console.log(window.webkitURL)
-
   React.useEffect(() => {
     // get route to bage
     const badgeRoute = Boolean(props.type) ? `${props.type.toLowerCase()}/${props.level.toLowerCase()}` : "disabled"
-    
-
-    /*if (!props.isSeen && !Boolean(props.overlay)) {
-      return "new"
-    }*/
-/*
-    fetch(`/api/badge/${badgeRoute}`, {
-      // fetch image resource
-      headers: {'authorization': `Bearer ${props.user.accessToken}`},
-    }).then(response => {
-      console.log(response)
-      // get blob
-      return response.blob()
-    }).then(blob => {
-      console.log(blob)
-      // convert blob to URL containing the blob
-      setBadgeSrc((window.URL ? window.URL : window.webkitURL).createObjectURL(blob))
-    }).catch(error => {
-      console.log(error)
-    })
-*/
+    // get badge src
     getBadgeSrc(props.user, badgeRoute).then(src => {
-      // convert blob to URL containing the blob
-      console.log('BadgeView src:')
-      console.log(src)
       setBadgeSrc(src)
     }).catch(error => {
       console.log(error)
     })
 
-  }, [])
-
-  console.log('Iamge URL:')
-  console.log(badgeSrc)
+  }, [props])
 
   return (
     <img
@@ -186,8 +156,10 @@ function BadgeView(props) {
     }).catch(error => {
       setBadgeTypes([])
       console.log(error)
+    }).finally(() => {
+      props.onBadgesUpdated()
     })
-  }, [])
+  }, [props.updateBadges])
 
   const getBadgeByType = (type) => {
     const result = props.user.badges.filter(badge => badge.type === type.name)
@@ -207,8 +179,8 @@ function BadgeView(props) {
     setCurrentBadge(target)
     setOpenBadge(true)
 
-    console.log('Badge Clicked:')
-    console.log(target)
+    //console.log('Badge Clicked:')
+    //console.log(target)
 
     // update seen prop
     if (target.badge.isSeen === false) {
@@ -227,11 +199,6 @@ function BadgeView(props) {
   if (openBadge && currentBadge.badge.isSeen == false) {
     launchConfetti()
   }
-
-  //console.log('CURRENT BADGE:')
-  //console.log(currentBadge)
-  //console.log('Badge Types:')
-  //console.log(badgeTypes)
 
   return (
     <React.Fragment>

@@ -82,8 +82,8 @@ function UserMenu(props) {
     }
 
     getBadges(props.user).then((data) => {
-      console.log('BADGES:')
-      console.log(data)
+      //console.log('BADGES:')
+      //console.log(data)
       // set user badges
       props.setBadges(data)
       // disable bdges update
@@ -94,22 +94,7 @@ function UserMenu(props) {
       console.log(error)
     })
   }, [props.updateBadges])
-/*
-  const handleGoToHome = () => {
-    props.onChange(VIEW_HOME)
-    setOpenMenu(false)
-  }
 
-  const handleShowAdmin = () => {
-    props.onChange(VIEW_ADMIN)
-    setOpenMenu(false)
-  }
-
-  const handleShowBadges = () => {
-    props.onChange(VIEW_BADGE)
-    setOpenMenu(false)
-  }
-*/
   const handleShowView = (view) => {
     props.onChange(view)
     setOpenMenu(false)
