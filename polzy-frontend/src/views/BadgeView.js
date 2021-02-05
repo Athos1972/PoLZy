@@ -89,6 +89,10 @@ function BadgeImageBase(props) {
   const altBadge = Boolean(props.type) ? `${props.level} ${props.type}` : "Disabled"
   const width = props.overlay ? "80%" : "50%"
 
+  console.log('URL:')
+  //console.log(window.URL)
+  //console.log(window.webkitURL)
+
   React.useEffect(() => {
     // get route to bage
     const badgeRoute = Boolean(props.type) ? `${props.type.toLowerCase()}/${props.level.toLowerCase()}` : "disabled"
@@ -108,7 +112,7 @@ function BadgeImageBase(props) {
     }).then(blob => {
       console.log(blob)
       // convert blob to URL containing the blob
-      setBadgeSrc(URL.createObjectURL(blob))
+      setBadgeSrc((window.URL ? window.URL : window.webkitURL).createObjectURL(blob))
     }).catch(error => {
       console.log(error)
     })
