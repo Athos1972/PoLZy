@@ -28,6 +28,20 @@ export const getBadges = async (user) => {
   throw new Error(data.error)
 }
 
+export const getBadgeSrc = async (user, route) => {
+  const response = await fetch(`/api/badge/${route}`, {
+    headers: {'authorization': `Bearer ${user.accessToken}`},
+  })
+  const blob = await response.blob()
+  const src = await (window.URL ? window.URL : window.webkitURL).createObjectURL(blob)
+
+  if (response.ok) {
+    return src
+  }
+
+  throw new Error('Failed fetch badge image')
+}
+
 export const makeBadgeSeen = async (user, payload) => {
   const response = await fetch("/api/badges/seen", {
   	method: 'POST',

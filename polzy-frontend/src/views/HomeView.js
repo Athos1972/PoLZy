@@ -182,7 +182,7 @@ function MainViewBase(props) {
     </IconButton>
   )
 
-  // push notifications
+  // push notifications every minute
   useEffect(() => {
     setInterval(() => {
       pushNotifications(props.user).catch(error => {

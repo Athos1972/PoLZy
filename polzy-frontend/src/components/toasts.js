@@ -1,15 +1,38 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { Grid, Typography } from '@material-ui/core'
-import { apiHost } from '../utils'
+import { getBadgeSrc } from '../api/gamification'
+//import { apiHost } from '../utils'
 
-const uriBadge = apiHost + 'api/badge/'
+//const uriBadge = apiHost + 'api/badge/'
 
-export function BadgeToast(props) {
+function BadgeToastBase(props) {
+
+  const [badgeSrc, setBadgeSrc] = React.useState('')
+
+  React.useEffect(() => {
+    // get route to bage
+    //const badgeRoute = Boolean(props.type) ? `${props.type.toLowerCase()}/${props.level.toLowerCase()}` : "disabled"
+    
+
+    getBadgeSrc(props.user, props.uri).then(src => {
+      console.log('BadgeView src:')
+      console.log(src)
+      setBadgeSrc(src)
+    }).catch(error => {
+      console.log(error)
+    })
+
+  }, [])
+
+  console.log('Badge Toast')
+  console.log(props)
+
   return (
     <Grid container spacing={2}>
       <Grid item>
         <img
-          src={uriBadge + props.uri}
+          src={badgeSrc}
           height={25}
           alt="New Badge"
         />
@@ -26,3 +49,10 @@ export function BadgeToast(props) {
     </Grid>
   )
 }
+
+// connect to redux store
+const mapStateToProps = (state) => ({
+  user: state.user,
+})
+
+export const BadgeToast = connect(mapStateToProps)(BadgeToastBase)

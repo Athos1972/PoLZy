@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
-import { getBadgeTypes, makeBadgeSeen } from '../api/gamification'
+import { getBadgeTypes, makeBadgeSeen, getBadgeSrc } from '../api/gamification'
 import { updateUser } from '../redux/actions'
 import { apiHost } from '../utils'
 import confetti from 'canvas-confetti'
@@ -89,7 +89,7 @@ function BadgeImageBase(props) {
   const altBadge = Boolean(props.type) ? `${props.level} ${props.type}` : "Disabled"
   const width = props.overlay ? "80%" : "50%"
 
-  console.log('URL:')
+  //console.log('URL:')
   //console.log(window.URL)
   //console.log(window.webkitURL)
 
@@ -101,7 +101,7 @@ function BadgeImageBase(props) {
     /*if (!props.isSeen && !Boolean(props.overlay)) {
       return "new"
     }*/
-
+/*
     fetch(`/api/badge/${badgeRoute}`, {
       // fetch image resource
       headers: {'authorization': `Bearer ${props.user.accessToken}`},
@@ -116,6 +116,16 @@ function BadgeImageBase(props) {
     }).catch(error => {
       console.log(error)
     })
+*/
+    getBadgeSrc(props.user, badgeRoute).then(src => {
+      // convert blob to URL containing the blob
+      console.log('BadgeView src:')
+      console.log(src)
+      setBadgeSrc(src)
+    }).catch(error => {
+      console.log(error)
+    })
+
   }, [])
 
   console.log('Iamge URL:')
