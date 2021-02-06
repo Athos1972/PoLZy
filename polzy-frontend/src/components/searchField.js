@@ -100,8 +100,8 @@ function SearchDropDownBase(props) {
       return
     }
 
-    //console.log('Search Select:')
-    //console.log(newValue)
+    console.log('SELECTED:')
+    console.log(newValue)
 
     const {label, ...otherValues} = newValue
     const updateValues = {
@@ -116,8 +116,9 @@ function SearchDropDownBase(props) {
       // update antrag value
       props.onChange(updateValues)
     }
-    //props.onChange(updateValues)
   }
+
+  console.log(options)
 
   return (
     <Autocomplete

@@ -87,7 +87,7 @@ export const executeAntrag = async (user, antrag) => {
 export const searchPortal = async (user, id, target, value) => {
   //console.log('SERACH API:')
   //console.log(user)
-  const response = await fetch(`/api/search/${id}`, {
+  const response = await fetch(id ? `/api/search/${id}`: '/api/search', {
     method: 'POST',
     headers: {
       'authorization': `Bearer ${user.accessToken}`,

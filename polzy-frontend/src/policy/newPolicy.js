@@ -23,7 +23,7 @@ import { getCompanyLogo, EmblemLogo } from '../components/logo'
 import { backendDateFormat } from '../dateFormat'
 import { DataFieldText, DataFieldDate } from '../components/dataFields'
 import { getCustomers } from '../api/policy'
-//import { SearchDropDown } from '../components/searchField'
+import { SearchDropDown } from '../components/searchField'
 import { capitalizeFirstChar } from '../utils'
 // styles
 const useStyles = makeStyles(theme => ({
@@ -136,41 +136,36 @@ function NewPolicy(props) {
     if (searchFor === "policy" && values.number && values.date) {
       return true
     }
-
+/*
     if (searchFor === "customer" && values.customer) {
       return true
     }
-
+*/
     return false
   }
 
   const handleSubmit = () => {
-    switch (searchFor) {
-      case "policy":
-        // add policy card
-        props.addPolicy({
-          request_state: "waiting",
-          policy_number: values.number,
-          effective_date: values.date,
-        })
+    // add policy card
+    props.addPolicy({
+      request_state: "waiting",
+      policy_number: values.number,
+      effective_date: values.date,
+    })
 
-        // update state to default
-        setValues(defaultData)
-        return
-      case "customer":
-        getCustomers(props.user, values.customerString).then(data => {
-          setCustomerList(data)
-        }).catch(error => {
-          console.log(error)
-        })
-        return
-      default:
-        return
-    }
+    // update state to default
+    setValues(defaultData)
   }
 
-  const handleCustomerSelect = (event, value) => {
+  const handleCustomerSelect = (value) => {
+    console.log('Selected:')
     console.log(value)
+
+    // add customer card
+    props.addPolicy({
+      request_state: "customer",
+      policies: [],
+      ...value,
+    })
   }
 
   return(
@@ -186,11 +181,10 @@ function NewPolicy(props) {
           }
         />
         <CardContent>
-          <Grid container direction="column">
-          <Grid container item spacing={2}>
+          <Grid container spacing={2}>
             {searchFor === "policy" ? (
               <React.Fragment>
-                <Grid item xs={12} md={3}>
+                <Grid item xs={11} md={4}>
                   <DataFieldText
                     id="policy-number"
                     value={values.number}
@@ -201,7 +195,7 @@ function NewPolicy(props) {
                     onChange={handleInputChange}
                   />
                 </Grid>
-                <Grid item xs={12} md={3}>
+                <Grid item xs={11} md={4}>
                   <DataFieldDate
                     id="policy-date"
                     value={values.date}
@@ -212,56 +206,32 @@ function NewPolicy(props) {
                     onChange={handleInputChange}
                   />
                 </Grid>
+                <Grid item xs={11} md={3}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    startIcon={<SearchIcon />}
+                    onClick={handleSubmit}
+                    disabled={!validateForm()}
+                  >
+                    {t("find")}
+                  </Button>
+                </Grid>
               </React.Fragment>
             ) : (
-              <Grid item xs={12} md={6}>
-                <DataFieldText
-                  id="customer-serch"
+              <Grid item xs={11}>
+                <SearchDropDown
                   value={values.customer}
                   data={{
                     name: "customer",
-                    brief: t("policy.customer")
+                    brief: t("policy.customer"),
+                    endpoint: "partner",
                   }}
-                  onChange={handleInputChange}
+                  onChange={handleCustomerSelect}
                 />
               </Grid>
             )}
-            <Grid item xs={12} md={2}>
-              <Button
-                variant="contained"
-                color="primary"
-                fullWidth
-                startIcon={<SearchIcon />}
-                onClick={handleSubmit}
-                disabled={!validateForm()}
-              >
-                {t("find")}
-              </Button>
-            </Grid>
-          </Grid>
-
-          {/* Customer Seach Results */}
-          {searchFor === "customer" &&
-            <Grid container item spacing={2}>
-              <Grid item xs={12} md={6}>
-                <Autocomplete
-                  id="customer-list"
-                  options={customerList}
-                  getOptionLabel={(option) => option.name}
-                  fullWidth
-                  size="small"
-                  onChange={handleCustomerSelect}
-                  renderInput={(params) => 
-                    <TextField 
-                      {...params}
-                      label={t("policy:select.customer")}
-                      variant="outlined"
-                    />
-                  }
-                />
-              </Grid>
-            </Grid>
-          }
           </Grid>
         </CardContent>
       </div>
