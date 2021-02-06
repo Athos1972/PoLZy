@@ -751,3 +751,4 @@ class ToastNotifications(db.Model):
 
     def set_seen(self):
         self.seen_at = datetime.now()
+        db.session.commit()
