@@ -4,6 +4,7 @@ import {
   Tab,
   Tabs,
   Table,
+  TableHead,
   TableBody,
   TableRow,
   TableCell,
@@ -141,6 +142,19 @@ function RankingView(props) {
               <col style={{width:'30%'}}/>
               <col style={{width:'35%'}}/>
             </colgroup>
+            <TableHead>
+              <TableRow>
+                <TableCell align='left'>
+                  {t("gamification:topic")}
+                </TableCell>
+                <TableCell align="center">
+                  {t("gamification:points")}
+                </TableCell>
+                <TableCell align="center">
+                  {t("gamification:rank")}
+                </TableCell>
+              </TableRow>
+            </TableHead>
             <TableBody>
               {loading ? (
                 getWaitingRows()

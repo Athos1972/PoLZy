@@ -122,6 +122,9 @@
     "weekly": "Weekly",
     "monthly": "Monthly",
     "annual": "Annual",
-    "update": "Update Ranking"
+    "update": "Update Ranking",
+    "topic": "Topic",
+    "points": "Points",
+    "rank": "Rank"
   }
 }
