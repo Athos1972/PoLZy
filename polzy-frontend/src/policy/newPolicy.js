@@ -157,8 +157,8 @@ function NewPolicy(props) {
   }
 
   const handleCustomerSelect = (value) => {
-    console.log('Selected:')
-    console.log(value)
+    //console.log('Selected:')
+    //console.log(value)
 
     // add customer card
     props.addPolicy({

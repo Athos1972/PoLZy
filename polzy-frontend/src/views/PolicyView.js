@@ -47,7 +47,7 @@ function PolicyView(props) {
   const classes = useStyles()
   const {t} = useTranslation('common', 'feedback')
 
-  console.log(props.policies)
+  //console.log(props.policies)
 
   return(
     <div className={classes.container}>

@@ -115,7 +115,12 @@ function Customer(props) {
   const classes = useStyles()
   const {index, customer} = props
 
-  const [isVisible, setIsVisible] = React.useState(true)
+  const [isVisible, setIsVisible] = React.useState(false)
+
+  // appear animation
+  React.useEffect(() => {
+    setIsVisible(true)
+  }, [])
 
   const handleClose = () => {
     setIsVisible(false)
@@ -125,9 +130,7 @@ function Customer(props) {
   return (
     <Collapse
       in={isVisible}
-      timeout={{
-        exit: hideTime,
-      }}
+      timeout={hideTime}
       unmountOnExit
     >
       <CardActive>
