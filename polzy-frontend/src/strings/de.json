@@ -50,11 +50,13 @@
 
   "policy": {
     "clauses": "Klauseln",
+    "customer": "Partner",
     "effective.date": "Wirksamkeitsdatum",
     "find": "Finden",
     "find.policy": "Finde Polizze",
     "insured.object": "Versichertes Risiko",
     "invalid": "Ungültige Polizzendaten",
+    "partner.policies": "Polizze des Partners",
     "policy": "Polizze",
     "policy.number": "Polizze",
     "policy not found": "Polizze nicht gefunden",
@@ -78,23 +80,26 @@
     "tag": "Gedächtnisstütze / Anmerkung"
   },
 
-   "partner": {
-      "person": "Person",
-      "firstName": "Vorname",
-      "lastName": "Nachname",
-      "birthDate": "Geburtsdatum",
-      "gender": "Geschlecht",
-      "gender.male": "Männlich",
-      "gender.female": "Weiblich",
-      "gender.float": "Anders",
-      "company": "Firma",
-      "companyName": "Firmenname",
-      "registrationNumber": "Firmenbuchnummer",
-      "companyType": "Unternehmenstyp",
-      "address": "Adresse",
-      "email": "E-Mail",
-      "telefon": "Telefon"
-   },
+  "partner": {
+    "person": "Person",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "birthDate": "Geburtsdatum",
+    "gender": "Geschlecht",
+    "gender.male": "Männlich",
+    "gender.female": "Weiblich",
+    "gender.float": "Anders",
+    "company": "Firma",
+    "companyName": "Firmenname",
+    "registrationNumber": "Firmenbuchnummer",
+    "companyType": "Unternehmenstyp",
+    "address": "Adresse",
+    "city": "Stadt",
+    "postcode": "Postleitzahl",
+    "email": "E-Mail",
+    "telefon": "Telefon",
+    "details": "Angaben zum Partner"
+  },
 
   "views": {
     "policy": "Polizze",

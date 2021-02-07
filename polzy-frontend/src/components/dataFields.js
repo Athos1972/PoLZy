@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
   inputGroupSubtitle: {
     marginTop: theme.spacing(2),
     marginLeft: theme.spacing(2),
-  }
+  },
 
 }))
 

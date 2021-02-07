@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { makeStyles } from '@material-ui/core/styles'
 import { 
   CardContent,
   CardActions,
@@ -29,19 +30,33 @@ import { addPolicy, removePolicy } from '../redux/actions'
 import {BrokeCard} from '../debug/damageCard'
 
 
+// Styles
+const useStyles = makeStyles((theme) => ({
+  card: {
+    backgroundColor: theme.palette.primary.light,
+    color: theme.palette.primary.contrastText,
+  },
+
+  heading: {
+    marginLeft: theme.spacing(1),
+  }
+
+}))
+
+
 function CustomerDetails(props) {
   // renders general data of customer
 
-  const {t} = useTranslation('policy')
+  const {t} = useTranslation('partner')
 
   return(
     <GenericSection
-      title={t("customer.details")}
+      title={t("partner:details")}
       data={{
-        [t("birthday")]: props.birthDate,
-        [t("address")]: props.houseNumber + " " + props.street,
-        [t("city")]: props.city,
-        [t("postcode")]: props.postCode, 
+        [t("partner:birthDate")]: props.birthDate,
+        [t("partner:address")]: props.houseNumber + " " + props.street,
+        [t("partner:city")]: props.city,
+        [t("partner:postcode")]: props.postCode, 
       }}
     />
   )
@@ -50,7 +65,7 @@ function CustomerDetails(props) {
 function CustomerPoliciesBase(props) {
   // renders clauses
   const {policies} = props
-  const {t} = useTranslation('partner')
+  const {t} = useTranslation('policy')
 
   const handleClickLink = (event, policy) => {
     event.preventDefault()
@@ -65,7 +80,7 @@ function CustomerPoliciesBase(props) {
 
   return(
     <Section>
-      <Title title={t("customer.policies")} />
+      <Title title={t("policy:partner.policies")} />
       <Table size="small">
         <TableBody>
           {policies.map((policy, index) => (
@@ -77,7 +92,13 @@ function CustomerPoliciesBase(props) {
                   href="#"
                   onClick={(event) => handleClickLink(event, policy)}
                 >
-                  {"Policy " + policy.policyNumber + ", effective date: " + policy.effectiveDate}
+                  {[
+                    t("policy:policy"),
+                    policy.policyNumber,
+                    "/",
+                    t("policy:effective.date"),
+                    policy.effectiveDate,
+                  ].join(" ")}
                 </Link>
               } 
             />
@@ -91,6 +112,7 @@ function CustomerPoliciesBase(props) {
 
 function Customer(props) {
   const {t} = useTranslation('common')
+  const classes = useStyles()
   const {index, customer} = props
 
   const [isVisible, setIsVisible] = React.useState(true)
@@ -110,11 +132,12 @@ function Customer(props) {
     >
       <CardActive>
         <CardTop
+          className={classes.card}
           action={
             <React.Fragment>
 
               {/* DEBUG: broke antrag */}
-              <BrokeCard card="Antrag" />
+              <BrokeCard card="Customer" />
 
               {/* Close Button */}
               <Tooltip title={t("common:close")}>
@@ -130,6 +153,7 @@ function Customer(props) {
           }
           title={
             <Typography
+              className={classes.heading}
               component="p"
               variant="h5"
             >

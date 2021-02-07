@@ -51,11 +51,13 @@
 
   "policy": {
     "clauses": "Clauses",
+    "customer": "Partner",
     "effective.date": "Effective Date",
     "find": "Find",
     "find.policy": "Find Policy",
     "insured.object": "Insured Object",
     "invalid": "Invalid Policy Data",
+    "partner.policies": "Partner's Policies",
     "policy": "Policy",
     "policy.number": "Policy Number",
     "policy not found": "Policy not Found",
@@ -93,8 +95,11 @@
     "registrationNumber": "Registration Number",
     "companyType": "Type of Company",
     "address": "Address",
+    "city": "City",
+    "postcode": "Postcode",
     "email": "E-mail",
-    "telefon": "Phone"
+    "telefon": "Phone",
+    "details": "Partner's Details"
   },
 
   "views": {

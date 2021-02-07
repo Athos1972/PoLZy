@@ -89,7 +89,7 @@ function NewPolicyHeader(props) {
                 component="p"
                 variant="h5"
               >
-                {capitalizeFirstChar(option)}
+                {t(option)/*capitalizeFirstChar(option)*/}
               </Typography>
             )}
             input={
@@ -100,7 +100,7 @@ function NewPolicyHeader(props) {
           >
             {props.options.map((option, index) => (
               <MenuItem key={index} value={option}>
-                {option}
+                {t(option)}
               </MenuItem>
             ))}
           </Select>
@@ -225,7 +225,7 @@ function NewPolicy(props) {
                   value={values.customer}
                   data={{
                     name: "customer",
-                    brief: t("policy.customer"),
+                    brief: t("customer"),
                     endpoint: "partner",
                   }}
                   onChange={handleCustomerSelect}
