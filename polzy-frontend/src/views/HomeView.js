@@ -20,6 +20,7 @@ import Header from'../components/header'
 import Copyright from '../components/copyright'
 import { BadgeToast } from '../components/toasts'
 import { apiHost } from '../utils'
+import { pushNotifications } from '../api/notifications'
 
 /*
 ** Avalable Views
@@ -148,14 +149,14 @@ const HomeView = connect((state) => ({
 /*
 ** Main View
 */
-function CurrentView(props) {
+function RenderCurrentView(props) {
   //const {view, ...otherProps} = props
 
   switch(props.view) {
     case VIEW_ADMIN:
       return <AdminView onClose={props.onClose} />
     case VIEW_BADGE:
-      return <BadgeView onClose={props.onClose} />
+      return <BadgeView {...props} />
     case VIEW_RANKING:
       return <RankingView onClose={props.onClose} />
     default:
@@ -163,7 +164,7 @@ function CurrentView(props) {
   }
 }
 
-export default function MainView(props) {
+function MainViewBase(props) {
   const classes = useStyles()
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
@@ -180,6 +181,15 @@ export default function MainView(props) {
       <CloseIcon />
     </IconButton>
   )
+
+  // push notifications every minute
+  useEffect(() => {
+    setInterval(() => {
+      pushNotifications(props.user).catch(error => {
+        console.log(error)
+      })
+    }, 60000)
+  }, [])
 
   // get toasts
   useEffect(() => {
@@ -230,10 +240,12 @@ export default function MainView(props) {
           updateBadges={updateBadges}
           onBadgesUpdated={handleOnBadgesUpdated}
         />
-        <CurrentView
+        <RenderCurrentView
           view={view}
           onClose={goToHome}
           onChange={setView}
+          updateBadges={updateBadges}
+          onBadgesUpdated={handleOnBadgesUpdated}
         />
       </Container>
       <footer className={classes.footer}>
@@ -242,3 +254,8 @@ export default function MainView(props) {
     </React.Fragment>
   )
 }
+
+// connect to redux store
+export default connect((state) => ({
+  user: state.user,
+}))(MainViewBase)

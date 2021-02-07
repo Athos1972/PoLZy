@@ -492,7 +492,10 @@ class GamificationUserStats(db.Model):
             badge = GamificationBadge(
                 user_id=self.user_id, company_id=self.company_id, type_id=self.type_id, level_id=level_id)
             db.session.add(badge)
-            #db.session.commit()
+            db.session.commit()
+            ToastNotifications.new(
+                message=badge.id, type="badge", company_ids=self.company_id, user_ids=self.user_id
+            )
 
     def get_level_id(self):
         level = db.session.query(GamificationBadgeLevel).filter(and_(self.all_time >= GamificationBadgeLevel.min_level,
@@ -538,7 +541,7 @@ class GamificationUserStats(db.Model):
         if not id_:
             print(f"Combination of activityName: {str(activityName)}, lineOfBusiness: {str(lob)} or "
                   f"event: {str(eventName)} not found in Weight table. Using default value 10.")
-            id_ = db.session.query(GamificationActivityWeight).filter_by(activity_name="default").first().points
+            id_ = db.session.query(GamificationActivityWeight).filter_by(activity_name="default").first()
         return id_.points
 
     @classmethod
@@ -708,3 +711,44 @@ class GamificationActivityWeight(db.Model):
         all_rows = cls.query.all()
         all_data = {row.id: row.points for row in all_rows}
         return all_data
+
+
+class ToastNotifications(db.Model):
+    __tablename__ = "toast_notifications"
+    id = db.Column(db.String(56), primary_key=True, default=generate_id)
+    company_id = db.Column(db.String(56), db.ForeignKey('companies.id'), primary_key=True)
+    user_id = db.Column(db.String(56), db.ForeignKey('users.id'), primary_key=True)
+    message = db.Column(db.String(128), nullable=False)
+    type = db.Column(db.String(16), default="default", nullable=False)
+    created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    seen_at = db.Column(db.DateTime)
+
+    @classmethod
+    def new(cls, message, type="default", company_ids=None, user_ids=None):
+        companies = []
+        if company_ids:
+            if isinstance(company_ids, list):
+                for company_id in company_ids:
+                    companies.append(company_id)
+            else:
+                companies.append(company_ids)
+        if not companies:
+            companies = [company.id for company in db.session.query(Company).all()]
+        for company_id in companies:
+            users = []
+            if not user_ids:
+                users = [user.id for user in db.session.query(User).filter_by(company_id=company_id).all()]
+            else:
+                if isinstance(user_ids, list):
+                    for user_id in user_ids:
+                        users.append(user_id)
+                else:
+                    users.append(user_ids)
+            for user_id in users:
+                instance = cls(company_id=company_id, user_id=user_id, message=message, type=type)
+                db.session.add(instance)
+                db.session.commit()
+
+    def set_seen(self):
+        self.seen_at = datetime.now()
+        db.session.commit()

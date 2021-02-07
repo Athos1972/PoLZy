@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
-import { getBadgeTypes, makeBadgeSeen } from '../api/gamification'
+import { getBadgeTypes, makeBadgeSeen, getBadgeSrc } from '../api/gamification'
 import { updateUser } from '../redux/actions'
 import { apiHost } from '../utils'
 import confetti from 'canvas-confetti'
@@ -92,25 +92,14 @@ function BadgeImageBase(props) {
   React.useEffect(() => {
     // get route to bage
     const badgeRoute = Boolean(props.type) ? `${props.type.toLowerCase()}/${props.level.toLowerCase()}` : "disabled"
-    
-
-    /*if (!props.isSeen && !Boolean(props.overlay)) {
-      return "new"
-    }*/
-
-    fetch(`/api/badge/${badgeRoute}`, {
-      // fetch image resource
-      headers: {'authorization': `Bearer ${props.user.accessToken}`},
-    }).then(response => {
-      // get blob
-      return response.blob()
-    }).then(blob => {
-      // convert blob to URL containing the blob
-      setBadgeSrc(URL.createObjectURL(blob))
+    // get badge src
+    getBadgeSrc(props.user, badgeRoute).then(src => {
+      setBadgeSrc(src)
     }).catch(error => {
       console.log(error)
     })
-  }, [])
+
+  }, [props])
 
   return (
     <img
@@ -167,8 +156,10 @@ function BadgeView(props) {
     }).catch(error => {
       setBadgeTypes([])
       console.log(error)
+    }).finally(() => {
+      props.onBadgesUpdated()
     })
-  }, [])
+  }, [props.updateBadges])
 
   const getBadgeByType = (type) => {
     const result = props.user.badges.filter(badge => badge.type === type.name)
@@ -188,8 +179,8 @@ function BadgeView(props) {
     setCurrentBadge(target)
     setOpenBadge(true)
 
-    console.log('Badge Clicked:')
-    console.log(target)
+    //console.log('Badge Clicked:')
+    //console.log(target)
 
     // update seen prop
     if (target.badge.isSeen === false) {
@@ -208,11 +199,6 @@ function BadgeView(props) {
   if (openBadge && currentBadge.badge.isSeen == false) {
     launchConfetti()
   }
-
-  //console.log('CURRENT BADGE:')
-  //console.log(currentBadge)
-  //console.log('Badge Types:')
-  //console.log(badgeTypes)
 
   return (
     <React.Fragment>

@@ -22,9 +22,8 @@ export const themeGreenOrange = createMuiTheme(paletteDefault)
 
 
 export const polzyTheme = (theme) => {
-  console.log('THEME:')
-  console.log(theme)
-
+  //console.log('THEME:')
+  //console.log(theme)
   
   if (theme) {
     return createMuiTheme(theme)
