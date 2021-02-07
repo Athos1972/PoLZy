@@ -48,6 +48,7 @@ def newbadge():
                 badge_level = current_badge.level.next_level
                 new_badge = current_badge
                 new_badge.level = badge_level
+                new_badge.is_seen = False
                 search_type = False
         else:
             new_badge = GamificationBadge(

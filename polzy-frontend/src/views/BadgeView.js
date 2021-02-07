@@ -89,9 +89,24 @@ function BadgeImageBase(props) {
   const altBadge = Boolean(props.type) ? `${props.level} ${props.type}` : "Disabled"
   const width = props.overlay ? "80%" : "50%"
 
+  const getBadgeRoute = () => {
+    // green shadow
+    if (props.isSeen === false && !Boolean(props.overlay)) {
+      return "unseen"
+    }
+    
+    // specific badge
+    if (props.type) {
+      return `${props.type.toLowerCase()}/${props.level.toLowerCase()}`
+    }
+
+    // gray shadow
+    return "disabled"
+  }
+
   React.useEffect(() => {
     // get route to bage
-    const badgeRoute = Boolean(props.type) ? `${props.type.toLowerCase()}/${props.level.toLowerCase()}` : "disabled"
+    const badgeRoute = getBadgeRoute()
     // get badge src
     getBadgeSrc(props.user, badgeRoute).then(src => {
       setBadgeSrc(src)
@@ -196,7 +211,7 @@ function BadgeView(props) {
     setOpenBadge(false)
   }
 
-  if (openBadge && currentBadge.badge.isSeen == false) {
+  if (openBadge && currentBadge.badge.isSeen === false) {
     launchConfetti()
   }
 
