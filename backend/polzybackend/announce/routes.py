@@ -32,9 +32,9 @@ def listen():
 @auth.login_required
 def notifications():
     user = auth.current_user()
-    toasts = [toast for toast in db.session.query(ToastNotifications).filter_by(
-        seen_at=None).filter_by(user_id=user.id).filter_by(company_id=user.company_id)]
-    for toast in toasts:
+    toast = db.session.query(ToastNotifications).filter_by(
+        seen_at=None).filter_by(user_id=user.id).filter_by(company_id=user.company_id).first()
+    if toast:
         if toast.type == "badge":
             badge = db.session.query(GamificationBadge).filter_by(id=toast.message).first()
             if badge:
@@ -53,4 +53,5 @@ def notifications():
             })
             messenger.announce(f'data: {msg}\n\n')
         toast.set_seen()
-    return Response(response=f"Total Notifications = {len(toasts)}", status=200)
+        return Response(response=f"New Notifications found", status=200)
+    return Response(response=f"No Notification", status=200)

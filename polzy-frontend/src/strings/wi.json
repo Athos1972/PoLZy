@@ -22,6 +22,7 @@
     "execute": "Mochn",
     "expand": "mehr zeign",
     "find": "Suach!",
+    "na": "Gibt's ned",
     "name": "Nauman",
     "new": "Neich",
     "none": "nix",
@@ -121,6 +122,9 @@
     "weekly": "in da Woch'n",
     "monthly": "im Monat",
     "annual": "im Joar",
-    "update": "Neich lod'n"
+    "update": "Neich lod'n",
+    "topic": "Usa",
+    "points": "Punktal",
+    "rank": "Plots"
   }
 }
