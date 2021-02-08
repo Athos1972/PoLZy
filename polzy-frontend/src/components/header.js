@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 
   toolbarItem: {
     marginLeft: theme.spacing(1),
-    narginRight: theme.spacing(1),
+    marginRight: theme.spacing(1),
   },
 }))
 

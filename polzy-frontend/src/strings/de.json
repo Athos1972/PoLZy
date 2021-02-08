@@ -22,6 +22,7 @@
     "execute": "Ausführen",
     "expand": "Erweitern",
     "find": "Finden",
+    "na": "Nicht verfügbar",
     "name": "Name",
     "new": "Neu",
     "none": "Keine",
@@ -121,6 +122,9 @@
     "weekly": "Wöchentlich",
     "monthly": "Monatlich",
     "annual": "Jährlich",
-    "update": "Neu laden"
+    "update": "Neu laden",
+    "topic": "Benutzer",
+    "points": "Punkte",
+    "rank": "Ranglistenplatz"
   }
 }
