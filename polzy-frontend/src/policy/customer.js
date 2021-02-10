@@ -93,17 +93,6 @@ function CustomerPoliciesBase(props) {
     })
   }, [])
 
-  const handleClickLink = (event, policy) => {
-    event.preventDefault()
-
-    // add policy
-    props.addPolicy({
-      request_state: "waiting",
-      policy_number: policy.policyNumber,
-      effective_date: policy.effectiveDate,
-    })
-  }
-
   const hadnlePolicyClick = (value) => {
     console.log('ROW CLICKED:')
     console.log(value)
@@ -111,7 +100,7 @@ function CustomerPoliciesBase(props) {
     // add policy
     props.addPolicy({
       request_state: "waiting",
-      policy_number: value.policyNumber,
+      policy_number: value.Polizze,
       effective_date: format(new Date(), backendDateFormat),
     })
   }
@@ -120,7 +109,7 @@ function CustomerPoliciesBase(props) {
   console.log(policies)
 
   return(
-    <React.Fragment>
+    <Section>
       {policies ? (
         <EnhancedTable
           name="policies"
@@ -144,7 +133,7 @@ function CustomerPoliciesBase(props) {
           )}
         </React.Fragment>
       )}
-    </React.Fragment>
+    </Section>
   )
 }
 
@@ -205,10 +194,10 @@ function Customer(props) {
         />
         <CardContent>
           <Grid container>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12}>
               <CustomerDetails {...customer} />
             </Grid>
-            <Grid item xs={12} md={8}>
+            <Grid item xs={12}>
               <CustomerPolicies customer={customer.partnerNumber} />
             </Grid>
           </Grid>

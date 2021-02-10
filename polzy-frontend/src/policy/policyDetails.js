@@ -96,7 +96,7 @@ export function MakeRow(props) {
 
   return(
     <React.Fragment>
-      <TableRow>
+      <TableRow hover>
         <TableCell>{title}</TableCell>
         <TableCell>{value}</TableCell>
       </TableRow>
@@ -120,7 +120,7 @@ function MakeClauseRow(props) {
           </React.Fragment>
         } 
       >
-      <TableRow>
+      <TableRow hover>
         <TableCell>{clause.name}</TableCell>
         <TableCell>
           <Link
@@ -179,7 +179,7 @@ function PolicyMain(props) {
       <Section>
         <Table size="small">
           <TableHead>
-            <TableRow>
+            <TableRow hover>
               <TableCell>{t("status")}</TableCell>
               <PolicyStatus status={data.status} />
             </TableRow>

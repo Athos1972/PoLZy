@@ -467,7 +467,7 @@ export default function EnhancedTable(props) {
   const handleRowClick = (row) => {
     // get hidden elements
     const hiddenValues = data.columns.reduce((result, col, index) => (
-      col.type === 'hidden' ? {
+      col.type === 'hidden' || col.isKey ? {
         ...result,
         [col.label]: row[index], 
       } : result
@@ -494,8 +494,13 @@ export default function EnhancedTable(props) {
     }
   }
 
+  const showFilter = () => {
+    return data.columns.reduce((result, col) => (result || col.filter), false)
+  }
+
   //console.log('ENHANCED TABLE:')
   //console.log(props)
+  //console.log(showFilter())
   //console.log('FILTER LIST')
   //console.log(filterList)
   //console.log(props)
@@ -512,17 +517,20 @@ export default function EnhancedTable(props) {
         >
           {title}
         </Typography>
-        <Tooltip title="Filter list">
-          <div>
-            <IconButton 
-              aria-label="filter-list"
-              onClick={() => setOpenFilterMenu(true)}
-              disabled={data === null}
-            >
-              <FilterListIcon />
-            </IconButton>
-          </div>
-        </Tooltip>
+
+        {showFilter() &&
+          <Tooltip title={t("common:filter")}>
+            <div>
+              <IconButton 
+                aria-label="filter-list"
+                onClick={() => setOpenFilterMenu(true)}
+                disabled={data === null}
+              >
+                <FilterListIcon />
+              </IconButton>
+            </div>
+          </Tooltip>
+        }
       </Toolbar>
 
       {/* Table Data */}
