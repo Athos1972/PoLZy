@@ -542,6 +542,9 @@ class GamificationUserStats(db.Model):
             print(f"Combination of activityName: {str(activityName)}, lineOfBusiness: {str(lob)} or "
                   f"event: {str(eventName)} not found in Weight table. Using default value 10.")
             id_ = db.session.query(GamificationActivityWeight).filter_by(activity_name="default").first()
+            if not id_:
+                print("Default weight not found in database. Returning 10")
+                return 10
         return id_.points
 
     @classmethod
@@ -747,7 +750,7 @@ class ToastNotifications(db.Model):
             for user_id in users:
                 instance = cls(company_id=company_id, user_id=user_id, message=message, type=type)
                 db.session.add(instance)
-                db.session.commit()
+        db.session.commit()
 
     def set_seen(self):
         self.seen_at = datetime.now()
