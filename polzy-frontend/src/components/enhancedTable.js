@@ -484,7 +484,7 @@ export default function EnhancedTable(props) {
   }
 
   const handleRowDoubleClick = () => {
-    console.log('row doubled clicked:')
+    //console.log('row doubled clicked:')
     //console.log(row)
 
     if (props.onCloseActivity) {

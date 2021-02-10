@@ -278,7 +278,7 @@ export default function PolicyDetails(props) {
   const {policy} = props
   const {t} = useTranslation('policy')
 
-  console.log(policy)
+  //console.log(policy)
 
   return(
     <React.Fragment>

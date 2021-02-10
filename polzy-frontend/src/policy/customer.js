@@ -94,19 +94,17 @@ function CustomerPoliciesBase(props) {
   }, [])
 
   const hadnlePolicyClick = (value) => {
-    console.log('ROW CLICKED:')
-    console.log(value)
 
     // add policy
     props.addPolicy({
       request_state: "waiting",
-      policy_number: value.Polizze,
+      policy_number: Object.values(value)[0],
       effective_date: format(new Date(), backendDateFormat),
     })
   }
 
-  console.log(props)
-  console.log(policies)
+  //console.log(props)
+  //console.log(policies)
 
   return(
     <Section>
