@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { format } from 'date-fns'
 import { makeStyles } from '@material-ui/core/styles'
 import { 
   CardContent,
@@ -26,6 +27,9 @@ import CloseIcon from '@material-ui/icons/Close'
 import { Section, MakeRow, Title, GenericSection } from './policyDetails'
 import { CardActiveHide, CardActive, CardTop, CardBottom, hideTime } from '../styles/cards'
 import { addPolicy, removePolicy } from '../redux/actions'
+import { getCustomerPolicies } from '../api/policy'
+import EnhancedTable from '../components/enhancedTable'
+import { backendDateFormat } from '../dateFormat'
 
 import {BrokeCard} from '../debug/damageCard'
 
@@ -43,6 +47,13 @@ const useStyles = makeStyles((theme) => ({
 
 }))
 
+const errorStyles = makeStyles((theme) => ({
+  policies: {
+    marginLeft: theme.spacing(2),
+    color: theme.palette.error.light,
+  },
+}))
+
 
 function CustomerDetails(props) {
   // renders general data of customer
@@ -56,16 +67,31 @@ function CustomerDetails(props) {
         [t("partner:birthDate")]: props.birthDate,
         [t("partner:address")]: props.houseNumber + " " + props.street,
         [t("partner:city")]: props.city,
-        [t("partner:postcode")]: props.postCode, 
+        [t("partner:postcode")]: props.postCode,
+        [t("partner:email")]: props.email,
+        [t("partner:telefon")]: props.phone,
       }}
     />
   )
 }
 
 function CustomerPoliciesBase(props) {
-  // renders clauses
-  const {policies} = props
+  // renders partner policies
   const {t} = useTranslation('policy')
+  const classes = errorStyles()
+
+  const [policies, setPolicies] = React.useState(null)
+  const [loadPoliciesError, setLoadPoliciesError] = React.useState(false)
+
+  React.useEffect(() => {
+    getCustomerPolicies(props.user, props.customer).then(data => {
+      setPolicies(data.policies)
+      setLoadPoliciesError(false)
+    }).catch(error => {
+      console.log(error)
+      setLoadPoliciesError(true)
+    })
+  }, [])
 
   const handleClickLink = (event, policy) => {
     event.preventDefault()
@@ -78,34 +104,47 @@ function CustomerPoliciesBase(props) {
     })
   }
 
+  const hadnlePolicyClick = (value) => {
+    console.log('ROW CLICKED:')
+    console.log(value)
+
+    // add policy
+    props.addPolicy({
+      request_state: "waiting",
+      policy_number: value.policyNumber,
+      effective_date: format(new Date(), backendDateFormat),
+    })
+  }
+
+  console.log(props)
+  console.log(policies)
+
   return(
-    <Section>
-      <Title title={t("policy:partner.policies")} />
-      <Table size="small">
-        <TableBody>
-          {policies.map((policy, index) => (
-            <MakeRow
-              key={index} 
-              title={policy.product}
-              value={
-                <Link
-                  href="#"
-                  onClick={(event) => handleClickLink(event, policy)}
-                >
-                  {[
-                    t("policy:policy"),
-                    policy.policyNumber,
-                    "/",
-                    t("policy:effective.date"),
-                    policy.effectiveDate,
-                  ].join(" ")}
-                </Link>
-              } 
-            />
-          ))}
-        </TableBody>
-      </Table>
-    </Section>
+    <React.Fragment>
+      {policies ? (
+        <EnhancedTable
+          name="policies"
+          title={t("policy:partner.policies")}
+          data={policies}
+          value={null}
+          onChange={hadnlePolicyClick}
+        />
+      ) : (
+        <React.Fragment>
+          {loadPoliciesError ? (
+            <Typography
+              className={classes.policies}
+              component="p"
+              variant="body1"
+            >
+              {t("policy:policy.fail")}
+            </Typography>
+          ) : (
+            <LinearProgress />
+          )}
+        </React.Fragment>
+      )}
+    </React.Fragment>
   )
 }
 
@@ -170,7 +209,7 @@ function Customer(props) {
               <CustomerDetails {...customer} />
             </Grid>
             <Grid item xs={12} md={8}>
-              <CustomerPolicies policies={customer.policies} />
+              <CustomerPolicies customer={customer.partnerNumber} />
             </Grid>
           </Grid>
         </CardContent>
@@ -180,6 +219,10 @@ function Customer(props) {
 }
 
 // connect to redux store
+const mapStateToProps = (state) => ({
+  user: state.user,
+})
+
 const mapDispatchToPropsAddPolicy = {
   addPolicy: addPolicy,
 }
@@ -188,5 +231,5 @@ const mapDispatchToPropsCloseCustomer = {
   closeCard: removePolicy,
 }
 
-const CustomerPolicies = connect(null, mapDispatchToPropsAddPolicy)(CustomerPoliciesBase)
+const CustomerPolicies = connect(mapStateToProps, mapDispatchToPropsAddPolicy)(CustomerPoliciesBase)
 export default connect(null, mapDispatchToPropsCloseCustomer)(Customer)

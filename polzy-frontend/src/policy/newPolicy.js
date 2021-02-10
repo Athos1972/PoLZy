@@ -22,7 +22,6 @@ import { addPolicy } from '../redux/actions'
 import { getCompanyLogo, EmblemLogo } from '../components/logo'
 import { backendDateFormat } from '../dateFormat'
 import { DataFieldText, DataFieldDate } from '../components/dataFields'
-import { getCustomers } from '../api/policy'
 import { SearchDropDown } from '../components/searchField'
 import { capitalizeFirstChar } from '../utils'
 // styles

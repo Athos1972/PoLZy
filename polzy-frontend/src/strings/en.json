@@ -32,7 +32,7 @@
   },
 
   "admin": {
-    "pannel": "Admin Pannel",
+    "pannel": "Admin Panel",
     "quit": "Home",
     "actions": "Actions",
     "roles": "Roles",
@@ -59,6 +59,7 @@
     "invalid": "Invalid Policy Data",
     "partner.policies": "Partner's Policies",
     "policy": "Policy",
+    "policy.fail": "Failed to Retrieve User's Policies",
     "policy.number": "Policy Number",
     "policy not found": "Policy not Found",
     "premium.payer": "Premium Payer",

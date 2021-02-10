@@ -33,14 +33,18 @@ export const executeActivity = async (user, activity) => {
 }
 
 
-export const getCustomers = async (user, string) => {
-  const response = await fetch('/api/customers', {
+// partner's policy search
+export const getCustomerPolicies = async (user, partner) => {
+  const response = await fetch('/api/search', {
     method: 'POST',
     headers: {
       'authorization': `Bearer ${user.accessToken}`,
       'content-type': 'application/json',
     },
-    body: JSON.stringify({query: string}),
+    body: JSON.stringify({
+      activity: 'partnerDetails',
+      value: partner,
+    }),
   })
   const data = await response.json()
   

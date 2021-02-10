@@ -478,15 +478,20 @@ export default function EnhancedTable(props) {
 
     setSelectedRow(row)
     props.onChange(hiddenValues)
-    props.updateAntrag(hiddenValues)
+    if (props.updateAntrag) {
+      props.updateAntrag(hiddenValues)
+    }
   }
 
   const handleRowDoubleClick = () => {
     console.log('row doubled clicked:')
     //console.log(row)
 
-    //handleRowClick(row)
-    props.onCloseActivity()
+    if (props.onCloseActivity) {
+      props.onCloseActivity()
+    } else {
+      props.onChange()
+    }
   }
 
   //console.log('ENHANCED TABLE:')
