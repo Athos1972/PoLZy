@@ -51,11 +51,13 @@
 
   "policy": {
     "clauses": "Kla'ndruckt's",
+    "customer": "TypIn",
     "effective.date": "Wirksamkeitsdatum",
     "find": "Findn",
     "find.policy": "Polizzn suchn",
     "insured.object": "Schodnpotential",
     "invalid": "Polizzendaten san ned guad!",
+    "partner.policies": "Polizzn zum/zur TypIn",
     "policy": "Polizzn",
     "policy.number": "Polizzn",
     "policy not found": "Polizzn ned do",
@@ -88,13 +90,16 @@
       "gender.male": "Bua",
       "gender.female": "Madl",
       "gender.float": "Nix/Aundas",
-      "address": "wo wohnt TypIn",
       "company": "Bude",
       "companyName": "Nauman von da Bude",
-      "registrationNumber": "Firmenbuchnumma",
       "companyType": "Was via a Bude?",
+      "registrationNumber": "Firmenbuchnumma",
+      "address": "wo wohnt TypIn",
+      "city": "Stodt",
+      "postcode": "Postleitzoj",
       "email": "Mehl",
-      "telefon": "Hendinumma"
+      "telefon": "Hendinumma",
+      "details": "Infos zum/zur TypIn"
    },
 
   "views": {
