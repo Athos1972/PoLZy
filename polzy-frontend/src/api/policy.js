@@ -31,3 +31,26 @@ export const executeActivity = async (user, activity) => {
 
   throw new Error(data.error)
 }
+
+
+// partner's policy search
+export const getCustomerPolicies = async (user, partner) => {
+  const response = await fetch('/api/search', {
+    method: 'POST',
+    headers: {
+      'authorization': `Bearer ${user.accessToken}`,
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify({
+      activity: 'partnerDetails',
+      value: partner,
+    }),
+  })
+  const data = await response.json()
+  
+  if (response.ok) {
+    return data
+  }
+
+  throw new Error(data.error)
+}

@@ -100,9 +100,6 @@ function SearchDropDownBase(props) {
       return
     }
 
-    //console.log('Search Select:')
-    //console.log(newValue)
-
     const {label, ...otherValues} = newValue
     const updateValues = {
       ...otherValues,
@@ -116,7 +113,6 @@ function SearchDropDownBase(props) {
       // update antrag value
       props.onChange(updateValues)
     }
-    //props.onChange(updateValues)
   }
 
   return (
@@ -157,7 +153,7 @@ const mapStateToProps = (state) => ({
   user: state.user,
 })
 
-const SearchDropDown = connect(mapStateToProps)(SearchDropDownBase)
+export const SearchDropDown = connect(mapStateToProps)(SearchDropDownBase)
 
 
 function InputRadio(props) {

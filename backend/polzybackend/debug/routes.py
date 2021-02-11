@@ -74,3 +74,4 @@ def newbadge():
 def get_users():
     users = User.query.all()
     return jsonify([u.email for u in users]), 200
+

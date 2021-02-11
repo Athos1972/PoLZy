@@ -21,6 +21,7 @@
     "email": "E-mail",
     "execute": "Execute",
     "expand": "Expand",
+    "filter": "Filter",
     "find": "Find",
     "na": "Not Available",
     "name": "Name",
@@ -32,7 +33,7 @@
   },
 
   "admin": {
-    "pannel": "Admin Pannel",
+    "pannel": "Admin Panel",
     "quit": "Home",
     "actions": "Actions",
     "roles": "Roles",
@@ -51,12 +52,15 @@
 
   "policy": {
     "clauses": "Clauses",
+    "customer": "Partner",
     "effective.date": "Effective Date",
     "find": "Find",
     "find.policy": "Find Policy",
     "insured.object": "Insured Object",
     "invalid": "Invalid Policy Data",
+    "partner.policies": "Partner's Policies",
     "policy": "Policy",
+    "policy.fail": "Failed to Retrieve User's Policies",
     "policy.number": "Policy Number",
     "policy not found": "Policy not Found",
     "premium.payer": "Premium Payer",
@@ -93,8 +97,11 @@
     "registrationNumber": "Registration Number",
     "companyType": "Type of Company",
     "address": "Address",
+    "city": "City",
+    "postcode": "Postcode",
     "email": "E-mail",
-    "telefon": "Phone"
+    "telefon": "Phone",
+    "details": "Partner's Details"
   },
 
   "views": {

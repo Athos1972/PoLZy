@@ -6,6 +6,7 @@ import NewPolicy from '../policy/newPolicy'
 import DisabledPolicy from '../policy/disabledPolicy'
 import ErrorPolicy from '../policy/errorPolicy'
 import ActivePolicy from '../policy/activePolicy'
+import Customer from '../policy/customer'
 import { ErrorBoundary } from "@sentry/react"
 import ErrorCard from '../sentry/fallBack'
 import { getDialogOptions, getPolicyContext, getUser } from '../sentry/utils'
@@ -31,6 +32,10 @@ function PolicyCard(props) {
       return(
         <DisabledPolicy index={index} policy={policy} />
       )
+    case "customer":
+      return(
+        <Customer index={index} customer={policy} />
+      )
     default:
       return(
         <ErrorPolicy index={index} policy={policy} />
@@ -41,6 +46,8 @@ function PolicyCard(props) {
 function PolicyView(props) {
   const classes = useStyles()
   const {t} = useTranslation('common', 'feedback')
+
+  //console.log(props.policies)
 
   return(
     <div className={classes.container}>

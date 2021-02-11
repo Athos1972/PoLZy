@@ -37,7 +37,7 @@ const StatusCanceled = withStyles((theme) => ({
 }))(TableCell)
 
 // Styles for policy section container
-const Section = withStyles((theme) => ({
+export const Section = withStyles((theme) => ({
   root: {
     //padding: theme.spacing(2),
     margin: theme.spacing(1),
@@ -90,13 +90,13 @@ function GetValue(props) {
 }
 
 
-function MakeRow(props) {
+export function MakeRow(props) {
   // renders a policy property
   const {title, value} = props
 
   return(
     <React.Fragment>
-      <TableRow>
+      <TableRow hover>
         <TableCell>{title}</TableCell>
         <TableCell>{value}</TableCell>
       </TableRow>
@@ -120,7 +120,7 @@ function MakeClauseRow(props) {
           </React.Fragment>
         } 
       >
-      <TableRow>
+      <TableRow hover>
         <TableCell>{clause.name}</TableCell>
         <TableCell>
           <Link
@@ -136,7 +136,7 @@ function MakeClauseRow(props) {
   )
 }
 
-function Title(props) {
+export function Title(props) {
   // renders title of policy section
   const classes = useStyles()
 
@@ -179,7 +179,7 @@ function PolicyMain(props) {
       <Section>
         <Table size="small">
           <TableHead>
-            <TableRow>
+            <TableRow hover>
               <TableCell>{t("status")}</TableCell>
               <PolicyStatus status={data.status} />
             </TableRow>
@@ -217,7 +217,7 @@ function ProductLine(props) {
   )
 }
 
-function GenericSection(props) {
+export function GenericSection(props) {
   // renders premium payer, insured object sections
   const {title, data} = props
 
@@ -277,6 +277,8 @@ function Clauses(props) {
 export default function PolicyDetails(props) {
   const {policy} = props
   const {t} = useTranslation('policy')
+
+  //console.log(policy)
 
   return(
     <React.Fragment>
