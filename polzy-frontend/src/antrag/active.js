@@ -170,14 +170,35 @@ function ActiveAntrag(props) {
   }
   
   // values states
+  const getFieldValue = (field) => {
+    // parse antrag field value
+    if (field.fieldDataType === "Flag") {
+      return {[field.name]: field.valueChosenOrEntered === "True"}
+    }
+
+    if (field.fieldDataType === "FlagWithOptions") {
+      console.log("FlagWithOptions")
+      console.log(field)
+      return {
+        [field.name]: field.valueChosenOrEntered.value,
+        ...field.valueChosenOrEntered[String(field.valueChosenOrEntered.value)].reduce((result, subField) => ({
+          ...result,
+          ...getFieldValue(subField),
+        }), {})
+      }
+    }
+
+    if (field.valueChosenOrEntered === undefined || field.valueChosenOrEntered === "None") {
+      return {[field.name]: ""}
+    }
+
+    return {[field.name]: field.valueChosenOrEntered}
+  }
+
   const getValues = (obj) => {
     const commonFields = obj.fields.reduce((result, field) => ({
       ...result,
-      [field.name]: field.fieldDataType === "Flag" ? (
-        field.valueChosenOrEntered === "True"
-      ) : (
-        field.valueChosenOrEntered === undefined || field.valueChosenOrEntered === "None" ? "" : field.valueChosenOrEntered
-      ),
+      ...getFieldValue(field),
     }), {})
     return obj.field_groups.reduce((result, group) => ({
       ...result,
@@ -185,9 +206,7 @@ function ActiveAntrag(props) {
         (field.fieldDataType !== "Table")
       ).reduce((groupFields, field) => ({
         ...groupFields,
-        [field.name]: field.fieldDataType === "Flag" ? field.valueChosenOrEntered === "True" : (
-          field.valueChosenOrEntered === undefined || field.valueChosenOrEntered === "None" ? "" : field.valueChosenOrEntered
-        ),
+        ...getFieldValue(field),
       }), {}),
     }), {...commonFields})
   }
@@ -357,7 +376,7 @@ function ActiveAntrag(props) {
     // check if group switch requires field update
     for (const group of antrag.field_groups) {
       if (group.name === name && group.inputTriggers) {
-        console.log('UPDATE FIELDS BY GROUP SWITCH')
+        //console.log('UPDATE FIELDS BY GROUP SWITCH')
         // build request data
         const requestData = {
           id: antrag.id,
@@ -458,7 +477,7 @@ function ActiveAntrag(props) {
     //console.log('AUTOCALCULATE')
     //console.log(!autoCalculateDisabled)
     if (antrag.status === "Neu" && !autoCalculateDisabled && validateFields()) {
-      console.log('Make autocalculation')
+      //console.log('Make autocalculation')
       calculateAntrag()
     }
   }, [antrag, values, groups, autoCalculateDisabled])
@@ -718,8 +737,8 @@ function ActiveAntrag(props) {
   }
 
   //***** BEBUG OUTPUT
-  console.log('Antrag Props:')
-  console.log(props)
+  //console.log('Antrag Props:')
+  //console.log(props)
   
   return(
     <AntragCard

@@ -64,6 +64,12 @@ const useStyles = makeStyles((theme) => ({
 
 }))
 
+const parseValue = (value) => {
+  if (value) return value
+
+  return ""
+}
+
 
 /*
 **  Text Input
@@ -92,7 +98,7 @@ export function DataFieldText(props) {
       </InputLabel>
       <OutlinedInput
         id={`${data.name}-${id}`}
-        value={value}
+        value={parseValue(value)}
         onChange={(e) => onChange({[data.name]: e.target.value})}
         label={data.brief}
         endAdornment={props.endAdornment}
@@ -373,13 +379,21 @@ export function DataFieldDate(props) {
   }
 
   const handleChange = (date) => {
-    if (isNaN(date) || date === null) {
+    if (isNaN(date) || date === null || date === '') {
       props.onChange({[data.name]: ''})
       return
     }
 
     const strValue = format(date, backendDateFormat)
     props.onChange({[data.name]: strValue})
+  }
+
+  const parseDateValue = () => {
+    if (!value) {
+      return null
+    }
+
+    return parse(value, backendDateFormat, new Date())
   }
 
   return (
@@ -399,7 +413,7 @@ export function DataFieldDate(props) {
           inputVariant="outlined"
           label={data.brief}
           format={getLocaleDateFormat()}
-          value={parse(value, backendDateFormat, new Date())}
+          value={parseDateValue()}
           onChange={handleChange}
           required={data.isMandatory}
         />
@@ -655,7 +669,7 @@ export default function DataGroup(props) {
             >
               {fields.filter((field) => (
                 field.subsection === subtitle && field.fieldDataType !== "Flag" && field.fieldType === 1 && 
-                field.fieldDataType !== "SearchEndPoint" && field.fieldDataType !== "Table"
+                field.fieldDataType !== "SearchEndPoint" && field.fieldDataType !== "Table" && field.fieldDataType !== "FlagWithOptions"
               )).map((field) => (
                 <Grid 
                   item
@@ -702,6 +716,62 @@ export default function DataGroup(props) {
                     address={values.address}
                   />
                 </Grid>
+              ))}
+            </Grid>
+
+            {/* Switch with Options */}
+            <Grid 
+              classes={{root: classes.inputGroupContainer}}
+              item
+              container
+              spacing={2}
+            >
+              {fields.filter((field) => (
+                field.subsection === subtitle && field.fieldDataType === "FlagWithOptions" && field.fieldType === 1
+              )).map((field) => (
+                <React.Fragment key={field.name}>
+                  <Grid 
+                    item
+                    xs={12}
+                  >
+                    <TooltipField
+                      tooltip={field.tooltip}
+                      content={
+                        <div>
+                          <DataFieldSwitch 
+                            {...commonProps}
+                            data={field}
+                            value={values[field.name]}
+                          />
+                        </div>
+                      }
+                    />
+                  </Grid>
+                  <Grid item container spacing={2}>
+                  {field.valueChosenOrEntered[values[field.name] ? "true" : "false"].map((optionField) => (
+                    <Grid 
+                      item
+                      key={optionField.name}
+                      xs={size('xs')}
+                      md={size('md')}
+                      lg={optionField.fieldDataType === "TextBox" ? 2*size('lg') : size('lg')}
+                    >
+                      <TooltipField
+                        tooltip={optionField.tooltip}
+                        content={
+                          <div>
+                            <DataField
+                              {...commonProps}
+                              data={optionField}
+                              value={values[optionField.name] ? values[optionField.name] : null}
+                            />
+                          </div>
+                        }
+                      />
+                    </Grid>
+                  ))}
+                  </Grid>
+                </React.Fragment>
               ))}
             </Grid>
 
