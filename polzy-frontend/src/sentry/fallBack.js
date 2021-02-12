@@ -2,14 +2,13 @@ import React from 'react'
 import { connect } from 'react-redux'
 import {
   Collapse,
-  Typography,
   IconButton,
   Tooltip,
   CardHeader,
 } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import { useTranslation } from 'react-i18next'
-import { CardError, CardTop, CardMiddle } from '../styles/cards'
+import { CardError } from '../styles/cards'
 import { removePolicy, removeAntrag } from '../redux/actions'
 
 function ErrorCard(props) {

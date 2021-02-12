@@ -216,8 +216,8 @@ export function DataFieldNumberRange(props) {
   const min = Number(data.inputRange[1])
   const max = Number(data.inputRange[2])
 
-  const validateValue = (value=value) => {
-    return Boolean(value) && value >= min && value <= max
+  const validateValue = (valueToValidate=value) => {
+    return Boolean(valueToValidate) && valueToValidate >= min && valueToValidate <= max
   }
 
   React.useEffect(() => {

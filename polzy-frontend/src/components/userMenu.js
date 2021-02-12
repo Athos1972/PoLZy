@@ -128,7 +128,7 @@ function UserMenu(props) {
       <Badge
         color="secondary"
         badgeContent={getUnseenBadgeNumber()}
-        invisible={getUnseenBadgeNumber() == 0}
+        invisible={getUnseenBadgeNumber() === 0}
         overlap="circle"
       >
         <Button
@@ -208,7 +208,7 @@ function UserMenu(props) {
                 <Badge
                   color="secondary"
                   badgeContent={getUnseenBadgeNumber()}
-                  invisible={getUnseenBadgeNumber() == 0}
+                  invisible={getUnseenBadgeNumber() === 0}
                 >
                   <LoyaltyIcon />
                 </Badge>
@@ -218,7 +218,7 @@ function UserMenu(props) {
           }
 
           {/* Ranking */}
-          {props.user.company.attributes && props.user.company. attributes.hitList && props.currentView !== VIEW_RANKING &&
+          {props.user.company.attributes && props.user.company.attributes.hitList && props.currentView !== VIEW_RANKING &&
             <ListItem
               button
               onClick={() => handleShowView(VIEW_RANKING)}

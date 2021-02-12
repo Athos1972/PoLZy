@@ -5,27 +5,16 @@ import { format } from 'date-fns'
 import { makeStyles } from '@material-ui/core/styles'
 import { 
   CardContent,
-  CardActions,
   IconButton,
   Tooltip,
   Grid,
-  FormControlLabel,
-  Switch,
-  Button,
   Typography,
-  BottomNavigation,
-  BottomNavigationAction,
   Collapse,
   LinearProgress,
-  TextField,
-  Chip,
-  Table,
-  TableBody,
-  Link,
 } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
-import { Section, MakeRow, Title, GenericSection } from './policyDetails'
-import { CardActiveHide, CardActive, CardTop, CardBottom, hideTime } from '../styles/cards'
+import { Section, GenericSection } from './policyDetails'
+import { CardActive, CardTop, hideTime } from '../styles/cards'
 import { addPolicy, removePolicy } from '../redux/actions'
 import { getCustomerPolicies } from '../api/policy'
 import EnhancedTable from '../components/enhancedTable'

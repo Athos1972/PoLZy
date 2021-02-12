@@ -28,17 +28,13 @@ export const capitalizeFirstChar = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
-export const formatRankWithSuffix = (i) => {
-    var j = i % 10,
-        k = i % 100;
-    if (j == 1 && k != 11) {
-        return "st";
-    }
-    if (j == 2 && k != 12) {
-        return "nd";
-    }
-    if (j == 3 && k != 13) {
-        return "rd";
-    }
-    return "th";
+export const formatRankWithSuffix = (number) => {
+  const d = number % 100
+  if (d > 3 && d < 21) return "th"
+  switch (number % 10) {
+    case 1: return "st"
+    case 2: return "nd"
+    case 3: return "rd"
+    default: return "th"
+  }
 }

@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import {
   Grid,
   Typography,
-  Paper,
   Modal,
   Backdrop,
   Fade,
@@ -12,11 +11,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import { getBadgeTypes, makeBadgeSeen, getBadgeSrc } from '../api/gamification'
 import { updateUser } from '../redux/actions'
-import { apiHost } from '../utils'
 import confetti from 'canvas-confetti'
 
-
-//const uriBadge = apiHost + 'api/badge/'
 
 const useStyles = makeStyles((theme) => ({
   paper: {

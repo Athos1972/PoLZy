@@ -83,7 +83,6 @@ function TabPanel(props) {
 }
 
 function HomeViewBase(props) {
-  const classes = useStyles()
   const {t} = useTranslation('policy', 'antrag')
 
   const [tab, setTab] = useState()

@@ -10,9 +10,7 @@ import {
   Select,
   OutlinedInput,
   MenuItem,
-  TextField,
 } from '@material-ui/core'
-import Autocomplete from '@material-ui/lab/Autocomplete'
 import { makeStyles } from '@material-ui/core/styles'
 import { format } from 'date-fns'
 import SearchIcon from '@material-ui/icons/Search'
@@ -23,7 +21,7 @@ import { getCompanyLogo, EmblemLogo } from '../components/logo'
 import { backendDateFormat } from '../dateFormat'
 import { DataFieldText, DataFieldDate } from '../components/dataFields'
 import { SearchDropDown } from '../components/searchField'
-import { capitalizeFirstChar } from '../utils'
+
 // styles
 const useStyles = makeStyles(theme => ({
   noPaddingField: {
@@ -117,9 +115,6 @@ function NewPolicy(props) {
   }
 
   const [values, setValues] = React.useState(defaultData)
-  //const [customerString, setCustomerString] = React.useState('')
-  const [customerList, setCustomerList] = React.useState([])
-  const [customerText, setCustomerText] = React.useState('')
   const [searchFor, setSearchFor] = React.useState(searchOptions[0])
 
   const {t} = useTranslation('policy')
