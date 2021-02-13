@@ -73,9 +73,6 @@ export const executeAntrag = async (user, antrag) => {
   })
   const data = await response.json()
 
-  //console.log('Execute Antrag Response:')
-  //console.log(response)
-
   if (response.ok) {
     return data
   }

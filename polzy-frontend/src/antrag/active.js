@@ -476,11 +476,11 @@ function ActiveAntrag(props) {
   React.useEffect(() => {
     //console.log('AUTOCALCULATE')
     //console.log(!autoCalculateDisabled)
-    if (antrag.status === "Neu" && !autoCalculateDisabled && validateFields()) {
+    if (antrag.status === "Neu" && !autoCalculateDisabled && !isCalculate && validateFields()) {
       //console.log('Make autocalculation')
       calculateAntrag()
     }
-  }, [antrag, values, groups, autoCalculateDisabled])
+  }, [antrag, values, groups])
 
 
   /*

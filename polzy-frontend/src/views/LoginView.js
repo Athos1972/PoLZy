@@ -43,6 +43,8 @@ function AuthenticationView(props) {
   useEffect(() => {
     getStages().then((data) => {
       setAllStages(data)
+    }).catch(error => {
+      console.log(error)
     })
   }, [])
 
