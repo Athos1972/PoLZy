@@ -561,9 +561,9 @@ export default function DataGroup(props) {
     }
   }
 
-  //console.log('DATA GROUP:')
+  console.log('DATA GROUP:')
   //console.log(fields.filter((field) => (field.fieldDataType === "SearchEndPoint")))
-  //console.log(props)
+  console.log(props)
   //console.log(subtitles)
 
   return (
@@ -748,7 +748,7 @@ export default function DataGroup(props) {
                     />
                   </Grid>
                   <Grid item container spacing={2}>
-                  {field.valueChosenOrEntered[values[field.name] ? "true" : "false"].map((optionField) => (
+                  {values[field.name] && Boolean(field.relatedFields) && field.relatedFields.map((optionField) => (
                     <Grid 
                       item
                       key={optionField.name}

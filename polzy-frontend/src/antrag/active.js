@@ -172,26 +172,31 @@ function ActiveAntrag(props) {
   // values states
   const getFieldValue = (field) => {
     // parse antrag field value
-    if (field.fieldDataType === "Flag") {
-      return {[field.name]: field.valueChosenOrEntered === "True"}
-    }
 
-    if (field.fieldDataType === "FlagWithOptions") {
+    // Boolean with related fields 
+    if (field.fieldDataType === "FlagWithOptions" && field.relatedFields) {
       console.log("FlagWithOptions")
       console.log(field)
       return {
-        [field.name]: field.valueChosenOrEntered.value,
-        ...field.valueChosenOrEntered[String(field.valueChosenOrEntered.value)].reduce((result, subField) => ({
+        [field.name]: field.valueChosenOrEntered === "True",
+        ...field.relatedFields.reduce((result, subField) => ({
           ...result,
           ...getFieldValue(subField),
         }), {})
       }
     }
 
+    // Boolean
+    if (field.fieldDataType === "Flag" || field.fieldDataType === "FlagWithOptions") {
+      return {[field.name]: field.valueChosenOrEntered === "True"}
+    }
+
+    // empty values
     if (field.valueChosenOrEntered === undefined || field.valueChosenOrEntered === "None") {
       return {[field.name]: ""}
     }
 
+    // other
     return {[field.name]: field.valueChosenOrEntered}
   }
 
