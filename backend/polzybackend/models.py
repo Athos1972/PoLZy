@@ -732,11 +732,19 @@ class ToastNotifications(db.Model):
         if company_ids:
             if isinstance(company_ids, list):
                 for company_id in company_ids:
-                    companies.append(company_id)
+                    if db.session.query(Company).filter_by(id=company_id).first():
+                        companies.append(company_id)
+                    else:
+                        print(f"Company id {company_id} is not correct. Please recheck.")
             else:
-                companies.append(company_ids)
-        if not companies:
+                if db.session.query(Company).filter_by(id=company_ids).first():
+                    companies.append(company_ids)
+                else:
+                    print(f"Company id {company_ids} is not correct. Please recheck.")
+        else:
             companies = [company.id for company in db.session.query(Company).all()]
+        if not companies:
+            print("Supplied company ids are not valid. Hence no notification will be updated")
         for company_id in companies:
             users = []
             if not user_ids:
@@ -744,9 +752,15 @@ class ToastNotifications(db.Model):
             else:
                 if isinstance(user_ids, list):
                     for user_id in user_ids:
-                        users.append(user_id)
+                        if db.session.query(User).filter_by(id=user_id).first():
+                            users.append(user_id)
+                        else:
+                            print(f"User id {user_id} is not correct. Please recheck.")
                 else:
-                    users.append(user_ids)
+                    if db.session.query(User).filter_by(id=user_ids).first():
+                        users.append(user_ids)
+                    else:
+                        print(f"User id {user_ids} is not correct. Please recheck.")
             for user_id in users:
                 instance = cls(company_id=company_id, user_id=user_id, message=message, type=type)
                 db.session.add(instance)
@@ -755,3 +769,4 @@ class ToastNotifications(db.Model):
     def set_seen(self):
         self.seen_at = datetime.now()
         db.session.commit()
+
