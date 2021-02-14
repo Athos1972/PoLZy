@@ -1,27 +1,9 @@
 from flask import jsonify, request, current_app
 from datetime import date
 from polzybackend.authenticate import bp
-from polzybackend.utils.import_utils import all_stages, permissions
+from polzybackend.utils.import_utils import permissions
 from polzybackend.models import User
 from polzybackend import auth
-
-
-@bp.route('/stages')
-def stages():
-    #
-    # returns list of all available stages for login
-    #
-
-    try:
-        # get all stages
-        stages = all_stages()()
-        current_app.logger.debug(f"Value of stages: {stages}")
-
-    except Exception as e:
-        current_app.logger.warning(f'Failed to get All Stages: {e}')
-        stages = []
-
-    return jsonify(stages), 200
 
 
 @bp.route('/login', methods=['POST'])

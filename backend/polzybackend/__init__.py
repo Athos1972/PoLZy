@@ -34,8 +34,12 @@ def create_app(config=None):
     db.init_app(app)
     migrate.init_app(app, db)
 
+    # register blueprints
     from polzybackend.authenticate import bp as bp_auth
     app.register_blueprint(bp_auth)
+
+    from polzybackend.general import bp as bp_general
+    app.register_blueprint(bp_general)
 
     from polzybackend.policy import bp as bp_policy
     app.register_blueprint(bp_policy)

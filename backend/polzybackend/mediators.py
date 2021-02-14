@@ -35,7 +35,16 @@ class Policy:
         # fetches policy details from Policy Management System
         #
 
-        raise Exception('Fetch method is not set in Policy class')
+        raise Exception('Method "fetch" is not defined in Policy class')
+
+    def getValueList(self, valueListName):
+        #
+        # IMPORTANT: this method should be define within custom implementation
+        #
+        # returns list of values of the given name 
+        #
+
+        raise Exception('Method "getValueList" is not defined in Policy class')
 
     def executeActivity(self, data):
         #
@@ -44,7 +53,7 @@ class Policy:
         # executes policy activity defined in data
         #
 
-        raise Exception('Execute Activity method is not set in Policy class')
+        raise Exception('Method "executeActivity" is not defined in Policy class')
 
     def get(self):
         #
@@ -94,7 +103,17 @@ class Antrag:
         # returns antrag instance as json object to front-end 
         #
 
-        raise Exception('Get method is not defined in Antrag class')
+        raise Exception('Method "get" is not defined in Antrag class')
+
+
+    def getValueList(self, valueListName):
+        #
+        # IMPORTANT: this method should be define within custom implementation
+        #
+        # returns list of values of the given name 
+        #
+
+        raise Exception('Method "getValueList" is not defined in Antrag class')
  
 
     def updateFields(self, data):
@@ -104,7 +123,7 @@ class Antrag:
         # updates antrag fields based on data
         #
 
-        raise Exception('Update Fields method is not defined in Antrag class')
+        raise Exception('Method "updateFields" is not defined in Antrag class')
 
 
     def executeActivity(self, data):
@@ -114,5 +133,5 @@ class Antrag:
         # executes antrag activity defined in data
         #
 
-        raise Exception('Execute Activity method is not defined in Antrag class')
+        raise Exception('Method "executeActivity" is not defined in Antrag class')
 
