@@ -28,6 +28,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import SelectField from './selectField'
 import SearchField from './searchField'
 import EnhancedTable from './enhancedTable'
+import DataFieldSelect from './selectField'
 import MappedImage from './mappedImage'
 import ExpandButton from '../components/expandButton'
 import { getLocaleDateFormat, backendDateFormat } from '../dateFormat'
@@ -240,7 +241,7 @@ export function DataFieldNumberRange(props) {
     }
 
     // set default range message
-    setHelperText(t('value.range') + ': ' + formatNumberWithCommas(min) + '-' + formatNumberWithCommas(max))
+    setHelperText(t('common:value.range') + ': ' + formatNumberWithCommas(min) + '-' + formatNumberWithCommas(max))
 
     // check if value in range
     if ((Boolean(value) && value < min) || value > max) {

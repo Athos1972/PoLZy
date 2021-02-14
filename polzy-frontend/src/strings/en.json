@@ -29,7 +29,8 @@
     "none": "None",
     "remove": "Remove",
     "submit": "Submit",
-    "value.range": "Value in range"
+    "value.range": "Value in range",
+    "wrong.value": "Wrong value"
   },
 
   "admin": {

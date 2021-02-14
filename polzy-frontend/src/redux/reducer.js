@@ -103,6 +103,7 @@ const reducer = combineReducers({
   user: userReducer,
   policies: policyReducer,
   antrags: antragReducer,
+  valueLists: valueReducer,
 })
 
 export default reducer

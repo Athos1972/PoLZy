@@ -32,21 +32,15 @@ def values():
     # get post data
     data = request.get_json()
 
-    # app store options
-    app_store = {
-        'policy': 'POLICIES',
-        'antrag': 'ANTRAGS',
-    }
-
     try:
         # get parent instance from app store
-        store_key = app_store.get(data['typeOfInstance'])
-        if store_key is None:
-            raise Exception(f'Type of instance not found in PoLZy: {data["typeOfInstance"]}')
-
-        instance = current_app.config[store_key].get(data['id'])
+        # try policies first
+        instance = current_app.config['ANTRAGS'].get(data['instanceId'])
         if instance is None:
-            raise Exception(f'Instance of {data["typeOfInstance"]} with id {data["id"]} not found in PoLZy storage. Most probably app restarted.')
+            # try antrags then
+            instance = current_app.config['POLICIES'].get(data['instanceId'])
+            if instance is None:
+                raise Exception(f'Instance of with id {data["instanceId"]} not found in PoLZy storage. Most probably app restarted.')
 
         # get value list
         result = instance.get_values(data.get('valueListName'))

@@ -175,8 +175,6 @@ function ActiveAntrag(props) {
 
     // Boolean with related fields 
     if (field.fieldDataType === "FlagWithOptions" && field.relatedFields) {
-      console.log("FlagWithOptions")
-      console.log(field)
       return {
         [field.name]: field.valueChosenOrEntered === "True",
         ...field.relatedFields.reduce((result, subField) => ({
@@ -319,6 +317,14 @@ function ActiveAntrag(props) {
           (values[field.name] < Number(field.inputRange[1]) || values[field.name] > Number(field.inputRange[2]))
         ) {
           return false
+        }
+
+        // select fields
+        if (values[field.name] && field.fieldDataType === "Text" && field.inputRange) {
+          const valueList = field.inputRange[0] === "async" ? props.valueLists[field.inputRange[1]] : field.inputRange
+          if (valueList && !valueList.includes(values[field.name])) {
+            return false
+          }
         }
 
       }
@@ -744,6 +750,8 @@ function ActiveAntrag(props) {
   //***** BEBUG OUTPUT
   //console.log('Antrag Props:')
   //console.log(props)
+  //console.log('Antrag Values:')
+  //console.log(values)
   
   return(
     <AntragCard
@@ -1006,6 +1014,7 @@ function ActiveAntrag(props) {
 // connect to redux store
 const mapStateToProps = (state) => ({
   user: state.user,
+  valueLists: state.valueLists,
 })
 
 const mapDispatchToProps = {
