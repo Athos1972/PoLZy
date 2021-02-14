@@ -24,7 +24,7 @@ import PolicyDetails from './policyDetails'
 import { removePolicy, updatePolicy } from '../redux/actions'
 import { executeActivity } from '../api/policy'
 import ExpandButton from '../components/expandButton'
-import DataGroup from '../components/dataFields'
+import DataGroup from '../datafields/generalFields'
 import ProgressButton from '../components/progressButton'
 // test imports
 import {BrokeCard} from '../debug/damageCard'

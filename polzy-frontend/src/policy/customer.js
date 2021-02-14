@@ -17,7 +17,7 @@ import { Section, GenericSection } from './policyDetails'
 import { CardActive, CardTop, hideTime } from '../styles/cards'
 import { addPolicy, removePolicy } from '../redux/actions'
 import { getCustomerPolicies } from '../api/policy'
-import EnhancedTable from '../components/enhancedTable'
+import EnhancedTable from '../datafields/enhancedTable'
 import { backendDateFormat } from '../dateFormat'
 
 import {BrokeCard} from '../debug/damageCard'

@@ -13,7 +13,8 @@ import { EmblemLogo } from '../components/logo'
 import Copyright from '../components/copyright'
 import LanguageSelector from '../components/languageSelector'
 import { signIn } from '../redux/actions'
-import { getStages, login, getPermissions } from '../api/auth'
+import { getStages } from '../api/general'
+import { login, getPermissions } from '../api/auth'
 
 // styles
 const useStyles = makeStyles({

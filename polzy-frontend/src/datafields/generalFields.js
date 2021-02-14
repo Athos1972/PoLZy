@@ -25,10 +25,11 @@ import deLocale from "date-fns/locale/de"
 import { format, parse } from 'date-fns'
 import { useTranslation } from 'react-i18next'
 import { makeStyles } from '@material-ui/core/styles'
+import SelectField from './selectField'
 import SearchField from './searchField'
 import EnhancedTable from './enhancedTable'
 import MappedImage from './mappedImage'
-import ExpandButton from './expandButton'
+import ExpandButton from '../components/expandButton'
 import { getLocaleDateFormat, backendDateFormat } from '../dateFormat'
 import { formatNumberWithCommas } from '../utils'
 
@@ -305,53 +306,6 @@ export function DataFieldNumberRange(props) {
         {helperText}
       </FormHelperText>
     </FormControl>
-  )
-}
-
-
-/*
-** Text Select with Filter
-*/
-export function DataFieldSelect(props) {
-  const classes = useStyles()
-  const {id, data, value } = props
-  const [error, setError] = React.useState()
-
-  React.useEffect(() => {
-    setError(Boolean(data.errorMessage))
-  }, [data.errorMessage])
-
-  const handleChange = (event, value) => {
-    const newValue = {[data.name]: value}
-    
-    // update on input trigger
-    if (data.inputTriggers) {
-      props.onInputTrigger(newValue)
-    } else {
-      // update antrag value
-      props.onChange(newValue)
-    }
-  }
-
-  return (
-    <Autocomplete
-      classes={{root: classes.inputField}}
-      id={`${data.name}-${id}`}
-      value={value === "" ? null : value}
-      onChange={handleChange}
-      options={data.inputRange}
-      fullWidth
-      size="small"
-      renderInput={(params) => 
-        <TextField {...params}
-          label={data.brief}
-          variant="outlined"
-          required={data.isMandatory}
-          error={error}
-          helperText={data.errorMessage}
-        />
-      }
-    />
   )
 }
 

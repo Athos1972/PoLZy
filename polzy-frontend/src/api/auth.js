@@ -2,18 +2,6 @@
 ** Authentication & Authorization API Calls
 */
 
-// get available stages
-export const getStages = async () => {
-  const response = await fetch('/api/stages')
-  const data = await response.json()
-  
-  if (response.ok) {
-    return data
-  }
-
-  throw new Error(data.error)
-}
-
 // login
 export const login = async (email, stage, language) => {
   const response = await fetch('/api/login', {
@@ -35,7 +23,7 @@ export const login = async (email, stage, language) => {
 }
 
 // update current company
-export const getPermissions = async(user, company)=>{
+export const getPermissions = async (user, company)=>{
   const response = await fetch('/api/permissions', {
     method: 'POST',
     headers:{ 

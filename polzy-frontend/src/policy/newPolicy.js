@@ -19,8 +19,8 @@ import { CardNew, CardLogo } from '../styles/cards'
 import { addPolicy } from '../redux/actions'
 import { getCompanyLogo, EmblemLogo } from '../components/logo'
 import { backendDateFormat } from '../dateFormat'
-import { DataFieldText, DataFieldDate } from '../components/dataFields'
-import { SearchDropDown } from '../components/searchField'
+import { DataFieldText, DataFieldDate } from '../datafields/generalFields'
+import { SearchDropDown } from '../datafields/searchField'
 
 // styles
 const useStyles = makeStyles(theme => ({

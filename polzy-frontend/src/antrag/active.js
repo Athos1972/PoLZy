@@ -26,7 +26,7 @@ import { CardActiveHide, CardActive, CardTop, CardBottom, hideTime } from '../st
 import { AntragTitle } from './components'
 import ExpandButton from '../components/expandButton'
 import ProgressButton from '../components/progressButton'
-import DataGroup from '../components/dataFields'
+import DataGroup from '../datafields/generalFields'
 import { removeAntrag, updateAntrag, addAntrag } from '../redux/actions'
 import { executeAntrag, cloneAntrag, updateAntragFields } from '../api/antrag'
 import { ActivityIcon } from '../components/icons'

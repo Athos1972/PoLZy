@@ -15,7 +15,7 @@ export const fetchAdminData = async (user) => {
   throw new Error(data.error)
 }
 
-export const manageUserInCompany = async(user, action, payload) => {
+export const manageUserInCompany = async (user, action, payload) => {
   const response = await fetch(`/api/admin/user-company/${action}`, {
     method: 'POST',
     headers: {
@@ -33,7 +33,7 @@ export const manageUserInCompany = async(user, action, payload) => {
   throw new Error(data.error)
 }
 
-export const manageChildCompany = async(user, action, payload) => {
+export const manageChildCompany = async (user, action, payload) => {
   const response = await fetch(`/api/admin/child-company/${action}`, {
     method: 'POST',
     headers: {
