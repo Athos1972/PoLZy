@@ -43,7 +43,7 @@ def values():
                 raise Exception(f'Instance of with id {data["instanceId"]} not found in PoLZy storage. Most probably app restarted.')
 
         # get value list
-        result = instance.get_values(data.get('valueListName'))
+        result = instance.getValueList(data.get('valueListName'))
         return jsonify(result), 200
     except Exception as e:
         current_app.logger.exception(f'Faild to get value-list for paylod {data}\n{e}')
