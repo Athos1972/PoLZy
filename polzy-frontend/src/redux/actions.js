@@ -14,6 +14,8 @@ export const UPDATE_ANTRAG = 'UPDATE_ANTRAG'
 export const REMOVE_ANTRAG = 'REMOVE_ANTRAG'
 export const CLEAR_ANTRAG = 'CLEAR_ANTRAG'
 
+export const ADD_VALUES = 'ADD_VALUES'
+
 // auth actions
 export const signIn = (user) => ({
   type: SIGN_IN,
@@ -70,4 +72,10 @@ export const removeAntrag = (index) => ({
 
 export const clearAntrag = () => ({
   type: CLEAR_ANTRAG,
+})
+
+// values actions
+export const addValues = (payload) => ({
+  type: ADD_VALUES,
+  payload: payload,
 })

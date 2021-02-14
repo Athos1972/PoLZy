@@ -11,6 +11,7 @@ import {
   UPDATE_ANTRAG,
   REMOVE_ANTRAG,
   CLEAR_ANTRAG,
+  ADD_VALUES,
 } from './actions.js'
 
 
@@ -80,6 +81,19 @@ const antragReducer = (state = [], action) => {
       ]
     case CLEAR_ANTRAG:
       return []
+    default:
+      return state
+  }
+}
+
+const valueReducer = (state = {}, action) => {
+  switch (action.type) {
+    case ADD_VALUES:
+      const {name, values} = action.payload
+      return {
+        ...state,
+        [name]: values,
+      }
     default:
       return state
   }
