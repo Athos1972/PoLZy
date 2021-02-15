@@ -21,6 +21,7 @@
     "email": "I-Mehl",
     "execute": "Mochn",
     "expand": "mehr zeign",
+    "filter": "Füta",
     "find": "Suach!",
     "na": "Gibt's ned",
     "name": "Nauman",
@@ -28,7 +29,8 @@
     "none": "nix",
     "remove": "Weg damit",
     "submit": "Submit",
-    "value.range": "Nur des darfst"
+    "value.range": "Nur des darfst",
+    "wrong.value": "Suach wos aus"
   },
 
   "admin": {
@@ -59,6 +61,7 @@
     "invalid": "Polizzendaten san ned guad!",
     "partner.policies": "Polizzn zum/zur TypIn",
     "policy": "Polizzn",
+    "policy.fail": "Failed to Retrieve User's Policies",
     "policy.number": "Polizzn",
     "policy not found": "Polizzn ned do",
     "premium.payer": "TypInnen in da Polizzn",

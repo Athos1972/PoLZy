@@ -21,6 +21,7 @@
     "email": "E-mail",
     "execute": "Ausführen",
     "expand": "Erweitern",
+    "filter": "Filter",
     "find": "Finden",
     "na": "Nicht verfügbar",
     "name": "Name",
@@ -28,7 +29,8 @@
     "none": "Keine",
     "remove": "Entfernen",
     "submit": "Submit",
-    "value.range": "Wertebereich"
+    "value.range": "Wertebereich",
+    "wrong.value": "Bitte erlaubten Wert auswählen/eingeben"
   },
 
   "admin": {
@@ -59,6 +61,7 @@
     "invalid": "Ungültige Polizzendaten",
     "partner.policies": "Polizzen des Partners",
     "policy": "Polizze",
+    "policy.fail": "Fehler beim Laden der Polizzen",
     "policy.number": "Polizze",
     "policy not found": "Polizze nicht gefunden",
     "premium.payer": "Wichtige Partner",
