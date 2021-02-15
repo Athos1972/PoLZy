@@ -15,6 +15,7 @@ export const REMOVE_ANTRAG = 'REMOVE_ANTRAG'
 export const CLEAR_ANTRAG = 'CLEAR_ANTRAG'
 
 export const ADD_VALUES = 'ADD_VALUES'
+export const CLEAR_VALUES = 'CLEAR_VALUES'
 
 // auth actions
 export const signIn = (user) => ({
@@ -78,4 +79,8 @@ export const clearAntrag = () => ({
 export const addValues = (payload) => ({
   type: ADD_VALUES,
   payload: payload,
+})
+
+export const clearValues = () => ({
+  type: CLEAR_VALUES,
 })

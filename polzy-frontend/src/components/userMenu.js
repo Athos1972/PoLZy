@@ -21,7 +21,7 @@ import { useTranslation } from 'react-i18next'
 import LanguageSelector from '../components/languageSelector'
 import { getBadges } from '../api/gamification'
 import { VIEW_HOME, VIEW_ADMIN, VIEW_BADGE, VIEW_RANKING } from '../views/HomeView'
-import { signOut, updateUser, clearPolicy, clearAntrag } from '../redux/actions'
+import { signOut, updateUser, clearPolicy, clearAntrag, clearValues } from '../redux/actions'
 import { ErrorBoundary } from "@sentry/react"
 import { getManualDialogOptions, getManualReportContext, getUser } from '../sentry/utils'
 
@@ -104,6 +104,8 @@ function UserMenu(props) {
     // clear policy and antrag store
     props.clearPolicy()
     props.clearAntrag()
+    // clear lists of values
+    props.clearValues()
     // sign out 
     props.signOut()
   }
@@ -256,6 +258,7 @@ const mapDispatchToProps = {
   setBadges: updateUser,
   clearPolicy: clearPolicy,
   clearAntrag: clearAntrag,
+  clearValues: clearValues, 
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserMenu)

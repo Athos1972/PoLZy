@@ -12,6 +12,7 @@ import {
   REMOVE_ANTRAG,
   CLEAR_ANTRAG,
   ADD_VALUES,
+  CLEAR_VALUES,
 } from './actions.js'
 
 
@@ -94,6 +95,8 @@ const valueReducer = (state = {}, action) => {
         ...state,
         [name]: values,
       }
+    case CLEAR_VALUES:
+      return {}
     default:
       return state
   }
