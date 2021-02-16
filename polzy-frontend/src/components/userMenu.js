@@ -16,9 +16,11 @@ import LoyaltyIcon from '@material-ui/icons/Loyalty'
 import HomeIcon from '@material-ui/icons/Home'
 import ReportProblemIcon from '@material-ui/icons/ReportProblem'
 import TrendingUpIcon from '@material-ui/icons/TrendingUp'
+import CloudUploadIcon from '@material-ui/icons/CloudUpload'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
-import LanguageSelector from '../components/languageSelector'
+import LanguageSelector from './languageSelector'
+import FileUploadDialog from './fileUploads'
 import { getBadges } from '../api/gamification'
 import { VIEW_HOME, VIEW_ADMIN, VIEW_BADGE, VIEW_RANKING } from '../views/HomeView'
 import { signOut, updateUser, clearPolicy, clearAntrag, clearValues } from '../redux/actions'
@@ -74,6 +76,7 @@ function UserMenu(props) {
   const classes = useStyles()
 
   const [openMenu, setOpenMenu] = React.useState(false)
+  const [openUpload, setOpenUpload] = React.useState(false)
 
   // update user badges
   React.useEffect(() => {
@@ -118,6 +121,11 @@ function UserMenu(props) {
     const unseenBadges = props.user.badges.filter(badge => !badge.isSeen)
 
     return unseenBadges.length
+  }
+
+  const handleOpenUploadDialog = () => {
+    setOpenMenu(false)
+    setOpenUpload(true)
   }
 
   //console.log('USER MENU:')
@@ -173,6 +181,17 @@ function UserMenu(props) {
               onClick={()=>setOpenMenu(false)}
             />
           </ErrorBoundary>
+
+          {/* File Upload */}
+          <ListItem
+            button
+            onClick={handleOpenUploadDialog}
+          >
+            <ListItemIcon>
+              <CloudUploadIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('common:upload')} />
+          </ListItem>
 
           {/* Go To Home */}
           {props.currentView !== VIEW_HOME &&
@@ -244,6 +263,12 @@ function UserMenu(props) {
           </ListItem>
         </List>
       </Drawer>
+
+      {/* File Upload Dialog */}
+      <FileUploadDialog
+        open={openUpload}
+        onClose={() => setOpenUpload(false)}
+      />
     </React.Fragment>
   )
 }

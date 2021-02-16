@@ -29,6 +29,8 @@
     "none": "None",
     "remove": "Remove",
     "submit": "Submit",
+    "upload": "Upload File",
+    "upload.text": "Click or Drag and Drop File Here",
     "value.range": "Value in range",
     "wrong.value": "Wrong value"
   },
