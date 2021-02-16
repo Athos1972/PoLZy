@@ -29,6 +29,8 @@
     "none": "Keine",
     "remove": "Entfernen",
     "submit": "Submit",
+    "upload": "Dateiupload",
+    "upload.text": "Click oder Datei hier her ziehen",
     "value.range": "Wertebereich",
     "wrong.value": "Bitte erlaubten Wert auswählen/eingeben"
   },
