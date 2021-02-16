@@ -1,8 +1,10 @@
 from flask import jsonify, request, current_app
 from polzybackend.general import bp
 from polzybackend.utils.import_utils import all_stages
-from polzybackend import auth
-
+from polzybackend import auth, models
+from datetime import datetime
+import os
+from uuid import uuid4
 
 @bp.route('/stages')
 def stages():
@@ -50,3 +52,40 @@ def values():
     
     return jsonify({'error': f'Failed to get value-list'}), 400
 
+
+@bp.route('/upload', methods=['POST'])
+@auth.login_required
+def upload():
+    # get file
+    file = request.files.get('file')
+    print('\n*** File Upload:')
+    print(file)
+    if file is None:
+        return jsonify({'error': 'Request does not contain dataFile'}), 400
+
+    # save file
+    try:
+        user = auth.current_user()
+        #filename = '.'.join((
+        #    '_'.join((
+        #        user.id,
+        #        user.company_id,
+        #        datetime.now().strftime("%Y%m%d_%H%M%S"),
+        #    )),
+        #    file.filename.split('.')[-1],
+        #))
+        filename_parts = (str(uuid4()), file.filename.split('.')[-1])
+        path_to_file = os.path.join(current_app.config['UPLOADS'], '.'.join(filename_parts))
+        print(path_to_file)
+        file.save(path_to_file)
+        # create file instance in db
+        file_db = models.File.new(
+            user=auth.current_user(),
+            id=filename_parts[0],
+            filename=file.filename,
+        )
+        return {'OK': f'File {file_db.filename} saved with id {file_db.id}'}, 200
+    except Exception as error:
+        current_app.logger.error(f'Failed to upload file "{file.filename}" by {user}: {error}.')
+        return jsonify({'error': 'File upload failed'}), 400
+    

@@ -345,6 +345,40 @@ class Activity(db.Model):
 
 
 #
+# File Model
+#
+class File(db.Model):
+    __tablename__ = 'files'
+    id = db.Column(db.String(56), primary_key=True, default=generate_id)
+    filename = db.Column(db.String(128), nullable=False)
+    created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    user_id = db.Column(db.String(56), db.ForeignKey('users.id'), nullable=False)
+    company_id = db.Column(db.String(56), db.ForeignKey('companies.id'), nullable=False)
+
+    # relationships
+    user = db.relationship('User', backref='files', foreign_keys=[user_id])
+    company = db.relationship('Company', backref='files', foreign_keys=[company_id])
+
+    @classmethod
+    def new(cls, user, filename, id):
+        # 
+        # create new instance of File
+        #
+
+        instance = cls(
+            id=id,
+            filename=filename,
+            user_id=user.id,
+            company_id=user.company.company_id,
+        )
+
+        db.session.add(instance)
+        db.session.commit()
+        
+        return instance
+
+
+#
 # Gamification Models
 #
 class GamificationEvent(db.Model):
