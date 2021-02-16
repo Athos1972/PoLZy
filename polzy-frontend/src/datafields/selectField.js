@@ -82,7 +82,7 @@ function DataFieldSelect(props) {
       return
     }
 
-    if (options.length > 0 && !options.includes(value)) {
+    if (data.isMandatory && options.length > 0 && !options.includes(value)) {
       setError({
         show: true,
         message: t('common:wrong.value'),
@@ -117,7 +117,7 @@ function DataFieldSelect(props) {
     <Autocomplete
       classes={{root: classes.inputField}}
       id={`${data.name}-${id}`}
-      value={value === "" ? null : value}
+      value={Boolean(value) ? value : null}
       onChange={handleChange}
       options={options}
       fullWidth
