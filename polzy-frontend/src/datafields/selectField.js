@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { 
   TextField,
   CircularProgress,
+  Popper,
 } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { makeStyles } from '@material-ui/core/styles'
@@ -21,6 +22,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+
+// popper component
+const SelectPopper = (props) => {
+  const styles = {
+    popper: {
+      width: "fit-content",
+      minWidth: props.style.width,
+    }
+  }
+  
+  return (
+    <Popper
+      {...props}
+      style={styles.popper}
+      placement="bottom-start"
+    />
+  )
+}
 
 function DataFieldSelect(props) {
   const classes = useStyles()
@@ -120,6 +139,7 @@ function DataFieldSelect(props) {
       value={Boolean(value) ? value : null}
       onChange={handleChange}
       options={options}
+      PopperComponent={SelectPopper}
       fullWidth
       size="small"
       renderInput={(params) => 
