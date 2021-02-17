@@ -47,6 +47,10 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'flex-end',
   },
 
+  activityActionsContainer: {
+    padding: theme.spacing(2),
+  },
+
   customTagInput: {
     width: 240,
     verticalAlign: "middle",
@@ -577,12 +581,18 @@ function ActiveAntrag(props) {
     return true
   }
 
+  const closeActivity = () => {
+    setActivity(null)
+  }
+
   const executeActivity = (activity=currentActivity) => {
+    /*
     // exit if activity should be closed
     if (activity.postExecution === 'close') {
       setActivity(null)
       return
     }
+    */
     
     // switch calculate mode
     setExecute(true)
@@ -620,20 +630,17 @@ function ActiveAntrag(props) {
             }
           )
       }
-      
-      //update state
-      setExecute(false)
-      if (activity.postExecution !== 'active') {
-        setActivity(null)
-      }
-
     }).catch(error => {
       console.log(error)
+    }).finally(() => {
       //update state
       setExecute(false)
 
-      console.log('Execute Activity Error:')
-      console.log(currentActivity)
+      if (activity.postExecution === 'active' || activity.postExecution === 'close') {
+        return
+      }
+
+      setActivity(null)
     })
   }
 
@@ -936,14 +943,32 @@ function ActiveAntrag(props) {
                       </Collapse>
                     ))}
                 </div>
-                <div className={classes.flexContainerRight} >
-                  <ProgressButton
-                    title={currentActivity.postExecution === "close" ? t('common:close') : t('common:execute')}
-                    loading={isExecuting}
-                    disabled={!validateActivityFields()}
-                    onClick={(e) => executeActivity()}
-                  />
-                </div>
+                <Grid
+                  className={classes.activityActionsContainer}
+                  container
+                  spacing={2}
+                  justify="flex-end"
+                >
+                  {currentActivity.postExecution === 'close' &&
+                  <Grid item>
+                    <Button 
+                      variant="contained"
+                      color="primary"
+                      onClick={(e) => closeActivity()}
+                    >
+                      {t('common:close')}
+                    </Button>
+                  </Grid>
+                  }
+                  <Grid item>
+                    <ProgressButton
+                      title={t('common:execute')}
+                      loading={isExecuting}
+                      disabled={!validateActivityFields()}
+                      onClick={(e) => executeActivity()}
+                    />
+                  </Grid>
+                </Grid>
               </React.Fragment>
             }
 
