@@ -355,7 +355,7 @@ class File(db.Model):
     created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id = db.Column(db.String(56), db.ForeignKey('users.id'), nullable=False)
     company_id = db.Column(db.String(56), db.ForeignKey('companies.id'), nullable=False)
-    processed = db.Column(db.Boolean, nullable=False, default=False)
+    processed = db.Column(db.Boolean, nullable=True, default=False)
 
     # relationships
     user = db.relationship('User', backref='files', foreign_keys=[user_id])
