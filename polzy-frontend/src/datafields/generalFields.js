@@ -32,7 +32,7 @@ import DataFieldSelect from './selectField'
 import MappedImage from './mappedImage'
 import ExpandButton from '../components/expandButton'
 import { getLocaleDateFormat, backendDateFormat } from '../dateFormat'
-import { formatNumberWithCommas } from '../utils'
+import { formatNumberWithCommas, typingTimeoutWithInputTrigger } from '../utils'
 
 // Styles
 const useStyles = makeStyles((theme) => ({
@@ -78,12 +78,37 @@ const parseValue = (value) => {
 */
 export function DataFieldText(props) {
   const classes = useStyles()
-  const {id, data, value, onChange } = props
+  const {id, data } = props
   const [error, setError] = React.useState()
+  const [value, setValue] = React.useState(props.value)
+  const [typingTimeout, setTypingTimeout] = React.useState()
+
+  React.useEffect(() => {
+    setValue(props.value)
+  }, [props.value])
 
   React.useEffect(() => {
     setError(Boolean(data.errorMessage))
   }, [data.errorMessage])
+
+  const handleChange = (event) => {
+    //const newValue = valueInRange(event.target.value)
+    const newValue = event.target.value
+
+    // update value
+    setValue(newValue)
+
+    // check if typing is NOT finished
+    if (typingTimeout) {
+      clearTimeout(typingTimeout)
+    }
+
+    // set timeout for typing finished
+    setTypingTimeout(typingTimeoutWithInputTrigger(props, newValue))
+  }
+
+  //console.log('Text Field:')
+  //console.log(props)
 
   return (
     <FormControl
@@ -101,7 +126,7 @@ export function DataFieldText(props) {
       <OutlinedInput
         id={`${data.name}-${id}`}
         value={parseValue(value)}
-        onChange={(e) => onChange({[data.name]: e.target.value})}
+        onChange={handleChange}
         label={data.brief}
         endAdornment={props.endAdornment}
       />
@@ -217,7 +242,7 @@ export function DataFieldNumberRange(props) {
   const {t} = useTranslation('common')
   const [error, setError] = React.useState(false)
   const [helperText, setHelperText] = React.useState('')
-  const [typingTimeout, setTypingTimeout] = React.useState(null)
+  const [typingTimeout, setTypingTimeout] = React.useState()
   const [value, setValue] = React.useState(props.value)
   
   // range boundaries
@@ -268,16 +293,7 @@ export function DataFieldNumberRange(props) {
     }
 
     // set timeout for typing finished
-    setTypingTimeout(setTimeout(() => {
-      // check for input trigger and valid value
-      if (data.inputTriggers && validateValue(newValue)) {  
-        // input trigger
-        props.onInputTrigger({[data.name]: newValue})
-      } else {
-        // update antrag value
-        props.onChange({[data.name]: newValue})
-      }
-    }, 500))
+    setTypingTimeout(typingTimeoutWithInputTrigger(props, newValue, validateValue(newValue)))
   }
 
   return (
@@ -294,7 +310,7 @@ export function DataFieldNumberRange(props) {
       </InputLabel>
       <OutlinedInput
         id={`${data.name}-${id}`}
-        value={value}
+        value={parseValue(value)}
         onChange={handleChange}
         label={data.brief}
         inputProps={{
