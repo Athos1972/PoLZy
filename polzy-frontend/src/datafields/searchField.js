@@ -101,6 +101,8 @@ function SearchDropDownBase(props) {
       return
     }
 
+    //console.log(newValue)
+
     const {label, ...otherValues} = newValue
     const updateValues = {
       ...otherValues,

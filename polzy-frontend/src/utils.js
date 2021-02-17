@@ -38,3 +38,21 @@ export const formatRankWithSuffix = (number) => {
     default: return "th"
   }
 }
+
+export const typingTimeoutWithInputTrigger = (props, value, isValid=true) => {
+  // define interval in ms that signals about stop of typing
+  const typingDuration = 500
+
+  return(
+    setTimeout(() => {
+      // check for input trigger and valid value
+      if (props.data.inputTriggers && isValid) {
+        // input trigger
+        props.onInputTrigger({[props.data.name]: value})
+      } else {
+        // update antrag value
+        props.onChange({[props.data.name]: value})
+      }
+    }, typingDuration)
+  )
+}
