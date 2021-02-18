@@ -356,13 +356,16 @@ class File(db.Model):
     user_id = db.Column(db.String(56), db.ForeignKey('users.id'), nullable=False)
     company_id = db.Column(db.String(56), db.ForeignKey('companies.id'), nullable=False)
     processed = db.Column(db.Boolean, nullable=True, default=False)
+    status_ok = db.Column(db.Boolean, nullable=True, default=False)
+    details = db.Column(db.String(256), nullable=True, default="{}")
+    parent_id = db.Column(db.String(56), nullable=True)
 
     # relationships
     user = db.relationship('User', backref='files', foreign_keys=[user_id])
     company = db.relationship('Company', backref='files', foreign_keys=[company_id])
 
     @classmethod
-    def new(cls, user, filename, id):
+    def new(cls, user, filename, id, parent_id=None):
         # 
         # create new instance of File
         #
@@ -372,6 +375,7 @@ class File(db.Model):
             filename=filename,
             user_id=user.id,
             company_id=user.company_id,
+            parent_id=parent_id,
         )
 
         db.session.add(instance)
@@ -379,8 +383,12 @@ class File(db.Model):
         
         return instance
 
-    def set_processed(self):
+    def set_processed(self, details={}):
         self.processed = True
+        self.status_ok = details.get("status_ok", True)
+        if isinstance(details, dict):
+            details = json.dumps(details)
+        self.details = details
         db.session.commit()
 
     def get_current_filename(self):
