@@ -132,7 +132,7 @@ def getSearchStringFromRecords():
 
     # supplying current user to get records of current user & company
     results = AntragActivityRecords.getSearchString(auth.current_user(), data.get("searchString"))
-    return jsonify(results.to_dict), 200
+    return jsonify(results.to_dict()), 200
 
 
 @bp.route('/antrag/records/load', methods=['GET'])
@@ -144,6 +144,6 @@ def loadLatestRecords():
     instance = class_(auth.current_user(), result.sapClient)  # creating class instance of Antrag
 
     # creating dictionary with name as key and value as value of inputField. These are used to load fields.
-    dic = {js.get("name"): js.get("valueChosenOrEntered") for js in json.loads(instance.json_data)}
-    instance.valueChosenOrEntered(dic)  # loading above created dic to instance
-    return jsonify(result.to_dict), 200
+    dic = {js.get("name"): js.get("valueChosenOrEntered") for js in json.loads(result.json_data)}
+    instance.updateFieldValues(dic)  # loading above created dic to instance
+    return jsonify(result.to_dict()), 200
