@@ -125,14 +125,17 @@ def execute_antrag():
     return jsonify({'error': f'Execution of antrag activiy {data.get("activity")} failed'}), 400
 
 
-@bp.route('/antrag/records/searchString', methods=['POST'])
+@bp.route('/antrag/records/search', methods=['POST'])
 @auth.login_required
 def getSearchStringFromRecords():
     data = request.get_json()
 
     # supplying current user to get records of current user & company
     results = AntragActivityRecords.getSearchString(auth.current_user(), data.get("searchString"))
-    return jsonify(results.to_dict()), 200
+    result = {"results": []}
+    if results:
+        result = {"results": [instance.to_dict() for instance in results]}
+    return jsonify(result), 200
 
 
 @bp.route('/antrag/records/load', methods=['GET'])

@@ -425,7 +425,7 @@ class AntragActivityRecords(db.Model):
 
     @classmethod
     def getSearchString(cls, user: User, searchString):
-        if not searchString:
+        if searchString is None:
             return
         strings = searchString.split()
         instances = {}
