@@ -138,7 +138,7 @@ def getSearchStringFromRecords():
     return jsonify(result), 200
 
 
-@bp.route('/antrag/records/load', methods=['GET'])
+@bp.route('/antrag/records/load', methods=['POST'])
 @auth.login_required
 def loadLatestRecords():
     data = request.get_json()
