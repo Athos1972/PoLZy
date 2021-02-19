@@ -4,7 +4,6 @@ from polzybackend.utils.auth_utils import generate_token, get_expired, is_superv
 from datetime import datetime, date
 from sqlalchemy import and_, or_
 from functools import reduce
-from uuid import UUID
 import json
 import os
 
@@ -395,78 +394,6 @@ class File(db.Model):
     def get_current_filename(self):
         original_filename, extension = os.path.splitext(self.filename)
         return self.id + extension
-
-
-class AntragActivityRecords(db.Model):
-    __tablename__ = "antrag_activity_records"
-    id = db.Column(db.String(56), primary_key=True, default=generate_id)
-    antrag_id = db.Column(db.String(56), primary_key=True)
-    user_id = db.Column(db.String(56), db.ForeignKey('users.id'), nullable=False)
-    company_id = db.Column(db.String(56), db.ForeignKey('companies.id'), nullable=False)
-    antragsnummer = db.Column(db.String(56), nullable=False)
-    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.now)
-    status = db.Column(db.String(16), nullable=False)
-    searchString = db.Column(db.String, nullable=False)
-    json_data = db.Column(db.String, nullable=False)
-    class_name = db.Column(db.String, nullable=False)
-
-    @classmethod
-    def new(cls, antrag_id, user_id, company_id, antragsnummer, status, searchString, json_data, class_name=class_name):
-        instance = cls(
-            antrag_id=antrag_id, user_id=user_id, company_id=company_id, antragsnummer=antragsnummer,
-            status=status, searchString=searchString, json_data=json_data, class_name=class_name
-        )
-        db.session.add(instance)
-        db.session.commit()
-        return instance
-
-    @classmethod
-    def getSearchString(cls, user: User, searchString):
-        if not searchString:
-            return
-        strings = searchString.split()
-        instance = None
-        for string in strings:
-            try:
-                UUID(string.strip())
-                instance = cls.query.filter(cls.id == string.strip()).order_by(cls.timestamp.desc()).first()
-            except:
-                pass
-        instances = []
-        if not instance:
-            for obj in cls.query.filter_by(user_id=user.id, company_id=user.company_id).all():
-                values = [value.lower().strip() for value in obj.to_dict().values()]
-                flag = True
-                for string in strings:
-                    if not string.lower().strip() in values:
-                        flag = False
-                        break
-                if flag:
-                    instances.append([obj.timestamp, obj])
-        if instances:
-            instance = sorted(instances, reverse=True)[0]
-        return instance
-
-    @classmethod
-    def getLatest(cls, user):
-        return cls.query.filter_by(user_id=user.id, company_id=user.company.id).order_by(cls.timestamp.desc()).first()
-
-
-    def to_dict(self):
-        dic = {
-            "id": self.id,
-            "user_id": self.user_id,
-            "company_id": self.company_id,
-            "antragsnummer": self.antragsnummer,
-            "status": self.status,
-            "timestamp": self.timestamp,
-            "searchString": self.searchString,
-            "json_data": json.loads(self.json_data)
-        }
-        return dic
-
-    def to_json(self):
-        return json.dumps(self.to_dict())
 
 
 #

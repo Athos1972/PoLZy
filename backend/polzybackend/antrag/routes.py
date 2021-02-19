@@ -2,9 +2,6 @@ from flask import jsonify, request, current_app, send_file, abort
 from polzybackend.antrag import bp
 from polzybackend.utils.import_utils import antrag_products, antrag_class
 from polzybackend import auth
-from polzybackend.models import AntragActivityRecords
-from polzybackend.utils.import_utils import import_class
-import json
 
 @bp.route('/antrag/products')
 @auth.login_required
@@ -123,22 +120,3 @@ def execute_antrag():
         current_app.logger.exception(f'Failed execute activity {data.get("activity")} of antrag {data["id"]}: {e}')
     
     return jsonify({'error': f'Execution of antrag activiy {data.get("activity")} failed'}), 400
-
-
-@bp.route('/antrag/records/searchString', methods=['POST'])
-@auth.login_required
-def getSearchStringFromRecords():
-    data = request.get_json()
-    results = AntragActivityRecords.getSearchString(auth.current_user(), data.get("searchString"))
-    return jsonify(results.to_dict), 200
-
-
-@bp.route('/antrag/records/load', methods=['GET'])
-@auth.login_required
-def loadLatestRecords():
-    result = AntragActivityRecords.getLatest(auth.current_user())
-    class_ = import_class(current_app.config.get('DATACLASSES') + (f".{result.class_name}" * 2))
-    instance = class_(auth.current_user(), "120")
-    dic = {js.get("name"): js.get("valueChosenOrEntered") for js in json.loads(instance.json_data)}
-    instance.valueChosenOrEntered(dic)
-    return jsonify(result.to_dict), 200
