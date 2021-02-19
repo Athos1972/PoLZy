@@ -409,12 +409,15 @@ class AntragActivityRecords(db.Model):
     searchString = db.Column(db.String, nullable=False)
     json_data = db.Column(db.String, nullable=False)
     class_name = db.Column(db.String, nullable=False)
+    sapClient = db.Column(db.String(16), nullable=False)
 
     @classmethod
-    def new(cls, antrag_id, user_id, company_id, antragsnummer, status, searchString, json_data, class_name=class_name):
+    def new(
+        cls, antrag_id, user_id, company_id, antragsnummer, status, searchString, json_data, class_name, sapClient
+    ):
         instance = cls(
             antrag_id=antrag_id, user_id=user_id, company_id=company_id, antragsnummer=antragsnummer,
-            status=status, searchString=searchString, json_data=json_data, class_name=class_name
+            status=status, searchString=searchString, json_data=json_data, class_name=class_name, sapClient=sapClient
         )
         db.session.add(instance)
         db.session.commit()
@@ -425,32 +428,30 @@ class AntragActivityRecords(db.Model):
         if not searchString:
             return
         strings = searchString.split()
-        instance = None
-        for string in strings:
-            try:
-                UUID(string.strip())
-                instance = cls.query.filter(cls.id == string.strip()).order_by(cls.timestamp.desc()).first()
-            except:
-                pass
-        instances = []
-        if not instance:
-            for obj in cls.query.filter_by(user_id=user.id, company_id=user.company_id).all():
-                values = [value.lower().strip() for value in obj.to_dict().values()]
-                flag = True
-                for string in strings:
-                    if not string.lower().strip() in values:
-                        flag = False
-                        break
-                if flag:
-                    instances.append([obj.timestamp, obj])
-        if instances:
-            instance = sorted(instances, reverse=True)[0]
-        return instance
+        instances = {}
+
+        # looping through all records for current user & company
+        for obj in cls.query.filter_by(user_id=user.id, company_id=user.company_id).all():
+            values = [value.lower().strip() for value in obj.searchString]
+            flag = True
+            for string in strings:
+                if not string.lower().strip() in values:  # matching split & lowered value for flexiblity
+                    flag = False
+                    break
+            if flag:
+                if not obj.id in instances:
+                    instances[obj.id] = obj
+                else:
+                    if instances[obj.id].timestamp < obj.timestamp:  # if current object is latest than previously
+                        instances[obj.id] = obj                      # stored then replace it with current object
+        return list(instances.values())
 
     @classmethod
-    def getLatest(cls, user):
-        return cls.query.filter_by(user_id=user.id, company_id=user.company.id).order_by(cls.timestamp.desc()).first()
-
+    def getLatest(cls, antrag_id):
+        instance = cls.query.filter_by(antrag_id=antrag_id).order_by(cls.timestamp.desc()).first()
+        if not instance:  # if no result from antrag_id then it might be record id. This is only for flexibility
+            instance = cls.query.filter_by(id=antrag_id).order_by(cls.timestamp.desc()).first()
+        return instance
 
     def to_dict(self):
         dic = {

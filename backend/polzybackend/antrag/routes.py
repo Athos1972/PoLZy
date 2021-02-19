@@ -129,6 +129,8 @@ def execute_antrag():
 @auth.login_required
 def getSearchStringFromRecords():
     data = request.get_json()
+
+    # supplying current user to get records of current user & company
     results = AntragActivityRecords.getSearchString(auth.current_user(), data.get("searchString"))
     return jsonify(results.to_dict), 200
 
@@ -136,9 +138,12 @@ def getSearchStringFromRecords():
 @bp.route('/antrag/records/load', methods=['GET'])
 @auth.login_required
 def loadLatestRecords():
-    result = AntragActivityRecords.getLatest(auth.current_user())
+    data = request.get_json()
+    result = AntragActivityRecords.getLatest(data.get("antrag_id") or data.get("id"))  # flexible to get from both ids
     class_ = import_class(current_app.config.get('DATACLASSES') + (f".{result.class_name}" * 2))
-    instance = class_(auth.current_user(), "120")
+    instance = class_(auth.current_user(), result.sapClient)  # creating class instance of Antrag
+
+    # creating dictionary with name as key and value as value of inputField. These are used to load fields.
     dic = {js.get("name"): js.get("valueChosenOrEntered") for js in json.loads(instance.json_data)}
-    instance.valueChosenOrEntered(dic)
+    instance.valueChosenOrEntered(dic)  # loading above created dic to instance
     return jsonify(result.to_dict), 200
