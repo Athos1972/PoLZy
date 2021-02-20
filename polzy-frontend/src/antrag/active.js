@@ -252,14 +252,22 @@ function ActiveAntrag(props) {
         "city",
         "street",
         "streetNumber",
-        "houseNumber",
+        //"houseNumber",
       ]
+
+      const addressValues = Object.keys(values).filter(valueKey => (
+        typeof(values[valueKey]) === 'object' &&
+        typeof(values[valueKey]) !== null &&
+        addressKeys.reduce((result, addressKey) => (
+          result && values[valueKey][addressKey] !== undefined
+        ), true)
+      ))
 
       activityValues = {
         ...activityValues,
-        ...addressKeys.reduce((result, key) => ({...result, [key]: values[key]}), {}),
-        addressNumber: values.addressNumber,
-        address: addressKeys.filter(key => values[key] !== '').reduce((label, key) => ([...label, values[key]]), []).join(' ')
+        //...addressKeys.reduce((result, key) => ({...result, [key]: values[key]}), {}),
+        //addressNumber: values.addressNumber,
+        address: addressValues.length > 0 ? values[addressValues[0]] : null, // addressKeys.filter(key => values[key] !== '').reduce((label, key) => ([...label, values[key]]), []).join(' ')
       }
     }
     setActivityValues(activityValues)
@@ -759,6 +767,8 @@ function ActiveAntrag(props) {
   //console.log(props)
   //console.log('Antrag Values:')
   //console.log(values)
+  //console.log('Activity Values')
+  //console.log(activityValues)
   
   return(
     <AntragCard

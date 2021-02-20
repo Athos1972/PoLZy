@@ -32,7 +32,7 @@ import DataFieldSelect from './selectField'
 import MappedImage from './mappedImage'
 import ExpandButton from '../components/expandButton'
 import { getLocaleDateFormat, backendDateFormat } from '../dateFormat'
-import { formatNumberWithCommas, typingTimeoutWithInputTrigger } from '../utils'
+import { formatNumberWithCommas, typingTimeoutWithInputTrigger, parseJSONString } from '../utils'
 
 // Styles
 const useStyles = makeStyles((theme) => ({
@@ -419,7 +419,7 @@ export function DataFieldSwitch(props) {
         control={
           <Switch
             id={`${data.name}-${id}`}
-            checked={value}
+            checked={Boolean(value)}
             onChange={handleChange}
             color="primary"
           />
@@ -513,22 +513,6 @@ export default function DataGroup(props) {
         return 4
       default:
         return 12
-    }
-  }
-
-  const parseJSONString = (dataString) => {
-    //console.log('JSON STRING:')
-    //console.log(dataString)
-
-    if (dataString === "None" || dataString === null) {
-      return null
-    }
-
-    try {
-      return JSON.parse(dataString)
-    } catch(error) {
-      console.log(error)
-      return null
     }
   }
 

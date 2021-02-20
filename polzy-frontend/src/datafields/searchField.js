@@ -29,7 +29,7 @@ import AccessibilityNewIcon from '@material-ui/icons/AccessibilityNew'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import { DataFieldText, DataFieldDate } from './generalFields'
-import DataFieldSelect from './searchField'
+import DataFieldSelect from './selectField'
 import { searchPortal } from '../api/antrag'
 import { validateSearchString } from '../utils'
 
@@ -96,25 +96,25 @@ function SearchDropDownBase(props) {
 
   }
 
-  const handleValueSelect = (event, newValue) => {
-    if (newValue === null){
+  const handleValueSelect = (event, newValues) => {
+    if (newValues === null){
       return
     }
 
     //console.log(newValue)
-
+/*
     const {label, ...otherValues} = newValue
     const updateValues = {
       ...otherValues,
       [data.name]: label,
     }
-
+*/
     // update on input trigger
     if (data.inputTriggers) {
-      props.onInputTrigger(updateValues)
+      props.onInputTrigger({[data.name]: newValues})
     } else {
       // update antrag value
-      props.onChange(updateValues)
+      props.onChange({[data.name]: newValues})
     }
   }
 
@@ -210,6 +210,9 @@ function PartnerCreateField(props) {
     props.onSelect({address: ""})
   }
 
+  //console.log('Partner Create Field')
+  //console.log(props)
+
   switch (props.data.name) {
     case 'birthDate':
       return <DataFieldDate {...props} />
@@ -222,7 +225,7 @@ function PartnerCreateField(props) {
         return (
           <DataFieldText
             {...props}
-            value={props.address}
+            value={props.address.label}
             endAdornment={
               <InputAdornment position="end">
                 <IconButton
@@ -254,7 +257,9 @@ function PartnerCreateField(props) {
           <DataFieldSelect 
             {...props}
             data={{
-              ...props.data,
+              ...props.companyTypes,
+              name: 'companyType',
+              brief: (t('partner:companyType')),
               inputRange: props.companyTypes.inputRange,
             }}
           />
@@ -309,7 +314,8 @@ function NewDialog(props) {
       lastName: '',
       birthDate: '2000-01-01',
       gender: '',
-      address: props.address === undefined ? '' : props.address,
+      //address: props.address === undefined ? '' : props.address,
+      address: null,
       email: '',
       telefon: '',
     },
@@ -317,7 +323,8 @@ function NewDialog(props) {
       companyName: '',
       registrationNumber: '',
       companyType: '',
-      address: props.address === undefined ? '' : props.address,
+      //address: props.address === undefined ? '' : props.address,
+      address: null,
       email: '',
       telefon: '',
     },
@@ -328,13 +335,14 @@ function NewDialog(props) {
   const [partnerType, setPartnerType] = useState('person')
 
   // address updater
+  /*
   React.useEffect(() => {
     setPartner(prevPartner => ({
       ...prevPartner,
       address: props.address === undefined ? '' : props.address,
     }))
   }, [props.address])
-
+*/
   const handleTabChange = (event, value) => {
     setPartner({...initPartner[value]})
     setPartnerType(value)
@@ -355,26 +363,35 @@ function NewDialog(props) {
         'lastName',
         'firstName',
         'birthDate',
-        'address',
+        //'address',
       ],
       company: [
         'companyName',
         'companyType',
         'registrationNumber',
-        'address',
+        //'address',
       ],
     }
 
-    const partnerLabel = partnerLabelKeys[partnerType].reduce((label, key) => 
-      ([...label, partner[key]]), []
-    ).join(' ')
-
+    const partnerLabel = partnerLabelKeys[partnerType].reduce((label, key) => ([
+      ...label,
+      //typeof(partner[key]) === 'object' && partner[key].label ? partner[key].label : partner[key]
+      partner[key],
+    ]), []).join(' ') + (props.address.label ? ' ' + props.address.label : '')
+/*
     props.onChange({
       partnerNumber: '',
       ...initPartner.person,
       ...initPartner.company,
       ...partner,
       [props.data.name]: partnerLabel,
+    })
+*/  
+    props.onChange({
+      [props.data.name]: {
+        ...partner,
+        label: partnerLabel,
+      }
     })
     props.onClose()
   }
@@ -495,9 +512,13 @@ export default function SearchField(props) {
   }
 
   const handleClearClick = () => {
-    console.log('CLEAR CLICKED')
-    console.log(props)
-    props.onChange({[data.name]: ""})
+    //console.log('CLEAR CLICKED')
+    //console.log(props)
+    props.onChange({[data.name]: null})
+  }
+
+  const getPartnerLabel = () => {
+    return Object.keys()
   }
 
   //console.log(`Search Field '${data.name}' props:`)
@@ -510,10 +531,10 @@ export default function SearchField(props) {
           <Grid container spacing={1}>
             <Grid item xs={12} lg={10}>
               <DataFieldText
-                disabled={value === ""}
+                disabled={!Boolean(value)}
                 data={data}
-                value={value}
-                endAdornment={value !== "" &&
+                value={value.label}
+                endAdornment={Boolean(value) &&
                     <InputAdornment position="end">
                       <IconButton
                         edge="end"

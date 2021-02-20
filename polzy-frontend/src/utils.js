@@ -39,6 +39,29 @@ export const formatRankWithSuffix = (number) => {
   }
 }
 
+export const parseJSONString = (string) => {
+    //console.log('JSON STRING:')
+    //console.log(typeof(string))
+    //console.log(string)
+
+    // no parse needed
+    if (typeof(string) === 'object') {
+      return string
+    }
+
+    // empty values
+    if (string === "None" || !Boolean(string)) {
+      return null
+    }
+
+    try {
+      return JSON.parse(string)
+    } catch(error) {
+      console.log(error)
+      return null
+    }
+  }
+
 export const typingTimeoutWithInputTrigger = (props, value, isValid=true) => {
   // define interval in ms that signals about stop of typing
   const typingDuration = 500
