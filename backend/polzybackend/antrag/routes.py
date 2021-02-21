@@ -2,6 +2,8 @@ from flask import jsonify, request, current_app, send_file, abort
 from polzybackend.antrag import bp
 from polzybackend.utils.import_utils import antrag_products, antrag_class
 from polzybackend import auth
+from polzybackend.models import AntragActivityRecords
+import json
 
 @bp.route('/antrag/products')
 @auth.login_required
@@ -128,23 +130,50 @@ def getSearchStringFromRecords():
     data = request.get_json()
 
     # supplying current user to get records of current user & company
-    results = AntragActivityRecords.getSearchString(auth.current_user(), data.get("searchString"))
-    result = {"results": []}
-    if results:
-        result = {"results": [instance.to_dict() for instance in results]}
-    return jsonify(result), 200
+    found_antrags = AntragActivityRecords.getSearchString(auth.current_user(), data.get("value"))
+    results = [{
+        'id': instance.id,
+        'label': instance.get_label(), # 'get_label' method should be adjusted to proper render results
+    } for instance in found_antrags] if found_antrags else []
+    #results = [instance.to_dict() for instance in found_antrags] if found_antrags else []
+    #result = {"results": []}
+    #if results:
+    #    result = {"results": [instance.to_dict() for instance in results]}
 
+    return jsonify(results), 200
 
-@bp.route('/antrag/records/load', methods=['POST'])
+# we have to pass only antrag id. it will be easier to use GET method
+@bp.route('/antrag/records/<string:antrag_id>')#load', methods=['POST'])
 @auth.login_required
-def loadLatestRecords():
-    data = request.get_json()
-    result = AntragActivityRecords.getLatest(data.get("antrag_id") or data.get("id"))  # flexible to get from both ids
-    class_ = import_class(current_app.config.get('DATACLASSES') + (f".{result.class_name}" * 2))
-    instance = class_(auth.current_user(), result.sapClient)  # creating class instance of Antrag
+def loadLatestRecords(antrag_id):
+    #data = request.get_json()
+    #result = AntragActivityRecords.getLatest(data.get("antrag_id") or data.get("id"))  # flexible to get from both ids
+    #class_ = import_class(current_app.config.get('DATACLASSES') + (f".{result.class_name}" * 2))
+    #instance = class_(auth.current_user(), result.sapClient)  # creating class instance of Antrag
+
+    # get antrag record by id
+    antrag_record = AntragActivityRecords.getLatest(antrag_id)
+    if antrag_record is None:
+        return {'error': f'No record found of antrag {antrag_id}'}, 404
+
+    # create antrag instance from the record
+    antrag = antrag_class()(antrag_record.class_name, auth.current_user())
+
+    # load antrag instance and store it within the app
+    antrag.load(antrag_record.sapClient)
+    current_app.config['ANTRAGS'][antrag.id] = antrag
 
     # creating dictionary with name as key and value as value of inputField. These are used to load fields.
-    dic = {js.get("name"): js.get("valueChosenOrEntered") for js in json.loads(result.json_data)}
-    instance.updateFieldValues(dic)  # loading above created dic to instance
-    return jsonify(result.to_dict()), 200
+    #formatValue = lambda item: int(item) if item and item.isdigit() else item # format int values  
+    dic = {js.get("name"): js.get("valueChosenOrEntered") for js in json.loads(antrag_record.json_data)}
+    #instance.updateFieldValues(dic)  # loading above created dic to instance
+    #return jsonify(result.to_dict()), 200
+
+    print('\n*** Reacord Values:')
+    print(dic)
+
+    # update field values from the record and return the result
+    antrag.instance.updateFieldValues(dic)
+    result = antrag.get()
+    return jsonify(result), 200
 

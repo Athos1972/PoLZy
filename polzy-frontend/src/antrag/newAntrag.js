@@ -16,7 +16,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import { v4 as uuid } from 'uuid'
 import { addAntrag } from '../redux/actions'
-import { getProducts } from '../api/antrag'
+import { getProducts, loadAntrag } from '../api/antrag'
 import { CardNew, CardLogo } from '../styles/cards'
 import { ProductIcon } from '../components/icons'
 import { getCompanyLogo, EmblemLogo } from '../components/logo'
@@ -165,6 +165,15 @@ function NewAntrag(props) {
   const handleAntragSearchSelect = (value) => {
     console.log('Antrag Serach:')
     console.log(value)
+
+    loadAntrag(props.user, value.id).then(data => {
+      console.log('Loaded Antrag:')
+      console.log(data)
+      props.newAntrag({
+        request_state: "ok",
+        ...data,
+      })
+    })
   }
 
   //console.log("ANTRAG PRODUCTS:")

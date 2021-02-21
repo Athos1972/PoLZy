@@ -41,6 +41,19 @@ export const cloneAntrag = async (user, antragId) => {
   throw new Error(data.error)
 }
 
+export const loadAntrag = async (user, antragId) => {
+  const response = await fetch(`/api/antrag/records/${antragId}`, {
+    headers: {'authorization': `Bearer ${user.accessToken}`},
+  })
+  const data = await response.json()
+  
+  if (response.ok) {
+    return data
+  }
+
+  throw new Error(data.error)
+}
+
 export const updateAntragFields = async (user, antrag) => {
   const response = await fetch(`/api/antrag/update`, {
     method: 'POST',
@@ -82,9 +95,10 @@ export const executeAntrag = async (user, antrag) => {
 
 // search calls
 export const searchPortal = async (user, id, target, value) => {
-  //console.log('SERACH API:')
-  //console.log(user)
-  const response = await fetch(id ? `/api/search/${id}`: '/api/search', {
+  const searchUri = target === "antrag" ? "/api/antrag/records/search" : (
+    id ? `/api/search/${id}`: '/api/search'
+  )
+  const response = await fetch(searchUri, {
     method: 'POST',
     headers: {
       'authorization': `Bearer ${user.accessToken}`,
