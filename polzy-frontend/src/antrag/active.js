@@ -104,31 +104,57 @@ function AntragCard(props) {
 /*
 ** Custom Tag
 */
-function CustomTag(props) {
+function CustomTagBase(props) {
   const classes = useStyles()
+  const {t} = useTranslation('antrag')
 
   const [textValue, setTextValue] = useState('')
+
+  const handleTagChange = (newValue=textValue) => {
+    console.log('Custom Tag Change:')
+    console.log(newValue)
+    // update antrag
+    props.updateAntrag(
+      props.index,
+      {
+        tag: newValue,
+      }
+    )
+    // clear current text value
+    setTextValue('')
+  }
 
   const handleValueChange = (event) => {
     setTextValue(event.target.value)
   }
-
+/*
   const handleTagAdd = () => {
-    setTextValue('')
-    props.onChange(textValue)
+    updateAntrag()
   }
-
+*/
   const handleTagDelete = () => {
-    setTextValue('')
-    props.onChange('')
+    //setTextValue('')
+    //props.onChange('')
+    handleTagChange('')
   }
 
-  if (props.text === '') {
+  if (props.text) {
+    return (
+      <Chip
+        classes={{root: classes.horizontalMargin}}
+        label={props.text}
+        onDelete={() => handleTagChange('')}
+        color="primary"
+        variant="outlined"
+        icon={<LocalOfferOutlinedIcon />}
+      />
+    )
+  } else {
     return (
       <React.Fragment>
         {textValue !== '' &&
           <IconButton
-            onClick={handleTagAdd}
+            onClick={() => handleTagChange()}
             aria-label="custom-tag"
           >
             <SaveIcon />
@@ -136,23 +162,12 @@ function CustomTag(props) {
         }
         <TextField
           classes={{root: classes.customTagInput}}
-          placeholder={props.label}
+          placeholder={t("antrag:tag")}
           size="small"
           value={textValue}
           onChange={handleValueChange}
         />
       </React.Fragment>
-    )
-  } else {
-    return (
-      <Chip
-        classes={{root: classes.horizontalMargin}}
-        label={props.text}
-        onDelete={handleTagDelete}
-        color="primary"
-        variant="outlined"
-        icon={<LocalOfferOutlinedIcon />}
-      />
     )
   }
 }
@@ -282,7 +297,7 @@ function ActiveAntrag(props) {
   // other states
   const [isCalculate, setCalculate] = useState(false)
   const [isExecuting, setExecute] = useState(false)
-  const [customTag, setCustomTag] = useState('')
+  //const [customTag, setCustomTag] = useState('')
   const [expanded, setExpanded] = useState(true)
 
   const getPremium = () => {
@@ -430,6 +445,7 @@ function ActiveAntrag(props) {
     // build request body
     const requestData = {
       id: antrag.id,
+      tag: antrag.tag,
       activity: "Berechnen",
       values: {
         ...groups,
@@ -599,6 +615,7 @@ function ActiveAntrag(props) {
     // build request body
     const requestData = {
       id: antrag.id,
+      tag: antrag.tag,
       activity: activity.name,
       values: {
         ...activityGroups,
@@ -755,8 +772,8 @@ function ActiveAntrag(props) {
   }
 
   //***** BEBUG OUTPUT
-  //console.log('Antrag Props:')
-  //console.log(props)
+  console.log('Antrag Props:')
+  console.log(props)
   //console.log('Antrag Values:')
   //console.log(values)
   
@@ -774,9 +791,8 @@ function ActiveAntrag(props) {
 
               {/* Custom Tag */}
                 <CustomTag
-                  label={t("antrag:tag")}
-                  text={customTag}
-                  onChange={setCustomTag}
+                  index={props.index}
+                  text={antrag.tag}
                 />
 
               {/* Clone Button */}
@@ -1048,4 +1064,9 @@ const mapDispatchToProps = {
   newAntrag: addAntrag,
 }
 
+const mapDispatchToPropsToCustomTag = {
+  updateAntrag: updateAntrag,
+}
+
+const CustomTag = connect(null, mapDispatchToPropsToCustomTag)(CustomTagBase)
 export default connect(mapStateToProps, mapDispatchToProps)(ActiveAntrag)

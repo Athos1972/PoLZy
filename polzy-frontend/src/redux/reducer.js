@@ -69,9 +69,10 @@ const antragReducer = (state = [], action) => {
       return [...state, {key: key, ...action.payload}]
     case UPDATE_ANTRAG:
       const newState =  state.map((item, index) => (
-        index === action.id ? { 
+        index === action.id ? {
+          ...item,
           ...action.payload,
-          key: item.key,
+          //key: item.key,
         } : item
       ))
       return newState
