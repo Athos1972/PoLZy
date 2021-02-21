@@ -2,9 +2,6 @@ from flask import jsonify, request, current_app, send_file, abort
 from polzybackend.antrag import bp
 from polzybackend.utils.import_utils import antrag_products, antrag_class
 from polzybackend import auth
-from polzybackend.models import AntragActivityRecords
-from polzybackend.utils.import_utils import import_class
-import json
 
 @bp.route('/antrag/products')
 @auth.login_required
@@ -150,3 +147,4 @@ def loadLatestRecords():
     dic = {js.get("name"): js.get("valueChosenOrEntered") for js in json.loads(result.json_data)}
     instance.updateFieldValues(dic)  # loading above created dic to instance
     return jsonify(result.to_dict()), 200
+

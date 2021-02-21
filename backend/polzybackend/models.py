@@ -4,7 +4,6 @@ from polzybackend.utils.auth_utils import generate_token, get_expired, is_superv
 from datetime import datetime, date
 from sqlalchemy import and_, or_
 from functools import reduce
-from uuid import UUID
 import json
 import os
 

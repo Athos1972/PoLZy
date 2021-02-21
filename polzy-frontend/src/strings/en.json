@@ -28,6 +28,7 @@
     "new": "New",
     "none": "None",
     "remove": "Remove",
+    "search": "Search",
     "submit": "Submit",
     "upload": "Upload File",
     "upload.text": "Click or Drag and Drop File Here",
@@ -82,6 +83,7 @@
     "partner.saved": "Partner Saved",
     "premium": "Premium",
     "re-calculate": "Re-calculate",
+    "search": "Search for Fast Offer",
     "select.product": "Select Product",
     "tag": "Add Custom Tag"
   },
