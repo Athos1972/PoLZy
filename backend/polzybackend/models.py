@@ -460,11 +460,11 @@ class AntragActivityRecords(db.Model):
                     flag = False
                     break
             if flag:
-                if not obj.id in instances:
-                    instances[obj.id] = obj
+                if not obj.antrag_id in instances:
+                    instances[obj.antrag_id] = obj
                 else:
-                    if instances[obj.id].timestamp < obj.timestamp:  # if current object is latest than previously
-                        instances[obj.id] = obj                      # stored then replace it with current object
+                    if instances[obj.antrag_id].timestamp < obj.timestamp:  # if current object is latest than previously
+                        instances[obj.antrag_id] = obj                      # stored then replace it with current object
         return list(instances.values())
 
     @classmethod
@@ -476,10 +476,8 @@ class AntragActivityRecords(db.Model):
 
     def get_label(self):
         return ' '.join((
-            self.class_name,
-            self.status,
-            self.company.name,
             self.searchString,
+            self.antragsnummer,
             self.timestamp.strftime("%d.%m.%Y, %H:%M:%S"),
         ))
 
