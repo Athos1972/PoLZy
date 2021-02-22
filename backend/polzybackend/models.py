@@ -4,6 +4,7 @@ from polzybackend.utils.auth_utils import generate_token, get_expired, is_superv
 from datetime import datetime, date
 from sqlalchemy import and_, or_
 from functools import reduce
+from uuid import UUID
 import json
 import os
 
@@ -394,6 +395,94 @@ class File(db.Model):
     def get_current_filename(self):
         original_filename, extension = os.path.splitext(self.filename)
         return self.id + extension
+
+
+class AntragActivityRecords(db.Model):
+    __tablename__ = "antrag_activity_records"
+    id = db.Column(db.String(56), primary_key=True, default=generate_id)
+    antrag_id = db.Column(db.String(56), primary_key=True)
+    user_id = db.Column(db.String(56), db.ForeignKey('users.id'), nullable=False)
+    company_id = db.Column(db.String(56), db.ForeignKey('companies.id'), nullable=False)
+    antragsnummer = db.Column(db.String(56), nullable=False)
+    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    status = db.Column(db.String(16), nullable=False)
+    searchString = db.Column(db.String, nullable=False)
+    json_data = db.Column(db.String, nullable=False)
+    class_name = db.Column(db.String, nullable=False)
+    sapClient = db.Column(db.String(16), nullable=False)
+
+    # relationships
+    user = db.relationship('User', foreign_keys=[user_id])
+    company = db.relationship('Company', foreign_keys=[company_id])
+
+    @classmethod
+    def new(
+        cls, antrag_id, user_id, company_id, antragsnummer, status, searchString, json_data, class_name, sapClient
+    ):
+        instance = cls(
+            antrag_id=antrag_id, user_id=user_id, company_id=company_id, antragsnummer=antragsnummer,
+            status=status, searchString=searchString, json_data=json_data, class_name=class_name, sapClient=sapClient
+        )
+        db.session.add(instance)
+        db.session.commit()
+        return instance
+
+    @classmethod
+    def getSearchString(cls, user: User, searchString):
+        if searchString is None:
+            return
+        strings = searchString.split()
+        instances = {}
+
+        # looping through all records for current user & company
+        for obj in cls.query.filter_by(user_id=user.id, company_id=user.company_id).all():
+            print('\n*** Found Antrags:')
+            print(obj)
+            values = [value.lower() for value in obj.searchString.split()]
+            print(values)
+            flag = True
+            for string in strings:
+                if not string.lower().strip() in values:  # matching split & lowered value for flexiblity
+                    flag = False
+                    break
+            if flag:
+                if not obj.id in instances:
+                    instances[obj.id] = obj
+                else:
+                    if instances[obj.id].timestamp < obj.timestamp:  # if current object is latest than previously
+                        instances[obj.id] = obj                      # stored then replace it with current object
+        return list(instances.values())
+
+    @classmethod
+    def getLatest(cls, antrag_id):
+        instance = cls.query.filter_by(antrag_id=antrag_id).order_by(cls.timestamp.desc()).first()
+        if not instance:  # if no result from antrag_id then it might be record id. This is only for flexibility
+            instance = cls.query.filter_by(id=antrag_id).order_by(cls.timestamp.desc()).first()
+        return instance
+
+    def get_label(self):
+        return ' '.join((
+            self.class_name,
+            self.status,
+            self.company.name,
+            self.timestamp.strftime("%d.%m.%Y, %H:%M:%S"),
+        ))
+
+    def to_dict(self):
+        dic = {
+            "id": self.id,
+            "user_id": self.user_id,
+            "company_id": self.company_id,
+            "antragsnummer": self.antragsnummer,
+            "status": self.status,
+            "timestamp": self.timestamp.strftime("%d.%m.%Y, %H:%M:%S"),
+            "searchString": self.searchString,
+            "json_data": json.loads(self.json_data)
+        }
+        return dic
+
+    def to_json(self):
+        return json.dumps(self.to_dict())
 
 
 #
