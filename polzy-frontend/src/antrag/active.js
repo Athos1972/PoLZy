@@ -28,7 +28,7 @@ import ExpandButton from '../components/expandButton'
 import ProgressButton from '../components/progressButton'
 import DataGroup from '../datafields/generalFields'
 import { removeAntrag, updateAntrag, addAntrag } from '../redux/actions'
-import { executeAntrag, cloneAntrag, updateAntragFields } from '../api/antrag'
+import { executeAntrag, cloneAntrag, updateAntragFields, setCustomTag } from '../api/antrag'
 import { ActivityIcon } from '../components/icons'
 // test imports
 import {BrokeCard} from '../debug/damageCard'
@@ -110,18 +110,36 @@ function CustomTagBase(props) {
 
   const [textValue, setTextValue] = useState('')
 
-  const handleTagChange = (newValue=textValue) => {
-    console.log('Custom Tag Change:')
-    console.log(newValue)
-    // update antrag
+  const updateTag = (newValue) => {
     props.updateAntrag(
       props.index,
       {
         tag: newValue,
       }
     )
+    
     // clear current text value
     setTextValue('')
+  }
+
+  const handleTagChange = () => {
+    //console.log('Custom Tag Change:')
+    //console.log(newValue)
+
+    // update tag in back-end 
+    setCustomTag(
+      props.user,
+      props.id,
+      {
+        action: 'set',
+        tag: textValue,
+      }
+    ).then(() => {
+      // update tag in front-end
+      updateTag(textValue)
+    }).catch(error => {
+      console.log(error)
+    })
   }
 
   const handleValueChange = (event) => {
@@ -133,9 +151,19 @@ function CustomTagBase(props) {
   }
 */
   const handleTagDelete = () => {
-    //setTextValue('')
-    //props.onChange('')
-    handleTagChange('')
+    // update tag in back-end 
+    setCustomTag(
+      props.user,
+      props.id,
+      {
+        action: 'delete',
+      }
+    ).then(() => {
+      // update tag in front-end
+      updateTag()
+    }).catch(error => {
+      console.log(error)
+    })
   }
 
   if (props.text) {
@@ -143,7 +171,7 @@ function CustomTagBase(props) {
       <Chip
         classes={{root: classes.horizontalMargin}}
         label={props.text}
-        onDelete={() => handleTagChange('')}
+        onDelete={handleTagDelete}
         color="primary"
         variant="outlined"
         icon={<LocalOfferOutlinedIcon />}
@@ -305,7 +333,6 @@ function ActiveAntrag(props) {
   // other states
   const [isCalculate, setCalculate] = useState(false)
   const [isExecuting, setExecute] = useState(false)
-  //const [customTag, setCustomTag] = useState('')
   const [expanded, setExpanded] = useState(true)
 
   const getPremium = () => {
@@ -780,8 +807,8 @@ function ActiveAntrag(props) {
   }
 
   //***** BEBUG OUTPUT
-  console.log('Antrag Props:')
-  console.log(props)
+  //console.log('Antrag Props:')
+  //console.log(props)
   //console.log('Antrag Values:')
   //console.log(values)
   //console.log('Activity Values')
@@ -802,6 +829,7 @@ function ActiveAntrag(props) {
               {/* Custom Tag */}
                 <CustomTag
                   index={props.index}
+                  id={antrag.id}
                   text={antrag.tag}
                 />
 
@@ -1078,5 +1106,5 @@ const mapDispatchToPropsToCustomTag = {
   updateAntrag: updateAntrag,
 }
 
-const CustomTag = connect(null, mapDispatchToPropsToCustomTag)(CustomTagBase)
+const CustomTag = connect(mapStateToProps, mapDispatchToPropsToCustomTag)(CustomTagBase)
 export default connect(mapStateToProps, mapDispatchToProps)(ActiveAntrag)
