@@ -82,24 +82,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-function AntragCard(props) {
-  const {hidden, content} = props
-
-  return(
-    <React.Fragment>
-      {hidden ? (
-        <CardActiveHide>
-          {content}
-        </CardActiveHide>
-      ) : (
-        <CardActive>
-          {content}
-        </CardActive>
-      )}
-    </React.Fragment>
-  )
-}
-
 
 /*
 ** Custom Tag
@@ -205,7 +187,7 @@ function ActiveAntrag(props) {
   const {t} = useTranslation('common', 'antrag')
   const classes = useStyles()
 
-  const [hidden, setHidden] = useState(false)
+  const [isVisible, setIsVisible] = useState()
   const [autoCalculateDisabled, setAutoCalculateDisabled] = useState(false)
 
   // groups states
@@ -330,6 +312,11 @@ function ActiveAntrag(props) {
     }
   }, [antrag])
 
+  // card appear animation
+  React.useEffect(() => {
+    setIsVisible(true)
+  }, [])
+
   // other states
   const [isCalculate, setCalculate] = useState(false)
   const [isExecuting, setExecute] = useState(false)
@@ -410,7 +397,7 @@ function ActiveAntrag(props) {
   }
 
   const handleCloseClick = () => {
-    setHidden(true)
+    setIsVisible(false)
     setTimeout(() => {props.closeAntrag(props.index)}, hideTime)
   }
 
@@ -815,10 +802,12 @@ function ActiveAntrag(props) {
   //console.log(activityValues)
   
   return(
-    <AntragCard
-      hidden={hidden}
-      content={
-        <React.Fragment>
+    <Collapse
+      in={isVisible}
+      timeout={hideTime}
+      unmountOnExit
+    >
+      <CardActive>
           <CardTop
             action={
               <React.Fragment>
@@ -1084,9 +1073,8 @@ function ActiveAntrag(props) {
             </CardContent>
             
           </Collapse>
-        </React.Fragment>
-      }
-    />
+        </CardActive>
+    </Collapse>
   )
 }
 

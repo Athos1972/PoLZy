@@ -1,69 +1,59 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { Typography, IconButton, Tooltip } from '@material-ui/core'
+import { Typography, IconButton, Tooltip, Collapse } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import { useTranslation } from 'react-i18next'
 import { CardErrorHide, CardError, CardTop, CardMiddle, hideTime } from '../styles/cards'
 import { AntragTitle } from './components'
 import { removeAntrag } from '../redux/actions'
 
-function AntragCard(props) {
-  const {hidden, content} = props
-
-  return(
-    <React.Fragment>
-      {hidden ? (
-        <CardErrorHide>
-          {content}
-        </CardErrorHide>
-      ) : (
-        <CardError>
-          {content}
-        </CardError>
-      )}
-    </React.Fragment>
-  )
-}
 
 function ErrorAntrag(props) {
   const {index, antrag} = props
   const { t } = useTranslation('common')
-  const [hidden, setHidden] = useState(false)
+  const [isVisible, setIsVisible] = React.useState(false)
 
+  // card appear animation
+  React.useEffect(() => {
+    setIsVisible(true)
+  }, [])
+
+  // card close
   const handleCloseClick = () => {
-    setHidden(true)
+    setIsVisible(false)
     setTimeout(() => {props.closeAntrag(index)}, hideTime)
   }
 
   return(
-    <AntragCard
-      hidden={hidden}
-      content={
-        <React.Fragment>
-          <CardTop
-            action={
-              <Tooltip title={t('close')}>
-                <IconButton 
-                  aria-label="close"
-                  onClick={handleCloseClick}
-                >
-                  <CloseIcon />
-                </IconButton>
-              </Tooltip>
-            }
-            title={<AntragTitle product={antrag.product_line.name} />}
-          />
-          <CardMiddle>
-            <Typography
-              component="p"
-              variant="h5"
-            >
-              {"error" in antrag ? (antrag.error) : (t("antrag:invalid.antrag"))}
-            </Typography>
-          </CardMiddle>
-        </React.Fragment>
-      }
-    />
+    <Collapse
+      in={isVisible}
+      timeout={hideTime}
+      unmountOnExit
+    >
+      <CardError>
+        <CardTop
+          action={
+            <Tooltip title={t('close')}>
+              <IconButton 
+                aria-label="close"
+                onClick={handleCloseClick}
+              >
+                <CloseIcon />
+              </IconButton>
+            </Tooltip>
+          }
+          title={<AntragTitle product={antrag.product_line.name} />}
+        />
+        <CardMiddle>
+          <Typography
+            component="p"
+            variant="h5"
+          >
+            {"error" in antrag ? (antrag.error) : (t("antrag:invalid.antrag"))}
+          </Typography>
+        </CardMiddle>
+      </CardError>
+    </Collapse>
   )
 }
 
