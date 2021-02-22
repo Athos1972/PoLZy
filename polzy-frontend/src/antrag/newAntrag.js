@@ -166,7 +166,7 @@ function NewAntrag(props) {
     console.log('Antrag Serach:')
     console.log(value)
 
-    loadAntrag(props.user, value.id).then(data => {
+    loadAntrag(props.user, value.customer.id).then(data => {
       console.log('Loaded Antrag:')
       console.log(data)
       props.newAntrag({
