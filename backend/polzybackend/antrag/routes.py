@@ -199,6 +199,8 @@ def loadLatestRecords(antrag_id):
 
     # update field values from the record and return the result
     antrag.instance.updateFieldValues(dic)
+    # update tag
+    antrag.instance.setCustomTag(antrag_record.tag)
     result = antrag.get()
     return jsonify(result), 200
 

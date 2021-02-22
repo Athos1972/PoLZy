@@ -397,6 +397,9 @@ class File(db.Model):
         return self.id + extension
 
 
+#
+# Antrag Model
+#
 class AntragActivityRecords(db.Model):
     __tablename__ = "antrag_activity_records"
     id = db.Column(db.String(56), primary_key=True, default=generate_id)
@@ -410,18 +413,29 @@ class AntragActivityRecords(db.Model):
     json_data = db.Column(db.String, nullable=False)
     class_name = db.Column(db.String, nullable=False)
     sapClient = db.Column(db.String(16), nullable=False)
+    tag = db.Column(db.String, default=None)
 
     # relationships
     user = db.relationship('User', foreign_keys=[user_id])
     company = db.relationship('Company', foreign_keys=[company_id])
 
     @classmethod
-    def new(
-        cls, antrag_id, user_id, company_id, antragsnummer, status, searchString, json_data, class_name, sapClient
-    ):
+    def new(cls, antrag):
+        #cls, antrag_id, user_id, company_id, antragsnummer, status, searchString, json_data, class_name, sapClient
+        #):
         instance = cls(
-            antrag_id=antrag_id, user_id=user_id, company_id=company_id, antragsnummer=antragsnummer,
-            status=status, searchString=searchString, json_data=json_data, class_name=class_name, sapClient=sapClient
+            antrag_id=str(antrag.id),
+            user_id=str(antrag.user.id),
+            company_id=str(antrag.user.company_id),
+            antragsnummer=antrag.antragsnummer,
+            status=antrag.status,
+            searchString=antrag.searchstring,
+            json_data=json.dumps(antrag.Felder.toJSON()),
+            class_name=antrag.__class__.__name__,
+            sapClient=antrag.sapClient,
+            tag=antrag.tag,
+            #antrag_id=antrag_id, user_id=user_id, company_id=company_id, antragsnummer=antragsnummer,
+            #status=status, searchString=searchString, json_data=json_data, class_name=class_name, sapClient=sapClient
         )
         db.session.add(instance)
         db.session.commit()
