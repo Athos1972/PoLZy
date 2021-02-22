@@ -23,6 +23,7 @@ import { PolicyTitle } from './Components'
 import PolicyDetails from './policyDetails'
 import { removePolicy, updatePolicy } from '../redux/actions'
 import { executeActivity } from '../api/policy'
+import CardCloseButton from '../components/closeButton'
 import ExpandButton from '../components/expandButton'
 import DataGroup from '../datafields/generalFields'
 import ProgressButton from '../components/progressButton'
@@ -57,45 +58,20 @@ const ValueControl = withStyles((theme) => ({
   }
 }))(FormControl)
 
-function PolicyCard(props) {
-  const {hidden, content} = props
-
-  return(
-    <React.Fragment>
-      {hidden ? (
-        <CardActiveHide>
-          {content}
-        </CardActiveHide>
-      ) : (
-        <CardActive>
-          {content}
-        </CardActive>
-      )}
-    </React.Fragment>
-  )
-}
-
 class ActivePolicy extends React.Component {
 
-  state = {
-    expanded: false,
-    hidden: false,
-    activityExecutes: false,
-    currentActivity: null,
-    activityValues: {},
+  constructor(props) {
+    super(props)
+    this.state = {
+      expanded: false,
+      isVisible: false,
+      activityExecutes: false,
+      currentActivity: null,
+      activityValues: {},
+    }
   }
 
   actionsNotAvailable = (this.props.policy.possible_activities.length === 0)
-
-  //possible_activities = this.props.policy.possible_activities
-
-  handleCloseClick = () => {
-    this.setState({
-      hidden: true,
-      expanded: false,
-    })
-    setTimeout(() => {this.props.closePolicyCard(this.props.index)}, hideTime)
-  }
 
   handleExpandClick = () => {
     this.setState(state => ({
@@ -187,13 +163,7 @@ class ActivePolicy extends React.Component {
         if (field.isMandatory && (this.state.activityValues[field.name] === "" || this.state.activityValues[field.name] === null))
           return false
       }
-  /*      
-    for (let index in this.state.activityValues) {
-      console.log(index)
-      if (this.props.policy.possible_activities[this.state.actionIndex].fields[index].isMandatory && this.state.activityValues[index] === '')
-        return false
-    }
-  */
+
     return true
   }
 
@@ -360,16 +330,21 @@ class ActivePolicy extends React.Component {
     </React.Fragment>
   )
 
+  componentDidMount() {
+    this.setState({isVisible: true})
+  }
+
 
   render(){
     const {t} = this.props
 
   return(
-    <React.Fragment>
-      <PolicyCard
-        hidden={this.state.hidden}
-        content={
-          <React.Fragment>
+    <Collapse
+      in={this.state.isVisible}
+      timeout={hideTime}
+      unmountOnExit
+    >
+      <CardActive>
           <CardTop
             action={
               <React.Fragment>
@@ -377,14 +352,11 @@ class ActivePolicy extends React.Component {
                 <BrokeCard card="Policy" />
 
               {/* Close Button */}
-                <Tooltip title={t("common:close")}>
-                  <IconButton 
-                    onClick={this.handleCloseClick}
-                    aria-label="close"
-                  >
-                    <CloseIcon />
-                  </IconButton>
-                </Tooltip>
+                <CardCloseButton
+                  onClose={() => this.setState({isVisible: false})}
+                  onDelete={() => this.props.closePolicyCard(this.props.index)}
+                />
+
               </React.Fragment>
             }
             title={<this.RenderHeader t={t} />}
@@ -411,10 +383,9 @@ class ActivePolicy extends React.Component {
               <PolicyDetails policy={this.props.policy} />
             </CardContent>
           </Collapse>
-          </React.Fragment>
-        }
-      />
-    </React.Fragment>
+      
+      </CardActive>
+    </Collapse>
   )
   }
 }

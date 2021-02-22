@@ -34,7 +34,7 @@ function PolicyCard(props) {
       )
     case "customer":
       return(
-        <Customer index={index} customer={policy} />
+        <Customer index={index} customer={policy.customer} />
       )
     default:
       return(

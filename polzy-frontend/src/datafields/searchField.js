@@ -316,7 +316,6 @@ function NewDialog(props) {
       lastName: '',
       birthDate: '2000-01-01',
       gender: '',
-      //address: props.address === undefined ? '' : props.address,
       addressDict: null,
       email: '',
       telefon: '',
@@ -325,7 +324,6 @@ function NewDialog(props) {
       companyName: '',
       registrationNumber: '',
       companyType: '',
-      //address: props.address === undefined ? '' : props.address,
       addressDict: null,
       email: '',
       telefon: '',
@@ -337,14 +335,6 @@ function NewDialog(props) {
   const [partnerType, setPartnerType] = useState('person')
 
   // address updater
-  /*
-  React.useEffect(() => {
-    setPartner(prevPartner => ({
-      ...prevPartner,
-      address: props.address === undefined ? '' : props.address,
-    }))
-  }, [props.address])
-*/
   const handleTabChange = (event, value) => {
     setPartner({...initPartner[value]})
     setPartnerType(value)
@@ -380,15 +370,7 @@ function NewDialog(props) {
       //typeof(partner[key]) === 'object' && partner[key].label ? partner[key].label : partner[key]
       partner[key],
     ]), []).join(' ') + (props.addressDict.label ? ' ' + props.addressDict.label : '')
-/*
-    props.onChange({
-      partnerNumber: '',
-      ...initPartner.person,
-      ...initPartner.company,
-      ...partner,
-      [props.data.name]: partnerLabel,
-    })
-*/  
+ 
     props.onChange({
       [props.data.name]: {
         ...partner,
@@ -397,15 +379,7 @@ function NewDialog(props) {
     })
     props.onClose()
   }
-/*
-  const handleAddressSelect = (newAddress) => {
-    //console.log('Address Selected')
-    setPartner(preValues => ({
-      ...preValues,
-      address: newAddress,
-    }))
-  }
-*/
+
   const validateForm = () => {
     for (const prop in partner) {
       if (partner[prop] === '') {

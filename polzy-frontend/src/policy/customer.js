@@ -5,20 +5,18 @@ import { format } from 'date-fns'
 import { makeStyles } from '@material-ui/core/styles'
 import { 
   CardContent,
-  IconButton,
-  Tooltip,
   Grid,
   Typography,
   Collapse,
   LinearProgress,
 } from '@material-ui/core'
-import CloseIcon from '@material-ui/icons/Close'
 import { Section, GenericSection } from './policyDetails'
 import { CardActive, CardTop, hideTime } from '../styles/cards'
 import { addPolicy, removePolicy } from '../redux/actions'
 import { getCustomerPolicies } from '../api/policy'
 import EnhancedTable from '../datafields/enhancedTable'
 import { backendDateFormat } from '../dateFormat'
+import CardCloseButton from '../components/closeButton'
 
 import {BrokeCard} from '../debug/damageCard'
 
@@ -126,7 +124,7 @@ function CustomerPoliciesBase(props) {
 
 
 function Customer(props) {
-  const {t} = useTranslation('common')
+  //const {t} = useTranslation('common')
   const classes = useStyles()
   const {index, customer} = props
 
@@ -136,11 +134,6 @@ function Customer(props) {
   React.useEffect(() => {
     setIsVisible(true)
   }, [])
-
-  const handleClose = () => {
-    setIsVisible(false)
-    setTimeout(() => {props.closeCard(index)}, hideTime)
-  } 
 
   return (
     <Collapse
@@ -158,14 +151,10 @@ function Customer(props) {
               <BrokeCard card="Customer" />
 
               {/* Close Button */}
-              <Tooltip title={t("common:close")}>
-                <IconButton 
-                  onClick={handleClose}
-                  aria-label="close"
-                >
-                  <CloseIcon />
-                </IconButton>
-              </Tooltip>
+              <CardCloseButton
+                onClose={() => setIsVisible(false)}
+                onDelete={() => props.closeCard(index)}
+              />
 
             </React.Fragment>
           }

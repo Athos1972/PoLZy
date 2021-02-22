@@ -25,6 +25,7 @@ import { useTranslation } from 'react-i18next'
 import { CardActiveHide, CardActive, CardTop, CardBottom, hideTime } from '../styles/cards'
 import { AntragTitle } from './components'
 import ExpandButton from '../components/expandButton'
+import CardCloseButton from '../components/closeButton'
 import ProgressButton from '../components/progressButton'
 import DataGroup from '../datafields/generalFields'
 import { removeAntrag, updateAntrag, addAntrag } from '../redux/actions'
@@ -127,11 +128,7 @@ function CustomTagBase(props) {
   const handleValueChange = (event) => {
     setTextValue(event.target.value)
   }
-/*
-  const handleTagAdd = () => {
-    updateAntrag()
-  }
-*/
+
   const handleTagDelete = () => {
     // update tag in back-end 
     setCustomTag(
@@ -396,11 +393,6 @@ function ActiveAntrag(props) {
     return null
   }
 
-  const handleCloseClick = () => {
-    setIsVisible(false)
-    setTimeout(() => {props.closeAntrag(props.index)}, hideTime)
-  }
-
   const isCloneAvailable = () => {
     for (const activity of antrag.possible_activities) {
       if (activity.name === "Clone")
@@ -624,13 +616,6 @@ function ActiveAntrag(props) {
   }
 
   const executeActivity = (activity=currentActivity) => {
-    /*
-    // exit if activity should be closed
-    if (activity.postExecution === 'close') {
-      setActivity(null)
-      return
-    }
-    */
     
     // switch calculate mode
     setExecute(true)
@@ -751,47 +736,7 @@ function ActiveAntrag(props) {
     setActivity(newActivity)
 
   }
-/*
-  const handlePartnerSelect = (partner) => {
-    if (partner === '') {
-      return
-    }
 
-    if ('partnerNumber' in partner) {
-      setActivityValues(preValues => ({
-        ...preValues,
-        PartnerID: partner.partnerNumber,
-        Firstname: partner.firstName,
-        Lastname: partner.lastName,
-        DateOfBirth: partner.birthdate,
-        Gender: "",
-        addressNumber: "",
-        country: "",
-        postcode: partner.postCode,
-        city: partner.city,
-        street: partner.street,
-        streetNumber: "",
-        houseNumber: partner.houseNumber,
-      }))
-    } else {
-      setActivityValues(preValues => ({
-        ...preValues,
-        PartnerID: "",
-        Firstname: partner.firstName,
-        Lastname: partner.lastName,
-        DateOfBirth: "",
-        Gender: partner.gender,
-        addressNumber: partner.address.addressNumber,
-        country: partner.address.country,
-        postcode: partner.address.postCode,
-        city: partner.address.city,
-        street: partner.address.street,
-        streetNumber: partner.address.streetNumber,
-        houseNumber: partner.address.houseNumber,
-      }))
-    }  
-  }
-  */
 
   //***** BEBUG OUTPUT
   //console.log('Antrag Props:')
@@ -812,8 +757,8 @@ function ActiveAntrag(props) {
             action={
               <React.Fragment>
 
-            {/* DEBUG: broke antrag */}
-              <BrokeCard card="Antrag" />
+              {/* DEBUG: broke antrag */}
+                <BrokeCard card="Antrag" />
 
               {/* Custom Tag */}
                 <CustomTag
@@ -835,14 +780,11 @@ function ActiveAntrag(props) {
                 }
 
               {/* Close Button */}
-                <Tooltip title={t("common:close")}>
-                  <IconButton 
-                    onClick={handleCloseClick}
-                    aria-label="close"
-                  >
-                    <CloseIcon />
-                  </IconButton>
-                </Tooltip>
+                <CardCloseButton
+                  onClose={() => setIsVisible(false)}
+                  onDelete={() => props.closeAntrag(props.index)}
+                />
+
               </React.Fragment>
             }
             title={<AntragTitle product={antrag.product_line.attributes.Produkt} />}
@@ -1043,13 +985,6 @@ function ActiveAntrag(props) {
             {isExecuting && 
               <LinearProgress classes={{root: classes.linearProgress}} />
             }
-
-            {/*Boolean(currentActivity) && currentActivity.name === "Eurotax Vollsuche" &&
-              <EnhancedTable
-                title="Eurotax Vollsuche"
-                data={tableData}
-              />
-            */}
 
             {/* bottom navigation */}
             <CardContent>

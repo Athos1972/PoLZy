@@ -1,17 +1,24 @@
 import React from 'react'
 import clsx from 'clsx'
 import { Tooltip, IconButton } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import CloseIcon from '@material-ui/icons/Close'
 import { useTranslation } from 'react-i18next'
+import { hideTime } from '../styles/cards'
 
-export default function CLoseButton(props) {
+
+export default function CardCloseButton(props) {
+  const {t} = useTranslation('common')
+
+  const handleClose = () => {
+    props.onClose()
+    setTimeout(() => {props.onDelete()}, hideTime)
+  } 
 
   return (
-    <Tooltip title={t('close')}>
+    <Tooltip title={t('common:close')}>
       <IconButton 
         aria-label="close"
-        onClick={handleCloseClick}
+        onClick={handleClose}
       >
         <CloseIcon />
       </IconButton>

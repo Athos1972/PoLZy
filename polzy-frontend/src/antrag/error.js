@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { CardErrorHide, CardError, CardTop, CardMiddle, hideTime } from '../styles/cards'
 import { AntragTitle } from './components'
 import { removeAntrag } from '../redux/actions'
+import CardCloseButton from '../components/closeButton'
 
 
 function ErrorAntrag(props) {
@@ -18,12 +19,6 @@ function ErrorAntrag(props) {
     setIsVisible(true)
   }, [])
 
-  // card close
-  const handleCloseClick = () => {
-    setIsVisible(false)
-    setTimeout(() => {props.closeAntrag(index)}, hideTime)
-  }
-
   return(
     <Collapse
       in={isVisible}
@@ -33,14 +28,10 @@ function ErrorAntrag(props) {
       <CardError>
         <CardTop
           action={
-            <Tooltip title={t('close')}>
-              <IconButton 
-                aria-label="close"
-                onClick={handleCloseClick}
-              >
-                <CloseIcon />
-              </IconButton>
-            </Tooltip>
+            <CardCloseButton
+              onClose={() => setIsVisible(false)}
+              onDelete={() => props.closeAntrag(index)}
+            />
           }
           title={<AntragTitle product={antrag.product_line.name} />}
         />
