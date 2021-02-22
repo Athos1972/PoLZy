@@ -134,8 +134,8 @@ def getSearchStringFromRecords():
     # supplying current user to get records of current user & company
     found_antrags = AntragActivityRecords.getSearchString(auth.current_user(), data.get("value"))
     results = [{
-        'id': instance.id,
-        'label': instance.get_label(), # 'get_label' method should be adjusted to proper render results
+        'id': instance.antrag_id,
+        'label': instance.get_label(),  # 'get_label' method should be adjusted to proper render results
     } for instance in found_antrags] if found_antrags else []
     #results = [instance.to_dict() for instance in found_antrags] if found_antrags else []
     #result = {"results": []}
