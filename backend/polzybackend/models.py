@@ -465,6 +465,7 @@ class AntragActivityRecords(db.Model):
             self.class_name,
             self.status,
             self.company.name,
+            self.searchString,
             self.timestamp.strftime("%d.%m.%Y, %H:%M:%S"),
         ))
 
