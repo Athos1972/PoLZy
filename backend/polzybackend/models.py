@@ -411,6 +411,10 @@ class AntragActivityRecords(db.Model):
     class_name = db.Column(db.String, nullable=False)
     sapClient = db.Column(db.String(16), nullable=False)
 
+    # relationships
+    user = db.relationship('User', foreign_keys=[user_id])
+    company = db.relationship('Company', foreign_keys=[company_id])
+
     @classmethod
     def new(
         cls, antrag_id, user_id, company_id, antragsnummer, status, searchString, json_data, class_name, sapClient
@@ -432,7 +436,10 @@ class AntragActivityRecords(db.Model):
 
         # looping through all records for current user & company
         for obj in cls.query.filter_by(user_id=user.id, company_id=user.company_id).all():
-            values = [value.lower().strip() for value in obj.searchString]
+            print('\n*** Found Antrags:')
+            print(obj)
+            values = [value.lower() for value in obj.searchString.split()]
+            print(values)
             flag = True
             for string in strings:
                 if not string.lower().strip() in values:  # matching split & lowered value for flexiblity
@@ -453,6 +460,14 @@ class AntragActivityRecords(db.Model):
             instance = cls.query.filter_by(id=antrag_id).order_by(cls.timestamp.desc()).first()
         return instance
 
+    def get_label(self):
+        return ' '.join((
+            self.class_name,
+            self.status,
+            self.company.name,
+            self.timestamp.strftime("%d.%m.%Y, %H:%M:%S"),
+        ))
+
     def to_dict(self):
         dic = {
             "id": self.id,
@@ -460,7 +475,7 @@ class AntragActivityRecords(db.Model):
             "company_id": self.company_id,
             "antragsnummer": self.antragsnummer,
             "status": self.status,
-            "timestamp": self.timestamp,
+            "timestamp": self.timestamp.strftime("%d.%m.%Y, %H:%M:%S"),
             "searchString": self.searchString,
             "json_data": json.loads(self.json_data)
         }
