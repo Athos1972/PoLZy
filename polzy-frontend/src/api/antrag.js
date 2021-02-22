@@ -117,3 +117,39 @@ export const searchPortal = async (user, id, target, value) => {
 
   throw new Error(data.error)
 }
+
+// custom tag
+export const setCustomTag = async (user, id, payload) => {
+  const deriveMethod = () => {
+    switch (payload.action) {
+      case 'set':
+        return 'POST'
+      case 'delete':
+        return 'DELETE'
+      default:
+        throw new Error('Method not supported')
+    }
+  }
+
+  const fetchAttributes = {
+    method: deriveMethod(),
+    headers: {
+      'authorization': `Bearer ${user.accessToken}`,
+      'content-type': 'application/json',
+    },
+  }
+
+  if (fetchAttributes.method === 'POST') {
+    fetchAttributes.body = JSON.stringify(payload)
+  }
+
+  const response = await fetch(`/api/antrag/tag/${id}`, fetchAttributes)
+  const data = await response.json()
+  
+  if (response.ok) {
+    return data
+  }
+
+  throw new Error(data.error)
+
+}

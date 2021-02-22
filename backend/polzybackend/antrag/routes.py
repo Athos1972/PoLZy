@@ -70,6 +70,32 @@ def clone_antrag(id):
     return jsonify({'error': f'Cloning of antrag instance failed'}), 400
 
 
+@bp.route('/antrag/tag/<string:antrag_id>', methods=['POST', 'DELETE'])
+@auth.login_required
+def antrag_tag(antrag_id):
+    #
+    # set or delete custom tag of antrag
+    #
+
+    # get antrag from app store
+    antrag = current_app.config['ANTRAGS'].get(antrag_id)
+    if antrag is None:
+        current_app.logger.warning(f'Antrag {antrag_id} is absent in PoLZy storage. Most probably instance restarted.')
+        return jsonify({'error': f'Antrag instance not found'}), 400
+
+    # update tag
+    if request.method == 'POST':
+        # get tag from payload
+        tag = request.get_json().get('tag')
+        if tag:
+            antrag.instance.setCustomTag(tag)
+            return {'OK': 'Custom Tag successfully set'}, 200
+
+    # delete tag
+    antrag.instance.setCustomTag(None)
+    return {'OK': 'Custom Tag successfully deleted'}, 200
+
+
 @bp.route('/antrag/update', methods=['POST'])
 @auth.login_required
 def update_antrag():
@@ -170,9 +196,6 @@ def loadLatestRecords(antrag_id):
     dic = {js.get("name"): js.get("valueChosenOrEntered") for js in json.loads(antrag_record.json_data)}
     #instance.updateFieldValues(dic)  # loading above created dic to instance
     #return jsonify(result.to_dict()), 200
-
-    print('\n*** Reacord Values:')
-    print(dic)
 
     # update field values from the record and return the result
     antrag.instance.updateFieldValues(dic)
