@@ -292,7 +292,7 @@ function ActiveAntrag(props) {
         ...activityValues,
         //...addressKeys.reduce((result, key) => ({...result, [key]: values[key]}), {}),
         //addressNumber: values.addressNumber,
-        address: addressValues.length > 0 ? values[addressValues[0]] : null, // addressKeys.filter(key => values[key] !== '').reduce((label, key) => ([...label, values[key]]), []).join(' ')
+        addressDict: addressValues.length > 0 ? values[addressValues[0]] : null, // addressKeys.filter(key => values[key] !== '').reduce((label, key) => ([...label, values[key]]), []).join(' ')
       }
     }
     setActivityValues(activityValues)
@@ -751,7 +751,7 @@ function ActiveAntrag(props) {
     setActivity(newActivity)
 
   }
-
+/*
   const handlePartnerSelect = (partner) => {
     if (partner === '') {
       return
@@ -789,9 +789,9 @@ function ActiveAntrag(props) {
         streetNumber: partner.address.streetNumber,
         houseNumber: partner.address.houseNumber,
       }))
-    }
-    
+    }  
   }
+  */
 
   //***** BEBUG OUTPUT
   //console.log('Antrag Props:')
@@ -1025,7 +1025,6 @@ function ActiveAntrag(props) {
                 onGlobalChange={handleDataChanged}
                 onChange={handleActivityDataChanged}
                 onInputTrigger={handleActivityInputTrigger}
-                onSelect={handlePartnerSelect}
                 companyTypes={getFieldByName(currentActivity, "firmenArten")}
                 actions={
                   <div className={classes.flexContainerRight} >

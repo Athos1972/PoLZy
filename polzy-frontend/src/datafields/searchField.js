@@ -220,12 +220,14 @@ function PartnerCreateField(props) {
     case 'gender':
       return <InputRadio {...props} options={genderOptions} />
 
-    case 'address':
-      if (props.address) {
+    case 'addressDict':
+      //console.log("Partner's Address Field:")
+      //console.log(props)
+      if (props.addressDict) {
         return (
           <DataFieldText
             {...props}
-            value={props.address.label}
+            value={props.addressDict.label}
             endAdornment={
               <InputAdornment position="end">
                 <IconButton
@@ -315,7 +317,7 @@ function NewDialog(props) {
       birthDate: '2000-01-01',
       gender: '',
       //address: props.address === undefined ? '' : props.address,
-      address: null,
+      addressDict: null,
       email: '',
       telefon: '',
     },
@@ -324,7 +326,7 @@ function NewDialog(props) {
       registrationNumber: '',
       companyType: '',
       //address: props.address === undefined ? '' : props.address,
-      address: null,
+      addressDict: null,
       email: '',
       telefon: '',
     },
@@ -377,7 +379,7 @@ function NewDialog(props) {
       ...label,
       //typeof(partner[key]) === 'object' && partner[key].label ? partner[key].label : partner[key]
       partner[key],
-    ]), []).join(' ') + (props.address.label ? ' ' + props.address.label : '')
+    ]), []).join(' ') + (props.addressDict.label ? ' ' + props.addressDict.label : '')
 /*
     props.onChange({
       partnerNumber: '',
@@ -463,7 +465,7 @@ function NewDialog(props) {
                 onSelect={props.onChange}
                 data={{
                   name: key,
-                  brief: t(`partner:${key}`),
+                  brief: t(`partner:${key === "addressDict" ? "address" : key}`),
                   isMandatory: true
                 }}
               />
