@@ -28,6 +28,7 @@
     "new": "Neu",
     "none": "Keine",
     "remove": "Entfernen",
+    "search": "Suchen",
     "submit": "Submit",
     "upload": "Dateiupload",
     "upload.text": "Click oder Datei hier her ziehen",
@@ -82,6 +83,7 @@
     "partner.new": "Neu anlegen",
     "re-calculate": "Neu rechnen",
     "premium": "Prämie",
+    "search": "Suche Schnellrechnerfall",
     "select.product": "Produkt wählen",
     "tag": "Gedächtnisstütze / Anmerkung"
   },
