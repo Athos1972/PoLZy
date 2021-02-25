@@ -130,8 +130,8 @@ function SearchDropDownBase(props) {
 
   }
 
-  console.log(`Search Field ${data.name}`)
-  console.log(props)
+  //console.log(`Search Field ${data.name}`)
+  //console.log(props)
 
   return (
     <Autocomplete
@@ -230,8 +230,8 @@ function PartnerCreateField(props) {
       return <InputRadio {...props} options={genderOptions} />
 
     case 'address':
-      console.log("Partner's Address Field:")
-      console.log(props)
+      //console.log("Partner's Address Field:")
+      //console.log(props)
       
       if (props.value) {
         return (
@@ -413,9 +413,9 @@ function NewDialogBase(props) {
     return true
   }
 
-  console.log("NEW DIALOG props:")
-  console.log(props)
-  console.log(partner)
+  //console.log("NEW DIALOG props:")
+  //console.log(props)
+  //console.log(partner)
 
   return (
     <Dialog 
@@ -520,8 +520,8 @@ export default function SearchField(props) {
     return Object.keys()
   }
 
-  console.log(`Search Field '${data.name}' props:`)
-  console.log(props)
+  //console.log(`Search Field '${data.name}' props:`)
+  //console.log(props)
 
   return (
     <React.Fragment>

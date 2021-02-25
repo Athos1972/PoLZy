@@ -355,8 +355,8 @@ function ActiveAntrag(props) {
         
         // mandatory fields
         if (field.isMandatory && (values[field.name] === "" || values[field.name] === null)){
-          console.log('Validation failed: Mandatory')
-          console.log(field.name)
+          //console.log('Validation failed: Mandatory')
+          //console.log(field.name)
           return false
         }
         
@@ -569,8 +569,8 @@ function ActiveAntrag(props) {
       }
     }
 
-    console.log('Input Trigger:')
-    console.log(requestData)
+    //console.log('Input Trigger:')
+    //console.log(requestData)
 
     // call update end-point
     updateAntragFields(props.user, requestData).then(data => {
@@ -789,12 +789,12 @@ function ActiveAntrag(props) {
 */
 
   //***** BEBUG OUTPUT
-  console.log('Antrag Props:')
-  console.log(props)
-  console.log('Antrag Values:')
-  console.log(values)
-  console.log('Activity Values')
-  console.log(activityValues)
+  //console.log('Antrag Props:')
+  //console.log(props)
+  //console.log('Antrag Values:')
+  //console.log(values)
+  //console.log('Activity Values')
+  //console.log(activityValues)
   
   return(
     <Collapse
