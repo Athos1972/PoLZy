@@ -3,19 +3,27 @@ import {
   SIGN_IN,
   SIGN_OUT,
   UPDATE_USER,
+  
   ADD_POLICY,
   UPDATE_POLICY,
   REMOVE_POLICY,
   CLEAR_POLICY,
+  
   ADD_ANTRAG,
   UPDATE_ANTRAG,
   REMOVE_ANTRAG,
   CLEAR_ANTRAG,
+  
+  UPDATE_ADDRESS,
+  CLEAR_ADDRESS,
+
   ADD_VALUES,
   CLEAR_VALUES,
 } from './actions.js'
 
-
+/*
+** USER
+*/
 const userReducer = (state = {}, action) => {
   switch (action.type) {
     case SIGN_IN:
@@ -33,6 +41,9 @@ const userReducer = (state = {}, action) => {
 }
 
 
+/*
+** POLICY
+*/
 const policyReducer = (state = [], action) => {
   switch (action.type) {
     case ADD_POLICY:
@@ -60,22 +71,28 @@ const policyReducer = (state = [], action) => {
   }
 }
 
+/*
+** ANTRAG
+*/
 const antragReducer = (state = [], action) => {
   switch (action.type) {
+    
+    // Add New Antrag
     case ADD_ANTRAG:
       const key = (
         state.length > 0 ? (state[state.length-1].key + 1) : (1)
       )
       return [...state, {key: key, ...action.payload}]
+    
+    // Update Antrag from
     case UPDATE_ANTRAG:
       const newState =  state.map((item, index) => (
         index === action.id ? {
           ...item,
           ...action.payload,
-          //key: item.key,
         } : item
       ))
-      return newState
+      return newState    
     case REMOVE_ANTRAG:
       return [
         ...state.slice(0, action.payload),
@@ -88,6 +105,39 @@ const antragReducer = (state = [], action) => {
   }
 }
 
+/*
+** ADDRESS
+*/
+const addressReducer = (state={}, action) => {
+  switch (action.type) {
+    
+    // update address
+    case UPDATE_ADDRESS:
+      const targetAddressList = action.id in state ? state[action.id] : {}
+      return {
+        ...state,
+        [action.id]: {
+          ...targetAddressList,
+          ...action.payload,
+        }
+      }
+
+    // clear addresses
+    case CLEAR_ADDRESS:
+      return {
+        ...state,
+        [action.id]: undefined,
+      }
+
+    // DEFAULT
+    default:
+      return state
+  }
+}
+
+/*
+** VALUE LIST
+*/
 const valueReducer = (state = {}, action) => {
   switch (action.type) {
     case ADD_VALUES:
@@ -107,6 +157,7 @@ const reducer = combineReducers({
   user: userReducer,
   policies: policyReducer,
   antrags: antragReducer,
+  addressList: addressReducer,
   valueLists: valueReducer,
 })
 

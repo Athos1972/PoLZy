@@ -28,7 +28,7 @@ import ExpandButton from '../components/expandButton'
 import CardCloseButton from '../components/closeButton'
 import ProgressButton from '../components/progressButton'
 import DataGroup from '../datafields/generalFields'
-import { removeAntrag, updateAntrag, addAntrag } from '../redux/actions'
+import { removeAntrag, updateAntrag, addAntrag, clearAddressList } from '../redux/actions'
 import { executeAntrag, cloneAntrag, updateAntragFields, setCustomTag } from '../api/antrag'
 import { ActivityIcon } from '../components/icons'
 // test imports
@@ -265,7 +265,7 @@ function ActiveAntrag(props) {
         ),
       }), {})}
     }
-
+/*
     // update address values
     if (activity.name === "VN festlegen") {
       const addressKeys = [
@@ -292,6 +292,7 @@ function ActiveAntrag(props) {
         addressDict: addressValues.length > 0 ? values[addressValues[0]] : null, // addressKeys.filter(key => values[key] !== '').reduce((label, key) => ([...label, values[key]]), []).join(' ')
       }
     }
+  */
     setActivityValues(activityValues)
   }
 
@@ -319,6 +320,17 @@ function ActiveAntrag(props) {
   const [isExecuting, setExecute] = useState(false)
   const [expanded, setExpanded] = useState(true)
 
+  const updateAntragFromBackend = (antragData) => {
+    props.updateAntrag(
+      props.index,
+      {
+        request_state: "ok",
+        //addressList: {...antrag.addressList},
+        ...antragData,
+      }
+    )
+  }
+
   const getPremium = () => {
     for (const field of antrag.fields) {
       if (field.name === 'premium') {
@@ -343,6 +355,8 @@ function ActiveAntrag(props) {
         
         // mandatory fields
         if (field.isMandatory && (values[field.name] === "" || values[field.name] === null)){
+          console.log('Validation failed: Mandatory')
+          console.log(field.name)
           return false
         }
         
@@ -361,6 +375,8 @@ function ActiveAntrag(props) {
         if (values[field.name] && field.fieldDataType === "Text" && field.inputRange) {
           const valueList = field.inputRange[0] === "async" ? props.valueLists[field.inputRange[1]] : field.inputRange
           if (valueList && !valueList.includes(values[field.name])) {
+            console.log('Validation failed: Select')
+            console.log(field.name)
             return false
           }
         }
@@ -432,6 +448,8 @@ function ActiveAntrag(props) {
         }
         updateAntragFields(props.user, requestData).then(data => {
           // update antrag
+          updateAntragFromBackend(data)
+          /*
           props.updateAntrag(
             props.index,
             {
@@ -439,6 +457,7 @@ function ActiveAntrag(props) {
               ...data,
             }
           )
+          */
         }).catch(error => {
           console.log(error)
         }) 
@@ -471,6 +490,8 @@ function ActiveAntrag(props) {
     // calculate antrag
     executeAntrag(props.user, requestData).then(data => {
       // update antrag
+      updateAntragFromBackend(data)
+      /*
       props.updateAntrag(
         props.index,
         {
@@ -478,11 +499,14 @@ function ActiveAntrag(props) {
           ...data,
         }
       )
+      */
       //update state
-      setCalculate(false)
+      //setCalculate(false)
     }).catch(error => {
       console.log(error)
       //update state
+      //setCalculate(false)
+    }).finally(() => {
       setCalculate(false)
     })
   }
@@ -503,6 +527,8 @@ function ActiveAntrag(props) {
     // call update end-point
     updateAntragFields(props.user, requestData).then(data => {
       // update antrag
+      updateAntragFromBackend(data)
+      /*
       props.updateAntrag(
         props.index,
         {
@@ -510,6 +536,7 @@ function ActiveAntrag(props) {
           ...data,
         }
       )
+      */
     }).catch(error => {
       console.log(error)
     })
@@ -542,22 +569,28 @@ function ActiveAntrag(props) {
       }
     }
 
+    console.log('Input Trigger:')
+    console.log(requestData)
+
     // call update end-point
     updateAntragFields(props.user, requestData).then(data => {
       // disable auto calculation
       setAutoCalculateDisabled(true)
       // update antrag
+      updateAntragFromBackend(data)
+      /*
       props.updateAntrag(
         props.index,
         {
           request_state: "ok",
+          addressList: [..antrag.addressList],
           ...data,
         }
       )
+      */
     }).catch(error => {
       console.log(error)
     }).finally(() => {
-      //console.log('FINALLY')
       setAutoCalculateDisabled(false)
     })
   }
@@ -646,13 +679,17 @@ function ActiveAntrag(props) {
         case 'close':
           break
         default:
+          updateAntragFromBackend(data)
+          /*
           props.updateAntrag(
             props.index,
             {
               request_state: "ok",
+              addressList: [..antrag.addressList],
               ...data,
             }
           )
+          */
       }
     }).catch(error => {
       console.log(error)
@@ -694,13 +731,17 @@ function ActiveAntrag(props) {
     // call update end-point
     updateAntragFields(props.user, requestData).then(data => {
       // update antrag
+      updateAntragFromBackend(data)
+      /*
       props.updateAntrag(
         props.index,
         {
           request_state: "ok",
+
           ...data,
         }
       )
+      */
     }).catch(error => {
       console.log(error)
     })
@@ -737,14 +778,23 @@ function ActiveAntrag(props) {
 
   }
 
+  const handleCloseCard = () => {
+    props.clearAddressList(antrag.id)
+    props.closeAntrag(props.index)
+  }
+/*
+  const handleAddressUpdate = (payload) => {
+    props.setAddress(props.index, payload)
+  }
+*/
 
   //***** BEBUG OUTPUT
-  //console.log('Antrag Props:')
-  //console.log(props)
-  //console.log('Antrag Values:')
-  //console.log(values)
-  //console.log('Activity Values')
-  //console.log(activityValues)
+  console.log('Antrag Props:')
+  console.log(props)
+  console.log('Antrag Values:')
+  console.log(values)
+  console.log('Activity Values')
+  console.log(activityValues)
   
   return(
     <Collapse
@@ -782,7 +832,7 @@ function ActiveAntrag(props) {
               {/* Close Button */}
                 <CardCloseButton
                   onClose={() => setIsVisible(false)}
-                  onDelete={() => props.closeAntrag(props.index)}
+                  onDelete={handleCloseCard}
                 />
 
               </React.Fragment>
@@ -1022,6 +1072,7 @@ const mapDispatchToProps = {
   closeAntrag: removeAntrag,
   updateAntrag: updateAntrag,
   newAntrag: addAntrag,
+  clearAddressList: clearAddressList,
 }
 
 const mapDispatchToPropsToCustomTag = {

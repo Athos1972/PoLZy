@@ -32,6 +32,7 @@ import { DataFieldText, DataFieldDate } from './generalFields'
 import DataFieldSelect from './selectField'
 import { searchPortal } from '../api/antrag'
 import { validateSearchString } from '../utils'
+import { updateAddressList } from '../redux/actions'
 
 
 // Styles
@@ -63,9 +64,14 @@ const useStyles = makeStyles((theme) => ({
 
 function SearchDropDownBase(props) {
   const {id, data} = props
-  const [options, setOptions] = useState([])
-  const [loading, setLoading] = useState(false)
   const classes = useStyles()
+
+  const [loading, setLoading] = useState(false)
+  const [options, setOptions] = useState(
+    data.endpoint === "address" && props.addressList[id] ? 
+    Object.values(props.addressList[id]) : 
+    []
+  )
 
   const handleInputChange = (event, newValue, reason) => {
 
@@ -101,14 +107,6 @@ function SearchDropDownBase(props) {
       return
     }
 
-    //console.log(newValue)
-/*
-    const {label, ...otherValues} = newValue
-    const updateValues = {
-      ...otherValues,
-      [data.name]: label,
-    }
-*/
     // update on input trigger
     if (data.inputTriggers) {
       props.onInputTrigger({[data.name]: newValues})
@@ -116,7 +114,24 @@ function SearchDropDownBase(props) {
       // update antrag value
       props.onChange({[data.name]: newValues})
     }
+
+    if (props.disableSave) {
+      return
+    }
+
+    if (data.endpoint === "address") {
+      props.updateAddress(
+        id,
+        {
+          [data.name]: newValues,
+        },
+      )
+    }
+
   }
+
+  console.log(`Search Field ${data.name}`)
+  console.log(props)
 
   return (
     <Autocomplete
@@ -151,12 +166,6 @@ function SearchDropDownBase(props) {
     />
   )
 }
-// connect to redux store
-const mapStateToProps = (state) => ({
-  user: state.user,
-})
-
-export const SearchDropDown = connect(mapStateToProps)(SearchDropDownBase)
 
 
 function InputRadio(props) {
@@ -207,7 +216,7 @@ function PartnerCreateField(props) {
   ]
 
   const handleClearClick = () => {
-    props.onSelect({address: ""})
+    props.onChange({[props.data.name]: ""})
   }
 
   //console.log('Partner Create Field')
@@ -220,14 +229,15 @@ function PartnerCreateField(props) {
     case 'gender':
       return <InputRadio {...props} options={genderOptions} />
 
-    case 'addressDict':
-      //console.log("Partner's Address Field:")
-      //console.log(props)
-      if (props.addressDict) {
+    case 'address':
+      console.log("Partner's Address Field:")
+      console.log(props)
+      
+      if (props.value) {
         return (
           <DataFieldText
             {...props}
-            value={props.addressDict.label}
+            value={props.value.label}
             endAdornment={
               <InputAdornment position="end">
                 <IconButton
@@ -249,7 +259,8 @@ function PartnerCreateField(props) {
             ...props.data,
             endpoint: "address"
           }}
-          onChange={props.onSelect}
+          disableSave
+          onChange={props.onChange}
         />
       )
 
@@ -305,7 +316,7 @@ function FindDialog(props) {
 }
 
 
-function NewDialog(props) {
+function NewDialogBase(props) {
   const classes = useStyles()
   const {t} = useTranslation("common", "antrag", "partner")
 
@@ -316,7 +327,7 @@ function NewDialog(props) {
       lastName: '',
       birthDate: '2000-01-01',
       gender: '',
-      addressDict: null,
+      address: '',
       email: '',
       telefon: '',
     },
@@ -324,7 +335,7 @@ function NewDialog(props) {
       companyName: '',
       registrationNumber: '',
       companyType: '',
-      addressDict: null,
+      address: '',
       email: '',
       telefon: '',
     },
@@ -350,6 +361,15 @@ function NewDialog(props) {
   }
 
   const handleCreateClick = () => {
+    // save address
+    props.updateAddress(
+      props.id,
+      {
+        [props.data.name]: partner.address,
+      },
+    )
+
+    // add partner label
     const partnerLabelKeys = {
       person: [
         'lastName',
@@ -369,14 +389,17 @@ function NewDialog(props) {
       ...label,
       //typeof(partner[key]) === 'object' && partner[key].label ? partner[key].label : partner[key]
       partner[key],
-    ]), []).join(' ') + (props.addressDict.label ? ' ' + props.addressDict.label : '')
+    ]), []).join(' ') + ' ' + partner.address.label
  
+    // add partner value
     props.onChange({
       [props.data.name]: {
         ...partner,
         label: partnerLabel,
       }
     })
+
+    // close dialog
     props.onClose()
   }
 
@@ -390,8 +413,9 @@ function NewDialog(props) {
     return true
   }
 
-  //console.log("NEW DIALOG props:")
-  //console.log(props)
+  console.log("NEW DIALOG props:")
+  console.log(props)
+  console.log(partner)
 
   return (
     <Dialog 
@@ -436,10 +460,9 @@ function NewDialog(props) {
                 {...props}
                 value={partner[key]}
                 onChange={handleDataChange}
-                onSelect={props.onChange}
                 data={{
                   name: key,
-                  brief: t(`partner:${key === "addressDict" ? "address" : key}`),
+                  brief: t(`partner:${key}`),
                   isMandatory: true
                 }}
               />
@@ -497,8 +520,8 @@ export default function SearchField(props) {
     return Object.keys()
   }
 
-  //console.log(`Search Field '${data.name}' props:`)
-  //console.log(props)
+  console.log(`Search Field '${data.name}' props:`)
+  console.log(props)
 
   return (
     <React.Fragment>
@@ -569,3 +592,17 @@ export default function SearchField(props) {
     </React.Fragment>
   )
 }
+
+
+// connect to redux store
+const mapStateToProps = (state) => ({
+  user: state.user,
+  addressList: state.addressList,
+})
+
+const mapDispatchToProps = {
+  updateAddress: updateAddressList,
+}
+
+const NewDialog = connect(null, mapDispatchToProps)(NewDialogBase)
+export const SearchDropDown = connect(mapStateToProps, mapDispatchToProps)(SearchDropDownBase)

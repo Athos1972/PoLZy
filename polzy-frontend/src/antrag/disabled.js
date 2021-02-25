@@ -34,6 +34,7 @@ function DisabledAntrag(props) {
           index,
           {
             request_state: "ok",
+            addressList: {},
             ...data,
           }
         )

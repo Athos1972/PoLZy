@@ -14,6 +14,9 @@ export const UPDATE_ANTRAG = 'UPDATE_ANTRAG'
 export const REMOVE_ANTRAG = 'REMOVE_ANTRAG'
 export const CLEAR_ANTRAG = 'CLEAR_ANTRAG'
 
+export const UPDATE_ADDRESS = 'UPDATE_ADDRESS'
+export const CLEAR_ADDRESS = 'CLEAR_ADDRESS'
+
 export const ADD_VALUES = 'ADD_VALUES'
 export const CLEAR_VALUES = 'CLEAR_VALUES'
 
@@ -73,6 +76,19 @@ export const removeAntrag = (index) => ({
 
 export const clearAntrag = () => ({
   type: CLEAR_ANTRAG,
+})
+
+// address list
+export const updateAddressList = (instance_id, addressDict) => ({
+  type: UPDATE_ADDRESS,
+  payload: addressDict,
+  id: instance_id,
+})
+
+export const clearAddressList = (instance_id) => ({
+  type: CLEAR_ADDRESS,
+  payload: {},
+  id: instance_id,
 })
 
 // values actions

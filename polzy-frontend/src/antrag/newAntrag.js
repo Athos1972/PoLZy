@@ -171,6 +171,7 @@ function NewAntrag(props) {
       console.log(data)
       props.newAntrag({
         request_state: "ok",
+        addressList: {},
         ...data,
       })
     })

@@ -668,7 +668,6 @@ export default function DataGroup(props) {
                     {...commonProps}
                     data={field}
                     value={values[field.name]}
-                    addressDict={values.addressDict}
                   />
                 </Grid>
               ))}
