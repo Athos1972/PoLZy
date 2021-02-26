@@ -138,5 +138,11 @@
     "topic": "User",
     "points": "Points",
     "rank": "Rank"
+  },
+
+  "speedometer": {
+    "fair": "Fair",
+    "good": "Good",
+    "great": "Great"
   }
 }

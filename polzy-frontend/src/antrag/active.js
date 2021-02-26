@@ -16,12 +16,14 @@ import {
   LinearProgress,
   TextField,
   Chip,
+  Fade,
 } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import SaveIcon from '@material-ui/icons/Save'
 import LocalOfferOutlinedIcon from '@material-ui/icons/LocalOfferOutlined'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
+//import ReactSpeedometer from 'react-d3-speedometer'
 import { CardActiveHide, CardActive, CardTop, CardBottom, hideTime } from '../styles/cards'
 import { AntragTitle } from './components'
 import ExpandButton from '../components/expandButton'
@@ -31,6 +33,7 @@ import DataGroup from '../datafields/generalFields'
 import { removeAntrag, updateAntrag, addAntrag, clearAddressList } from '../redux/actions'
 import { executeAntrag, cloneAntrag, updateAntragFields, setCustomTag } from '../api/antrag'
 import { ActivityIcon } from '../components/icons'
+import Speedometer from '../components/speedometer'
 // test imports
 import {BrokeCard} from '../debug/damageCard'
 
@@ -79,8 +82,15 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(3),
     marginRight: theme.spacing(3),
   },
-
-}));
+/*
+  speedometer: {
+    position: 'fixed',
+    width: 300,
+    bottom: 10,
+    right: 10,
+  },
+*/
+}))
 
 
 
@@ -183,6 +193,8 @@ function ActiveAntrag(props) {
   const {antrag} = props
   const {t} = useTranslation('common', 'antrag')
   const classes = useStyles()
+
+  const cardRef = React.useRef()
 
   const [isVisible, setIsVisible] = useState()
   const [autoCalculateDisabled, setAutoCalculateDisabled] = useState(false)
@@ -795,14 +807,39 @@ function ActiveAntrag(props) {
   //console.log(values)
   //console.log('Activity Values')
   //console.log(activityValues)
-  
+
+
+  /*
+  ** Speedometer
+  */
+  const [openSpeedometer, setOpenSpeedometer] = React.useState(false)
+
+  React.useEffect(() => {
+    if (cardRef.current) {
+      setOpenSpeedometer(
+        props.scrollTop > cardRef.current.offsetTop && 
+        props.scrollTop < (cardRef.current.offsetTop + cardRef.current.offsetHeight)
+      )
+    }
+  }, [props.scrollTop])
+
+ 
   return(
+    <React.Fragment>
+      
+      {/* Speedometer */}
+      {openSpeedometer && expanded &&
+        <Fade in={openSpeedometer && expanded}>
+          <Speedometer value={700}/>
+        </Fade>
+      }
+
     <Collapse
       in={isVisible}
       timeout={hideTime}
       unmountOnExit
     >
-      <CardActive>
+      <CardActive ref={cardRef}>
           <CardTop
             action={
               <React.Fragment>
@@ -1059,6 +1096,7 @@ function ActiveAntrag(props) {
           </Collapse>
         </CardActive>
     </Collapse>
+    </React.Fragment>
   )
 }
 

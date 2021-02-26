@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import Portal from '@material-ui/core/Portal'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import NewAntrag from '../antrag/newAntrag'
@@ -21,23 +22,23 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3, 2),
     marginTop: 'auto',
   },
-}));
+}))
 
 function AntragCard(props) {
-  const { index, antrag } = props
+  const { scrollTop, ...defaultProps } = props
   
-  switch (antrag.request_state) {
+  switch (props.antrag.request_state) {
     case "ok":
       return(
-        <ActiveAntrag index={index} antrag={antrag} />
+        <ActiveAntrag {...props} />
       )
     case "waiting":
       return(
-        <DisabledAntrag index={index} antrag={antrag} />
+        <DisabledAntrag {...defaultProps} />
       )
     default:
       return(
-        <ErrorAntrag index={index} antrag={antrag} />
+        <ErrorAntrag {...defaultProps} />
       )
   }
 }
@@ -47,6 +48,18 @@ function AntragCard(props) {
 function AntragView(props) {
   const classes = useStyles()
   const {t} = useTranslation('common', 'feedback')
+
+  // scroll track
+  const [scrollTop, setScrollTop] = React.useState(0);
+
+  React.useEffect(() => {
+    const onScroll = (event) => {
+      setScrollTop(event.target.documentElement.scrollTop)
+    }
+    window.addEventListener("scroll", onScroll);
+
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [scrollTop]);
 
   return(
     <div className={classes.container}>
@@ -82,7 +95,11 @@ function AntragView(props) {
             scope.setContext("polzy", getAntragContext(props.user, antrag))
           }}
         >
-          <AntragCard index={index} antrag={antrag} />
+          <AntragCard
+            index={index}
+            antrag={antrag}
+            scrollTop={scrollTop}
+          />
         </ErrorBoundary>
       ))}
     </div>
