@@ -33,7 +33,7 @@ import DataGroup from '../datafields/generalFields'
 import { removeAntrag, updateAntrag, addAntrag, clearAddressList } from '../redux/actions'
 import { executeAntrag, cloneAntrag, updateAntragFields, setCustomTag } from '../api/antrag'
 import { ActivityIcon } from '../components/icons'
-import Speedometer from '../components/speedometer'
+import Speedometer, { speedometerSize } from '../components/speedometer'
 // test imports
 import {BrokeCard} from '../debug/damageCard'
 
@@ -807,6 +807,8 @@ function ActiveAntrag(props) {
   //console.log(values)
   //console.log('Activity Values')
   //console.log(activityValues)
+  //console.log(cardRef)
+
 
 
   /*
@@ -814,25 +816,34 @@ function ActiveAntrag(props) {
   */
   const [openSpeedometer, setOpenSpeedometer] = React.useState(false)
 
-  React.useEffect(() => {
-    if (antrag.speedometerValue && cardRef.current) {
-      setOpenSpeedometer(
-        props.scrollTop > cardRef.current.offsetTop && 
-        props.scrollTop < (cardRef.current.offsetTop + cardRef.current.offsetHeight)
-      )
+  React.useEffect(() => {    
+    if (!antrag.speedometerValue || !cardRef.current) {
+      setOpenSpeedometer(false)
+      return
     }
+
+    // card position
+    const cardTop = cardRef.current.offsetTop
+    const cardBottom = cardRef.current.offsetTop + cardRef.current.offsetHeight
+    const scrollBottom = props.scrollTop + window.innerHeight
+
+    // check if speedometer should be visible
+    const isVisible = (props.index === 0) ? (
+        // 1st card
+      props.scrollTop < cardBottom
+    ) : (
+      // other cards
+      scrollBottom >= cardTop + speedometerSize && props.scrollTop < cardBottom
+    )
+
+    setOpenSpeedometer(isVisible)
   }, [props.scrollTop, antrag.speedometerValue])
 
  
   return(
     <React.Fragment>
       
-      {/* Speedometer */}
-      {openSpeedometer && expanded &&
-        <Fade in={openSpeedometer && expanded}>
-          <Speedometer value={antrag.speedometerValue}/>
-        </Fade>
-      }
+      
 
     <Collapse
       in={isVisible}
@@ -1100,6 +1111,26 @@ function ActiveAntrag(props) {
           </Collapse>
         </CardActive>
     </Collapse>
+
+    {/* Speedometer */}
+      {openSpeedometer && expanded &&
+        <Fade in={openSpeedometer && expanded}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              position: 'sticky',
+              bottom: 0,
+              marginTop: -speedometerSize/2,
+              marginRight: -cardRef.current.offsetLeft,
+            }}
+          >
+          <Speedometer
+            value={antrag.speedometerValue}
+          />
+          </div>
+        </Fade>
+      }
     </React.Fragment>
   )
 }

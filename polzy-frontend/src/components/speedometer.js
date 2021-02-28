@@ -6,22 +6,22 @@ import ReactSpeedometer from 'react-d3-speedometer'
 /*
 ** speedometer size
 */
-const size = 250
+export const speedometerSize = 250
 
 // set styles
 const useStyles = makeStyles((theme) => ({
   container: {
-    position: 'fixed',
-    width: size,
-    height: Math.floor(size/2),
-    bottom: theme.spacing(4),
-    right: theme.spacing(2),
+    width: speedometerSize,
+    height: Math.floor(speedometerSize/2),
+    marginRight: theme.spacing(2),
   },
 }))
 
 export default function Speedometer(props) {
   const classes = useStyles()
   const {t} = useTranslation('speedometer')
+
+  //console.log(props.bottom)
 
   return(
     <div className={classes.container}>
