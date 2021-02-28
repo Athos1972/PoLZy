@@ -1011,6 +1011,8 @@ function ActiveAntrag(props) {
                           onGlobalChange={handleDataChanged}
                           updateAntrag={updateAntrag}
                           onCloseActivity={() => setActivity(null)}
+                          backgroundColor={group.backgroundColor}
+                          subtitles={group.subtitles}
                         />
                       </Collapse>
                     ))}
@@ -1065,6 +1067,8 @@ function ActiveAntrag(props) {
                     />
                   </div>
                 }
+                backgroundColor={currentActivity.backgroundColor}
+                subtitles={currentActivity.subtitles}
               />
             }
 
