@@ -74,6 +74,7 @@ export default function MappedImage(props) {
 
   //console.log('Mapped Image:')
   //console.log(props)
+  //console.log(currentArea)
 
   return(
     <Grid

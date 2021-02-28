@@ -30,6 +30,7 @@ import SearchField from './searchField'
 import EnhancedTable from './enhancedTable'
 import DataFieldSelect from './selectField'
 import MappedImage from './mappedImage'
+import { LinearChart } from './charts'
 import ExpandButton from '../components/expandButton'
 import { getLocaleDateFormat, backendDateFormat } from '../dateFormat'
 import { formatNumberWithCommas, typingTimeoutWithInputTrigger, parseJSONString } from '../utils'
@@ -563,6 +564,7 @@ export default function DataGroup(props) {
           <Grid
             key={`${props.id}-section-${index}`}
             container
+            direction="column"
           >
 
             {/* Subtitle */}
@@ -793,6 +795,21 @@ export default function DataGroup(props) {
                   name={field.name}
                   title={field.brief}
                   image={field.icon}
+                  tooltip={field.tooltip}
+                  data={parseJSONString(field.valueChosenOrEntered)}
+                />
+              ))}
+            </Grid>
+
+            {/* Charts */}
+            <Grid item>
+              {fields.filter((field) => (
+                field.subsection === subtitle && field.fieldType === 2 && field.fieldDataType === "Chart"
+              )).map((field) => (
+                <LinearChart
+                  key={field.name}
+                  name={field.name}
+                  title={field.brief}
                   tooltip={field.tooltip}
                   data={parseJSONString(field.valueChosenOrEntered)}
                 />
