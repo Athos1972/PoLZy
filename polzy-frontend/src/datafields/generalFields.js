@@ -33,7 +33,7 @@ import MappedImage from './mappedImage'
 import { LinearChart } from './charts'
 import ExpandButton from '../components/expandButton'
 import { getLocaleDateFormat, backendDateFormat } from '../dateFormat'
-import { formatNumberWithCommas, typingTimeoutWithInputTrigger, parseJSONString } from '../utils'
+import { formatNumberWithCommas, typingTimeoutWithInputTrigger, parseJSONString, validateIBAN } from '../utils'
 
 // Styles
 const useStyles = makeStyles((theme) => ({
@@ -80,7 +80,7 @@ const parseValue = (value) => {
 export function DataFieldText(props) {
   const classes = useStyles()
   const {id, data } = props
-  const [error, setError] = React.useState()
+  const [errorMessage, setError] = React.useState(data.errorMessage)
   const [value, setValue] = React.useState(props.value)
   const [typingTimeout, setTypingTimeout] = React.useState()
 
@@ -89,8 +89,31 @@ export function DataFieldText(props) {
   }, [props.value])
 
   React.useEffect(() => {
-    setError(Boolean(data.errorMessage))
+    setError(data.errorMessage)
   }, [data.errorMessage])
+
+  const validateValue = (valueToValidate=value) => {
+    if (!valueToValidate || !data.name.toLowerCase().includes('iban')) {
+      setError()
+      return true
+    }
+    
+    const ibanValidationResult = validateIBAN(valueToValidate)
+    if (ibanValidationResult == 1) {
+      setError()
+      return true
+    }
+
+    if (!ibanValidationResult) {
+      setError('Country code not supported')
+    } else if (ibanValidationResult === -1) {
+      setError('Invalid length')
+    } else {
+      setError('Invalid IBAN')
+    }
+
+    return false
+  }
 
   const handleChange = (event) => {
     //const newValue = valueInRange(event.target.value)
@@ -105,7 +128,7 @@ export function DataFieldText(props) {
     }
 
     // set timeout for typing finished
-    setTypingTimeout(typingTimeoutWithInputTrigger(props, newValue))
+    setTypingTimeout(typingTimeoutWithInputTrigger(props, newValue, validateValue(newValue)))
   }
 
   //console.log('Text Field:')
@@ -119,7 +142,7 @@ export function DataFieldText(props) {
       fullWidth
       required={data.isMandatory}
       disabled={props.disabled}
-      error={error}
+      error={Boolean(errorMessage)}
     >
       <InputLabel htmlFor={`${data.name}-${id}`}>
         {data.brief}
@@ -132,7 +155,7 @@ export function DataFieldText(props) {
         endAdornment={props.endAdornment}
       />
       <FormHelperText>
-        {data.errorMessage}
+        {errorMessage}
       </FormHelperText>
     </FormControl>
   )
