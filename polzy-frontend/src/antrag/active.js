@@ -34,6 +34,7 @@ import { removeAntrag, updateAntrag, addAntrag, clearAddressList } from '../redu
 import { executeAntrag, cloneAntrag, updateAntragFields, setCustomTag } from '../api/antrag'
 import { ActivityIcon } from '../components/icons'
 import Speedometer, { speedometerSize } from '../components/speedometer'
+import { validateIBAN } from '../utils'
 // test imports
 import {BrokeCard} from '../debug/damageCard'
 
@@ -353,20 +354,23 @@ function ActiveAntrag(props) {
     return ""
   }
 
-  const validateFields = () => {
+  const validateFields = (isAntrag=true) => {
+    const instance = isAntrag ? antrag : currentActivity
+    const instanceGroups = isAntrag ? groups : activityGroups
+    const instanceValues = isAntrag ? values : activityValues
     // build 'check' groups
-    const fieldGroups = antrag.field_groups ? (
-      antrag.field_groups.filter(group => groups[group.name]).concat({name: 'fields'})
+    const fieldGroups = instance.field_groups ? (
+      instance.field_groups.filter(group => instanceGroups[group.name]).concat({name: 'fields'})
     ):(
       [{name: 'fields'}]
     )
 
     // checks if all mandatory fields are filled
     for (const group of fieldGroups) {
-      for (const field of antrag[group.name].filter(field => field.fieldType === 1)) {
+      for (const field of instance[group.name].filter(field => field.fieldType === 1)) {
         
         // mandatory fields
-        if (field.isMandatory && (values[field.name] === "" || values[field.name] === null)){
+        if (field.isMandatory && (instanceValues[field.name] === "" || instanceValues[field.name] === null)){
           //console.log('Validation failed: Mandatory')
           //console.log(field.name)
           return false
@@ -374,23 +378,33 @@ function ActiveAntrag(props) {
         
         // numeric values in range
         if (
-          values[field.name] &&
+          instanceValues[field.name] &&
           field.fieldDataType === "Zahl" &&
           field.inputRange &&
           field.inputRange[0] === "range" &&
-          (values[field.name] < Number(field.inputRange[1]) || values[field.name] > Number(field.inputRange[2]))
+          (instanceValues[field.name] < Number(field.inputRange[1]) || instanceValues[field.name] > Number(field.inputRange[2]))
         ) {
           return false
         }
 
         // select fields
-        if (values[field.name] && field.fieldDataType === "Text" && field.inputRange) {
+        if (instanceValues[field.name] && field.fieldDataType === "Text" && field.inputRange) {
           const valueList = field.inputRange[0] === "async" ? props.valueLists[field.inputRange[1]] : field.inputRange
-          if (valueList && !valueList.includes(values[field.name])) {
-            console.log('Validation failed: Select')
-            console.log(field.name)
+          if (valueList && !valueList.includes(instanceValues[field.name])) {
+            //console.log('Validation failed: Select')
+            //console.log(field.name)
             return false
           }
+        }
+
+        // iban fields
+        if (
+          field.fieldDataType === "Text" &&
+          field.name.toLowerCase().includes('iban') &&
+          validateIBAN(instanceValues[field.name]) !== 1
+        ) {
+          //console.log('Validation failed: IBAN')
+          return false
         }
 
       }
@@ -1049,7 +1063,7 @@ function ActiveAntrag(props) {
                     <ProgressButton
                       title={t('common:execute')}
                       loading={isExecuting}
-                      disabled={!validateActivityFields()}
+                      disabled={!validateFields(false)}
                       onClick={(e) => executeActivity()}
                     />
                   </Grid>
@@ -1073,7 +1087,7 @@ function ActiveAntrag(props) {
                     <ProgressButton
                       title={currentActivity.postExecution === "close" ? t('common:close') : t('common:execute')}
                       loading={isExecuting}
-                      disabled={!validateActivityFields()}
+                      disabled={!validateFields(false)}
                       onClick={(e) => executeActivity()}
                     />
                   </div>
@@ -1123,6 +1137,7 @@ function ActiveAntrag(props) {
               bottom: 0,
               marginTop: -speedometerSize/2,
               marginRight: -cardRef.current.offsetLeft,
+              marginLeft: cardRef.current.clientWidth,
             }}
           >
           <Speedometer
