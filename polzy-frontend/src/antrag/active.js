@@ -801,8 +801,8 @@ function ActiveAntrag(props) {
 */
 
   //***** BEBUG OUTPUT
-  //console.log('Antrag Props:')
-  //console.log(props)
+  console.log('Antrag Props:')
+  console.log(props)
   //console.log('Antrag Values:')
   //console.log(values)
   //console.log('Activity Values')
@@ -815,13 +815,13 @@ function ActiveAntrag(props) {
   const [openSpeedometer, setOpenSpeedometer] = React.useState(false)
 
   React.useEffect(() => {
-    if (cardRef.current) {
+    if (antrag.speedometerValue && cardRef.current) {
       setOpenSpeedometer(
         props.scrollTop > cardRef.current.offsetTop && 
         props.scrollTop < (cardRef.current.offsetTop + cardRef.current.offsetHeight)
       )
     }
-  }, [props.scrollTop])
+  }, [props.scrollTop, antrag.speedometerValue])
 
  
   return(
@@ -830,7 +830,7 @@ function ActiveAntrag(props) {
       {/* Speedometer */}
       {openSpeedometer && expanded &&
         <Fade in={openSpeedometer && expanded}>
-          <Speedometer value={700}/>
+          <Speedometer value={antrag.speedometerValue}/>
         </Fade>
       }
 
