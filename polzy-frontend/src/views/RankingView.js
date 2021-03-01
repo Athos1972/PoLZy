@@ -34,6 +34,26 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 
+function MakeCurrentUserBold(data, index, email){
+  if (data.name === email){
+  return(
+  <TableRow key={index}>
+    <TableCell align='left'><b>{data.name}</b></TableCell>
+    <TableCell align='center'><b>{formatNumberWithCommas(data.operations)}</b></TableCell>
+    <TableCell align='center'><b>{data.rank}<sup>{formatRankWithSuffix(data.rank)}</sup></b></TableCell>
+  </TableRow>
+  )
+  }
+  return(
+  <TableRow key={index}>
+    <TableCell align='left'>{data.name}</TableCell>
+    <TableCell align='center'>{formatNumberWithCommas(data.operations)}</TableCell>
+    <TableCell align='center'>{data.rank}<sup>{formatRankWithSuffix(data.rank)}</sup></TableCell>
+  </TableRow>
+  )
+}
+
+
 function RankingView(props) {
   const classes = useStyles()
   const {t} = useTranslation('gamification')
@@ -72,7 +92,7 @@ function RankingView(props) {
   const updateRankings = () => {
     getRankings(props.user).then(data => {
       setRankingData(data)
-
+      console.log(data)
       console.log('Ranking Data:')
       console.log(data[tab])
       
@@ -161,11 +181,7 @@ function RankingView(props) {
               ) : (
                 <React.Fragment>
                   {rankingData[tab].map((data, index) => (
-                    <TableRow key={index}>
-                      <TableCell align='left'>{data.name}</TableCell>
-                      <TableCell align='center'>{formatNumberWithCommas(data.operations)}</TableCell>
-                      <TableCell align='center'>{data.rank}<sup>{formatRankWithSuffix(data.rank)}</sup></TableCell>
-                    </TableRow>
+                      MakeCurrentUserBold(data, index, props.user.email)
                   ))}
                 </React.Fragment>
               )}
