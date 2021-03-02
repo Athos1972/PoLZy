@@ -238,14 +238,14 @@ function ActiveAntrag(props) {
   }
 
   const getValues = (obj) => {
-    const commonFields = obj.fields.reduce((result, field) => ({
+    const commonFields = obj.fields.filter(field => (field.fieldType !== 2)).reduce((result, field) => ({
       ...result,
       ...getFieldValue(field),
     }), {})
     return obj.field_groups.reduce((result, group) => ({
       ...result,
       ...obj[group.name].filter((field) => 
-        (field.fieldDataType !== "Table")
+        (field.fieldType !== 2 && field.fieldDataType !== "Table")
       ).reduce((groupFields, field) => ({
         ...groupFields,
         ...getFieldValue(field),
