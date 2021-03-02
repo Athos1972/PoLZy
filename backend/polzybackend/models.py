@@ -424,7 +424,7 @@ class AntragActivityRecords(db.Model):
     def new(cls, antrag):
         json_data = {}
         for activities in antrag.Aktivitaeten:
-            json_data[activities.__class__.__name__] = activities.toJSON()
+            json_data[activities.__class__.__name__] = activities.toJson()
 
         instance = cls(
             antrag_id=str(antrag.id),
