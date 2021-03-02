@@ -411,6 +411,7 @@ class AntragActivityRecords(db.Model):
     status = db.Column(db.String(16), nullable=False)
     searchString = db.Column(db.String, nullable=False)
     json_data = db.Column(db.String, nullable=False)
+    json_data_activities = db.Column(db.String, default="{}")
     class_name = db.Column(db.String, nullable=False)
     sapClient = db.Column(db.String(16), nullable=False)
     tag = db.Column(db.String, default=None)
@@ -421,8 +422,10 @@ class AntragActivityRecords(db.Model):
 
     @classmethod
     def new(cls, antrag):
-        #cls, antrag_id, user_id, company_id, antragsnummer, status, searchString, json_data, class_name, sapClient
-        #):
+        json_data = {}
+        for activities in antrag.Aktivitaeten:
+            json_data[activities.__class__.__name__] = activities.toJSON()
+
         instance = cls(
             antrag_id=str(antrag.id),
             user_id=str(antrag.user.id),
@@ -431,6 +434,7 @@ class AntragActivityRecords(db.Model):
             status=antrag.status,
             searchString=antrag.searchstring,
             json_data=json.dumps(antrag.Felder.toJSON()),
+            json_data_activities=json.dumps(json_data),
             class_name=antrag.__class__.__name__,
             sapClient=antrag.sapClient,
             tag=antrag.tag,
