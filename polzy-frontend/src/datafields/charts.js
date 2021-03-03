@@ -60,24 +60,14 @@ export function LinearChart(props) {
             <XAxis
               type="number"
               dataKey="x"
-              label={{
-                value: data.axis.x.label,
-                position: 'bottom',
-                offset: 5,
-              }}
             />
             <YAxis
               type="number"
               dataKey="y"
-              label={{
-                value: data.axis.y.label,
-                angle: -90,
-                position: 'left',
-                offset: 5,
-              }}
+              domain={['auto', 'auto']}
             />
             <Tooltip cursor={{ strokeDasharray: '3 3' }} />
-            <Scatter name={props.title} data={data.data} fill="#8884d8" line shape="cross" />
+            <Scatter name={props.title} data={data.data} fill="#8884d8" line shape="" />
           </ScatterChart>
         </ResponsiveContainer>
       </Grid>
