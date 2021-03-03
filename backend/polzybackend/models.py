@@ -928,3 +928,19 @@ class ToastNotifications(db.Model):
         self.seen_at = datetime.now()
         db.session.commit()
 
+
+class AntragNummer(db.Model):
+    count = db.Column(db.Integer, default=10000000, primary_key=True)
+
+    @staticmethod
+    def get_count():
+        count = db.session.query(AntragNummer).first().count
+        AntragNummer.update_count()  # updating 100 as it calls count, because of program stops before completing 100,
+        return count                 # then current base value will be resent and it will create same ids
+
+    @staticmethod
+    def update_count():
+        instance = db.session.query(AntragNummer).first()
+        instance.count += 100
+        db.session.add(instance)
+        db.session.commit()
