@@ -438,8 +438,6 @@ class AntragActivityRecords(db.Model):
             class_name=antrag.__class__.__name__,
             sapClient=antrag.sapClient,
             tag=antrag.tag,
-            #antrag_id=antrag_id, user_id=user_id, company_id=company_id, antragsnummer=antragsnummer,
-            #status=status, searchString=searchString, json_data=json_data, class_name=class_name, sapClient=sapClient
         )
         db.session.add(instance)
         db.session.commit()
@@ -454,10 +452,7 @@ class AntragActivityRecords(db.Model):
 
         # looping through all records for current user & company
         for obj in cls.query.filter_by(user_id=user.id, company_id=user.company_id).all():
-            print('\n*** Found Antrags:')
-            print(obj)
             values = [value.lower() for value in obj.searchString.split()]
-            print(values)
             flag = True
             for string in strings:
                 if not string.lower().strip() in values:  # matching split & lowered value for flexiblity
@@ -467,8 +462,8 @@ class AntragActivityRecords(db.Model):
                 if not obj.antrag_id in instances:
                     instances[obj.antrag_id] = obj
                 else:
-                    if instances[obj.antrag_id].timestamp < obj.timestamp:  # if current object is latest than previously
-                        instances[obj.antrag_id] = obj                      # stored then replace it with current object
+                    if instances[obj.antrag_id].timestamp < obj.timestamp:  # if current object is lateR than previously
+                        instances[obj.antrag_id] = obj                      # stored: replace it with current object
         return list(instances.values())
 
     @classmethod
