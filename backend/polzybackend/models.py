@@ -411,6 +411,7 @@ class AntragActivityRecords(db.Model):
     status = db.Column(db.String(16), nullable=False)
     searchString = db.Column(db.String, nullable=False)
     json_data = db.Column(db.String, nullable=False)
+    json_data_activities = db.Column(db.String, default="{}")
     class_name = db.Column(db.String, nullable=False)
     sapClient = db.Column(db.String(16), nullable=False)
     tag = db.Column(db.String, default=None)
@@ -421,8 +422,10 @@ class AntragActivityRecords(db.Model):
 
     @classmethod
     def new(cls, antrag):
-        #cls, antrag_id, user_id, company_id, antragsnummer, status, searchString, json_data, class_name, sapClient
-        #):
+        json_data = {}
+        for activities in antrag.Aktivitaeten:
+            json_data[activities.__class__.__name__] = activities.toJson()
+
         instance = cls(
             antrag_id=str(antrag.id),
             user_id=str(antrag.user.id),
@@ -431,11 +434,10 @@ class AntragActivityRecords(db.Model):
             status=antrag.status,
             searchString=antrag.searchstring,
             json_data=json.dumps(antrag.Felder.toJSON()),
+            json_data_activities=json.dumps(json_data),
             class_name=antrag.__class__.__name__,
             sapClient=antrag.sapClient,
             tag=antrag.tag,
-            #antrag_id=antrag_id, user_id=user_id, company_id=company_id, antragsnummer=antragsnummer,
-            #status=status, searchString=searchString, json_data=json_data, class_name=class_name, sapClient=sapClient
         )
         db.session.add(instance)
         db.session.commit()
@@ -453,7 +455,7 @@ class AntragActivityRecords(db.Model):
             print('\n*** Found Antrags:')
             print(obj)
             values = [value.lower() for value in obj.searchString.split()]
-            print(values)
+            values.append(str(obj.antragsnummer))
             flag = True
             for string in strings:
                 if not string.lower().strip() in values:  # matching split & lowered value for flexiblity
@@ -924,3 +926,19 @@ class ToastNotifications(db.Model):
         self.seen_at = datetime.now()
         db.session.commit()
 
+
+class AntragNummer(db.Model):
+    count = db.Column(db.Integer, default=10000000, primary_key=True)
+
+    @staticmethod
+    def get_count():
+        count = db.session.query(AntragNummer).first().count
+        AntragNummer.update_count()  # updating 100 as it calls count, because of program stops before completing 100,
+        return count                 # then current base value will be resent and it will create same ids
+
+    @staticmethod
+    def update_count():
+        instance = db.session.query(AntragNummer).first()
+        instance.count += 100
+        db.session.add(instance)
+        db.session.commit()
