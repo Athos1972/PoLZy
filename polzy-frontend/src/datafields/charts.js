@@ -4,6 +4,7 @@ import {
   Typography,
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
+import { useTheme } from '@material-ui/core/styles'
 import {
   ScatterChart,
   Scatter,
@@ -15,6 +16,7 @@ import {
   Label,
   ResponsiveContainer,
 } from 'recharts'
+import { formatNumberWithCommas } from '../utils'
 
 // styles
 const useStyles = makeStyles(theme => ({
@@ -24,12 +26,51 @@ const useStyles = makeStyles(theme => ({
 
   chart: {
     padding: theme.spacing(2),
-  }
+  },
 }))
+
+const RenderTooltip = (props) => {
+  if (props.payload.length === 2) {
+    console.log(props)
+    return(
+      <div style={{
+        padding: 8,
+        backgroundColor: "#ccc4"}}
+      >
+        <Typography
+          variant="h6"
+          component="div"
+        >
+          {props.payload[0].name}
+        </Typography>
+        
+      </div>
+    )
+  }
+
+  return null
+}
 
 export function LinearChart(props) {
   const classes = useStyles()
+  const theme = useTheme()
   const {data} = props
+
+  console.log("Chart:")
+  console.log(props)
+
+  const formatTooltip = (value, name, props) => {
+    return formatNumberWithCommas(value)
+  }
+
+  const getChartData = () => {
+    return data.values.map(point => ({
+      x: point[0],
+      y: point[1],
+    }))
+  }
+
+  console.log(getChartData())
 
   return (
     <Grid
@@ -53,31 +94,33 @@ export function LinearChart(props) {
               top: 20,
               right: 20,
               bottom: 20,
-              left: 20,
+              left: 30,
             }}
           >
             <CartesianGrid />
             <XAxis
               type="number"
               dataKey="x"
-              label={{
-                value: data.axis.x.label,
-                position: 'bottom',
-                offset: 5,
-              }}
+              name={data.axis.x.label}
+              unit={data.axis.x.unit}
             />
             <YAxis
               type="number"
               dataKey="y"
-              label={{
-                value: data.axis.y.label,
-                angle: -90,
-                position: 'left',
-                offset: 5,
-              }}
+              name={data.axis.y.label}
+              unit={data.axis.y.unit}
+              domain={['auto', 'auto']}
+              tickFormatter={formatTooltip}
             />
-            <Tooltip cursor={{ strokeDasharray: '3 3' }} />
-            <Scatter name={props.title} data={data.data} fill="#8884d8" line shape="cross" />
+            <Tooltip
+              formatter={formatTooltip}
+            />
+            <Scatter 
+              name={props.title}
+              data={getChartData()}
+              fill={theme.palette.primary.main}
+              line
+            />
           </ScatterChart>
         </ResponsiveContainer>
       </Grid>
