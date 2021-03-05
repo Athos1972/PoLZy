@@ -549,7 +549,7 @@ class GamificationActivity(db.Model):
 
         instance = cls(
             user_id=user.id,
-            company_id=user.company.company_id,
+            company_id=user.company_id,
             event=event,
             event_details=event_details,
         )
