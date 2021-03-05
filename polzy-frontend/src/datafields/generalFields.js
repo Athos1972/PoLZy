@@ -726,29 +726,37 @@ export default function DataGroup(props) {
                       }
                     />
                   </Grid>
-                  <Grid item container spacing={2}>
-                  {values[field.name] && Boolean(field.relatedFields) && field.relatedFields.map((optionField) => (
-                    <Grid 
-                      item
-                      key={optionField.name}
-                      xs={size('xs')}
-                      md={size('md')}
-                      lg={optionField.fieldDataType === "TextBox" ? 2*size('lg') : size('lg')}
+                  <Grid item  xs={12}>
+                    <Collapse
+                      in={Boolean(values[field.name])}
+                      timeout="auto"
+                      
                     >
-                      <TooltipField
-                        tooltip={optionField.tooltip}
-                        content={
-                          <div>
-                            <DataField
-                              {...commonProps}
-                              data={optionField}
-                              value={values[optionField.name] ? values[optionField.name] : null}
+                      <Grid container spacing={2}>
+                        {Boolean(field.relatedFields) && field.relatedFields.map((optionField) => (
+                          <Grid 
+                            item
+                            key={optionField.name}
+                            xs={size('xs')}
+                            md={size('md')}
+                            lg={optionField.fieldDataType === "TextBox" ? 2*size('lg') : size('lg')}
+                          >
+                            <TooltipField
+                              tooltip={optionField.tooltip}
+                              content={
+                                <div>
+                                  <DataField
+                                    {...commonProps}
+                                    data={optionField}
+                                    value={values[optionField.name] ? values[optionField.name] : null}
+                                  />
+                                </div>
+                              }
                             />
-                          </div>
-                        }
-                      />
-                    </Grid>
-                  ))}
+                          </Grid>
+                        ))}
+                      </Grid>
+                    </Collapse>
                   </Grid>
                 </React.Fragment>
               ))}
