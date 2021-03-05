@@ -13,7 +13,6 @@ const useStyles = makeStyles((theme) => ({
   container: {
     width: speedometerSize,
     height: Math.floor(speedometerSize/2),
-    marginRight: theme.spacing(2),
   },
 }))
 

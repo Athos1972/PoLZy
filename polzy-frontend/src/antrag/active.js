@@ -1136,8 +1136,8 @@ function ActiveAntrag(props) {
               position: 'sticky',
               bottom: 0,
               marginTop: -speedometerSize/2,
-              marginRight: -cardRef.current.offsetLeft,
-              marginLeft: cardRef.current.clientWidth,
+              marginRight: cardRef.current.offsetLeft > speedometerSize ? -speedometerSize : -cardRef.current.offsetLeft,
+              pointerEvents: "none",
             }}
           >
           <Speedometer
