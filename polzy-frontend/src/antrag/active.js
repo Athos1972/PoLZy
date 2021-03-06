@@ -196,6 +196,7 @@ function ActiveAntrag(props) {
   const classes = useStyles()
 
   const cardRef = React.useRef()
+  const activityRef = React.useRef()
 
   const [isVisible, setIsVisible] = useState()
   const [autoCalculateDisabled, setAutoCalculateDisabled] = useState(false)
@@ -829,6 +830,8 @@ function ActiveAntrag(props) {
   ** Speedometer
   */
   const [openSpeedometer, setOpenSpeedometer] = React.useState(false)
+  const [speedometerIsSticky, setSpeedometerSticky] = React.useState(false)
+
 
   React.useEffect(() => {    
     if (!antrag.speedometerValue || !cardRef.current) {
@@ -853,7 +856,20 @@ function ActiveAntrag(props) {
     setOpenSpeedometer(isVisible)
   }, [props.scrollTop, antrag.speedometerValue])
 
- 
+  React.useEffect(() => {
+    if (!antrag.speedometerValue || !cardRef.current) {
+      return
+    }
+
+    setSpeedometerSticky(cardRef.current.offsetLeft > speedometerSize)
+  }, [cardRef.current, window.innerWidth])
+
+  const getSpeedometerDivHeight = () => {
+    const actionHeight = !speedometerIsSticky && activityRef.current ? activityRef.current.offsetHeight : 0
+
+    return speedometerSize/2 + actionHeight
+  }
+
   return(
     <React.Fragment>
       
@@ -1103,7 +1119,7 @@ function ActiveAntrag(props) {
             }
 
             {/* bottom navigation */}
-            <CardContent>
+            <CardContent ref={activityRef}>
               <BottomNavigation
                 value={currentActivity !== null && currentActivity.name}
                 showLabels
@@ -1132,11 +1148,12 @@ function ActiveAntrag(props) {
           <div
             style={{
               display: 'flex',
-              justifyContent: 'flex-start',
-              position: 'sticky',
+              justifyContent: speedometerIsSticky ? 'flex-end': 'flex-start',
+              position: speedometerIsSticky ? 'sticky' : 'static',
               bottom: 0,
-              marginTop: -speedometerSize/2,
-              marginLeft: cardRef.current.offsetLeft > speedometerSize ? -speedometerSize : -cardRef.current.offsetLeft,
+              height: getSpeedometerDivHeight(),
+              marginTop: -getSpeedometerDivHeight(),
+              marginRight: speedometerIsSticky ? -cardRef.current.offsetLeft : 0,
               pointerEvents: "none",
             }}
           >
