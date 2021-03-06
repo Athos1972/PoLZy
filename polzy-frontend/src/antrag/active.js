@@ -1132,11 +1132,11 @@ function ActiveAntrag(props) {
           <div
             style={{
               display: 'flex',
-              justifyContent: 'flex-end',
+              justifyContent: 'flex-start',
               position: 'sticky',
               bottom: 0,
               marginTop: -speedometerSize/2,
-              marginRight: cardRef.current.offsetLeft > speedometerSize ? -speedometerSize : -cardRef.current.offsetLeft,
+              marginLeft: cardRef.current.offsetLeft > speedometerSize ? -speedometerSize : -cardRef.current.offsetLeft,
               pointerEvents: "none",
             }}
           >
