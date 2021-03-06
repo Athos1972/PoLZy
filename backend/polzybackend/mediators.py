@@ -80,6 +80,10 @@ class Antrag:
 
 
     def clone(self):
+        #
+        # returns a deepcopy of the current instance
+        #
+
         antrag_copy = deepcopy(self)
         antrag_copy.id = generate_id()
 
