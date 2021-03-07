@@ -23,7 +23,6 @@ import SaveIcon from '@material-ui/icons/Save'
 import LocalOfferOutlinedIcon from '@material-ui/icons/LocalOfferOutlined'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
-//import ReactSpeedometer from 'react-d3-speedometer'
 import { CardActiveHide, CardActive, CardTop, CardBottom, hideTime } from '../styles/cards'
 import { AntragTitle } from './components'
 import ExpandButton from '../components/expandButton'
@@ -83,14 +82,6 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(3),
     marginRight: theme.spacing(3),
   },
-/*
-  speedometer: {
-    position: 'fixed',
-    width: 300,
-    bottom: 10,
-    right: 10,
-  },
-*/
 }))
 
 
@@ -117,9 +108,6 @@ function CustomTagBase(props) {
   }
 
   const handleTagChange = () => {
-    //console.log('Custom Tag Change:')
-    //console.log(newValue)
-
     // update tag in back-end 
     setCustomTag(
       props.user,
@@ -279,34 +267,7 @@ function ActiveAntrag(props) {
         ),
       }), {})}
     }
-/*
-    // update address values
-    if (activity.name === "VN festlegen") {
-      const addressKeys = [
-        "country",
-        "postCode",
-        "city",
-        "street",
-        "streetNumber",
-        //"houseNumber",
-      ]
 
-      const addressValues = Object.keys(values).filter(valueKey => (
-        typeof(values[valueKey]) === 'object' &&
-        typeof(values[valueKey]) !== null &&
-        addressKeys.reduce((result, addressKey) => (
-          result && values[valueKey][addressKey] !== undefined
-        ), true)
-      ))
-
-      activityValues = {
-        ...activityValues,
-        //...addressKeys.reduce((result, key) => ({...result, [key]: values[key]}), {}),
-        //addressNumber: values.addressNumber,
-        addressDict: addressValues.length > 0 ? values[addressValues[0]] : null, // addressKeys.filter(key => values[key] !== '').reduce((label, key) => ([...label, values[key]]), []).join(' ')
-      }
-    }
-  */
     setActivityValues(activityValues)
   }
 
@@ -339,7 +300,6 @@ function ActiveAntrag(props) {
       props.index,
       {
         request_state: "ok",
-        //addressList: {...antrag.addressList},
         ...antragData,
       }
     )
@@ -463,7 +423,6 @@ function ActiveAntrag(props) {
     // check if group switch requires field update
     for (const group of antrag.field_groups) {
       if (group.name === name && group.inputTriggers) {
-        //console.log('UPDATE FIELDS BY GROUP SWITCH')
         // build request data
         const requestData = {
           id: antrag.id,
@@ -476,15 +435,6 @@ function ActiveAntrag(props) {
         updateAntragFields(props.user, requestData).then(data => {
           // update antrag
           updateAntragFromBackend(data)
-          /*
-          props.updateAntrag(
-            props.index,
-            {
-              request_state: "ok",
-              ...data,
-            }
-          )
-          */
         }).catch(error => {
           console.log(error)
         }) 
@@ -518,21 +468,8 @@ function ActiveAntrag(props) {
     executeAntrag(props.user, requestData).then(data => {
       // update antrag
       updateAntragFromBackend(data)
-      /*
-      props.updateAntrag(
-        props.index,
-        {
-          request_state: "ok",
-          ...data,
-        }
-      )
-      */
-      //update state
-      //setCalculate(false)
     }).catch(error => {
       console.log(error)
-      //update state
-      //setCalculate(false)
     }).finally(() => {
       setCalculate(false)
     })
@@ -555,15 +492,6 @@ function ActiveAntrag(props) {
     updateAntragFields(props.user, requestData).then(data => {
       // update antrag
       updateAntragFromBackend(data)
-      /*
-      props.updateAntrag(
-        props.index,
-        {
-          request_state: "ok",
-          ...data,
-        }
-      )
-      */
     }).catch(error => {
       console.log(error)
     })
@@ -573,10 +501,7 @@ function ActiveAntrag(props) {
   ** Auto Calculate
   */
   React.useEffect(() => {
-    //console.log('AUTOCALCULATE')
-    //console.log(!autoCalculateDisabled)
     if (antrag.status === "Neu" && !autoCalculateDisabled && !isCalculate && validateFields()) {
-      //console.log('Make autocalculation')
       calculateAntrag()
     }
   }, [antrag, values, groups])
@@ -596,25 +521,12 @@ function ActiveAntrag(props) {
       }
     }
 
-    //console.log('Input Trigger:')
-    //console.log(requestData)
-
     // call update end-point
     updateAntragFields(props.user, requestData).then(data => {
       // disable auto calculation
       setAutoCalculateDisabled(true)
       // update antrag
       updateAntragFromBackend(data)
-      /*
-      props.updateAntrag(
-        props.index,
-        {
-          request_state: "ok",
-          addressList: [..antrag.addressList],
-          ...data,
-        }
-      )
-      */
     }).catch(error => {
       console.log(error)
     }).finally(() => {
@@ -692,11 +604,6 @@ function ActiveAntrag(props) {
 
     // execute activity
     executeAntrag(props.user, requestData).then(data => {
-
-      //console.log('EXECUTION ACTIVITY:')
-      //console.log(activity)
-      //console.log('RESPONSE DATA:')
-      //console.log(data)
       
       // post define behavior
       switch (activity.postExecution) {
@@ -707,16 +614,6 @@ function ActiveAntrag(props) {
           break
         default:
           updateAntragFromBackend(data)
-          /*
-          props.updateAntrag(
-            props.index,
-            {
-              request_state: "ok",
-              addressList: [..antrag.addressList],
-              ...data,
-            }
-          )
-          */
       }
     }).catch(error => {
       console.log(error)
@@ -759,16 +656,6 @@ function ActiveAntrag(props) {
     updateAntragFields(props.user, requestData).then(data => {
       // update antrag
       updateAntragFromBackend(data)
-      /*
-      props.updateAntrag(
-        props.index,
-        {
-          request_state: "ok",
-
-          ...data,
-        }
-      )
-      */
     }).catch(error => {
       console.log(error)
     })
@@ -809,15 +696,10 @@ function ActiveAntrag(props) {
     props.clearAddressList(antrag.id)
     props.closeAntrag(props.index)
   }
-/*
-  const handleAddressUpdate = (payload) => {
-    props.setAddress(props.index, payload)
-  }
-*/
 
   //***** BEBUG OUTPUT
-  //console.log('Antrag Props:')
-  //console.log(props)
+  console.log('Antrag Props:')
+  console.log(props)
   //console.log('Antrag Values:')
   //console.log(values)
   //console.log('Activity Values')
