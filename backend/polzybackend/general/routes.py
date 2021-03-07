@@ -54,11 +54,13 @@ def values():
 
 
 @bp.route('/upload', methods=['POST'])
+@bp.route('/upload/<string:parent_id>', methods=['POST'])
 @auth.login_required
-def upload():
+def upload(parent_id=None):
     # get file
     file = request.files.get('file')
     print('\n*** File Upload:')
+    print(request.get_json())
     print(file)
     if file is None:
         return jsonify({'error': 'Request does not contain dataFile'}), 400
@@ -83,6 +85,7 @@ def upload():
             user=auth.current_user(),
             id=filename_parts[0],
             filename=file.filename,
+            parent_id=parent_id,
         )
         return {'OK': f'File {file_db.filename} saved with id {file_db.id}'}, 200
     except Exception as error:
