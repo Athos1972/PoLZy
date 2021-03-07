@@ -28,6 +28,7 @@ import { AntragTitle } from './components'
 import ExpandButton from '../components/expandButton'
 import CardCloseButton from '../components/closeButton'
 import ProgressButton from '../components/progressButton'
+import FileUploadDialog from '../components/fileUploads'
 import DataGroup from '../datafields/generalFields'
 import { removeAntrag, updateAntrag, addAntrag, clearAddressList } from '../redux/actions'
 import { executeAntrag, cloneAntrag, updateAntragFields, setCustomTag } from '../api/antrag'
@@ -188,6 +189,7 @@ function ActiveAntrag(props) {
 
   const [isVisible, setIsVisible] = useState()
   const [autoCalculateDisabled, setAutoCalculateDisabled] = useState(false)
+  const [openUploadDialog, setOpenUploadDialog] = useState(false)
 
   // groups states
   const getGroups = (obj) => {
@@ -476,7 +478,7 @@ function ActiveAntrag(props) {
   }
 
 
-  const updateAntrag = (newValues) => {
+  const updateAntrag = (newValues={}) => {
     /* update antrag fields */
     // build request body
     const requestData = {
@@ -587,7 +589,17 @@ function ActiveAntrag(props) {
     setActivity(null)
   }
 
-  const executeActivity = (activity=currentActivity) => {
+  const executeActivity = (action='run', activity=currentActivity) => {
+
+    if (action === 'close') {
+      setActivity(null)
+      return
+    }
+
+    if (action === 'upload') {
+      setOpenUploadDialog(true)
+      return
+    }
     
     // switch calculate mode
     setExecute(true)
@@ -677,8 +689,12 @@ function ActiveAntrag(props) {
 
     const newActivity = antrag.possible_activities.filter(activity => activity.name === value)[0]
 
+    console.log('Selected Activity:')
+    console.log(newActivity)
+
     // execute activity if doesn't require inputs
     if (
+      (!newActivity.actions || newActivity.actions.length === 0) &&
       (newActivity.fields.length === 0 && !("field_groups" in newActivity)) || 
       ("field_groups" in newActivity && newActivity.field_groups.length === 0)
     ) {
@@ -970,29 +986,69 @@ function ActiveAntrag(props) {
             }
 
             {/* Activity without Groups */}
-            {currentActivity !== null && currentActivity.fields.filter(field => field.fieldType < 3).length > 0 &&
-              <DataGroup
-                id={antrag.id}
-                title={currentActivity.description}
-                fields={currentActivity.fields}
-                values={activityValues}
-                onGlobalChange={handleDataChanged}
-                onChange={handleActivityDataChanged}
-                onInputTrigger={handleActivityInputTrigger}
-                companyTypes={getFieldByName(currentActivity, "firmenArten")}
-                actions={
-                  <div className={classes.flexContainerRight} >
-                    <ProgressButton
-                      title={currentActivity.postExecution === "close" ? t('common:close') : t('common:execute')}
-                      loading={isExecuting}
-                      disabled={!validateFields(false)}
-                      onClick={(e) => executeActivity()}
-                    />
-                  </div>
-                }
-                backgroundColor={currentActivity.backgroundColor}
-                subtitles={currentActivity.subtitles}
-              />
+            {currentActivity !== null && //currentActivity.fields.filter(field => field.fieldType < 3).length > 0 &&
+              <Grid container>
+
+                {/* Input Fields */}
+                <Grid item xs={12}>
+                  <DataGroup
+                    id={antrag.id}
+                    title={currentActivity.description}
+                    fields={currentActivity.fields}
+                    values={activityValues}
+                    onGlobalChange={handleDataChanged}
+                    onChange={handleActivityDataChanged}
+                    onInputTrigger={handleActivityInputTrigger}
+                    companyTypes={getFieldByName(currentActivity, "firmenArten")}
+                    actions={null/*
+                      <div className={classes.flexContainerRight} >
+                        <ProgressButton
+                          title={currentActivity.postExecution === "close" ? t('common:close') : t('common:execute')}
+                          loading={isExecuting}
+                          disabled={!validateFields(false)}
+                          onClick={(e) => executeActivity()}
+                        />
+                      </div>
+                    */}
+                    backgroundColor={currentActivity.backgroundColor}
+                    subtitles={currentActivity.subtitles}
+                  />
+                </Grid>
+
+                {/* Actions */}
+                <Grid
+                  className={classes.activityActionsContainer}
+                  item
+                  xs={12}
+                  container
+                  spacing={2}
+                  justify="flex-end"
+                >
+                  {currentActivity.actions.lenght === 0 ? (
+                    <Grid item>
+                      <ProgressButton
+                        title={t('common:execute')}
+                        loading={isExecuting}
+                        disabled={!validateFields(false)}
+                        onClick={(e) => executeActivity()}
+                      />
+                    </Grid>
+                  ) : (
+                    <React.Fragment>
+                      {currentActivity.actions.map((action, index) => (
+                        <Grid key={index} item>
+                          <ProgressButton
+                            title={action.caption}
+                            loading={isExecuting}
+                            disabled={!validateFields(false)}
+                            onClick={(e) => executeActivity(action.name)}
+                          />
+                        </Grid>
+                      ))}
+                    </React.Fragment>
+                  )}
+                </Grid>
+              </Grid>
             }
 
             {/* Loading animation */}
@@ -1045,6 +1101,14 @@ function ActiveAntrag(props) {
           </div>
         </Fade>
       }
+
+    {/* File Upload Dialog */}
+      <FileUploadDialog
+        parentId={antrag.id}
+        open={openUploadDialog}
+        onClose={() => setOpenUploadDialog(false)}
+        onUpload={() => updateAntrag()}
+      />
     </React.Fragment>
   )
 }

@@ -511,7 +511,7 @@ export function DataField(props) {
 ** Input Group
 */
 export default function DataGroup(props) {
-  const {title, fields, values, actions, ...commonProps} = props
+  const {title, fields, values, ...commonProps} = props
   const classes = useStyles({backgroundColor: props.backgroundColor})
 
   const [expanded, setExpanded] = React.useState(true)
@@ -850,7 +850,7 @@ export default function DataGroup(props) {
           </Grid>
         ))}
 
-        {actions}
+        {/*actions*/}
       </Collapse>
     </Paper>
   )

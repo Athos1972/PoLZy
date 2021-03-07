@@ -50,12 +50,12 @@ function FileUploadDialog(props) {
   // -------> END
 
   const handleSubmit = () => {
-    console.log('File Upload Dialog: submitted')
-    console.log(file)
+    //console.log('File Upload Dialog: submitted')
+    //console.log(file)
 
-    uploadFiles(props.user, file).then(data => {
-      console.log('Upload: OK')
-      console.log(data)
+    uploadFiles(props.user, props.parentId, file).then(data => {
+      //console.log('Upload: OK')
+      //console.log(data)
       enqueueSnackbar(
         "File successfully uploaded",
         {
@@ -69,6 +69,7 @@ function FileUploadDialog(props) {
           action: closeToast,
         },
       )
+      props.onUpload()
       props.onClose()
     }).catch(error => {
       console.log('Upload: Error')

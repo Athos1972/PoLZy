@@ -34,13 +34,18 @@ export const getValueList = async (user, payload) => {
 }
 
 // upload file
-export const uploadFiles = async (user, file) => {
+export const uploadFiles = async (user, parent_id, file) => {
+  // build URI
+  console.log('File Upload API')
+  console.log(parent_id)
+  const uri = parent_id ? `/api/upload/${parent_id}` : '/api/upload'
+
   // create form data with file
   const fileData = new FormData()
   fileData.append('file', file)
 
   // call api
-  const response = await fetch('/api/upload', {
+  const response = await fetch(uri, {
     method: 'POST',
     headers:{ 
       'authorization': `Bearer ${user.accessToken}`,
