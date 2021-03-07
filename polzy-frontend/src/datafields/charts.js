@@ -31,7 +31,6 @@ const useStyles = makeStyles(theme => ({
 
 const RenderTooltip = (props) => {
   if (props.payload.length === 2) {
-    console.log(props)
     return(
       <div style={{
         padding: 8,
@@ -56,8 +55,8 @@ export function LinearChart(props) {
   const theme = useTheme()
   const {data} = props
 
-  console.log("Chart:")
-  console.log(props)
+  //console.log("Chart:")
+  //console.log(props)
 
   const formatTooltip = (value, name, props) => {
     return formatNumberWithCommas(value)
@@ -70,7 +69,7 @@ export function LinearChart(props) {
     }))
   }
 
-  console.log(getChartData())
+  //console.log(getChartData())
 
   return (
     <Grid
