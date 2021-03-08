@@ -124,7 +124,7 @@ function DataFieldSelect(props) {
     const updateValue = {[data.name]: newValue}
     
     // update on input trigger
-    if (data.inputTriggers) {
+    if (props.inputTriggers) {
       props.onInputTrigger(updateValue)
     } else {
       // update antrag value
