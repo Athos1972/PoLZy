@@ -34,11 +34,11 @@ export const getValueList = async (user, payload) => {
 }
 
 // upload file
-export const uploadFiles = async (user, parent_id, file) => {
+export const uploadFiles = async (user, parent_id, fileType, file) => {
   // build URI
   console.log('File Upload API')
   console.log(parent_id)
-  const uri = parent_id ? `/api/upload/${parent_id}` : '/api/upload'
+  const uri = parent_id && fileType ? `/api/upload/${parent_id}/${fileType}` : '/api/upload'
 
   // create form data with file
   const fileData = new FormData()

@@ -1108,6 +1108,7 @@ function ActiveAntrag(props) {
         open={openUploadDialog}
         onClose={() => setOpenUploadDialog(false)}
         onUpload={() => updateAntrag()}
+        withFileType
       />
     </React.Fragment>
   )

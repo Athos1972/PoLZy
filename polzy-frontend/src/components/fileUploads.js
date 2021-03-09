@@ -9,9 +9,11 @@ import {
   DialogActions,
   Button,
   IconButton,
+  Grid,
 } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import { DropzoneArea } from 'material-ui-dropzone'
+import DataFieldSelect from '../datafields/selectField'
 import { uploadFiles } from '../api/general'
 import { useSnackbar } from 'notistack'
 
@@ -30,6 +32,7 @@ function FileUploadDialog(props) {
   const classes = useStyles()
 
   const [file, setFile] = React.useState()
+  const [fileType, setFileType] = React.useState()
 
   const handleFileAdd = (files) => {
     setFile(files[0])
@@ -37,6 +40,12 @@ function FileUploadDialog(props) {
 
   const handleClose = () => {
     props.onClose()
+  }
+
+  const handleTypeChange = (value) => {
+    console.log('File Type:')
+    console.log(value)
+    setFileType(value.fileType)
   }
 
   // success toast: START
@@ -53,7 +62,7 @@ function FileUploadDialog(props) {
     //console.log('File Upload Dialog: submitted')
     //console.log(file)
 
-    uploadFiles(props.user, props.parentId, file).then(data => {
+    uploadFiles(props.user, props.parentId, fileType, file).then(data => {
       //console.log('Upload: OK')
       //console.log(data)
       enqueueSnackbar(
@@ -77,18 +86,41 @@ function FileUploadDialog(props) {
     })
   }
 
+  console.log('File Upload Dialog:')
+  console.log(props)
+
   return(
     <Dialog
       fullWidth
       open={props.open}
     >
       <DialogContent>
-        <DropzoneArea
-          previewGridClasses={{container: classes.filePreviewArea}}
-          filesLimit={1}
-          dropzoneText={t('common:upload.text')}
-          onChange={handleFileAdd}
-        />
+        <Grid container spacing={1}>
+          <Grid item xs={12}>
+            <DropzoneArea
+              previewGridClasses={{container: classes.filePreviewArea}}
+              filesLimit={1}
+              dropzoneText={t('common:upload.text')}
+              onChange={handleFileAdd}
+            />
+          </Grid>
+
+          {props.withFileType &&
+            <Grid item xs={12}>
+              <DataFieldSelect
+                id={props.parentId}
+                value={fileType}
+                data={{
+                  name: 'fileType',
+                  brief: 'File Type',
+                  inputRange: ['async', 'fileType'],
+                  isMandatory: true,
+                }}
+                onChange={handleTypeChange}
+              />
+            </Grid>
+          }
+        </Grid>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>

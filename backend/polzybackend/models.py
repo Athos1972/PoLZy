@@ -358,7 +358,8 @@ class File(db.Model):
     company_id = db.Column(db.String(56), db.ForeignKey('companies.id'), nullable=False)
     processed = db.Column(db.Boolean, nullable=True, default=False)
     status_ok = db.Column(db.Boolean, nullable=True, default=False)
-    details = db.Column(db.String(256), nullable=True, default="{}")
+    type = db.Column(db.String(56), nullable=False, server_default="document")
+    details = db.Column(db.String(1024), nullable=True, default="{}")
     parent_id = db.Column(db.String(56), nullable=True)
 
     # relationships
@@ -366,7 +367,7 @@ class File(db.Model):
     company = db.relationship('Company', backref='files', foreign_keys=[company_id])
 
     @classmethod
-    def new(cls, user, filename, id, parent_id=None):
+    def new(cls, user, filename, id, parent_id=None, file_type=None):
         # 
         # create new instance of File
         #
@@ -377,6 +378,7 @@ class File(db.Model):
             user_id=user.id,
             company_id=user.company_id,
             parent_id=parent_id,
+            type=file_type,
         )
 
         db.session.add(instance)

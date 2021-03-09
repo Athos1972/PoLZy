@@ -54,9 +54,9 @@ def values():
 
 
 @bp.route('/upload', methods=['POST'])
-@bp.route('/upload/<string:parent_id>', methods=['POST'])
+@bp.route('/upload/<string:parent_id>/<string:file_type>', methods=['POST'])
 @auth.login_required
-def upload(parent_id=None):
+def upload(parent_id=None, file_type=None):
     # get file
     file = request.files.get('file')
     print('\n*** File Upload:')
@@ -86,6 +86,7 @@ def upload(parent_id=None):
             id=filename_parts[0],
             filename=file.filename,
             parent_id=parent_id,
+            file_type=file_type,
         )
         return {'OK': f'File {file_db.filename} saved with id {file_db.id}'}, 200
     except Exception as error:
