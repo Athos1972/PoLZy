@@ -86,8 +86,8 @@ function FileUploadDialog(props) {
     })
   }
 
-  console.log('File Upload Dialog:')
-  console.log(props)
+  //console.log('File Upload Dialog:')
+  //console.log(props)
 
   return(
     <Dialog

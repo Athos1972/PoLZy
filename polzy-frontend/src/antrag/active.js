@@ -714,8 +714,10 @@ function ActiveAntrag(props) {
   }
 
   //***** BEBUG OUTPUT
-  console.log('Antrag Props:')
-  console.log(props)
+  //console.log('Antrag Props:')
+  //console.log(props)
+  console.log('Current Activity:')
+  console.log(currentActivity)
   //console.log('Antrag Values:')
   //console.log(values)
   //console.log('Activity Values')

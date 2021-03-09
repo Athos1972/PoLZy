@@ -1,4 +1,4 @@
-from flask import jsonify, request, current_app
+from flask import jsonify, request, current_app, send_file
 from polzybackend.general import bp
 from polzybackend.utils.import_utils import all_stages
 from polzybackend import auth, models
@@ -59,26 +59,14 @@ def values():
 def upload(parent_id=None, file_type=None):
     # get file
     file = request.files.get('file')
-    print('\n*** File Upload:')
-    print(request.get_json())
-    print(file)
     if file is None:
         return jsonify({'error': 'Request does not contain dataFile'}), 400
 
     # save file
     try:
         user = auth.current_user()
-        #filename = '.'.join((
-        #    '_'.join((
-        #        user.id,
-        #        user.company_id,
-        #        datetime.now().strftime("%Y%m%d_%H%M%S"),
-        #    )),
-        #    file.filename.split('.')[-1],
-        #))
         filename_parts = (str(uuid4()), file.filename.split('.')[-1])
         path_to_file = os.path.join(current_app.config['UPLOADS'], '.'.join(filename_parts))
-        print(path_to_file)
         file.save(path_to_file)
         # create file instance in db
         file_db = models.File.new(
@@ -93,3 +81,16 @@ def upload(parent_id=None, file_type=None):
         current_app.logger.error(f'Failed to upload file "{file.filename}" by {user}: {error}.')
         return jsonify({'error': 'File upload failed'}), 400
     
+
+@bp.route('/files/<string:file_id>')
+def open_file(file_id):
+    # get file record
+    file = models.File.query.get(file_id)
+    print(file)
+    ext = file.filename.split('.')[-1]
+    path_to_file = os.path.join(current_app.config['UPLOADS'], f'{file_id}.{ext}')
+
+    return send_file(
+        path_to_file,
+        attachment_filename=file.filename,
+    )
