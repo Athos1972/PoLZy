@@ -28,6 +28,8 @@ import { ReactComponent as SaveToVNG } from '../icons/saveToVNG.svg'
 import { ReactComponent as IconSaveRecommendation } from '../icons/iconSaveRecommendation.svg'
 import { ReactComponent as IconSearchEurotax } from '../icons/iconSearchEurotax.svg'
 import { ReactComponent as IconSearchPerson } from '../icons/iconSearchPerson.svg'
+import { ReactComponent as IconUpDownload } from '../icons/downUploadDocuments.svg'
+import { ReactComponent as IconQuestions } from '../icons/iconQuestions.svg'
 
 const useStyles = makeStyles({
   svgIcon: {
@@ -144,6 +146,16 @@ export function ActivityIcon(props) {
     case 'iconSearchPerson.svg':
       return (<SvgIcon>
           <IconSearchPerson />
+        </SvgIcon>
+        )
+    case 'iconQuestions.svg':
+      return (<SvgIcon>
+          <IconQuestions />
+        </SvgIcon>
+        )
+    case 'downUploadDocuments.svg':
+      return (<SvgIcon>
+          <IconUpDownload />
         </SvgIcon>
         )
     default:

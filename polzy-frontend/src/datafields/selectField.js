@@ -40,7 +40,11 @@ const SelectPopper = (props) => {
     />
   )
 }
-
+function getAllMethods(object) {
+    return Object.getOwnPropertyNames(object).filter(function(property) {
+        return typeof object[property] == 'function';
+    });
+}
 function DataFieldSelect(props) {
   const classes = useStyles()
   const {t} = useTranslation('common')
@@ -124,6 +128,8 @@ function DataFieldSelect(props) {
     const updateValue = {[data.name]: newValue}
     
     // update on input trigger
+    console.log(getAllMethods(props))
+    console.log(getAllMethods(data))
     if (data.inputTriggers) {
       props.onInputTrigger(updateValue)
     } else {
@@ -135,7 +141,7 @@ function DataFieldSelect(props) {
   return (
     <Autocomplete
       classes={{root: classes.inputField}}
-      id={`${data.name}-${id}`}
+      id={`${data.name}`}
       value={Boolean(value) ? value : null}
       onChange={handleChange}
       options={options}
