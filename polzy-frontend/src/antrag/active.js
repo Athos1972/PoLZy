@@ -18,7 +18,7 @@ import {
   Chip,
   Fade,
 } from '@material-ui/core'
-import CloseIcon from '@material-ui/icons/Close'
+//import CloseIcon from '@material-ui/icons/Close'
 import SaveIcon from '@material-ui/icons/Save'
 import LocalOfferOutlinedIcon from '@material-ui/icons/LocalOfferOutlined'
 import { makeStyles } from '@material-ui/core/styles'
@@ -184,10 +184,14 @@ function ActiveAntrag(props) {
   const classes = useStyles()
 
   const cardRef = React.useRef()
-  const activityRef = React.useRef()
+  const calcRef = React.useRef()
 
   const [isVisible, setIsVisible] = useState()
   const [autoCalculateDisabled, setAutoCalculateDisabled] = useState(false)
+
+  // speedometer
+  const [openSpeedometer, setOpenSpeedometer] = React.useState(false)
+  const [speedometerIsSticky, setSpeedometerSticky] = React.useState(false)
 
   // groups states
   const getGroups = (obj) => {
@@ -693,13 +697,18 @@ function ActiveAntrag(props) {
   }
 
   const handleCloseCard = () => {
+    //setOpenSpeedometer(false)
+    setIsVisible(false)
+  }
+
+  const handleDeleteCard = () => {
     props.clearAddressList(antrag.id)
     props.closeAntrag(props.index)
   }
 
   //***** BEBUG OUTPUT
-  console.log('Antrag Props:')
-  console.log(props)
+  //console.log('Antrag Props:')
+  //console.log(props)
   //console.log('Antrag Values:')
   //console.log(values)
   //console.log('Activity Values')
@@ -711,51 +720,53 @@ function ActiveAntrag(props) {
   /*
   ** Speedometer
   */
-  const [openSpeedometer, setOpenSpeedometer] = React.useState(false)
-  const [speedometerIsSticky, setSpeedometerSticky] = React.useState(false)
-
-
   React.useEffect(() => {    
-    if (!antrag.speedometerValue || !cardRef.current) {
+    if (!antrag.speedometerValue || !cardRef.current || window.innerWidth < 600) {
       setOpenSpeedometer(false)
       return
     }
 
-    // card position
-    const cardTop = cardRef.current.offsetTop
-    const cardBottom = cardRef.current.offsetTop + cardRef.current.offsetHeight
-    const scrollBottom = props.scrollTop + window.innerHeight
+    // card rect
+    const cardRect = cardRef.current.getBoundingClientRect()
+    //const cardBottom = cardTop + cardHeight
+    //const scrollBottom = props.scrollTop + window.innerHeight
 
     // check if speedometer should be visible
-    const isVisible = (props.index === 0) ? (
-        // 1st card
-      props.scrollTop < cardBottom
+    //console.log(`1st card: ${props.index === 0}`)
+    //console.log(props.scrollTop)
+    //console.log(cardRect)
+    
+    const openSpeedometer = (props.index === 0) ? (
+      // 1st card
+      cardRect.bottom > 0
     ) : (
       // other cards
-      scrollBottom >= cardTop + speedometerSize && props.scrollTop < cardBottom
+      cardRect.bottom > 0 && cardRect.top < window.innerHeight - speedometerSize
     )
 
-    setOpenSpeedometer(isVisible)
-  }, [props.scrollTop, antrag.speedometerValue])
+    setOpenSpeedometer(isVisible && openSpeedometer)
+  }, [isVisible, props.scrollTop, antrag.speedometerValue])
+
+  const [speedometerDivHeight, setSpeedometerDivHeight] = React.useState(0)
 
   React.useEffect(() => {
-    if (!antrag.speedometerValue || !cardRef.current) {
+    if (!cardRef.current || !calcRef.current) {
+      setSpeedometerDivHeight(0)
       return
     }
 
-    setSpeedometerSticky(cardRef.current.offsetLeft > speedometerSize)
-  }, [cardRef.current, window.innerWidth])
+    const cardRect = cardRef.current.getBoundingClientRect()
+    const calcRect = calcRef.current.getBoundingClientRect()
+    const isSticky = cardRect.left > speedometerSize
+    const marginToBottom = isSticky ? 0 : (cardRect.bottom - calcRect.bottom)
 
-  const getSpeedometerDivHeight = () => {
-    const actionHeight = !speedometerIsSticky && activityRef.current ? activityRef.current.offsetHeight : 0
+    setSpeedometerDivHeight(speedometerSize/2 + marginToBottom)
+    setSpeedometerSticky(isSticky)
+  }, [cardRef, calcRef, currentActivity, props.scrollTop])
 
-    return speedometerSize/2 + actionHeight
-  }
 
   return(
     <React.Fragment>
-      
-      
 
     <Collapse
       in={isVisible}
@@ -763,6 +774,7 @@ function ActiveAntrag(props) {
       unmountOnExit
     >
       <CardActive ref={cardRef}>
+        
           <CardTop
             action={
               <React.Fragment>
@@ -791,8 +803,8 @@ function ActiveAntrag(props) {
 
               {/* Close Button */}
                 <CardCloseButton
-                  onClose={() => setIsVisible(false)}
-                  onDelete={handleCloseCard}
+                  onClose={handleCloseCard}
+                  onDelete={handleDeleteCard}
                 />
 
               </React.Fragment>
@@ -876,7 +888,10 @@ function ActiveAntrag(props) {
               </CardContent>
 
             {/* Calculate Button */}
-            <CardActions classes={{root: classes.flexContainerRight}} >
+            <CardActions
+              classes={{root: classes.flexContainerRight}}
+              ref={calcRef}
+            >
               <ProgressButton
                 title={antrag.status === "Neu" ? t('antrag:calculate') : t('antrag:re-calculate')}
                 loading={isCalculate}
@@ -1001,7 +1016,7 @@ function ActiveAntrag(props) {
             }
 
             {/* bottom navigation */}
-            <CardContent ref={activityRef}>
+            <CardContent>
               <BottomNavigation
                 value={currentActivity !== null && currentActivity.name}
                 showLabels
@@ -1029,13 +1044,14 @@ function ActiveAntrag(props) {
         <Fade in={openSpeedometer && expanded}>
           <div
             style={{
+              //border: 'solid',
               display: 'flex',
               justifyContent: speedometerIsSticky ? 'flex-end': 'flex-start',
               position: speedometerIsSticky ? 'sticky' : 'static',
               bottom: 0,
-              height: getSpeedometerDivHeight(),
-              marginTop: -getSpeedometerDivHeight(),
-              marginRight: speedometerIsSticky ? -cardRef.current.offsetLeft : 0,
+              height: speedometerDivHeight,
+              marginTop: -speedometerDivHeight,
+              marginRight: speedometerIsSticky ? -speedometerSize : 0,
               pointerEvents: "none",
             }}
           >
