@@ -148,7 +148,7 @@ export function DataFieldText(props) {
         {data.brief}
       </InputLabel>
       <OutlinedInput
-        id={`${data.name}-${id}`}
+        id={`${data.name}`}
         value={parseValue(value)}
         onChange={handleChange}
         label={data.brief}
@@ -170,7 +170,7 @@ export function DataFieldLongText(props) {
 
   return (
     <TextField
-      id={`${data.name}-${id}`}
+      id={`${data.name}`}
       label={data.brief}
       multiline
       fullWidth
@@ -199,7 +199,7 @@ export function DataFieldTextBox(props) {
         {data.brief}
       </InputLabel>
       <TextField
-        id={`${data.name}-${id}`}
+        id={`${data.name}`}
         multiline
         value={value}
         onChange={(e) => onChange({[data.name]: e.target.value})}
@@ -244,7 +244,7 @@ export function DataFieldNumber(props) {
         {data.brief}
       </InputLabel>
       <OutlinedInput
-        id={`${data.name}-${id}`}
+        id={`${data.name}`}
         value={value}
         onChange={handleChange}
         label={data.brief}
@@ -333,7 +333,7 @@ export function DataFieldNumberRange(props) {
         {data.brief}
       </InputLabel>
       <OutlinedInput
-        id={`${data.name}-${id}`}
+        id={`${data.name}`}
         value={parseValue(value)}
         onChange={handleChange}
         label={data.brief}
@@ -402,7 +402,7 @@ export function DataFieldDate(props) {
         locale={getLocale()}
       >
         <KeyboardDatePicker
-          id={`${data.name}-${id}`}
+          id={`${data.name}`}
           autoOk
           size="small"
           inputVariant="outlined"
@@ -442,7 +442,7 @@ export function DataFieldSwitch(props) {
       <FormControlLabel
         control={
           <Switch
-            id={`${data.name}-${id}`}
+            id={`${data.name}`}
             checked={Boolean(value)}
             onChange={handleChange}
             color="primary"
