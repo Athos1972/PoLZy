@@ -98,7 +98,7 @@ export function InputField(props) {
             <React.Fragment>
               {data.fieldDataType === "Zahl" && data.inputRange[0] === "range" ? (
                 <OutlinedInput
-                  id={`${data.name}-${id}`}
+                  id={`${data.name}`}
                   value={value}
                   onChange={(event) => onChange(data.name, data.fieldDataType, event.target.value)}
                   onBlur={handleBlur}
@@ -111,7 +111,7 @@ export function InputField(props) {
                 />
               ) : (
                 <Select
-                  id={`${data.name}-${id}`}
+                  id={`${data.name}`}
                   value={value}
                   onChange={(event) => onChange(data.name, data.fieldDataType, event.target.value)}
                   label={data.brief}
@@ -146,7 +146,7 @@ export function InputField(props) {
                   </MuiPickersUtilsProvider>
               ) : (
                 <OutlinedInput
-                  id={`${data.name}-${id}`}
+                  id={`${data.name}`}
                   value={value}
                   onChange={(event) => onChange(data.name, data.fieldDataType, event.target.value)}
                   label={data.brief}
