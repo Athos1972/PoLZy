@@ -183,7 +183,7 @@ export function DataFieldLongText(props) {
     />
   )
 }
-
+/*
 export function DataFieldTextBox(props) {
   const classes = useStyles()
   const {id, data, value, onChange } = props
@@ -209,7 +209,7 @@ export function DataFieldTextBox(props) {
     </FormControl>
   )
 }
-
+*/
 /*
 **  Number Input
 */

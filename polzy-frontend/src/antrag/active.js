@@ -542,7 +542,6 @@ function ActiveAntrag(props) {
       ...preValues,
       ...newValues,
     }))
-
   }
 
   const handleCalculateClick = () => {
