@@ -692,8 +692,8 @@ function ActiveAntrag(props) {
 
     const newActivity = antrag.possible_activities.filter(activity => activity.name === value)[0]
 
-    console.log('Selected Activity:')
-    console.log(newActivity)
+    //console.log('Selected Activity:')
+    //console.log(newActivity)
 
     // execute activity if doesn't require inputs
     if (

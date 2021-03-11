@@ -176,7 +176,7 @@ export function DataFieldLongText(props) {
       multiline
       fullWidth
       variant="outlined"
-      value={value}
+      value={value ? value : ""}
       onChange={(e) => onChange({[data.name]: e.target.value})}
       required={data.isMandatory}
       size="small"
@@ -872,6 +872,7 @@ export default function DataGroup(props) {
                     name={field.name}
                     title={field.brief}
                     data={parseJSONString(field.valueChosenOrEntered)}
+                    onDelete={props.onInputTrigger}
                   />
                 ))}
               </Grid>

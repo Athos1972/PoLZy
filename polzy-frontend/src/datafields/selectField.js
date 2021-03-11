@@ -140,7 +140,7 @@ function DataFieldSelect(props) {
 
   return (
     <Autocomplete
-      classes={{root: classes.inputField}}
+      classes={props.hideHelper ? {} : {root: classes.inputField}}
       id={`${data.name}`}
       value={Boolean(value) ? value : null}
       onChange={handleChange}

@@ -33,12 +33,10 @@ export const getValueList = async (user, payload) => {
   throw new Error(data.error)
 }
 
-// upload file
-export const uploadFiles = async (user, parent_id, fileType, file) => {
+// file handling
+export const uploadFiles = async (user, parentId, fileType, file) => {
   // build URI
-  console.log('File Upload API')
-  console.log(parent_id)
-  const uri = parent_id && fileType ? `/api/upload/${parent_id}/${fileType}` : '/api/upload'
+  const uri = parentId && fileType ? `/api/upload/${parentId}/${fileType}` : '/api/upload'
 
   // create form data with file
   const fileData = new FormData()
@@ -61,5 +59,67 @@ export const uploadFiles = async (user, parent_id, fileType, file) => {
   }
 
   throw new Error(data.error)
+}
 
+export const getFile = async (user, fileId) => {
+  // build URI
+  const uri = `/api/files/${fileId}`
+
+  // call api
+  const response = await fetch(uri, {
+    method: 'GET',
+    headers:{ 
+      'authorization': `Bearer ${user.accessToken}`,
+    },
+  })
+
+  const blob = await response.blob()
+  const src = await (window.URL ? window.URL : window.webkitURL).createObjectURL(blob)
+
+  if (response.ok) {
+    return src
+  }
+
+  throw new Error(response.statusText)
+}
+
+export const editFile = async (user, fileId, fileType) => {
+  // build URI
+  const uri = `/api/files/${fileId}`
+
+  // call api
+  const response = await fetch(uri, {
+    method: 'POST',
+    headers:{ 
+      'authorization': `Bearer ${user.accessToken}`,
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify({
+      fileType: fileType,
+    })
+  })
+
+  const blob = await response.blob()
+  const src = await (window.URL ? window.URL : window.webkitURL).createObjectURL(blob)
+
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+}
+
+export const deleteFile = async (user, fileId) => {
+  // build URI
+  const uri = `/api/files/${fileId}`
+
+  // call api
+  const response = await fetch(uri, {
+    method: 'DELETE',
+    headers:{ 
+      'authorization': `Bearer ${user.accessToken}`,
+    },
+  })
+
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  } 
 }

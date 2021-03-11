@@ -43,8 +43,8 @@ function FileUploadDialog(props) {
   }
 
   const handleTypeChange = (value) => {
-    console.log('File Type:')
-    console.log(value)
+    //console.log('File Type:')
+    //console.log(value)
     setFileType(value.fileType)
   }
 
