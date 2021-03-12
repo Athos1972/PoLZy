@@ -185,7 +185,6 @@ function ActiveAntrag(props) {
   const classes = useStyles()
 
   const cardRef = React.useRef()
-  const activityRef = React.useRef()
   const calcRef = React.useRef()
 
   const [isVisible, setIsVisible] = useState()
@@ -547,7 +546,6 @@ function ActiveAntrag(props) {
       ...preValues,
       ...newValues,
     }))
-
   }
 
   const handleCalculateClick = () => {
@@ -694,13 +692,13 @@ function ActiveAntrag(props) {
 
     const newActivity = antrag.possible_activities.filter(activity => activity.name === value)[0]
 
-    console.log('Selected Activity:')
-    console.log(newActivity)
+    //console.log('Selected Activity:')
+    //console.log(newActivity)
 
     // execute activity if doesn't require inputs
     if (
       (!newActivity.actions || newActivity.actions.length === 0) &&
-      (newActivity.fields.length === 0 && !("field_groups" in newActivity)) ||
+      (newActivity.fields.length === 0 && !("field_groups" in newActivity)) || 
       ("field_groups" in newActivity && newActivity.field_groups.length === 0)
     ) {
       executeActivity(newActivity)
@@ -726,8 +724,8 @@ function ActiveAntrag(props) {
   //***** BEBUG OUTPUT
   //console.log('Antrag Props:')
   //console.log(props)
-  console.log('Current Activity:')
-  console.log(currentActivity)
+  //console.log('Current Activity:')
+  //console.log(currentActivity)
   //console.log('Antrag Values:')
   //console.log(values)
   //console.log('Activity Values')
@@ -754,7 +752,7 @@ function ActiveAntrag(props) {
     //console.log(`1st card: ${props.index === 0}`)
     //console.log(props.scrollTop)
     //console.log(cardRect)
-
+    
     const openSpeedometer = (props.index === 0) ? (
       // 1st card
       cardRect.bottom > 0
@@ -793,7 +791,7 @@ function ActiveAntrag(props) {
       unmountOnExit
     >
       <CardActive ref={cardRef}>
-
+        
           <CardTop
             action={
               <React.Fragment>

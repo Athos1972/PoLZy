@@ -1,7 +1,7 @@
 from flask import jsonify, request, current_app, send_file
 from polzybackend.general import bp
 from polzybackend.utils.import_utils import all_stages
-from polzybackend import auth, models
+from polzybackend import auth, models, db
 from datetime import datetime
 import os
 from uuid import uuid4
@@ -82,14 +82,29 @@ def upload(parent_id=None, file_type=None):
         return jsonify({'error': 'File upload failed'}), 400
     
 
-@bp.route('/files/<string:file_id>')
-def open_file(file_id):
+@bp.route('/files/<string:file_id>', methods=['GET', 'POST', 'DELETE'])
+@auth.login_required
+def manage_file(file_id):
     # get file record
     file = models.File.query.get(file_id)
-    print(file)
     ext = file.filename.split('.')[-1]
     path_to_file = os.path.join(current_app.config['UPLOADS'], f'{file_id}.{ext}')
 
+    # edit file type
+    if request.method == 'POST':
+        payload = request.get_json()
+        file.type = payload.get('fileType')
+        db.session.commit()
+        return {}, 200
+
+    # delete file
+    if request.method == 'DELETE':
+        # delete file record
+        db.session.delete(file)
+        db.session.commit()
+        return {}, 200
+
+    # get file
     return send_file(
         path_to_file,
         attachment_filename=file.filename,

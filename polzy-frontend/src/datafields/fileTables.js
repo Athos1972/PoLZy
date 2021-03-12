@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import {
   Table,
   TableHead,
@@ -22,13 +23,18 @@ import {
   Button,
   Checkbox,
   Link,
+  Box,
 } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { useTranslation } from 'react-i18next'
 import { makeStyles } from '@material-ui/core/styles'
 import EmailIcon from '@material-ui/icons/Email'
 import PrintIcon from '@material-ui/icons/Print'
+import CheckCircleIcon from '@material-ui/icons/CheckCircle'
+import CancelIcon from '@material-ui/icons/Cancel'
+import DataFieldSelect from './selectField'
 import { apiHost } from '../utils'
+import { getFile, editFile, deleteFile } from '../api/general'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -45,10 +51,6 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(2),
   },
 
-  row: {
-    cursor: "pointer",
-  },
-
   filterMenu: {
     width: 300,
   },
@@ -57,6 +59,16 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
     width: "95%",
+  },
+}))
+
+const useRowStyles = makeStyles(theme => ({
+  row: {
+    cursor: "pointer",
+  },
+
+  editAction: {
+    padding: theme.spacing(1),
   },
 }))
 
@@ -94,12 +106,12 @@ const getSortedData = (data, orderBy, ascOrder) => {
       return 0
     })
 
-    console.log(sortedData)
+    //console.log(sortedData)
 
     return sortedData
   }
 
-export function DocumentTable(props) {
+function DocumentTableBase(props) {
 
   const classes = useStyles()
   const {t} = useTranslation('document', 'common')
@@ -157,12 +169,14 @@ export function DocumentTable(props) {
   }
 
   const handlePrint = () => {
-    console.log('Print Files:')
-    data.forEach(row => {
-      if (selected.includes(row.id)) {
-        console.log(row.link)
-        window.open(apiHost + row.link, "_blank")
-      }
+    //console.log('Print Files:')
+    selected.forEach(fileId => {
+      //console.log(fileId)
+      getFile(props.user, fileId).then(src => {
+        window.open(src, "_blank")
+      }).catch(error => {
+        console.log(error)
+      })
     })
   }
 
@@ -277,6 +291,131 @@ export function DocumentTable(props) {
 }
 
 
+function AttachmentRowBase(props) {
+  const classes = useRowStyles()
+  const {t} = useTranslation('common')
+
+  const [typeEdit, setTypeEdit] = React.useState(false)
+  const [fileType, setFileType] = React.useState(props.type)
+
+  const handleAction = (action) => {
+    //console.log(`Action: ${action}`)
+    //console.log(props)
+
+    switch (action) {
+      case "preview":
+        getFile(props.user, props.id).then(src => {
+          window.open(src, "_blank")
+        }).catch(error => {
+          console.log(error)
+        })
+        return
+      case "edit":
+        setTypeEdit(true)
+        return
+      case "delete":
+        deleteFile(props.user, props.id).then(() => {
+          props.onDelete()
+        }).catch(error => {
+          console.log(error)
+        })
+        return
+      default:
+        console.log(`WARNING: no logic for action: ${action}`)
+        return
+    }
+  }
+
+  const handleTypeChange = (value) => {
+    setFileType(value.fileType)
+  }
+
+  const handleCancelUpdate = () => {
+    setTypeEdit(false)
+  }
+
+  const handleUpdate = () => {
+    editFile(props.user, props.id, fileType).then(() => {
+      props.onDelete()
+    }).catch(error => {
+      console.log(error)
+    }).finally(() => {
+      setTypeEdit(false)
+    })
+  }
+
+  return (
+    <TableRow
+      className={classes.row}
+      hover
+    >
+      {props.headers.map(header => (
+        <TableCell key={header}>
+          {header === "type" && typeEdit ? (
+            <Box display="flex">
+              <Box flexGrow={1}>
+                <DataFieldSelect
+                  id={props.id}
+                  value={fileType}
+                  data={{
+                    name: 'fileType',
+                    brief: 'File Type',
+                    inputRange: ['async', 'fileType'],
+                  }}
+                  hideHelper
+                  onChange={handleTypeChange}
+                />
+              </Box>
+              <IconButton
+                className={classes.editAction}
+                onClick={handleUpdate}
+              >
+                <CheckCircleIcon color="primary" />
+              </IconButton>
+              <IconButton
+                className={classes.editAction}
+                onClick={handleCancelUpdate}
+              >
+                <CancelIcon color="secondary" />
+              </IconButton>
+            </Box>
+          ) : (
+            props[header]
+          )}
+        </TableCell>
+      ))}
+
+      {/* Actions Cell */}
+        <TableCell>
+          <Grid container spacing={1}>
+            {props.actions && props.actions.map((action) => (
+              <Grid item key={action}>
+                <Link
+                  component="button"
+                  variant="body2"
+                  onClick={() => handleAction(action)}
+                >
+                  {t(`common:${action}`)},
+                </Link>
+              </Grid>
+            ))}
+            <Grid item>
+              <Link
+                classes={{root: classes.actionLink}}
+                component="button"
+                variant="body2"
+                onClick={() => handleAction('preview')}
+              >
+                {t("common:preview")}
+              </Link>
+            </Grid>
+          </Grid>
+        </TableCell>
+    </TableRow>
+  )
+}
+
+
 export function AttachmentTable(props) {
 
   const classes = useStyles()
@@ -294,18 +433,6 @@ export function AttachmentTable(props) {
   const handleSort = (header) => (event) => {
     setOrder(getComparator(order, header === orderBy))
     setOrderBy(header)
-  }
-
-  const handleAction = (action, row) => {
-    switch (action) {
-      case "preview":
-        window.open(apiHost + row.link, "_blank")
-        return
-      default:
-        console.log(`Action: ${action}`)
-        console.log(row)
-        return
-    }
   }
 
   return (
@@ -353,44 +480,12 @@ export function AttachmentTable(props) {
         </TableHead>
         <TableBody>
           {getSortedData(props.data, orderBy, order === 'asc').map((row) => (
-            <TableRow
+            <AttachmentRow
+              {...row}
               key={row.id}
-              className={classes.row}
-              hover
-            >
-              {tableHeaders.map(header => (
-                <TableCell key={`${header}-${row.id}`}>
-                  {row[header]}
-                </TableCell>
-              ))}
-
-              {/* Actions Cell */}
-                <TableCell>
-                  <Grid container spacing={1}>
-                    {row.actions && row.actions.map((action) => (
-                      <Grid item key={action}>
-                        <Link
-                          component="button"
-                          variant="body2"
-                          onClick={() => handleAction(action, row)}
-                        >
-                          {t(`common:${action}`)},
-                        </Link>
-                      </Grid>
-                    ))}
-                    <Grid item>
-                      <Link
-                        classes={{root: classes.actionLink}}
-                        component="button"
-                        variant="body2"
-                        onClick={() => handleAction('preview', row)}
-                      >
-                        {t("common:preview")}
-                      </Link>
-                    </Grid>
-                  </Grid>
-                </TableCell>
-            </TableRow>
+              headers={tableHeaders}
+              onDelete={props.onDelete}
+            />
           ))}
         </TableBody>
       </Table>
@@ -409,3 +504,11 @@ export function AttachmentTable(props) {
     </Paper>
   )
 }
+
+// connect to redux store
+const mapStateToProps = (state) => ({
+  user: state.user,
+})
+
+const AttachmentRow = connect(mapStateToProps)(AttachmentRowBase)
+export const DocumentTable = connect(mapStateToProps)(DocumentTableBase)
