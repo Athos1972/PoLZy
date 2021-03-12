@@ -721,6 +721,29 @@ function ActiveAntrag(props) {
     props.closeAntrag(props.index)
   }
 
+  const isActivityOpen = (activityType=null) => {
+    if (!currentActivity) {
+      return false
+    }
+
+    const groupsExist = ("field_groups" in currentActivity) && currentActivity.field_groups.length > 0
+    const fieldsExist = currentActivity.fields.filter(field => field.fieldType < 3).length > 0
+
+    //console.log(`isActivityOpen: ${activityType}`)
+    //console.log(`Groups: ${groupsExist}`)
+    //console.log(`Fields: ${fieldsExist}`)
+
+    switch (activityType) {
+      case "groups":
+        return groupsExist
+      case "fields":
+        return fieldsExist
+      default:
+        console.log(`Return: ${groupsExist || fieldsExist}`)
+        return groupsExist || fieldsExist
+    }
+  }
+
   //***** BEBUG OUTPUT
   //console.log('Antrag Props:')
   //console.log(props)
@@ -919,7 +942,7 @@ function ActiveAntrag(props) {
 
             {/* Activity Fields */}
             {/* Activity with Field Groups */}
-            {currentActivity !== null && ("field_groups" in currentActivity) && currentActivity.field_groups.length > 0 &&
+            {isActivityOpen("groups") &&
               <React.Fragment>
                 {/* Input Group Switchers */}
                 <Grid container spacing={2}>
@@ -972,37 +995,11 @@ function ActiveAntrag(props) {
                       </Collapse>
                     ))}
                 </div>
-                <Grid
-                  className={classes.activityActionsContainer}
-                  container
-                  spacing={2}
-                  justify="flex-end"
-                >
-                  {currentActivity.postExecution === 'close' &&
-                  <Grid item>
-                    <Button 
-                      variant="contained"
-                      color="primary"
-                      onClick={(e) => closeActivity()}
-                    >
-                      {t('common:close')}
-                    </Button>
-                  </Grid>
-                  }
-                  <Grid item>
-                    <ProgressButton
-                      title={t('common:execute')}
-                      loading={isExecuting}
-                      disabled={!validateFields(false)}
-                      onClick={(e) => executeActivity()}
-                    />
-                  </Grid>
-                </Grid>
               </React.Fragment>
             }
 
             {/* Activity without Groups */}
-            {currentActivity !== null && currentActivity.fields.filter(field => field.fieldType < 3).length > 0 &&
+            {isActivityOpen("fields") &&
               <Grid container>
 
                 {/* Input Fields */}
@@ -1016,54 +1013,46 @@ function ActiveAntrag(props) {
                     onChange={handleActivityDataChanged}
                     onInputTrigger={handleActivityInputTrigger}
                     companyTypes={getFieldByName(currentActivity, "firmenArten")}
-                    actions={null/*
-                      <div className={classes.flexContainerRight} >
-                        <ProgressButton
-                          title={currentActivity.postExecution === "close" ? t('common:close') : t('common:execute')}
-                          loading={isExecuting}
-                          disabled={!validateFields(false)}
-                          onClick={(e) => executeActivity()}
-                        />
-                      </div>
-                    */}
                     backgroundColor={currentActivity.backgroundColor}
                     subtitles={currentActivity.subtitles}
                   />
                 </Grid>
+              </Grid>
+            }
 
-                {/* Actions */}
-                <Grid
-                  className={classes.activityActionsContainer}
-                  item
-                  xs={12}
-                  container
-                  spacing={2}
-                  justify="flex-end"
-                >
-                  {currentActivity.actions.lenght === 0 ? (
-                    <Grid item>
-                      <ProgressButton
-                        title={t('common:execute')}
-                        loading={isExecuting}
-                        disabled={!validateFields(false)}
-                        onClick={(e) => executeActivity()}
-                      />
-                    </Grid>
-                  ) : (
-                    <React.Fragment>
-                      {currentActivity.actions.map((action, index) => (
-                        <Grid key={index} item>
-                          <ProgressButton
-                            title={action.caption}
-                            loading={isExecuting}
-                            disabled={!validateFields(false)}
-                            onClick={(e) => executeActivity(action.name)}
-                          />
-                        </Grid>
-                      ))}
-                    </React.Fragment>
-                  )}
-                </Grid>
+            {/* Activity Actions */}
+            {isActivityOpen() &&
+              <Grid
+                className={classes.activityActionsContainer}
+                item
+                xs={12}
+                container
+                spacing={2}
+                justify="flex-end"
+              >
+                {!currentActivity.actions || !currentActivity.actions.length ? (
+                  <Grid item>
+                    <ProgressButton
+                      title={t('common:execute')}
+                      loading={isExecuting}
+                      disabled={!validateFields(false)}
+                      onClick={(e) => executeActivity()}
+                    />
+                  </Grid>
+                ) : (
+                  <React.Fragment>
+                    {currentActivity.actions.map((action, index) => (
+                      <Grid key={index} item>
+                        <ProgressButton
+                          title={action.caption}
+                          loading={isExecuting}
+                          disabled={!validateFields(false)}
+                          onClick={(e) => executeActivity(action.name)}
+                        />
+                      </Grid>
+                    ))}
+                  </React.Fragment>
+                )}
               </Grid>
             }
 
