@@ -1002,7 +1002,7 @@ function ActiveAntrag(props) {
             }
 
             {/* Activity without Groups */}
-            {currentActivity !== null && //currentActivity.fields.filter(field => field.fieldType < 3).length > 0 &&
+            {currentActivity !== null && currentActivity.fields.filter(field => field.fieldType < 3).length > 0 &&
               <Grid container>
 
                 {/* Input Fields */}

@@ -246,7 +246,7 @@ export function DataFieldNumber(props) {
       </InputLabel>
       <OutlinedInput
         id={`${data.name}`}
-        value={value}
+        value={value ? value : ""}
         onChange={handleChange}
         label={data.brief}
       />
