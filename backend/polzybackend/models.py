@@ -879,7 +879,7 @@ class ToastNotifications(db.Model):
     user_id = db.Column(db.String(56), db.ForeignKey('users.id'), primary_key=True)
     message = db.Column(db.String(128), nullable=False)
     type = db.Column(db.String(16), default="default", nullable=False)
-    duration = db.Column(db.Integer, default=3000, nullable=False)
+    duration = db.Column(db.Integer, nullable=True)
     horizontal = db.Column(db.String(16), default="left", nullable=False)
     vertical = db.Column(db.String(16), default="top", nullable=False)
     created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
