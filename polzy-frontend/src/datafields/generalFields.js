@@ -807,7 +807,11 @@ export default function DataGroup(props) {
                         <TableRow hover>
                           <TableCell>{field.brief}</TableCell>
                           <TableCell>
-                            {field.valueChosenOrEntered}
+                            {field.valueChosenOrEntered.split("\n").map((line, index) => (
+                              <div key={index}>
+                                {line}
+                              </div>
+                            ))}
                           </TableCell>
                         </TableRow>
                       }
