@@ -881,11 +881,14 @@ class ToastNotifications(db.Model):
     user_id = db.Column(db.String(56), db.ForeignKey('users.id'), primary_key=True)
     message = db.Column(db.String(128), nullable=False)
     type = db.Column(db.String(16), default="default", nullable=False)
+    duration = db.Column(db.Integer, default=3000, nullable=False)
+    horizontal = db.Column(db.String(16), default="left", nullable=False)
+    vertical = db.Column(db.String(16), default="top", nullable=False)
     created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     seen_at = db.Column(db.DateTime)
 
     @classmethod
-    def new(cls, message, type="default", company_ids=None, user_ids=None):
+    def new(cls, message, type="default", duration=3000, horizontal="left", vertical="top", company_ids=None, user_ids=None):
         companies = []
         if company_ids:
             if isinstance(company_ids, list):
@@ -920,7 +923,11 @@ class ToastNotifications(db.Model):
                     else:
                         print(f"User id {user_ids} is not correct. Please recheck.")
             for user_id in users:
-                instance = cls(company_id=company_id, user_id=user_id, message=message, type=type)
+                if type == "badge":
+                    instance = cls(company_id=company_id, user_id=user_id, message=message, type=type)
+                else:
+                    instance = cls(company_id=company_id, user_id=user_id, message=message, type=type,
+                                   duration=duration, horizontal=horizontal, vertical=vertical)
                 db.session.add(instance)
         db.session.commit()
 
