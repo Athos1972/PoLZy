@@ -27,8 +27,10 @@
     "name": "Name",
     "new": "New",
     "none": "None",
+    "print": "Print",
     "remove": "Remove",
     "search": "Search",
+    "send": "Send",
     "submit": "Submit",
     "upload": "Upload File",
     "upload.text": "Click or Drag and Drop File Here",
@@ -144,5 +146,20 @@
     "fair": "Fair",
     "good": "Good",
     "great": "Great"
+  },
+
+  "document": {
+    "name": "Document Name",
+    "signed": "Signed",
+    "created": "Generated",
+    "empty": "The Documents will be listed here"
+  },
+
+  "attachment": {
+    "actions": "Actions",
+    "name": "File Name",
+    "type": "Document Type",
+    "created": "Added",
+    "empty": "The Attachments will be listed here"
   }
 }

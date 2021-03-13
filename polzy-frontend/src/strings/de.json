@@ -27,8 +27,10 @@
     "name": "Name",
     "new": "Neu",
     "none": "Keine",
+    "print": "Drucken",
     "remove": "Entfernen",
     "search": "Suchen",
+    "send": "Versenden",
     "submit": "Submit",
     "upload": "Dateiupload",
     "upload.text": "Click oder Datei hier her ziehen",
@@ -144,5 +146,20 @@
     "fair": "OK",
     "good": "Gut!",
     "great": "Perfekt!"
+  },
+
+    "document": {
+    "name": "Dokumentenname",
+    "signed": "Elektr.Unterschrieben",
+    "created": "Erzeugt am",
+    "empty": "Dokumente werden hier angezeigt"
+  },
+
+  "attachment": {
+    "actions": "Actions",
+    "name": "File Name",
+    "type": "Document Type",
+    "created": "Added",
+    "empty": "The Attachments will be listed here"
   }
 }

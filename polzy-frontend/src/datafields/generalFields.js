@@ -30,6 +30,7 @@ import SearchField from './searchField'
 import EnhancedTable from './enhancedTable'
 import DataFieldSelect from './selectField'
 import MappedImage from './mappedImage'
+import { DocumentTable, AttachmentTable } from './fileTables'
 import { LinearChart } from './charts'
 import ExpandButton from '../components/expandButton'
 import { getLocaleDateFormat, backendDateFormat } from '../dateFormat'
@@ -175,14 +176,14 @@ export function DataFieldLongText(props) {
       multiline
       fullWidth
       variant="outlined"
-      value={value}
+      value={value ? value : ""}
       onChange={(e) => onChange({[data.name]: e.target.value})}
       required={data.isMandatory}
       size="small"
     />
   )
 }
-
+/*
 export function DataFieldTextBox(props) {
   const classes = useStyles()
   const {id, data, value, onChange } = props
@@ -208,7 +209,7 @@ export function DataFieldTextBox(props) {
     </FormControl>
   )
 }
-
+*/
 /*
 **  Number Input
 */
@@ -245,7 +246,7 @@ export function DataFieldNumber(props) {
       </InputLabel>
       <OutlinedInput
         id={`${data.name}`}
-        value={value}
+        value={value ? value : ""}
         onChange={handleChange}
         label={data.brief}
       />
@@ -511,7 +512,7 @@ export function DataField(props) {
 ** Input Group
 */
 export default function DataGroup(props) {
-  const {title, fields, values, actions, ...commonProps} = props
+  const {title, fields, values, ...commonProps} = props
   const classes = useStyles({backgroundColor: props.backgroundColor})
 
   const [expanded, setExpanded] = React.useState(true)
@@ -847,10 +848,40 @@ export default function DataGroup(props) {
               ))}
             </Grid>
 
+          {/* Document Fields */}
+            <Grid item container spacing={2}> 
+              <Grid item xs={12}>
+                {fields.filter((field) => (
+                  field.subsection === subtitle && field.fieldType === 2 && field.fieldDataType === "Documents"
+                )).map((field) => (
+                  <DocumentTable
+                    key={field.name}
+                    name={field.name}
+                    title={field.brief}
+                    data={parseJSONString(field.valueChosenOrEntered)}
+                  />
+                ))}
+              </Grid>
+
+              <Grid item xs={12}>
+                {fields.filter((field) => (
+                  field.subsection === subtitle && field.fieldType === 2 && field.fieldDataType === "Attachments"
+                )).map((field) => (
+                  <AttachmentTable
+                    key={field.name}
+                    name={field.name}
+                    title={field.brief}
+                    data={parseJSONString(field.valueChosenOrEntered)}
+                    onDelete={props.onInputTrigger}
+                  />
+                ))}
+              </Grid>
+            </Grid>
+
           </Grid>
         ))}
 
-        {actions}
+        {/*actions*/}
       </Collapse>
     </Paper>
   )

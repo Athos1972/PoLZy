@@ -358,7 +358,8 @@ class File(db.Model):
     company_id = db.Column(db.String(56), db.ForeignKey('companies.id'), nullable=False)
     processed = db.Column(db.Boolean, nullable=True, default=False)
     status_ok = db.Column(db.Boolean, nullable=True, default=False)
-    details = db.Column(db.String(256), nullable=True, default="{}")
+    type = db.Column(db.String(56), nullable=False, server_default="document")
+    details = db.Column(db.String(1024), nullable=True, default="{}")
     parent_id = db.Column(db.String(56), nullable=True)
 
     # relationships
@@ -366,7 +367,7 @@ class File(db.Model):
     company = db.relationship('Company', backref='files', foreign_keys=[company_id])
 
     @classmethod
-    def new(cls, user, filename, id, parent_id=None):
+    def new(cls, user, filename, id, parent_id=None, file_type=None):
         # 
         # create new instance of File
         #
@@ -377,6 +378,7 @@ class File(db.Model):
             user_id=user.id,
             company_id=user.company_id,
             parent_id=parent_id,
+            type=file_type,
         )
 
         db.session.add(instance)
@@ -424,7 +426,7 @@ class AntragActivityRecords(db.Model):
     def new(cls, antrag):
         json_data = {}
         for activities in antrag.Aktivitaeten:
-            json_data[activities.__class__.__name__] = activities.toJson()
+            json_data[activities.__class__.__name__] = activities.toJsonForPersistence()
 
         instance = cls(
             antrag_id=str(antrag.id),
@@ -879,11 +881,14 @@ class ToastNotifications(db.Model):
     user_id = db.Column(db.String(56), db.ForeignKey('users.id'), primary_key=True)
     message = db.Column(db.String(128), nullable=False)
     type = db.Column(db.String(16), default="default", nullable=False)
+    duration = db.Column(db.Integer, nullable=True)
+    horizontal = db.Column(db.String(16), default="left", nullable=False)
+    vertical = db.Column(db.String(16), default="top", nullable=False)
     created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     seen_at = db.Column(db.DateTime)
 
     @classmethod
-    def new(cls, message, type="default", company_ids=None, user_ids=None):
+    def new(cls, message, type="default", duration=3000, horizontal="left", vertical="top", company_ids=None, user_ids=None):
         companies = []
         if company_ids:
             if isinstance(company_ids, list):
@@ -918,7 +923,11 @@ class ToastNotifications(db.Model):
                     else:
                         print(f"User id {user_ids} is not correct. Please recheck.")
             for user_id in users:
-                instance = cls(company_id=company_id, user_id=user_id, message=message, type=type)
+                if type == "badge":
+                    instance = cls(company_id=company_id, user_id=user_id, message=message, type=type)
+                else:
+                    instance = cls(company_id=company_id, user_id=user_id, message=message, type=type,
+                                   duration=duration, horizontal=horizontal, vertical=vertical)
                 db.session.add(instance)
         db.session.commit()
 

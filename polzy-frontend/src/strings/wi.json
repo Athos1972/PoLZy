@@ -27,8 +27,10 @@
     "name": "Nauman",
     "new": "Neich",
     "none": "nix",
+    "print": "Druckn",
     "remove": "Weg damit",
     "search": "Suachn",
+    "send": "Schick'n",
     "submit": "Submit",
     "upload": "Datei aufilodn",
     "upload.text": "Klickst Du oder schiab de Datei do hea",
@@ -144,5 +146,20 @@
     "fair": "OK",
     "good": "Guad",
     "great": "Subba!"
+  },
+
+    "document": {
+    "name": "Zedl Nauman",
+    "signed": "Untaschribn",
+    "created": "Gmocht am",
+    "empty": "Do is no nix"
+  },
+
+  "attachment": {
+    "actions": "Actions",
+    "name": "File Name",
+    "type": "Document Type",
+    "created": "Added",
+    "empty": "The Attachments will be listed here"
   }
 }

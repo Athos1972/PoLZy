@@ -44,11 +44,11 @@ def notifications():
         else:
             msg = json.dumps({
                 'text': toast.message,
-                'autoHideDuration': 3000,
+                'autoHideDuration': toast.duration,
                 'variant': toast.type,
                 'anchorOrigin': {
-                    'horizontal': 'left',
-                    'vertical': 'bottom',
+                    'horizontal': toast.horizontal,
+                    'vertical': toast.vertical,
                 }
             })
             messenger.announce(f'data: {msg}\n\n')
