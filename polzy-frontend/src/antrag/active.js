@@ -35,6 +35,8 @@ import { executeAntrag, cloneAntrag, updateAntragFields, setCustomTag } from '..
 import { ActivityIcon } from '../components/icons'
 import Speedometer, { speedometerSize } from '../components/speedometer'
 import { validateIBAN } from '../utils'
+import { getResource } from '../api/general'
+
 // test imports
 import {BrokeCard} from '../debug/damageCard'
 
@@ -603,6 +605,9 @@ function ActiveAntrag(props) {
       setOpenUploadDialog(true)
       return
     }
+
+    //console.log('Execute Activity:')
+    //console.log(activity)
     
     // switch calculate mode
     setExecute(true)
@@ -623,7 +628,12 @@ function ActiveAntrag(props) {
       // post define behavior
       switch (activity.postExecution) {
         case 'link':
-          window.open(data.link, "_blank")
+          getResource(props.user, data.link).then(src => {
+            window.open(src, "_blank")
+          }).catch(error => {
+            console.log(error)
+          })
+          //window.open(data.link, "_blank")
           break
         case 'close':
           break
@@ -701,7 +711,7 @@ function ActiveAntrag(props) {
       (newActivity.fields.length === 0 && !("field_groups" in newActivity)) || 
       ("field_groups" in newActivity && newActivity.field_groups.length === 0)
     ) {
-      executeActivity(newActivity)
+      executeActivity('run', newActivity)
       return
     }
     getActivityValues(newActivity)
@@ -739,7 +749,7 @@ function ActiveAntrag(props) {
       case "fields":
         return fieldsExist
       default:
-        console.log(`Return: ${groupsExist || fieldsExist}`)
+        //console.log(`Return: ${groupsExist || fieldsExist}`)
         return groupsExist || fieldsExist
     }
   }

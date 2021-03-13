@@ -82,7 +82,7 @@ def upload(parent_id=None, file_type=None):
         return jsonify({'error': 'File upload failed'}), 400
     
 
-@bp.route('/files/<string:file_id>', methods=['GET', 'POST', 'DELETE'])
+@bp.route('/documents/<string:file_id>', methods=['GET', 'POST', 'DELETE'])
 @auth.login_required
 def manage_file(file_id):
     # get file record

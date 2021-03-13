@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_httpauth import HTTPTokenAuth
+from flask_cors import CORS
 import os
 from polzybackend.messenger import Messenger
 import flask_monitoringdashboard as dashboard
@@ -10,6 +11,7 @@ import flask_monitoringdashboard as dashboard
 # initialization
 db = SQLAlchemy()
 migrate = Migrate()
+cors = CORS()
 auth = HTTPTokenAuth(scheme='Bearer')
 messenger = Messenger()
 
@@ -33,6 +35,7 @@ def create_app(config=None):
 
     db.init_app(app)
     migrate.init_app(app, db)
+    cors.init_app(app)
 
     # register blueprints
     from polzybackend.authenticate import bp as bp_auth

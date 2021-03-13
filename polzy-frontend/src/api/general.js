@@ -47,7 +47,6 @@ export const uploadFiles = async (user, parentId, fileType, file) => {
     method: 'POST',
     headers:{ 
       'authorization': `Bearer ${user.accessToken}`,
-      //'content-type': 'multipart/form-data',
     },
     body: fileData,
   })
@@ -63,7 +62,7 @@ export const uploadFiles = async (user, parentId, fileType, file) => {
 
 export const getFile = async (user, fileId) => {
   // build URI
-  const uri = `/api/files/${fileId}`
+  const uri = `/api/documents/${fileId}`
 
   // call api
   const response = await fetch(uri, {
@@ -85,7 +84,7 @@ export const getFile = async (user, fileId) => {
 
 export const editFile = async (user, fileId, fileType) => {
   // build URI
-  const uri = `/api/files/${fileId}`
+  const uri = `/api/documents/${fileId}`
 
   // call api
   const response = await fetch(uri, {
@@ -109,7 +108,7 @@ export const editFile = async (user, fileId, fileType) => {
 
 export const deleteFile = async (user, fileId) => {
   // build URI
-  const uri = `/api/files/${fileId}`
+  const uri = `/api/documents/${fileId}`
 
   // call api
   const response = await fetch(uri, {
@@ -122,4 +121,23 @@ export const deleteFile = async (user, fileId) => {
   if (!response.ok) {
     throw new Error(response.statusText)
   } 
+}
+
+export const getResource = async (user, uri) => {
+  // call api
+  const response = await fetch(uri, {
+    method: 'GET',
+    headers:{ 
+      'authorization': `Bearer ${user.accessToken}`,
+    },
+  })
+
+  const blob = await response.blob()
+  const src = await (window.URL ? window.URL : window.webkitURL).createObjectURL(blob)
+
+  if (response.ok) {
+    return src
+  }
+
+  throw new Error(response.statusText)
 }
