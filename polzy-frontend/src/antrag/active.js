@@ -288,10 +288,13 @@ function ActiveAntrag(props) {
     // update activity values
     if (Boolean(currentActivity)) {
       const updatedActivity = antrag.possible_activities.filter(activity => activity.name === currentActivity.name)[0]
-      if (updatedActivity) {
-        setActivity(updatedActivity)
-        getActivityValues(updatedActivity)
+      if (!updatedActivity) {
+        setActivity(null)
+        return
       }
+
+      setActivity(updatedActivity)
+      getActivityValues(updatedActivity)
     }
   }, [antrag])
 
