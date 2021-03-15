@@ -366,18 +366,28 @@ function AttachmentRowBase(props) {
                   onChange={handleTypeChange}
                 />
               </Box>
-              <IconButton
-                className={classes.editAction}
-                onClick={handleUpdate}
-              >
-                <CheckCircleIcon color="primary" />
-              </IconButton>
-              <IconButton
-                className={classes.editAction}
-                onClick={handleCancelUpdate}
-              >
-                <CancelIcon color="secondary" />
-              </IconButton>
+
+              {/* Edit Actions */}
+              <Tooltip title={t("common:accept")}>
+                <div>
+                  <IconButton
+                    className={classes.editAction}
+                    onClick={handleUpdate}
+                  >
+                    <CheckCircleIcon color="primary" />
+                  </IconButton>
+                </div>
+              </Tooltip>
+              <Tooltip title={t("common:cancel")}>
+                <div>
+                  <IconButton
+                    className={classes.editAction}
+                    onClick={handleCancelUpdate}
+                  >
+                    <CancelIcon color="secondary" />
+                  </IconButton>
+                </div>
+              </Tooltip>
             </Box>
           ) : (
             props[header]

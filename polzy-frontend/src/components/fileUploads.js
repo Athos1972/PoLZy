@@ -28,7 +28,7 @@ const useStyles = makeStyles({
 
 
 function FileUploadDialog(props) {
-  const {t} = useTranslation('common')
+  const {t} = useTranslation('common', 'attachment')
   const classes = useStyles()
 
   const [file, setFile] = React.useState()
@@ -112,7 +112,7 @@ function FileUploadDialog(props) {
                 value={fileType}
                 data={{
                   name: 'fileType',
-                  brief: 'File Type',
+                  brief: t('attachment:type'),
                   inputRange: ['async', 'fileType'],
                   isMandatory: true,
                 }}

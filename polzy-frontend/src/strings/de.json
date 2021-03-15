@@ -10,6 +10,7 @@
   },
 
   "common": {
+    "accept": "Akzeptieren",
     "action": "Aktivität",
     "cancel": "Abbrechen",
     "close": "Schließen",
@@ -17,6 +18,7 @@
     "confirm": "Bestätigen",
     "copy": "Kopieren",
     "create": "Anlegen",
+    "delete": "Löschen",
     "edit": "Ändern",
     "email": "E-mail",
     "execute": "Ausführen",
@@ -27,6 +29,7 @@
     "name": "Name",
     "new": "Neu",
     "none": "Keine",
+    "preview": "Seitenansicht",
     "print": "Drucken",
     "remove": "Entfernen",
     "search": "Suchen",
