@@ -176,14 +176,14 @@ class User(db.Model):
 
         # check if company should be fetched
         if company is None:
-            company = Company.query.get(company_id)
+            company = db.session.query(Company).filter_by(id=company_id).first()
         
         # check if company exists
         if company is None:
             raise Exception('Company not found')
 
         # get UserToCompany instance
-        user_company = UserToCompany.query.filter(and_(
+        user_company = db.session.query(UserToCompany).filter(and_(
             UserToCompany.user_id == self.id,
             UserToCompany.company_id == company.id,
         )).first()
