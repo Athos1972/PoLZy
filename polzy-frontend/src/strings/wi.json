@@ -10,6 +10,7 @@
   },
 
   "common": {
+    "accept": "Is ok",
     "action": "Wos moch ma?",
     "cancel": "O´brechn",
     "close": "Weg damit",
@@ -17,6 +18,7 @@
     "confirm": "Jo, isso!",
     "copy": "Kopiern",
     "create": "Neich",
+    "delete": "Weg damit",
     "edit": "Ändan",
     "email": "I-Mehl",
     "execute": "Mochn",
@@ -27,6 +29,7 @@
     "name": "Nauman",
     "new": "Neich",
     "none": "nix",
+    "preview": "Au'schaun",
     "print": "Druckn",
     "remove": "Weg damit",
     "search": "Suachn",
