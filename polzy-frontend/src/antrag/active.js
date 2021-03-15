@@ -1130,7 +1130,7 @@ function ActiveAntrag(props) {
         parentId={antrag.id}
         open={openUploadDialog}
         onClose={() => setOpenUploadDialog(false)}
-        onUpload={() => updateAntrag()}
+        onUpload={() => handleActivityInputTrigger()}
         withFileType
       />
     </React.Fragment>
