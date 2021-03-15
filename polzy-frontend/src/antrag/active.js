@@ -777,7 +777,7 @@ function ActiveAntrag(props) {
   /*
   ** Speedometer
   */
-  React.useEffect(() => {    
+  React.useEffect(() => {
     if (!antrag.speedometerValue || !cardRef.current || window.innerWidth < 600) {
       setOpenSpeedometer(false)
       return
@@ -1103,7 +1103,7 @@ function ActiveAntrag(props) {
     </Collapse>
 
     {/* Speedometer */}
-      {openSpeedometer && expanded &&
+      {openSpeedometer && expanded && antrag.speedometerValue &&
         <Fade in={openSpeedometer && expanded}>
           <div
             style={{
