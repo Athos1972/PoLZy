@@ -87,7 +87,10 @@ def upload(parent_id=None, file_type=None):
 def manage_file(file_id):
     # get file record
     file = models.File.query.get(file_id)
-    ext = file.filename.split('.')[-1]
+    try:
+        ext = file.filename.split('.')[-1]
+    except AttributeError:
+        ext = ""
     path_to_file = os.path.join(current_app.config['UPLOADS'], f'{file_id}.{ext}')
 
     # edit file type
@@ -100,8 +103,11 @@ def manage_file(file_id):
     # delete file
     if request.method == 'DELETE':
         # delete file record
-        db.session.delete(file)
-        db.session.commit()
+        try:
+            db.session.delete(file)
+            db.session.commit()
+        except UnmappedInstanceError as e:
+            current_app.logger.critical(f"File {file} ")
         return {}, 200
 
     # get file
