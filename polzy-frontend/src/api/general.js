@@ -98,8 +98,8 @@ export const editFile = async (user, fileId, fileType) => {
     })
   })
 
-  const blob = await response.blob()
-  const src = await (window.URL ? window.URL : window.webkitURL).createObjectURL(blob)
+  //const blob = await response.blob()
+  //const src = await (window.URL ? window.URL : window.webkitURL).createObjectURL(blob)
 
   if (!response.ok) {
     throw new Error(response.statusText)
@@ -140,4 +140,25 @@ export const getResource = async (user, uri) => {
   }
 
   throw new Error(response.statusText)
+}
+
+export const getDocuments = async (user, payload) => {
+  // call api
+  const response = await fetch('/api/remotedocuments', {
+    method: 'POST',
+    headers:{ 
+      'authorization': `Bearer ${user.accessToken}`,
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify(payload)
+  })
+
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+
+  const blob = await response.blob()
+  const src = await (window.URL ? window.URL : window.webkitURL).createObjectURL(blob)
+
+  return src  
 }

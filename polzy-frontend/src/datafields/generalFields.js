@@ -860,6 +860,7 @@ export default function DataGroup(props) {
                 )).map((field) => (
                   <DocumentTable
                     key={field.name}
+                    parentId={props.id}
                     name={field.name}
                     title={field.brief}
                     data={parseJSONString(field.valueChosenOrEntered)}
