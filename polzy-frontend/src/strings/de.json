@@ -159,10 +159,10 @@
   },
 
   "attachment": {
-    "actions": "Actions",
-    "name": "File Name",
-    "type": "Document Type",
-    "created": "Added",
-    "empty": "The Attachments will be listed here"
+    "actions": "Aktionen",
+    "name": "Dateiname",
+    "type": "Dokumentenart",
+    "created": "Erstellt",
+    "empty": "Attachments werden hier gelistet, sobald verfügbar"
   }
 }

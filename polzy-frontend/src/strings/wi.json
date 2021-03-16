@@ -159,10 +159,10 @@
   },
 
   "attachment": {
-    "actions": "Actions",
-    "name": "File Name",
-    "type": "Document Type",
-    "created": "Added",
-    "empty": "The Attachments will be listed here"
+    "actions": "Tuan",
+    "name": "Dateinauman",
+    "type": "Wos is des",
+    "created": "Gmocht am",
+    "empty": "Do is no nix"
   }
 }
