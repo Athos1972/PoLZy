@@ -163,10 +163,6 @@ def getSearchStringFromRecords():
         'id': instance.antrag_id,
         'label': instance.get_label(),  # 'get_label' method should be adjusted to proper render results
     } for instance in found_antrags] if found_antrags else []
-    #results = [instance.to_dict() for instance in found_antrags] if found_antrags else []
-    #result = {"results": []}
-    #if results:
-    #    result = {"results": [instance.to_dict() for instance in results]}
 
     return jsonify(results), 200
 
@@ -174,10 +170,6 @@ def getSearchStringFromRecords():
 @bp.route('/antrag/records/<string:antrag_id>')#load', methods=['POST'])
 @auth.login_required
 def loadLatestRecords(antrag_id):
-    #data = request.get_json()
-    #result = AntragActivityRecords.getLatest(data.get("antrag_id") or data.get("id"))  # flexible to get from both ids
-    #class_ = import_class(current_app.config.get('DATACLASSES') + (f".{result.class_name}" * 2))
-    #instance = class_(auth.current_user(), result.sapClient)  # creating class instance of Antrag
 
     # get antrag record by id
     antrag_record = AntragActivityRecords.getLatest(antrag_id)
