@@ -4,7 +4,8 @@ from polzybackend.utils.auth_utils import generate_token, get_expired, is_superv
 from datetime import datetime, date
 from sqlalchemy import and_, or_
 from functools import reduce
-from uuid import UUID
+from ast import literal_eval
+import base64
 import json
 import os
 
@@ -431,6 +432,12 @@ class AntragActivityRecords(db.Model):
         json_data = {}
         for activities in antrag.Aktivitaeten:
             json_data[activities.__class__.__name__] = activities.toJsonForPersistence()
+            if activities.encrypt:  # if activity needs to be encrypt then encrypt it and replace
+                encrypted_dic = dict()
+                for key, value in json_data[activities.__class__.__name__].items():
+                    encrypted_dic[cls.encrypt(key)] = cls.encrypt(value)
+                encrypted_dic["encrypt"] = True  # used for identifying that this activity needs to be decrypt
+                json_data[activities.__class__.__name__] = encrypted_dic
 
         instance = cls(
             antrag_id=str(antrag.id),
@@ -448,6 +455,30 @@ class AntragActivityRecords(db.Model):
         db.session.add(instance)
         db.session.commit()
         return instance
+
+    @staticmethod
+    def encrypt(string):
+        key = os.getenv('SECRET_KEY', default='secret!key')
+        string = repr(string)  # converting all kind of object to string
+        encoded_chars = []
+        for i in range(len(string)):
+            key_c = key[i % len(key)]
+            encoded_c = chr(ord(string[i]) + ord(key_c) % 256)
+            encoded_chars.append(encoded_c)
+        encoded_string = "".join(encoded_chars)
+        return base64.urlsafe_b64encode(encoded_string.encode()).decode()
+
+    @staticmethod
+    def decrypt(string):
+        key = os.getenv('SECRET_KEY', default='secret!key')
+        decoded_string = base64.urlsafe_b64decode(string).decode()
+        decoded_chars = []
+        for i in range(len(decoded_string)):
+            key_c = key[i % len(key)]
+            decoded_c = chr(ord(decoded_string[i]) - ord(key_c) % 256)
+            decoded_chars.append(decoded_c)
+        decoded_string = "".join(decoded_chars)
+        return literal_eval(decoded_string)  # converting all string to their original state
 
     @classmethod
     def getSearchString(cls, user: User, searchString):
@@ -475,11 +506,28 @@ class AntragActivityRecords(db.Model):
                         instances[obj.antrag_id] = obj                      # stored then replace it with current object
         return list(instances.values())
 
-    @classmethod
-    def getLatest(cls, antrag_id):
-        instance = cls.query.filter_by(antrag_id=antrag_id).order_by(cls.timestamp.desc()).first()
+    @staticmethod
+    def getLatest(antrag_id):
+        instance = db.session.query(AntragActivityRecords).filter_by(antrag_id=antrag_id).order_by(
+            AntragActivityRecords.timestamp.desc()).first()
         if not instance:  # if no result from antrag_id then it might be record id. This is only for flexibility
-            instance = cls.query.filter_by(id=antrag_id).order_by(cls.timestamp.desc()).first()
+            instance = db.session.query(AntragActivityRecords).filter_by(id=antrag_id).order_by(
+                AntragActivityRecords.timestamp.desc()).first()
+        db.session.expunge(instance)  # detaching instance from session so changes in it won't conflict with session
+        instance.json_data = json.loads(instance.json_data)
+        instance.json_data_activities = json.loads(instance.json_data_activities)
+        decrypted_data = dict()
+        for key, value in instance.json_data_activities.items():
+            if value.get("encrypt"):  # if encrypt = True then this activity needs to be decrypted
+                decrypted_data[key] = {}
+                for ke, val in value.items():
+                    if ke == "encrypt":
+                        decrypted_data[key][ke] = val
+                        continue
+                    decrypted_data[key][AntragActivityRecords.decrypt(ke)] = AntragActivityRecords.decrypt(val)
+            else:
+                decrypted_data[key] = value
+        instance.json_data_activities = decrypted_data  # replaced instance's dict with decrypted one
         return instance
 
     def get_label(self):
