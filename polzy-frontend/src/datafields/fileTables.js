@@ -34,7 +34,7 @@ import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import CancelIcon from '@material-ui/icons/Cancel'
 import DataFieldSelect from './selectField'
 import { apiHost } from '../utils'
-import { getFile, editFile, deleteFile } from '../api/general'
+import { getFile, editFile, deleteFile, getDocuments } from '../api/general'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -169,6 +169,7 @@ function DocumentTableBase(props) {
   }
 
   const handlePrint = () => {
+    /*
     //console.log('Print Files:')
     selected.forEach(fileId => {
       //console.log(fileId)
@@ -178,9 +179,25 @@ function DocumentTableBase(props) {
         console.log(error)
       })
     })
+    */
+
+    // build payload
+    const payload = {
+      parentId: props.parentId,
+      documentsId: selected,
+      action: "get",
+    }
+
+    // get documents
+    getDocuments(props.user, payload).then(src => {
+      window.open(src, "_blank")
+    }).catch(error => {
+      console.log(error)
+    })
   }
 
-  //console.log(data)
+  //console.log('Document Table:')
+  //console.log(props)
 
   return (
     <Paper>

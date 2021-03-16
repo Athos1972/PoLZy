@@ -42,7 +42,7 @@ def values():
             # try antrags then
             instance = current_app.config['POLICIES'].get(data['instanceId'])
             if instance is None:
-                raise Exception(f'Instance of with id {data["instanceId"]} not found in PoLZy storage. Most probably app restarted.')
+                raise Exception(f'Instance with id {data["instanceId"]} not found in PoLZy storage. Most probably app restarted.')
 
         # get value list
         result = instance.getValueList(data.get('valueListName'))
@@ -87,7 +87,10 @@ def upload(parent_id=None, file_type=None):
 def manage_file(file_id):
     # get file record
     file = models.File.query.get(file_id)
-    ext = file.filename.split('.')[-1]
+    try:
+        ext = file.filename.split('.')[-1]
+    except AttributeError:
+        ext = ""
     path_to_file = os.path.join(current_app.config['UPLOADS'], f'{file_id}.{ext}')
 
     # edit file type
@@ -100,8 +103,11 @@ def manage_file(file_id):
     # delete file
     if request.method == 'DELETE':
         # delete file record
-        db.session.delete(file)
-        db.session.commit()
+        try:
+            db.session.delete(file)
+            db.session.commit()
+        except UnmappedInstanceError as e:
+            current_app.logger.critical(f"File {file} ")
         return {}, 200
 
     # get file
@@ -109,3 +115,33 @@ def manage_file(file_id):
         path_to_file,
         attachment_filename=file.filename,
     )
+
+
+@bp.route('/remotedocuments', methods=['POST'])
+@auth.login_required
+def remote_documents():
+    #
+    # returns link to a remote dokument or a ziped bunch of remote documents  
+    #
+
+    # get post data
+    data = request.get_json()
+
+    try:
+        # get parent instance from app store
+        # try policies first
+        instance = current_app.config['ANTRAGS'].get(data['parentId'])
+        if instance is None:
+            # try antrags then
+            instance = current_app.config['POLICIES'].get(data['parentId'])
+            if instance is None:
+                raise Exception(f'Instance with id {data["parentId"]} not found in PoLZy storage. Most probably app restarted.')
+
+        # get path
+        path_to_document = instance.getRemoteDocuments(data.get('documentsId'))
+        return send_file(path_to_document)
+
+    except Exception as e:
+        current_app.logger.exception(f'Faild to get remote documents for paylod {data}\n{e}')
+    
+    return jsonify({'error': f'Faild to get remote documents'}), 400

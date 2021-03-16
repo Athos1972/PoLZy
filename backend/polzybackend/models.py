@@ -391,7 +391,9 @@ class File(db.Model):
     def get_attachment(antrag_id):
         return db.session.query(File).filter(File.parent_id == antrag_id).all()
 
-    def set_processed(self, details={}):
+    def set_processed(self, details=None):
+        if not details:
+            details = {}
         self.processed = True
         self.status_ok = details.get("status_ok", True)
         if isinstance(details, dict):
