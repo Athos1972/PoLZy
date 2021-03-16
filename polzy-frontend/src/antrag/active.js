@@ -266,6 +266,7 @@ function ActiveAntrag(props) {
       setActivityGroups(newGroups)
       activityValues = {...getValues(activity)}
     } else {
+      setActivityGroups({})
       activityValues = {...activityValues, ...activity.fields.filter((field) => 
         (field.fieldDataType !== "Table")
       ).reduce((result, field) => ({
