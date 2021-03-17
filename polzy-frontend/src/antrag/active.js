@@ -268,12 +268,9 @@ function ActiveAntrag(props) {
     } else {
       setActivityGroups({})
       activityValues = {...activityValues, ...activity.fields.filter((field) => 
-        (field.fieldDataType !== "Table")
+        (field.fieldType !== 2)
       ).reduce((result, field) => ({
         ...result,
-        /*[field.name]: field.fieldDataType === "Flag" ? field.valueChosenOrEntered === "True" : (
-          field.valueChosenOrEntered === undefined || field.valueChosenOrEntered === "None" ? "" : field.valueChosenOrEntered
-        ),*/
         ...getFieldValue(field),
       }), {})}
     }
@@ -330,6 +327,66 @@ function ActiveAntrag(props) {
     return ""
   }
 
+  const validateFieldList = (fieldList, fieldValues) => {
+    for (const field of fieldList.filter(field => field.fieldType === 1)) {
+        
+      // mandatory fields
+      if (
+        field.isMandatory && 
+        (fieldValues[field.name] === "" || fieldValues[field.name] === null || fieldValues[field.name] === undefined)
+      ){
+        //console.log('Validation Fails: Mandatory')
+        //console.log(field)
+        //console.log(fieldValues[field.name])
+        return false
+      }
+        
+      // numeric values in range
+      if (
+        fieldValues[field.name] &&
+        field.fieldDataType === "Zahl" &&
+        field.inputRange &&
+        field.inputRange[0] === "range" &&
+        (fieldValues[field.name] < Number(field.inputRange[1]) || fieldValues[field.name] > Number(field.inputRange[2]))
+      ) {
+        return false
+      }
+
+      // select fields
+      if (fieldValues[field.name] && field.fieldDataType === "Text" && field.inputRange) {
+        const valueList = field.inputRange[0] === "async" ? props.valueLists[field.inputRange[1]] : field.inputRange
+        if (valueList && !valueList.includes(fieldValues[field.name])) {
+          //console.log('Validation failed: Select')
+          //console.log(field.name)
+          return false
+        }
+      }
+
+      // iban fields
+      if (
+        field.fieldDataType === "Text" &&
+        field.name.toLowerCase().includes('iban') &&
+        validateIBAN(fieldValues[field.name]) !== 1
+      ) {
+        //console.log('Validation failed: IBAN')
+        return false
+      }
+
+      // fields with options
+      if (field.relatedFields instanceof Array && field.relatedFields.length > 0 &&
+        (fieldValues[field.name] === true || fieldValues[field.name] === "True") &&
+        !validateFieldList(field.relatedFields, fieldValues)
+      ) {
+        //console.log('Validation fails: Field with options')
+        //console.log(field)
+        //console.log(fieldValues[field.name])
+        return false
+      }
+    }
+
+    return true
+  }
+
   const validateFields = (isAntrag=true) => {
     const instance = isAntrag ? antrag : currentActivity
     const instanceGroups = isAntrag ? groups : activityGroups
@@ -341,48 +398,12 @@ function ActiveAntrag(props) {
       [{name: 'fields'}]
     )
 
-    // checks if all mandatory fields are filled
+    // iterate fields for check
     for (const group of fieldGroups) {
-      for (const field of instance[group.name].filter(field => field.fieldType === 1)) {
-        
-        // mandatory fields
-        if (field.isMandatory && (instanceValues[field.name] === "" || instanceValues[field.name] === null)){
-          //console.log('Validation failed: Mandatory')
-          //console.log(field.name)
-          return false
-        }
-        
-        // numeric values in range
-        if (
-          instanceValues[field.name] &&
-          field.fieldDataType === "Zahl" &&
-          field.inputRange &&
-          field.inputRange[0] === "range" &&
-          (instanceValues[field.name] < Number(field.inputRange[1]) || instanceValues[field.name] > Number(field.inputRange[2]))
-        ) {
-          return false
-        }
-
-        // select fields
-        if (instanceValues[field.name] && field.fieldDataType === "Text" && field.inputRange) {
-          const valueList = field.inputRange[0] === "async" ? props.valueLists[field.inputRange[1]] : field.inputRange
-          if (valueList && !valueList.includes(instanceValues[field.name])) {
-            //console.log('Validation failed: Select')
-            //console.log(field.name)
-            return false
-          }
-        }
-
-        // iban fields
-        if (
-          field.fieldDataType === "Text" &&
-          field.name.toLowerCase().includes('iban') &&
-          validateIBAN(instanceValues[field.name]) !== 1
-        ) {
-          //console.log('Validation failed: IBAN')
-          return false
-        }
-
+      if (!validateFieldList(instance[group.name], instanceValues)) {
+          //console.log('Validation fails')
+          //console.log(group)
+        return false
       }
     }
     return true
