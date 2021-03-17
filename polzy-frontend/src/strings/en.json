@@ -28,6 +28,7 @@
     "na": "Not Available",
     "name": "Name",
     "new": "New",
+    "no": "No",
     "none": "None",
     "preview": "Preview",
     "print": "Print",
@@ -38,7 +39,8 @@
     "upload": "Upload File",
     "upload.text": "Click or Drag and Drop File Here",
     "value.range": "Value in range",
-    "wrong.value": "Wrong value"
+    "wrong.value": "Wrong value",
+    "yes": "Yes"
   },
 
   "admin": {

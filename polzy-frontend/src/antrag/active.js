@@ -271,9 +271,10 @@ function ActiveAntrag(props) {
         (field.fieldDataType !== "Table")
       ).reduce((result, field) => ({
         ...result,
-        [field.name]: field.fieldDataType === "Flag" ? field.valueChosenOrEntered === "True" : (
+        /*[field.name]: field.fieldDataType === "Flag" ? field.valueChosenOrEntered === "True" : (
           field.valueChosenOrEntered === undefined || field.valueChosenOrEntered === "None" ? "" : field.valueChosenOrEntered
-        ),
+        ),*/
+        ...getFieldValue(field),
       }), {})}
     }
 
