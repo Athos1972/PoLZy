@@ -54,7 +54,7 @@ def values():
 
 
 @bp.route('/upload', methods=['POST'])
-@bp.route('/upload/<string:parent_id>/<string:file_type>', methods=['POST'])
+@bp.route('/upload/<string:parent_id>/<path:file_type>', methods=['POST'])
 @auth.login_required
 def upload(parent_id=None, file_type=None):
     # get file

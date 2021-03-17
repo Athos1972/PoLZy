@@ -290,7 +290,7 @@ function ActiveAntrag(props) {
     if (Boolean(currentActivity)) {
       const updatedActivity = antrag.possible_activities.filter(activity => activity.name === currentActivity.name)[0]
       if (!updatedActivity) {
-        setActivity(null)
+        closeActivity()
         return
       }
 
@@ -598,12 +598,14 @@ function ActiveAntrag(props) {
 
   const closeActivity = () => {
     setActivity(null)
+    setActivityGroups({})
+    setActivityValues({})
   }
 
-  const executeActivity = (action='run', activity=currentActivity) => {
+  const executeActivity = (action='run', activity=currentActivity, withFields=true) => {
 
     if (action === 'close') {
-      setActivity(null)
+      closeActivity()
       return
     }
 
@@ -622,10 +624,13 @@ function ActiveAntrag(props) {
       id: antrag.id,
       tag: antrag.tag,
       activity: activity.name,
-      values: {
+    }
+
+    if (withFields) {
+      requestData.values = {
         ...activityGroups,
         ...activityValues,
-      },
+      }
     }
 
     // execute activity
@@ -658,7 +663,7 @@ function ActiveAntrag(props) {
         return
       }
 
-      setActivity(null)
+      closeActivity()
     })
   }
 
@@ -719,13 +724,16 @@ function ActiveAntrag(props) {
       (newActivity.fields.length === 0 && !("field_groups" in newActivity)) || 
       ("field_groups" in newActivity && newActivity.field_groups.length === 0)
     ) {
-      executeActivity('run', newActivity)
+      closeActivity()
+      executeActivity('run', newActivity, false)
       return
     }
-    getActivityValues(newActivity)
-
+    
     // update current activity
     setActivity(newActivity)
+
+    // update activity values
+    getActivityValues(newActivity)
 
   }
 
@@ -1006,7 +1014,7 @@ function ActiveAntrag(props) {
                           onInputTrigger={handleActivityInputTrigger}
                           onGlobalChange={handleDataChanged}
                           updateAntrag={updateAntrag}
-                          onCloseActivity={() => setActivity(null)}
+                          onCloseActivity={closeActivity}
                           backgroundColor={group.backgroundColor}
                           subtitles={group.subtitles}
                         />

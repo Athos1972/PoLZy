@@ -36,7 +36,7 @@ export const getValueList = async (user, payload) => {
 // file handling
 export const uploadFiles = async (user, parentId, fileType, file) => {
   // build URI
-  const uri = parentId && fileType ? `/api/upload/${parentId}/${fileType}` : '/api/upload'
+  const uri = parentId && fileType ? `/api/upload/${parentId}/${encodeURIComponent(fileType)}` : '/api/upload'
 
   // create form data with file
   const fileData = new FormData()
