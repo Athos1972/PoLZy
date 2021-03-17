@@ -1,12 +1,13 @@
 import React from 'react'
 import { 
   FormControl,
+  FormControlLabel,
+  FormLabel,
   FormHelperText,
   Tooltip,
   InputLabel,
   OutlinedInput,
   TextField,
-  FormControlLabel,
   Switch,
   Grid,
   Paper,
@@ -16,6 +17,8 @@ import {
   TableRow,
   TableCell,
   Collapse,
+  RadioGroup,
+  Radio,
 } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers'
@@ -439,26 +442,73 @@ export function DataFieldSwitch(props) {
   } 
 
   return (
-    
-      <FormControlLabel
-        control={
-          <Switch
-            id={`${data.name}`}
-            checked={Boolean(value)}
-            onChange={handleChange}
-            color="primary"
-          />
-        }
-        label={data.brief}
-      />
-
+    <FormControlLabel
+      control={
+        <Switch
+          id={`${data.name}`}
+          checked={Boolean(value)}
+          onChange={handleChange}
+          color="primary"
+        />
+      }
+      label={data.brief}
+    />
   )
 }
+
+
+/*
+** Flag with Radio Buttons
+*/
+export function DataFieldFlag(props) {
+  const {id, data, value } = props
+
+  const handleChange = (event) => {
+    const newValue = {[data.name]: event.target.value}
+    props.onChange(newValue)
+    
+    // update on input trigger
+    if (data.inputTriggers) {
+      props.onInputTrigger(newValue)
+    } 
+  } 
+
+  return (
+    <FormControl
+      component="fieldset"
+      required={data.isMandatory}
+    >
+      <FormLabel component="legend">
+        {data.brief}
+      </FormLabel>
+      <RadioGroup
+        row
+        value={value}
+        onChange={handleChange}
+      >
+        <FormControlLabel
+          value="True"
+          control={
+            <Radio />
+          }
+          label="Yes"
+        />
+        <FormControlLabel
+          value="False"
+          control={
+            <Radio />
+          }
+          label="No"
+        />
+      </RadioGroup>
+    </FormControl>
+  )
+}
+
 
 /*
 ** Field with Tooltip
 */
-
 export function TooltipField(props) {
 
   return(
@@ -650,7 +700,8 @@ export default function DataGroup(props) {
             >
               {fields.filter((field) => (
                 field.subsection === subtitle && field.fieldDataType !== "Flag" && field.fieldType === 1 && 
-                field.fieldDataType !== "SearchEndPoint" && field.fieldDataType !== "Table" && field.fieldDataType !== "FlagWithOptions"
+                field.fieldDataType !== "SearchEndPoint" && field.fieldDataType !== "Table" &&
+                field.fieldDataType !== "FlagWithOptions" && field.fieldDataType !== "RadioFlagWithOptions"
               )).map((field) => (
                 <Grid 
                   item
@@ -707,7 +758,8 @@ export default function DataGroup(props) {
               spacing={2}
             >
               {fields.filter((field) => (
-                field.subsection === subtitle && field.fieldDataType === "FlagWithOptions" && field.fieldType === 1
+                field.subsection === subtitle && field.fieldType === 1 &&
+                (field.fieldDataType === "FlagWithOptions" || field.fieldDataType === "RadioFlagWithOptions")
               )).map((field) => (
                 <React.Fragment key={field.name}>
                   <Grid 
@@ -718,18 +770,29 @@ export default function DataGroup(props) {
                       tooltip={field.tooltip}
                       content={
                         <div>
-                          <DataFieldSwitch 
-                            {...commonProps}
-                            data={field}
-                            value={values[field.name]}
-                          />
+                          {field.fieldDataType === "FlagWithOptions" ? (
+                            <DataFieldSwitch 
+                              {...commonProps}
+                              data={field}
+                              value={values[field.name]}
+                            />
+                          ) : (
+                            <DataFieldFlag
+                              {...commonProps}
+                              data={field}
+                              value={values[field.name]}
+                            />
+                          )}
                         </div>
                       }
                     />
                   </Grid>
                   <Grid item  xs={12}>
                     <Collapse
-                      in={Boolean(values[field.name])}
+                      in={
+                        (field.fieldDataType === "FlagWithOptions" && Boolean(values[field.name])) ||
+                        (field.fieldDataType === "RadioFlagWithOptions" && values[field.name] === "True")
+                      }
                       timeout="auto"
                       
                     >
