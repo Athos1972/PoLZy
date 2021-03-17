@@ -28,6 +28,7 @@
     "na": "Nicht verfügbar",
     "name": "Name",
     "new": "Neu",
+    "no": "Nein",
     "none": "Keine",
     "preview": "Seitenansicht",
     "print": "Drucken",
@@ -38,7 +39,8 @@
     "upload": "Dateiupload",
     "upload.text": "Click oder Datei hier her ziehen",
     "value.range": "Wertebereich",
-    "wrong.value": "Bitte erlaubten Wert auswählen/eingeben"
+    "wrong.value": "Bitte erlaubten Wert auswählen/eingeben",
+    "yes": "Ja"
   },
 
   "admin": {

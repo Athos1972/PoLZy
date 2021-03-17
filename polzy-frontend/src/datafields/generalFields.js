@@ -462,6 +462,7 @@ export function DataFieldSwitch(props) {
 */
 export function DataFieldFlag(props) {
   const {id, data, value } = props
+  const {t} = useTranslation('common')
 
   const handleChange = (event) => {
     const newValue = {[data.name]: event.target.value}
@@ -491,14 +492,14 @@ export function DataFieldFlag(props) {
           control={
             <Radio />
           }
-          label="Yes"
+          label={t("common:yes")}
         />
         <FormControlLabel
           value="False"
           control={
             <Radio />
           }
-          label="No"
+          label={t("common:no")}
         />
       </RadioGroup>
     </FormControl>
