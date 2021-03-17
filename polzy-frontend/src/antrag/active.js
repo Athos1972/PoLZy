@@ -1094,7 +1094,7 @@ function ActiveAntrag(props) {
                         <ProgressButton
                           title={action.caption}
                           loading={isExecuting}
-                          disabled={!validateFields(false)}
+                          disabled={action.name === 'close' ? false : !validateFields(false)}
                           onClick={(e) => executeActivity(action.name)}
                         />
                       </Grid>
