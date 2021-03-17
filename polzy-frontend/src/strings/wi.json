@@ -35,8 +35,6 @@
     "search": "Suachn",
     "send": "Schick'n",
     "submit": "Submit",
-    "upload": "Datei aufilodn",
-    "upload.text": "Klickst Du oder schiab de Datei do hea",
     "value.range": "Nur des darfst",
     "wrong.value": "Suach wos aus"
   },
@@ -164,5 +162,14 @@
     "type": "Wos is des",
     "created": "Gmocht am",
     "empty": "Do is no nix"
+  },
+
+  "upload": {
+    "alert.add": "File ${fileName} successfully added",
+    "alert.remove": "File ${fileName} removed",
+    "alert.success": "File ${fileName} successfully uploaded",
+    "dropzone": "Klickst Du oder schiab de Datei do hea",
+    "caption": "Datei aufilodn"
   }
+
 }

@@ -28,7 +28,7 @@ const useStyles = makeStyles({
 
 
 function FileUploadDialog(props) {
-  const {t} = useTranslation('common', 'attachment')
+  const {t} = useTranslation('upload', 'attachment', 'common')
   const classes = useStyles()
 
   const [file, setFile] = React.useState()
@@ -46,6 +46,10 @@ function FileUploadDialog(props) {
     //console.log('File Type:')
     //console.log(value)
     setFileType(value.fileType)
+  }
+
+  const getAlertMessage = (alertType, fileName=null) => {
+    return t(`upload:alert.${alertType}`).replace("${fileName}", fileName ? fileName : file.name)
   }
 
   // success toast: START
@@ -66,7 +70,7 @@ function FileUploadDialog(props) {
       //console.log('Upload: OK')
       //console.log(data)
       enqueueSnackbar(
-        "File successfully uploaded",
+        getAlertMessage("success"),
         {
           variant: 'success',
           anchorOrigin: {
@@ -100,8 +104,10 @@ function FileUploadDialog(props) {
             <DropzoneArea
               previewGridClasses={{container: classes.filePreviewArea}}
               filesLimit={1}
-              dropzoneText={t('common:upload.text')}
+              dropzoneText={t('upload:dropzone')}
               onChange={handleFileAdd}
+              getFileAddedMessage={(fileName) => getAlertMessage("add", fileName)}
+              getFileRemovedMessage={(fileName) => getAlertMessage("remove", fileName)}
             />
           </Grid>
 
@@ -131,7 +137,7 @@ function FileUploadDialog(props) {
           onClick={handleSubmit}
           disabled={!Boolean(file)}
         >
-          {t("common:upload")}
+          {t("upload:caption")}
         </Button>
       </DialogActions>
     </Dialog>
