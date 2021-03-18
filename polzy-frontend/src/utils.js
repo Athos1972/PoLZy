@@ -123,10 +123,10 @@ export const typingTimeoutWithInputTrigger = (props, value, isValid=true) => {
   return(
     setTimeout(() => {
       // check for input trigger and valid value
-      if (props.data.inputTriggers && isValid) {
+      if (props.onInputTrigger && props.data.inputTriggers && isValid) {
         // input trigger
         props.onInputTrigger({[props.data.name]: value})
-      } else {
+      } else if (props.onChange) {
         // update antrag value
         props.onChange({[props.data.name]: value})
       }

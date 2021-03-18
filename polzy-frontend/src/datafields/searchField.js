@@ -513,15 +513,15 @@ export default function SearchField(props) {
   const handleClearClick = () => {
     //console.log('CLEAR CLICKED')
     //console.log(props)
-    props.onChange({[data.name]: null})
+    props.onChange({[data.name]: ''})
   }
 
   const getPartnerLabel = () => {
     return Object.keys()
   }
 
-  //console.log(`Search Field '${data.name}' props:`)
-  //console.log(props)
+  console.log(`Search Field '${data.name}' value:`)
+  console.log(value)
 
   return (
     <React.Fragment>
@@ -530,9 +530,9 @@ export default function SearchField(props) {
           <Grid container spacing={1}>
             <Grid item xs={12} lg={10}>
               <DataFieldText
-                disabled={!Boolean(value)}
                 data={data}
                 value={value.label}
+                onClick={handleFindOpen}
                 endAdornment={Boolean(value) &&
                     <InputAdornment position="end">
                       <IconButton

@@ -148,6 +148,8 @@ export function DataFieldText(props) {
       required={data.isMandatory}
       disabled={props.disabled}
       error={Boolean(errorMessage)}
+      onClick={props.onClick}
+      onKeyDown={props.onClick}
     >
       <InputLabel htmlFor={`${data.name}-${id}`}>
         {data.brief}
