@@ -520,8 +520,8 @@ export default function SearchField(props) {
     return Object.keys()
   }
 
-  console.log(`Search Field '${data.name}' value:`)
-  console.log(value)
+  //console.log(`Search Field '${data.name}' value:`)
+  //console.log(value)
 
   return (
     <React.Fragment>
