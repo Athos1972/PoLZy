@@ -28,6 +28,7 @@ import deLocale from "date-fns/locale/de"
 import { format, parse } from 'date-fns'
 import { useTranslation } from 'react-i18next'
 import { makeStyles } from '@material-ui/core/styles'
+import htmlParse from 'html-react-parser'
 import SelectField from './selectField'
 import SearchField from './searchField'
 import EnhancedTable from './enhancedTable'
@@ -147,6 +148,8 @@ export function DataFieldText(props) {
       required={data.isMandatory}
       disabled={props.disabled}
       error={Boolean(errorMessage)}
+      onClick={props.onClick}
+      onKeyDown={props.onClick}
     >
       <InputLabel htmlFor={`${data.name}-${id}`}>
         {data.brief}
@@ -451,7 +454,7 @@ export function DataFieldSwitch(props) {
           color="primary"
         />
       }
-      label={data.brief}
+      label={htmlParse(data.brief)}
     />
   )
 }
@@ -480,7 +483,7 @@ export function DataFieldFlag(props) {
       required={data.isMandatory}
     >
       <FormLabel component="legend">
-        {data.brief}
+        {htmlParse(data.brief)}
       </FormLabel>
       <RadioGroup
         row
@@ -751,7 +754,7 @@ export default function DataGroup(props) {
               ))}
             </Grid>
 
-            {/* Switch with Options */}
+            {/* Flag with Options */}
             <Grid 
               classes={{root: classes.inputGroupContainer}}
               item
@@ -871,11 +874,12 @@ export default function DataGroup(props) {
                         <TableRow hover>
                           <TableCell>{field.brief}</TableCell>
                           <TableCell>
-                            {field.valueChosenOrEntered.split("\n").map((line, index) => (
+                            {htmlParse(field.valueChosenOrEntered)}
+                            {/*field.valueChosenOrEntered.split("\n").map((line, index) => (
                               <div key={index}>
                                 {line}
                               </div>
-                            ))}
+                            ))*/}
                           </TableCell>
                         </TableRow>
                       }
