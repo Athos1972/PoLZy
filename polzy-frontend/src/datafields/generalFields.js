@@ -490,9 +490,9 @@ export function DataFieldFlag(props) {
       component="fieldset"
       required={data.isMandatory}
     >
-      <FormLabel component="legend"/>
       <div className={classes.flagLabel}>
         {htmlParse(data.brief)}
+        <FormLabel component="legend"/>
       </div>
       <RadioGroup
         row
