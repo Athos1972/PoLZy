@@ -70,6 +70,13 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(2),
   },
 
+  flagLabel: {
+    color: theme.palette.text.primary,
+    lineHeight: 1.43,
+    letterSpacing: "0.01071em",
+    fontSize: "0.875rem",
+  },
+
 }))
 
 const parseValue = (value) => {
@@ -466,6 +473,7 @@ export function DataFieldSwitch(props) {
 export function DataFieldFlag(props) {
   const {id, data, value } = props
   const {t} = useTranslation('common')
+  const classes = useStyles()
 
   const handleChange = (event) => {
     const newValue = {[data.name]: event.target.value}
@@ -482,9 +490,10 @@ export function DataFieldFlag(props) {
       component="fieldset"
       required={data.isMandatory}
     >
-      <FormLabel component="legend">
+      <FormLabel component="legend"/>
+      <div className={classes.flagLabel}>
         {htmlParse(data.brief)}
-      </FormLabel>
+      </div>
       <RadioGroup
         row
         value={value}
