@@ -42,7 +42,7 @@ def values():
             # try antrags then
             instance = current_app.config['POLICIES'].get(data['instanceId'])
             if instance is None:
-                raise Exception(f'Instance with id {data["instanceId"]} not found in PoLZy storage. Most probably app restarted.')
+                raise ValueError(f'Instance with id {data["instanceId"]} not found in PoLZy storage. Most probably app restarted.')
 
         # get value list
         result = instance.getValueList(data.get('valueListName'))
@@ -107,7 +107,7 @@ def manage_file(file_id):
             db.session.delete(file)
             db.session.commit()
         except UnmappedInstanceError as e:
-            current_app.logger.critical(f"File {file} ")
+            current_app.logger.critical(f"File {file} has not mapped instance. Error: {e}")
         return {}, 200
 
     # get file
@@ -135,7 +135,7 @@ def remote_documents():
             # try antrags then
             instance = current_app.config['POLICIES'].get(data['parentId'])
             if instance is None:
-                raise Exception(f'Instance with id {data["parentId"]} not found in PoLZy storage. Most probably app restarted.')
+                raise ValueError(f'Instance with id {data["parentId"]} not found in PoLZy storage. Most probably app restarted.')
 
         # get path
         path_to_document = instance.getRemoteDocuments(data.get('documentsId'))

@@ -167,7 +167,7 @@
   },
 
   "upload": {
-    "alert.add": "File ${fileName} successfully added",
+    "alert.add": "Datei ${fileName} erfolgreich hinzugefügt",
     "alert.remove": "File ${fileName} removed",
     "alert.success": "File ${fileName} successfully uploaded",
     "dropzone": "Click oder Datei hier her ziehen",
