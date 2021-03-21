@@ -51,7 +51,9 @@ export const loadAntrag = async (user, antragId) => {
     return data
   }
 
-  throw new Error(data.error)
+  const error = new Error(response.statusText)
+  error.status = response.status
+  throw error
 }
 
 export const updateAntragFields = async (user, antrag) => {

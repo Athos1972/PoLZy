@@ -171,13 +171,21 @@ def getSearchStringFromRecords():
 @auth.login_required
 def loadLatestRecords(antrag_id):
 
+    # preventing duplication of the antrag instance
+    if antrag_id in current_app.config['ANTRAGS']:
+        return {'error': 'Antrag is already active'}, 409
+
     # get antrag record by id
     antrag_record = AntragActivityRecords.getLatest(antrag_id)
     if antrag_record is None:
         return {'error': f'No record found of antrag {antrag_id}'}, 404
 
     # create antrag instance from the record
-    antrag = antrag_class()(antrag_record.class_name, auth.current_user())
+    antrag = antrag_class()(
+        antrag_record.class_name,
+        auth.current_user(),
+        id=antrag_id,
+    )
 
     # load antrag instance and store it within the app
     antrag.load(antrag_record.sapClient)

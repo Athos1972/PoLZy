@@ -72,8 +72,8 @@ class Antrag:
     # PoLZy interface instance for antrag
     #
 
-    def __init__(self, product_name, user):
-        self.id = generate_id()
+    def __init__(self, product_name, user, id=None):
+        self.id = id or generate_id()
         self.product_name = product_name
         self.user = deepcopy(user)
         self.instance = None

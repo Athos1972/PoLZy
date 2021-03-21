@@ -21,6 +21,8 @@ import { CardNew, CardLogo } from '../styles/cards'
 import { ProductIcon } from '../components/icons'
 import { getCompanyLogo, EmblemLogo } from '../components/logo'
 import { SearchDropDown } from '../datafields/searchField'
+import { useSnackbar } from 'notistack'
+
 
 
 // Styles
@@ -121,6 +123,7 @@ function NewAntrag(props) {
 
   const {t} = useTranslation('antrag')
   const classes = useStyles()
+  const { enqueueSnackbar } = useSnackbar()
 
   const [productList, setProductList] = useState([])
   const [newAntragText, setNewAntragText] = useState('')
@@ -174,6 +177,21 @@ function NewAntrag(props) {
         addressList: {},
         ...data,
       })
+    }).catch(error => {
+      console.log(error)
+      if (error.status === 409) {
+        enqueueSnackbar(
+          t('antrag:loaded'),
+          {
+            variant: 'error',
+            preventDuplicate: true,
+            anchorOrigin: {
+              vertical: 'top',
+              horizontal: 'center',
+            },
+          },
+        )
+      }
     })
   }
 
