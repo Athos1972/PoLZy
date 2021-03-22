@@ -41,6 +41,20 @@ export const cloneAntrag = async (user, antragId) => {
   throw new Error(data.error)
 }
 
+export const deleteAntrag = async (user, antragId) => {
+  const response = await fetch(`/api/antrag/delete/${antragId}`, {
+    method: 'DELETE',
+    headers: {'authorization': `Bearer ${user.accessToken}`},
+  })
+  const data = await response.json()
+  
+  if (response.ok) {
+    return data
+  }
+
+  throw new Error(data.error)
+}
+
 export const loadAntrag = async (user, antragId) => {
   const response = await fetch(`/api/antrag/records/${antragId}`, {
     headers: {'authorization': `Bearer ${user.accessToken}`},

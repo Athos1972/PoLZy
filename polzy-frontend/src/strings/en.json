@@ -82,7 +82,7 @@
     "calculate": "Calculate",
     "fast.offer": "Fast Offer",
     "invalid.antrag": "Invalid Request",
-    "loaded": "The Offer is already loaded",
+    "load.conflict": "The Offer is already loaded",
     "partner.find": "Find Partner",
     "partner.new": "New Partner",
     "partner.created": "New Partner Saved",

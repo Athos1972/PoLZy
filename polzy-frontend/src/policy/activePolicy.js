@@ -22,7 +22,7 @@ import { CardActiveHide, CardActive, CardTop, CardBottom, hideTime } from '../st
 import { PolicyTitle } from './Components'
 import PolicyDetails from './policyDetails'
 import { removePolicy, updatePolicy } from '../redux/actions'
-import { executeActivity } from '../api/policy'
+import { executeActivity, deletePolicy } from '../api/policy'
 import CardCloseButton from '../components/closeButton'
 import ExpandButton from '../components/expandButton'
 import DataGroup from '../datafields/generalFields'
@@ -77,6 +77,17 @@ class ActivePolicy extends React.Component {
     this.setState(state => ({
       expanded: !state.expanded,
     }))
+  }
+
+  handleDeleteCard = () => {
+    this.props.closePolicyCard(this.props.index)
+
+    // delete policy in back-end store
+    deletePolicy(this.props.user, this.props.policy.id).then(data => {
+      console.log(data)
+    }).catch(error => {
+      console.log(error)
+    })
   }
 
   getActivityByName = (name) => {
@@ -354,7 +365,7 @@ class ActivePolicy extends React.Component {
               {/* Close Button */}
                 <CardCloseButton
                   onClose={() => this.setState({isVisible: false})}
-                  onDelete={() => this.props.closePolicyCard(this.props.index)}
+                  onDelete={this.handleDeleteCard}
                 />
 
               </React.Fragment>

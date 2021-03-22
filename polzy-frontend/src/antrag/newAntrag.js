@@ -181,7 +181,7 @@ function NewAntrag(props) {
       console.log(error)
       if (error.status === 409) {
         enqueueSnackbar(
-          t('antrag:loaded'),
+          t('antrag:load.conflict'),
           {
             variant: 'error',
             preventDuplicate: true,

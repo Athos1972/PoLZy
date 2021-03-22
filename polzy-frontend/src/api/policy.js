@@ -14,6 +14,20 @@ export const fetchPolicy = async (user, policy) => {
   throw new Error(data.error)
 }
 
+export const deletePolicy = async (user, policyId) => {
+  const response = await fetch(`/api/policy/delete/${policyId}`, {
+    method: 'DELETE',
+    headers: {'authorization': `Bearer ${user.accessToken}`},
+  })
+  const data = await response.json()
+  
+  if (response.ok) {
+    return data
+  }
+
+  throw new Error(data.error)
+}
+
 export const executeActivity = async (user, activity) => {
   const response = await fetch('/api/policy/activity', {
     method: 'POST',

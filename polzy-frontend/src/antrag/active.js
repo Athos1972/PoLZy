@@ -31,7 +31,7 @@ import ProgressButton from '../components/progressButton'
 import FileUploadDialog from '../components/fileUploads'
 import DataGroup from '../datafields/generalFields'
 import { removeAntrag, updateAntrag, addAntrag, clearAddressList } from '../redux/actions'
-import { executeAntrag, cloneAntrag, updateAntragFields, setCustomTag } from '../api/antrag'
+import { executeAntrag, cloneAntrag, deleteAntrag, updateAntragFields, setCustomTag } from '../api/antrag'
 import { ActivityIcon } from '../components/icons'
 import Speedometer, { speedometerSize } from '../components/speedometer'
 import { validateIBAN } from '../utils'
@@ -767,6 +767,13 @@ function ActiveAntrag(props) {
   const handleDeleteCard = () => {
     props.clearAddressList(antrag.id)
     props.closeAntrag(props.index)
+
+    // delete antrag in back-end store
+    deleteAntrag(props.user, antrag.id).then(data => {
+      console.log(data)
+    }).catch(error => {
+      console.log(error)
+    })
   }
 
   const isActivityOpen = (activityType=null) => {
