@@ -82,6 +82,7 @@
     "calculate": "Berechnung",
     "fast.offer": "Schnellrechner",
     "invalid.antrag": "Ungültige Anfrage",
+    "load.conflict": "Der Antrag wird gerade bearbeitet",
     "partner.saved": "Partner übernommen",
     "partner.find": "Partner finden",
     "partner.created": "Partner gespeichert",
