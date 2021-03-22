@@ -70,6 +70,22 @@ def clone_antrag(id):
     return jsonify({'error': f'Cloning of antrag instance failed'}), 400
 
 
+@bp.route('/antrag/delete/<string:id>', methods=['DELETE'])
+@auth.login_required
+def delete_antrag(id):
+    #
+    # delete antrag instance from store by <id>
+    #
+
+    # check if instance exists
+    if id not in current_app.config['ANTRAGS']:
+        return jsonify({'error': f'Antrag instance {id} not found'}), 404
+
+    current_app.config['ANTRAGS'] = {key: value for key, value in current_app.config['ANTRAGS'].items() if key != id}
+    return {'OK': f'Antrag instance {id} successfully deleted'}, 200
+
+
+
 @bp.route('/antrag/tag/<string:antrag_id>', methods=['POST', 'DELETE'])
 @auth.login_required
 def antrag_tag(antrag_id):

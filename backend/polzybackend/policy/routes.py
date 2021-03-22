@@ -56,6 +56,21 @@ def get_policy(policy_number, effective_date=None):
     return jsonify({'error': 'Policy not found'}), 404
 
 
+@bp.route('/policy/delete/<string:id>', methods=['DELETE'])
+@auth.login_required
+def delete_policy(id):
+    #
+    # delete policy instance from store by <id>
+    #
+
+    # check if instance exists
+    if id not in current_app.config['POLICIES']:
+        return jsonify({'error': f'Policy instance {id} not found'}), 404
+
+    current_app.config['POLICIES'] = {key: value for key, value in current_app.config['POLICIES'].items() if key != id}
+    return {'OK': f'Policy instance {id} successfully deleted'}, 200
+
+
 @bp.route(f'/policy/activity', methods=['POST'])
 @auth.login_required
 def new_activity():
