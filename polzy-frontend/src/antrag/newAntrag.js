@@ -170,8 +170,6 @@ function NewAntrag(props) {
     console.log(value)
 
     loadAntrag(props.user, value.customer.id).then(data => {
-      console.log('Loaded Antrag:')
-      console.log(data)
       props.newAntrag({
         request_state: "ok",
         addressList: {},

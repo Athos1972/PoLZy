@@ -9,6 +9,7 @@ import {
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
+import { useHistory, useLocation } from 'react-router-dom'
 import { EmblemLogo } from '../components/logo'
 import Copyright from '../components/copyright'
 import LanguageSelector from '../components/languageSelector'
@@ -77,9 +78,6 @@ function AuthenticationView(props) {
     // check if email is valid and stage is set
     return emailRegex.test(user.email) && Boolean(stage)
   }
-
-  //console.log('AUTH VIEW:')
-  //console.log(props)
 
   return(
     <Container maxWidth='xs'>
@@ -238,6 +236,8 @@ function CompanySelectView(props) {
 ** Login View
 */
 function LoginView(props) {
+  const history = useHistory()
+  const location = useLocation()
 
   const [user, setUser] = useState(null)
 
@@ -248,6 +248,10 @@ function LoginView(props) {
       ...otherUser,
       ...permissions,
     })
+
+    // redirection
+    const {from} = location.state || {from: {pathname: "/"}}
+    history.replace(from)
   }
 
   const handleAuthentication = (userData) => {
