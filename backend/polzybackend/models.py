@@ -491,8 +491,7 @@ class AntragActivityRecords(db.Model):
 
         # looping through all records for current user & company
         for obj in cls.query.filter_by(user_id=user.id, company_id=user.company_id).all():
-            print('\n*** Found Antrags:')
-            print(obj)
+            print(f'*** Found Antrags: {obj}')
             values = [value.lower() for value in obj.searchString.split()]
             values.append(str(obj.antragsnummer))
             flag = True
