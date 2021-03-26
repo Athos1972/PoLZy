@@ -9,12 +9,14 @@ import {
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
+import { useHistory, useLocation } from 'react-router-dom'
 import { EmblemLogo } from '../components/logo'
 import Copyright from '../components/copyright'
 import LanguageSelector from '../components/languageSelector'
 import { signIn } from '../redux/actions'
 import { getStages } from '../api/general'
 import { login, getPermissions } from '../api/auth'
+import { validateEmail } from '../utils'
 
 // styles
 const useStyles = makeStyles({
@@ -39,7 +41,7 @@ function AuthenticationView(props) {
     error: null,
   })
   
-  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+  //const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
 
   useEffect(() => {
     getStages().then((data) => {
@@ -66,7 +68,8 @@ function AuthenticationView(props) {
   }
 
   const handleUserChange = (event) => {
-    const errorMsg = emailRegex.test(event.target.value) ? null : "Invalid email"
+    //const errorMsg = emailRegex.test(event.target.value) ? null : "Invalid email"
+    const errorMsg = validateEmail(event.target.value) ? null : "Invalid email"
     setUser({
       email: event.target.value,
       error: errorMsg,
@@ -75,11 +78,9 @@ function AuthenticationView(props) {
 
   const validateForm = () => {   
     // check if email is valid and stage is set
-    return emailRegex.test(user.email) && Boolean(stage)
+    //return emailRegex.test(user.email) && Boolean(stage)
+    return validateEmail(user.email) && Boolean(stage)
   }
-
-  //console.log('AUTH VIEW:')
-  //console.log(props)
 
   return(
     <Container maxWidth='xs'>
@@ -238,6 +239,8 @@ function CompanySelectView(props) {
 ** Login View
 */
 function LoginView(props) {
+  const history = useHistory()
+  const location = useLocation()
 
   const [user, setUser] = useState(null)
 
@@ -248,6 +251,10 @@ function LoginView(props) {
       ...otherUser,
       ...permissions,
     })
+
+    // redirection
+    const {from} = location.state || {from: {pathname: "/"}}
+    history.replace(from)
   }
 
   const handleAuthentication = (userData) => {
@@ -261,6 +268,10 @@ function LoginView(props) {
           ...otherUser,
           ...permissions,
         })
+
+        // redirection
+        const {from} = location.state || {from: {pathname: "/"}}
+        history.replace(from)
       }).catch((error) => {
         console.log(error.message)
       })
