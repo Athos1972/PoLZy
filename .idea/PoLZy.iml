@@ -7,4 +7,10 @@
     <orderEntry type="module" module-name="fasifu" />
     <orderEntry type="module" module-name="PoLZy_Showcase" />
   </component>
+  <component name="PackageRequirementsSettings">
+    <option name="requirementsPath" value="" />
+  </component>
+  <component name="TestRunnerService">
+    <option name="PROJECT_TEST_RUNNER" value="pytest" />
+  </component>
 </module>
