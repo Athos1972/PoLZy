@@ -8,29 +8,10 @@ import {
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
+import { languages } from '../strings/localization'
 
 
-/*
-** Language Options
-*/
-const languageOptions = [
-  {
-    language: "en",
-    label: "English",
-    isoCode: "GB",
-  },
-  {
-    language: "de",
-    label: "Deutsch",
-    isoCode: "DE",
-  },
-  {
-    language: "wi",
-    label: "Wienerisch",
-    isoCode: "AT",
-  },
-]
-
+// styles
 const useStyles = makeStyles({
   flagIcon: {
     minWidth: "56px",
@@ -64,7 +45,7 @@ export default function LanguageSelector(props) {
   const {i18n} = useTranslation()
 
   const [value, setValue] = React.useState(() => {
-    const currentOption = languageOptions.filter(option => option.language === i18n.language)
+    const currentOption = languages.filter(option => option.locale === i18n.language)
     if (currentOption.length === 1) {
       return currentOption[0]
     }
@@ -101,7 +82,7 @@ export default function LanguageSelector(props) {
 
   const handleChange = (event) => {
     setValue(event.target.value)
-    i18n.changeLanguage(event.target.value.language)
+    i18n.changeLanguage(event.target.value.locale)
   }
 
   return (
@@ -126,7 +107,7 @@ export default function LanguageSelector(props) {
           />
         }
       >
-        {languageOptions.map((option, index) => (
+        {languages.map((option, index) => (
           <MenuItem key={index} value={option}>
             <RenderOption
               option={option}

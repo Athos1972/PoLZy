@@ -1,15 +1,11 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next"
-import en from './strings/en.json'
-import de from './strings/de.json'
-import wi from './strings/wi.json'
+import { languages } from "./strings/localization"
 
-// the translations
-const resources = {
-  en: en,
-  de: de,
-  wi: wi
-}
+const resources = languages.reduce((result, lng) => ({
+  ...result,
+  [lng.locale]:lng.resource,
+}), {})
 
 const userLocale = () => {
   const locale = window.navigator.userLanguage || window.navigator.language
