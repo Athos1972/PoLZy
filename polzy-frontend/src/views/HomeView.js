@@ -10,6 +10,7 @@ import CloseIcon from '@material-ui/icons/Close'
 import { useSnackbar } from 'notistack'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
+import { useLocation } from 'react-router-dom'
 import AdminView from './AdminView'
 import BadgeView from './BadgeView'
 import RankingView from './RankingView'
@@ -21,6 +22,10 @@ import Copyright from '../components/copyright'
 import { BadgeToast } from '../components/toasts'
 import { apiHost } from '../utils'
 import { pushNotifications } from '../api/notifications'
+import { loadAntrag } from '../api/antrag'
+import { addAntrag } from '../redux/actions'
+
+
 
 /*
 ** Avalable Views
@@ -84,16 +89,51 @@ function TabPanel(props) {
 
 function HomeViewBase(props) {
   const {t} = useTranslation('policy', 'antrag')
+  const location = useLocation()
+  const {enqueueSnackbar} = useSnackbar()
 
   const [tab, setTab] = useState()
   const [allowedViews, setAllowedViews] = useState([])
+  const {permissions} = props.user
 
   // update allowed views
   useEffect(() => {
-    const views = Object.keys(props.permissions).filter(item => props.permissions[item])
+    const views = Object.keys(permissions).filter(item => permissions[item])
     setAllowedViews(views)
-    setTab(views.length > 0 ? views[0] : null)
-  }, [props.permissions])
+    
+    if (props.tab && views.includes(props.tab)) {
+      setTab(props.tab)
+    } else {
+      setTab(views.length > 0 ? views[0] : null)
+    }
+  }, [permissions])
+
+  // load antrag from URL
+  useEffect(() => {
+    const instanceId = location.pathname.split('/')[2]
+    if (instanceId) {
+      loadAntrag(props.user, instanceId).then(data => {
+        props.addAntrag({
+          request_state: "ok",
+          addressList: {},
+          ...data,
+        })
+      }).catch(error => {
+        console.log(error)
+        enqueueSnackbar(
+          t('antrag:load.error'),
+          {
+            variant: 'error',
+            preventDuplicate: true,
+            anchorOrigin: {
+              vertical: 'top',
+              horizontal: 'center',
+            },
+          },
+        )
+      })
+    }
+  }, [])
 
   return(
     <React.Fragment>
@@ -139,11 +179,6 @@ function HomeViewBase(props) {
   )
 }
 
-// connect to redux store
-const HomeView = connect((state) => ({
-  permissions: state.user.permissions,
-}))(HomeViewBase)
-
 
 /*
 ** Main View
@@ -159,7 +194,7 @@ function RenderCurrentView(props) {
     case VIEW_RANKING:
       return <RankingView onClose={props.onClose} />
     default:
-      return <HomeView />
+      return <HomeView tab={props.tab} />
   }
 }
 
@@ -168,7 +203,7 @@ function MainViewBase(props) {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
   const [view, setView] = useState(VIEW_HOME)
-  const [tab, setTab] = useState()
+  //const [tab, setTab] = useState(props.tab)
   const [updateBadges, setUpdateBadges] = useState(true)
 
   const goToHome = () => {
@@ -233,7 +268,6 @@ function MainViewBase(props) {
     <React.Fragment>
       <Container maxWidth="lg">
         <Header
-          currentTab={tab}
           currentView={view}
           onChange={setView}
           updateBadges={updateBadges}
@@ -241,6 +275,7 @@ function MainViewBase(props) {
         />
         <RenderCurrentView
           view={view}
+          tab={props.tab}
           onClose={goToHome}
           onChange={setView}
           updateBadges={updateBadges}
@@ -255,6 +290,17 @@ function MainViewBase(props) {
 }
 
 // connect to redux store
-export default connect((state) => ({
+const mapStateToProps = (state) => ({
   user: state.user,
-}))(MainViewBase)
+})
+
+const mapDispatchToProps = {
+  addAntrag: addAntrag,
+}
+
+
+const HomeView = connect(mapStateToProps, mapDispatchToProps)(HomeViewBase)
+
+
+export default connect(mapStateToProps)(MainViewBase)
+

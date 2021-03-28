@@ -2,32 +2,78 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { ThemeProvider } from '@material-ui/core/styles'
 import { SnackbarProvider } from 'notistack'
+import {
+  BrowserRouter,
+  Switch,
+  Route,
+  Redirect,
+} from 'react-router-dom'
 import { polzyTheme } from './styles/theme'
 import LoginView from './views/LoginView'
-import HomeView from './views/HomeView'
+import MainView from './views/HomeView'
 
-function App(props) {
 
-  if (props.user.accessToken === undefined) {
-    return (
-      <ThemeProvider theme={polzyTheme()}>
-        <LoginView />
-      </ThemeProvider>
-    )
-  }
-
-  const {attributes} = props.user.company
+function PrivateRouteBase({ user, children, ...other }) {
 
   return (
-    <ThemeProvider theme={polzyTheme(attributes ? attributes.theme : null)}>
+    <Route
+      {...other}
+      render={({ location }) =>
+        user.accessToken ? (
+          children
+        ) : (
+          <Redirect
+            to={{
+              pathname: "/login",
+              state: { from: location }
+            }}
+          />
+        )
+      }
+    />
+  );
+}
+
+function App(props) {
+  const {user} = props
+
+  const companyTheme = (user.company && user.company.attributes) ? user.company.attributes.theme : undefined
+
+  return (
+    <ThemeProvider theme={polzyTheme(companyTheme)}>
       <SnackbarProvider maxSnack={3}>
-        <HomeView />
+        <BrowserRouter>
+          <Switch>
+            
+            {/* Log in */}
+            <Route path="/login">
+              <LoginView />
+            </Route>
+
+            {/* Antrag Tab */}
+            <PrivateRoute path="/antrag">
+              <MainView tab="antrag" />
+            </PrivateRoute>
+            
+            {/* Policy Tab */}
+            <PrivateRoute path="/">
+              <MainView />
+            </PrivateRoute>
+          
+          </Switch>
+        </BrowserRouter>
       </SnackbarProvider>
     </ThemeProvider>
   )
 }
 
+
 // connect to redux store
-export default connect((state) => ({
+const mapStateToProps = (state) => ({
   user: state.user,
-}))(App)
+})
+
+const PrivateRoute = connect(mapStateToProps)(PrivateRouteBase)
+
+// connect to redux store
+export default connect(mapStateToProps)(App)
