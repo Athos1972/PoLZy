@@ -29,7 +29,6 @@ def get_policy(policy_number, effective_date=None):
         policy.set_user(auth.current_user())
         current_app.logger.info(f"Policy={policy_number}, Stage={policy.stage}, lang={policy.language}")
 
-        # print(f'FETCH: {policy.fetch()}')
         if policy.fetch():
             policy.set_user(auth.current_user())
             current_app.config['POLICIES'][policy.id] = policy
@@ -119,6 +118,41 @@ def new_activity():
         'id': str(activity.id),
         'status': 'Failed',
     }), 400
+
+
+@bp.route('/policy/update', methods=['POST'])
+@auth.login_required
+def update_policy():
+    #
+    # updates activity fields
+    #
+
+    # get post data
+    data = request.get_json()
+
+    # DEBUG
+    print('\n*** Update Policy Fields...')
+    import json
+    print(json.dumps(data, indent=2))
+    print()
+    # DEBUG END
+
+    # get policy and update its values
+    try:
+        # get policy from app store
+        policy = current_app.config['POLICIES'].get(data['id'])
+        if policy is None:
+            raise Exception(f'Policy {data["id"]} is absent in PoLZy storage. Most probably instance restarted.')
+
+        # update policy values
+        policy.updateFields(data)
+        result = policy.get()
+        return jsonify(result), 200
+
+    except Exception as e:
+        current_app.logger.exception(f'Policy {data["id"]} update failed: {e}')
+    
+    return jsonify({'error': f'Update of the policy fields failed'}), 400
 
 
 @bp.route(f'/report', methods=['POST'])

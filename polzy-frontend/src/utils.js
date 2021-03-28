@@ -133,3 +133,35 @@ export const typingTimeoutWithInputTrigger = (props, value, isValid=true) => {
     }, typingDuration)
   )
 }
+
+
+/*
+** Get Data Field Value depending on its type
+*/
+export const getFieldValue = (field) => {
+
+  // Boolean with related fields 
+  if (field.fieldDataType === "FlagWithOptions" && field.relatedFields) {
+    return {
+      [field.name]: field.valueChosenOrEntered === "True",
+      ...field.relatedFields.reduce((result, subField) => ({
+        ...result,
+        ...getFieldValue(subField),
+      }), {})
+    }
+  }
+
+  // Boolean
+  if (field.fieldDataType === "Flag" || field.fieldDataType === "FlagWithOptions") {
+    return {[field.name]: field.valueChosenOrEntered === "True"}
+  }
+
+  // empty values
+  if (field.valueChosenOrEntered === undefined || field.valueChosenOrEntered === "None") {
+    return {[field.name]: ""}
+  }
+
+  // other
+  return {[field.name]: field.valueChosenOrEntered}
+}
+
