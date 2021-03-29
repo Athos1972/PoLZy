@@ -47,6 +47,25 @@ export const executeActivity = async (user, activity) => {
 }
 
 
+export const updatePolicyFields = async (user, payload) => {
+  const response = await fetch(`/api/policy/update`, {
+    method: 'POST',
+    headers: {
+      'authorization': `Bearer ${user.accessToken}`,
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  })
+  const data = await response.json()
+
+  if (response.ok) {
+    return data
+  }
+
+  throw new Error(data.error)
+}
+
+
 // partner's policy search
 export const getCustomerPolicies = async (user, partner) => {
   const response = await fetch('/api/search', {

@@ -18,7 +18,6 @@ import {
   Chip,
   Fade,
 } from '@material-ui/core'
-//import CloseIcon from '@material-ui/icons/Close'
 import SaveIcon from '@material-ui/icons/Save'
 import LocalOfferOutlinedIcon from '@material-ui/icons/LocalOfferOutlined'
 import { makeStyles } from '@material-ui/core/styles'
@@ -34,7 +33,7 @@ import { removeAntrag, updateAntrag, addAntrag, clearAddressList } from '../redu
 import { executeAntrag, cloneAntrag, deleteAntrag, updateAntragFields, setCustomTag } from '../api/antrag'
 import { ActivityIcon } from '../components/icons'
 import Speedometer, { speedometerSize } from '../components/speedometer'
-import { validateIBAN } from '../utils'
+import { validateIBAN, getFieldValue } from '../utils'
 //import { getResource } from '../api/general'
 
 // test imports
@@ -205,35 +204,7 @@ function ActiveAntrag(props) {
     }), {})
   }
   
-  // values states
-  const getFieldValue = (field) => {
-    // parse antrag field value
-
-    // Boolean with related fields 
-    if (field.fieldDataType === "FlagWithOptions" && field.relatedFields) {
-      return {
-        [field.name]: field.valueChosenOrEntered === "True",
-        ...field.relatedFields.reduce((result, subField) => ({
-          ...result,
-          ...getFieldValue(subField),
-        }), {})
-      }
-    }
-
-    // Boolean
-    if (field.fieldDataType === "Flag" || field.fieldDataType === "FlagWithOptions") {
-      return {[field.name]: field.valueChosenOrEntered === "True"}
-    }
-
-    // empty values
-    if (field.valueChosenOrEntered === undefined || field.valueChosenOrEntered === "None") {
-      return {[field.name]: ""}
-    }
-
-    // other
-    return {[field.name]: field.valueChosenOrEntered}
-  }
-
+  
   const getValues = (obj) => {
     const commonFields = obj.fields.filter(field => (field.fieldType !== 2)).reduce((result, field) => ({
       ...result,
