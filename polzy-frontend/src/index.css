@@ -11,3 +11,25 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+/* toast links */
+.toast-link:link {
+  color: white;
+}
+
+/* visited link */
+.toast-link:visited {
+  color: white;
+}
+
+/* mouse over link */
+.toast-link:hover {
+  color: white;
+  font-weight: bold;
+}
+
+/* selected link */
+.toast-link:active {
+  color: white;
+}

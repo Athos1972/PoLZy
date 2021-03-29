@@ -11,6 +11,7 @@ import { useSnackbar } from 'notistack'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
+import htmlParse from 'html-react-parser'
 import AdminView from './AdminView'
 import BadgeView from './BadgeView'
 import RankingView from './RankingView'
@@ -37,28 +38,12 @@ export const VIEW_RANKING = 'ranking'
 
 // set styles
 const useStyles = makeStyles((theme) => ({
-  container: {
-    display: 'flex',
-    flexDirection: 'column'
-  },
-
   footer: {
     padding: theme.spacing(3, 2),
     marginTop: 'auto',
   },
-
-  toast: {
-    backgroundColor: theme.palette.primary.main,
-  },
-
-  toastContainer: {
-    display: 'flex',
-  },
-
-  toastMessage: {
-    padding: theme.spacing(1) / 2,
-  }
 }))
+
 
 function GetTabView(props) {
 
@@ -225,7 +210,37 @@ function MainViewBase(props) {
     }, 60000)
   }, [])
 
-  // get toasts
+  const parseTextWithLink = (text) => {
+    const formatToastText = (textObject) => {
+      // format link object
+      if (textObject.type == "a") {
+        return ({
+          ...textObject,
+          props: {
+            ...textObject.props,
+            target: "_blank",
+            className: "toast-link",
+          },
+        })
+      }
+
+      // return intact object if it is not a link
+      return textObject
+    }
+
+    // parse message text
+    const result = htmlParse(text)
+
+    // multiple objects parsed
+    if (Array.isArray(result)) {
+      return result.map(item => formatToastText(item))
+    }
+
+    // single object parsed
+    return formatToastText(result)
+  }
+
+  // get toasts from backend
   useEffect(() => {
     const eventSource = new EventSource(apiHost + "api/listen")
 
@@ -250,7 +265,7 @@ function MainViewBase(props) {
     eventSource.onmessage = (e) => {
       const {text, ...toastProps} = JSON.parse(e.data)
       enqueueSnackbar(
-        text,
+        parseTextWithLink(text),
         {
           ...toastProps,
           preventDuplicate: true,
