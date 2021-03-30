@@ -486,33 +486,30 @@ class AntragActivityRecords(db.Model):
     def getSearchString(cls, user: User, searchString):
         if searchString is None:
             return
+
+        # gathering all company ids of which user is part of. They are used to filter search.
+        companies = (relation.company_id for relation in db.session.query(UserToCompany).filter_by(user_id=user.id).all())
         try:  # if searchString is int than most probably it can be antragsnummer
             number = int(searchString)
-            instances = db.session.query(cls).filter_by(antragsnummer=number, user_id=user.id).order_by(-cls.timestamp).first()
-            if instances:
-                return [instances]
-        except Exception as ex:
-            raise ex
+            instance = db.session.query(cls).filter_by(
+                antragsnummer=number).filter(cls.company_id.in_(companies)).order_by(cls.timestamp.desc()).first()
+            if instance:
+                return [instance]
+        except:
             pass
-        strings = str(searchString).split()
         instances = {}
 
-        # looping through all records for current user & company
-        for obj in cls.query.filter_by(user_id=user.id, company_id=user.company_id).all():
+        # looping through all records of the companies in which current user is a part
+        from sqlalchemy import func
+        matching_instances = db.session.query(cls).filter(and_(cls.company_id.in_(companies), func.lower(
+                                            cls.searchString).contains(func.lower(str(searchString))))).all()
+        for obj in matching_instances:
             print(f'*** Found Antrags: {obj}')
-            values = [value.lower() for value in obj.searchString.split()]
-            values.append(str(obj.antragsnummer))
-            flag = True
-            for string in strings:
-                if not string.lower().strip() in values:  # matching split & lowered value for flexiblity
-                    flag = False
-                    break
-            if flag:
-                if not obj.antrag_id in instances:
-                    instances[obj.antrag_id] = obj
-                else:
-                    if instances[obj.antrag_id].timestamp < obj.timestamp:  # if current object is latest than previously
-                        instances[obj.antrag_id] = obj                      # stored then replace it with current object
+            if not obj.antrag_id in instances:
+                instances[obj.antrag_id] = obj
+            else:
+                if instances[obj.antrag_id].timestamp < obj.timestamp:  # if current object is latest than previously
+                    instances[obj.antrag_id] = obj                      # stored then replace it with current object
         return list(instances.values())
 
     @staticmethod
