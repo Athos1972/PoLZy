@@ -486,7 +486,15 @@ class AntragActivityRecords(db.Model):
     def getSearchString(cls, user: User, searchString):
         if searchString is None:
             return
-        strings = searchString.split()
+        try:  # if searchString is int than most probably it can be antragsnummer
+            number = int(searchString)
+            instances = db.session.query(cls).filter_by(antragsnummer=number).all()
+            if instances:
+                return instances
+        except Exception as ex:
+            raise ex
+            pass
+        strings = str(searchString).split()
         instances = {}
 
         # looping through all records for current user & company
