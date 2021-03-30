@@ -488,9 +488,9 @@ class AntragActivityRecords(db.Model):
             return
         try:  # if searchString is int than most probably it can be antragsnummer
             number = int(searchString)
-            instances = db.session.query(cls).filter_by(antragsnummer=number, user_id=user.id).all()[-1]
+            instances = db.session.query(cls).filter_by(antragsnummer=number, user_id=user.id).order_by(-cls.timestamp).first()
             if instances:
-                return instances
+                return [instances]
         except Exception as ex:
             raise ex
             pass
