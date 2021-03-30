@@ -69,6 +69,24 @@ def newbadge():
     return {'success': 'OK'}, 200
 
 
+# toast with a link
+@bp.route('/link')
+def push_link():
+    #msg = messenger.format_sse(data='ping', event='fasifu')
+    data = {
+        'text': 'Follow the&nbsp;<a href="https://en.wikipedia.org/wiki/White_Rabbit">White Rabbit!</a>',
+        'variant': 'success',
+        'anchorOrigin': {
+            'vertical': 'top',
+            'horizontal': 'center',
+        },
+        'autoHideDuration': None,
+    }
+    msg = f"data: {json.dumps(data)}\n\n"
+    messenger.announce(msg=msg)
+    return {'success': msg}, 200
+
+
 # returns all available users
 @bp.route('/users')
 def get_users():
