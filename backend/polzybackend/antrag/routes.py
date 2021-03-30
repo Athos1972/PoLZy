@@ -217,11 +217,11 @@ def loadLatestRecords(antrag_id):
     antrag.instance.id = antrag_record.antrag_id  # using same antrag_id as from record to avoid new record because of
     antrag.instance.updateFieldValues(dic)                                                            ## new antrag id
     antrag.instance.status = antrag_record.status
-    antrag.instance.antragsnummer = antrag_record.antragsnummer
+    #antrag.instance.antragsnummer = antrag_record.antragsnummer
     antrag.instance.loadActivitiesFromDict(antrag_record.json_data_activities)
     # update tag
     antrag.instance.setCustomTag(antrag_record.tag)
-    antrag.instance.fillCurrentlyPossibleActivities()
+    #antrag.instance.fillCurrentlyPossibleActivities()
     result = antrag.get()
     return jsonify(result), 200
 
