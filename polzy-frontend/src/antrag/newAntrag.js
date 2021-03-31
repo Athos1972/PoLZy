@@ -139,7 +139,7 @@ function NewAntrag(props) {
         props.newAntrag({
           request_state: "waiting",
           product_line: {
-            name: data[0].description,
+            name: data[0].title,
           },
         })
       }
@@ -158,7 +158,7 @@ function NewAntrag(props) {
       id: uuid(),
       request_state: "waiting",
       product_line: {
-        name: value.description,
+        name: value.title,
       },
     })
 
@@ -194,7 +194,7 @@ function NewAntrag(props) {
   }
 
   //console.log("ANTRAG PRODUCTS:")
-  //console.log(text)
+  //console.log(productList)
 
   return(
     <CardNew>
@@ -218,8 +218,8 @@ function NewAntrag(props) {
                 <Autocomplete
                   id="antrag-products"
                   options={productList}
-                  getOptionSelected={(option, value) => option.description === value.description}
-                  getOptionLabel={(option) => option.description}
+                  getOptionSelected={(option, value) => option.title === value.title}
+                  getOptionLabel={(option) => option.title}
                   size="small"
                   inputValue={newAntragText}
                   value={null}
@@ -235,12 +235,12 @@ function NewAntrag(props) {
                   renderOption={(option) => {
                     return(
                       <React.Fragment>
-                        <ProductIcon icon={option.name.slice(0,8)} />
+                        <ProductIcon icon={option.icon} />
                         <Typography
                           classes={{root: classes.options}}
                           variant="body1"
                         >
-                          {option.description}
+                          {option.title}
                         </Typography>
                       </React.Fragment>
                     )

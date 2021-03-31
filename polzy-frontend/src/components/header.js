@@ -7,7 +7,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles'
 import { getCompanyLogo, TopBarLogo } from '../components/logo'
 import UserMenu from '../components/userMenu'
-import { signOut, addAntrag } from '../redux/actions'
+import { signOut } from '../redux/actions'
 import { reportProblem } from '../api/feedback'
 
 
@@ -94,7 +94,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   signOut: signOut,
-  newAntrag: addAntrag,
+  //newAntrag: addAntrag,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header)
