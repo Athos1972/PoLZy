@@ -208,16 +208,19 @@ def loadLatestRecords(antrag_id):
     current_app.config['ANTRAGS'][antrag.id] = antrag
 
     # creating dictionary with name as key and value as value of inputField. These are used to load fields.
-    #formatValue = lambda item: int(item) if item and item.isdigit() else item # format int values
     dic = {js.get("name"): js.get("valueChosenOrEntered") for js in antrag_record.json_data}
-    #instance.updateFieldValues(dic)  # loading above created dic to instance
-    #return jsonify(result.to_dict()), 200
 
     # update field values from the record and return the result
     antrag.instance.id = antrag_record.antrag_id  # using same antrag_id as from record to avoid new record because of
     antrag.instance.updateFieldValues(dic)                                                            ## new antrag id
     antrag.instance.status = antrag_record.status
     antrag.instance.antragsnummer = antrag_record.antragsnummer
+    try:
+        antrag.instance.produktName = antrag.instance._generateProduktNameWithAntragsnummer()
+        current_app.logger.critical(f"Generated product name to {antrag.instance.produktName}"
+                                    f" {antrag.instance.antragsnummer}")
+    except:
+        pass
     antrag.instance.loadActivitiesFromDict(antrag_record.json_data_activities)
     # update tag
     antrag.instance.setCustomTag(antrag_record.tag)

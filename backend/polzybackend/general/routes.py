@@ -135,7 +135,8 @@ def remote_documents():
             # try antrags then
             instance = current_app.config['POLICIES'].get(data['parentId'])
             if instance is None:
-                raise ValueError(f'Instance with id {data["parentId"]} not found in PoLZy storage. Most probably app restarted.')
+                raise ValueError(f'Instance with id {data["parentId"]} not found in PoLZy storage. '
+                                 f'Most probably app restarted.')
 
         # get path
         path_to_document = instance.getRemoteDocuments(data.get('documentsId'))
