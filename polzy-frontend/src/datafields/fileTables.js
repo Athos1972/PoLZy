@@ -169,18 +169,6 @@ function DocumentTableBase(props) {
   }
 
   const handlePrint = () => {
-    /*
-    //console.log('Print Files:')
-    selected.forEach(fileId => {
-      //console.log(fileId)
-      getFile(props.user, fileId).then(src => {
-        window.open(src, "_blank")
-      }).catch(error => {
-        console.log(error)
-      })
-    })
-    */
-
     // build payload
     const payload = {
       parentId: props.parentId,
@@ -190,6 +178,10 @@ function DocumentTableBase(props) {
 
     // get documents
     getDocuments(props.user, payload).then(src => {
+      // update antrag instance
+      props.updateAntrag()
+
+      // open document(s) in a new tab
       window.open(src, "_blank")
     }).catch(error => {
       console.log(error)

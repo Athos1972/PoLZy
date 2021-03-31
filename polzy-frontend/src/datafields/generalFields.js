@@ -941,6 +941,7 @@ export default function DataGroup(props) {
                     name={field.name}
                     title={field.brief}
                     data={parseJSONString(field.valueChosenOrEntered)}
+                    updateAntrag={props.onInputTrigger}
                   />
                 ))}
               </Grid>
