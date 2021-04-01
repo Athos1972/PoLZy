@@ -217,8 +217,6 @@ def loadLatestRecords(antrag_id):
     antrag.instance.antragsnummer = antrag_record.antragsnummer
     try:
         antrag.instance.produktName = antrag.instance._generateProduktNameWithAntragsnummer()
-        current_app.logger.critical(f"Generated product name to {antrag.instance.produktName}"
-                                    f" {antrag.instance.antragsnummer}")
     except:
         pass
     antrag.instance.loadActivitiesFromDict(antrag_record.json_data_activities)
