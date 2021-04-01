@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import SvgIcon from '@material-ui/core/SvgIcon'
 import Icon from '@material-ui/core/Icon'
 import { makeStyles } from '@material-ui/core/styles'
@@ -27,7 +28,7 @@ import { ReactComponent as IconSearchPerson } from '../icons/iconSearchPerson.sv
 import { ReactComponent as IconUpDownload } from '../icons/downUploadDocuments.svg'
 import { ReactComponent as IconQuestions } from '../icons/iconQuestions.svg'
 
-
+//styles
 const useStyles = makeStyles({
   svgIcon: {
     display: 'flex',
@@ -36,6 +37,9 @@ const useStyles = makeStyles({
   }
 })
 
+/*
+** Product Icon
+*/
 export function ProductIcon(props) {
   const classes = useStyles()
 
@@ -61,11 +65,17 @@ export function ProductIcon(props) {
   )
 }
 
+ProductIcon.propTypes = {
+  icon: PropTypes.string,
+}
 
+
+/*
+** Activity Icon
+*/
 export function ActivityIcon(props) {
-  const {icon} = props
 
-  switch (icon) {
+  switch (props.icon) {
     case 'calculate.svg':
       return (
         <SvgIcon>
@@ -119,4 +129,8 @@ export function ActivityIcon(props) {
     default:
       return <Handshake />
   }
+}
+
+ActivityIcon.propTypes = {
+  icon: PropTypes.string,
 }
