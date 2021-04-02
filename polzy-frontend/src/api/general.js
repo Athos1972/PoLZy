@@ -160,5 +160,26 @@ export const getDocuments = async (user, payload) => {
   const blob = await response.blob()
   const src = await (window.URL ? window.URL : window.webkitURL).createObjectURL(blob)
 
-  return src  
+  return src
+}
+
+export const generateEml = async (user, payload) => {
+  // call api
+  const response = await fetch('/api/generateeml', {
+    method: 'POST',
+    headers:{
+      'authorization': `Bearer ${user.accessToken}`,
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify(payload)
+  })
+
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+
+  const blob = await response.blob()
+  const src = await (window.URL ? window.URL : window.webkitURL).createObjectURL(blob)
+
+  return src
 }

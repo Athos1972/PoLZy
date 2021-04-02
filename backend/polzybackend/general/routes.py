@@ -146,3 +146,34 @@ def remote_documents():
         current_app.logger.exception(f'Faild to get remote documents for paylod {data}\n{e}')
     
     return jsonify({'error': f'Faild to get remote documents'}), 400
+
+
+@bp.route('/generateeml', methods=['POST'])
+@auth.login_required
+def generate_eml():
+    #
+    # returns link to a remote dokument or a ziped bunch of remote documents
+    #
+
+    # get post data
+    data = request.get_json()
+
+    try:
+        # get parent instance from app store
+        # try policies first
+        instance = current_app.config['ANTRAGS'].get(data['parentId'])
+        if instance is None:
+            # try antrags then
+            instance = current_app.config['POLICIES'].get(data['parentId'])
+            if instance is None:
+                raise ValueError(f'Instance with id {data["parentId"]} not found in PoLZy storage. '
+                                 f'Most probably app restarted.')
+
+        # get path
+        path_to_document = instance.generateEml(data.get('documentsId'))
+        return send_file(path_to_document)
+
+    except Exception as e:
+        current_app.logger.exception(f'Faild to get remote documents for paylod {data}\n{e}')
+
+    return jsonify({'error': f'Faild to get remote documents'}), 400

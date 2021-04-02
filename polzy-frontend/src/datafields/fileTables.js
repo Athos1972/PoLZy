@@ -34,7 +34,7 @@ import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import CancelIcon from '@material-ui/icons/Cancel'
 import DataFieldSelect from './selectField'
 import { apiHost } from '../utils'
-import { getFile, editFile, deleteFile, getDocuments } from '../api/general'
+import { getFile, editFile, deleteFile, getDocuments, generateEml } from '../api/general'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -164,6 +164,20 @@ function DocumentTableBase(props) {
   }
 
   const handleSend = () => {
+    const payload = {
+      parentId: props.parentId,
+      documentsId: selected,
+      action: "get",
+    }
+    generateEml(props.user, payload).then(src => {
+      // update antrag instance
+      props.updateAntrag()
+
+      // open document(s) in a new tab
+      window.open(src, "_blank")
+    }).catch(error => {
+      console.log(error)
+    })
     console.log('Send Documents:')
     console.log(selected)
   }
