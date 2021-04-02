@@ -4,6 +4,7 @@
     "signout.button": "Sign Out",
     "stage": "Stage",
     "user": "E-mail",
+    "user.invalid": "Invalid email",
     "company": "Company",
     "submit.company": "Continue",
     "not.allowed": "You are not allowed to see the content"

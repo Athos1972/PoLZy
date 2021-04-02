@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { 
   Container,
@@ -30,19 +31,18 @@ const useStyles = makeStyles({
 /*
 ** Authentication View
 */
-function AuthenticationView(props) {
+function LoginView(props) {
   const classes = useStyles()
   const {t, i18n} = useTranslation('auth')
 
-  const [stage, setStage] = useState(null)
   const [allStages, setAllStages] = useState([])
+  const [stage, setStage] = useState(null)
   const [user, setUser] = useState({
     email: '',
     error: null,
   })
   
-  //const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-
+  // call to back-end for possible stages
   useEffect(() => {
     getStages().then((data) => {
       setAllStages(data)
@@ -59,7 +59,6 @@ function AuthenticationView(props) {
     ).then((userData) => {
       props.onSubmit(userData)
     }).catch((error) => {
-      //console.log(error.message)
       setUser(prevUser => ({
         ...prevUser,
         error: error.message,
@@ -68,8 +67,7 @@ function AuthenticationView(props) {
   }
 
   const handleUserChange = (event) => {
-    //const errorMsg = emailRegex.test(event.target.value) ? null : "Invalid email"
-    const errorMsg = validateEmail(event.target.value) ? null : "Invalid email"
+    const errorMsg = validateEmail(event.target.value) ? null : t("auth:user.invalid")
     setUser({
       email: event.target.value,
       error: errorMsg,
@@ -78,7 +76,6 @@ function AuthenticationView(props) {
 
   const validateForm = () => {   
     // check if email is valid and stage is set
-    //return emailRegex.test(user.email) && Boolean(stage)
     return validateEmail(user.email) && Boolean(stage)
   }
 
@@ -145,6 +142,10 @@ function AuthenticationView(props) {
   )
 }
 
+LoginView.propTypes = {
+  onSubmit: PropTypes.func,
+}
+
 
 /*
 ** Company Select View
@@ -172,9 +173,6 @@ function CompanySelectView(props) {
     return Boolean(company)
   }
 
-  //console.log('COMPANY VIEW:')
-  //console.log(props)
-
   return(
     <Container maxWidth='xs'>
       <Grid
@@ -187,17 +185,6 @@ function CompanySelectView(props) {
             size={200}
           />
         </Grid>
-      {/*
-        <Grid item xs={12}>
-          <Typography 
-            variant="h5"
-            component="h2"
-            align="center"
-          >
-            {props.user.email}
-          </Typography>
-        </Grid>
-      */}
         <Grid item xs={12}>
           <Autocomplete
             id="company-select"
@@ -234,11 +221,16 @@ function CompanySelectView(props) {
   )
 }
 
+CompanySelectView.propTypes = {
+  user: PropTypes.object,
+  onSubmit: PropTypes.func,
+}
+
 
 /*
 ** Login View
 */
-function LoginView(props) {
+function AuthView(props) {
   const history = useHistory()
   const location = useLocation()
 
@@ -286,7 +278,7 @@ function LoginView(props) {
   return (
     <React.Fragment>
       {user === null ? (
-        <AuthenticationView onSubmit={handleAuthentication} />
+        <LoginView onSubmit={handleAuthentication} />
       ) : (
         <CompanySelectView
           user={user}
@@ -298,13 +290,13 @@ function LoginView(props) {
 
 }
 
-// connect to redux store
-const mapStateToProps = (state) => ({
-  user: state.user,
-})
+AuthView.propTypes = {
+  signIn: PropTypes.func,
+}
 
+// connect to redux store
 const mapDispatchToProps = {
   signIn: signIn,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginView)
+export default connect(null, mapDispatchToProps)(AuthView)

@@ -7,7 +7,7 @@ The front-end application of **_PoLZy_** is developed using [React]([https://rea
 
 ## Getting Started
 
-You can vind a demo of the **_PoLZy_** [here](https://polzydemo.buhl-consulting.com.cy)
+You can find a demo of the **_PoLZy_** [here](https://polzydemo.buhl-consulting.com.cy)
 
 To start with **_PoLZy_** complete the following steps:
 1. Clone the repository
@@ -26,7 +26,7 @@ npm start
 
 ## Localization
 
-**_PoLZy_** supports internationalization. It is based on (react-i18next module)[https://react.i18next.com/]. There are three locales includded in **_PoLZy_**:
+**_PoLZy_** supports internationalization. It is based on [react-i18next module](https://react.i18next.com/). There are three locales includded in **_PoLZy_**:
 - English
 
 - Deutsch
