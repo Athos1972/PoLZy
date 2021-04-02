@@ -212,13 +212,11 @@ def loadLatestRecords(antrag_id):
 
     # update field values from the record and return the result
     antrag.instance.id = antrag_record.antrag_id  # using same antrag_id as from record to avoid new record because of
-    antrag.instance.updateFieldValues(dic)                                                            ## new antrag id
+    antrag.instance.updateFieldValuesFromDatabase(dic)                                                ## new antrag id
     antrag.instance.status = antrag_record.status
     antrag.instance.antragsnummer = antrag_record.antragsnummer
     try:
         antrag.instance.produktName = antrag.instance._generateProduktNameWithAntragsnummer()
-        current_app.logger.critical(f"Generated product name to {antrag.instance.produktName}"
-                                    f" {antrag.instance.antragsnummer}")
     except:
         pass
     antrag.instance.loadActivitiesFromDict(antrag_record.json_data_activities)

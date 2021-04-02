@@ -167,14 +167,16 @@ export default function MappedImage(props) {
                   {currentArea.title}
                 </Typography>
               </Grid>
-              <Grid key={currentArea.value} item>
-                <Typography
-                  variant="body1"
-                  component="div"
-                >
-                  {currentArea.value}
-                </Typography>
-              </Grid>
+              {currentArea.value.map((line, index) => (
+                <Grid key={index} item>
+                  <Typography
+                    variant="body1"
+                    component="div"
+                  >
+                    {line}
+                  </Typography>
+                </Grid>
+              ))}
             </React.Fragment>
           }
         </Grid>

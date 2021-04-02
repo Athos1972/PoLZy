@@ -28,12 +28,19 @@ npm start
 
 **_PoLZy_** supports internationalization. It is based on (react-i18next module)[https://react.i18next.com/]. There are three locales includded in **_PoLZy_**:
 - English
+
 - Deutsch
+
 - Wienerisch
+
 The default locale is the user system locale. If user system locale is not supported by **_PoLZy_** the the default locale is  _Deutsch_. 
 
 - Installation
+
 - Translation
+
 - Icon management
+
 - Instructions (how to use PoLZy with screenshots)
+
 - technical documentation
