@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import {
   Container,
@@ -18,6 +19,7 @@ import RankingView from './RankingView'
 import PolicyView from './PolicyView'
 import AntragView from './AntragView'
 import NotAllowedView from './NotAllowedView'
+import { VIEW_HOME, VIEW_ADMIN, VIEW_BADGE, VIEW_RANKING } from './MainView'
 import Header from'../components/header'
 import Copyright from '../components/copyright'
 import { BadgeToast } from '../components/toasts'
@@ -30,7 +32,7 @@ import { addAntrag } from '../redux/actions'
 
 /*
 ** Avalable Views
-*/
+
 export const VIEW_HOME = 'home'
 export const VIEW_ADMIN = 'admin'
 export const VIEW_BADGE = 'badge'
@@ -43,9 +45,12 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 'auto',
   },
 }))
+*/
 
-
-function GetTabView(props) {
+/*
+** Tab View Mapper
+*/
+function MapTabView(props) {
 
   switch(props.view) {
     case 'policy':
@@ -57,6 +62,11 @@ function GetTabView(props) {
   }
 }
 
+MapTabView.propTypes = {
+  view: PropTypes.string,
+}
+
+/*
 function TabPanel(props) {
   const { children, name, value } = props;
 
@@ -71,8 +81,9 @@ function TabPanel(props) {
     </div>
   )
 }
+*/
 
-function HomeViewBase(props) {
+function HomeView(props) {
   const {t} = useTranslation('policy', 'antrag')
   const location = useLocation()
   const {enqueueSnackbar} = useSnackbar()
@@ -142,19 +153,31 @@ function HomeViewBase(props) {
             ))}
           </Tabs>
           {allowedViews.map((view) => (
+            <React.Fragment>
+            <div
+              key={view}
+              role="tabpanel"
+              hidden={view !== tab}
+              id={`tabpanel-${view}`}
+              aria-labelledby={`tab-${view}`}
+            >
+              { view === tab && <MapTabView view={view} /> }
+            </div>
+{/*}
             <TabPanel
               key={view}
               name={view}
               value={tab}
             >
               <GetTabView view={view} />
-            </TabPanel>
+            </TabPanel> */}
+            </React.Fragment>
           ))}
         </React.Fragment>
       ) : (
         <React.Fragment>
           {allowedViews.length === 1 ? (
-            <GetTabView view={allowedViews[0]} />
+            <MapTabView view={allowedViews[0]} />
           ) : (
             <NotAllowedView />
           )}
@@ -168,6 +191,7 @@ function HomeViewBase(props) {
 /*
 ** Main View
 */
+/*
 function RenderCurrentView(props) {
   //const {view, ...otherProps} = props
 
@@ -303,7 +327,7 @@ function MainViewBase(props) {
     </React.Fragment>
   )
 }
-
+*/
 // connect to redux store
 const mapStateToProps = (state) => ({
   user: state.user,
@@ -314,8 +338,8 @@ const mapDispatchToProps = {
 }
 
 
-const HomeView = connect(mapStateToProps, mapDispatchToProps)(HomeViewBase)
+export default connect(mapStateToProps, mapDispatchToProps)(HomeView)
 
 
-export default connect(mapStateToProps)(MainViewBase)
+//export default connect(mapStateToProps)(MainViewBase)
 

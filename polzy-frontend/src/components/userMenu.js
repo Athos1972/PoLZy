@@ -22,7 +22,7 @@ import { useTranslation } from 'react-i18next'
 import LanguageSelector from './languageSelector'
 import FileUploadDialog from './fileUploads'
 import { getBadges } from '../api/gamification'
-import { VIEW_HOME, VIEW_ADMIN, VIEW_BADGE, VIEW_RANKING } from '../views/HomeView'
+import { VIEW_HOME, VIEW_ADMIN, VIEW_BADGE, VIEW_RANKING } from '../views/MainView'
 import { signOut, updateUser, clearPolicy, clearAntrag, clearValues } from '../redux/actions'
 import { ErrorBoundary } from "@sentry/react"
 import { getManualDialogOptions, getManualReportContext, getUser } from '../sentry/utils'

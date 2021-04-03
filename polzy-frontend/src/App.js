@@ -10,7 +10,7 @@ import {
 } from 'react-router-dom'
 import { polzyTheme } from './styles/theme'
 import LoginView from './views/LoginView'
-import MainView from './views/HomeView'
+import MainView from './views/MainView'
 
 
 function PrivateRouteBase({ user, children, ...other }) {

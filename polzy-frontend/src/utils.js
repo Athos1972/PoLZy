@@ -1,3 +1,5 @@
+import htmlParse from 'html-react-parser'
+
 
 export const apiHost = process.env.REACT_APP_API_HOST ? process.env.REACT_APP_API_HOST : 'http://localhost:5000/'
 
@@ -110,6 +112,42 @@ export const parseJSONString = (string) => {
       console.log(error)
       return null
     }
+  }
+
+export const parseHtmlTextWithLink = (htmlText, toast=false) => {
+    const formatLink = (textObject) => {
+      // add target = "_blank" prop
+      if (textObject.type == "a") {
+        const formatted = {
+          ...textObject,
+          props: {
+            ...textObject.props,
+            target: "_blank",
+          },
+        }
+
+        // format toast link
+        if (toast) {
+          formatted.props.className = "toast-link"
+        }
+
+        return formatted
+      }
+
+      // return intact object if it is not a link
+      return textObject
+    }
+
+    // parse input text
+    const result = htmlParse(htmlText)
+
+    // multiple objects parsed
+    if (Array.isArray(result)) {
+      return result.map(chunk => formatLink(chunk))
+    }
+
+    // single object parsed
+    return formatLink(result)
   }
 
 
