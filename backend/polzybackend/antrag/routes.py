@@ -208,7 +208,7 @@ def loadLatestRecords(antrag_id):
     current_app.config['ANTRAGS'][antrag.id] = antrag
 
     # creating dictionary with name as key and value as value of inputField. These are used to load fields.
-    dic = {js.get("name"): js.get("valueChosenOrEntered") for js in antrag_record.json_data}
+    dic = {js.get("name"): js.get("value") for js in antrag_record.json_data}
 
     # update field values from the record and return the result
     antrag.instance.id = antrag_record.antrag_id  # using same antrag_id as from record to avoid new record because of

@@ -66,7 +66,7 @@ export function InputField(props) {
     }
   }
 
-  const withAdornment = /^Euro/.test(data.valueChosenOrEnteredOutput)
+  const withAdornment = /^Euro/.test(data.valueOutput)
 
   const getLocale = () => {
     switch (i18n.language) {
