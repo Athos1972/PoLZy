@@ -216,7 +216,7 @@ def loadLatestRecords(antrag_id):
     antrag.instance.status = antrag_record.status
     antrag.instance.antragsnummer = antrag_record.antragsnummer
     try:
-        antrag.instance.produktName = antrag.instance._generateProduktNameWithAntragsnummer()
+        antrag.instance.productName = antrag.instance._generateProduktNameWithAntragsnummer()
     except:
         pass
     antrag.instance.loadActivitiesFromDict(antrag_record.json_data_activities)
