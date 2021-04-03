@@ -857,7 +857,7 @@ export default function DataGroup(props) {
                   <EnhancedTable
                     name={field.name}
                     title={field.brief}
-                    data={parseJSONString(field.valueChosenOrEntered)}
+                    data={parseJSONString(field.value)}
                     value={values[field.name]}
                     onChange={props.onGlobalChange}
                     updateAntrag={props.updateAntrag}
@@ -883,8 +883,8 @@ export default function DataGroup(props) {
                         <TableRow hover>
                           <TableCell>{field.brief}</TableCell>
                           <TableCell>
-                            {htmlParse(field.valueChosenOrEntered)}
-                            {/*field.valueChosenOrEntered.split("\n").map((line, index) => (
+                            {htmlParse(field.value)}
+                            {/*field.value.split("\n").map((line, index) => (
                               <div key={index}>
                                 {line}
                               </div>
@@ -909,7 +909,7 @@ export default function DataGroup(props) {
                   title={field.brief}
                   image={field.icon}
                   tooltip={field.tooltip}
-                  data={parseJSONString(field.valueChosenOrEntered)}
+                  data={parseJSONString(field.value)}
                 />
               ))}
             </Grid>
@@ -924,7 +924,7 @@ export default function DataGroup(props) {
                   name={field.name}
                   title={field.brief}
                   tooltip={field.tooltip}
-                  data={parseJSONString(field.valueChosenOrEntered)}
+                  data={parseJSONString(field.value)}
                 />
               ))}
             </Grid>
@@ -940,7 +940,7 @@ export default function DataGroup(props) {
                     parentId={props.id}
                     name={field.name}
                     title={field.brief}
-                    data={parseJSONString(field.valueChosenOrEntered)}
+                    data={parseJSONString(field.value)}
                     updateAntrag={props.onInputTrigger}
                   />
                 ))}
@@ -954,7 +954,7 @@ export default function DataGroup(props) {
                     key={field.name}
                     name={field.name}
                     title={field.brief}
-                    data={parseJSONString(field.valueChosenOrEntered)}
+                    data={parseJSONString(field.value)}
                     onDelete={props.onInputTrigger}
                   />
                 ))}

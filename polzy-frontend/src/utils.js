@@ -181,7 +181,7 @@ export const getFieldValue = (field) => {
   // Boolean with related fields 
   if (field.fieldDataType === "FlagWithOptions" && field.relatedFields) {
     return {
-      [field.name]: field.valueChosenOrEntered === "True",
+      [field.name]: field.value === "True",
       ...field.relatedFields.reduce((result, subField) => ({
         ...result,
         ...getFieldValue(subField),
@@ -191,15 +191,15 @@ export const getFieldValue = (field) => {
 
   // Boolean
   if (field.fieldDataType === "Flag" || field.fieldDataType === "FlagWithOptions") {
-    return {[field.name]: field.valueChosenOrEntered === "True"}
+    return {[field.name]: field.value === "True"}
   }
 
   // empty values
-  if (field.valueChosenOrEntered === undefined || field.valueChosenOrEntered === "None") {
+  if (field.value === undefined || field.value === "None") {
     return {[field.name]: ""}
   }
 
   // other
-  return {[field.name]: field.valueChosenOrEntered}
+  return {[field.name]: field.value}
 }
 

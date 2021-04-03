@@ -201,7 +201,7 @@ function ActiveAntrag(props) {
   const getGroups = (obj) => {
     return obj.field_groups.reduce((result, group) => ({
       ...result,
-      [group.name]: group.valueChosenOrEntered === "True",
+      [group.name]: group.value === "True",
     }), {})
   }
   
@@ -292,7 +292,7 @@ function ActiveAntrag(props) {
   const getPremium = () => {
     for (const field of antrag.fields) {
       if (field.name === 'premium') {
-        return field.valueChosenOrEntered === "None" ? ("") : (field.valueChosenOrEntered)
+        return field.value === "None" ? ("") : (field.value)
       }
     }
     

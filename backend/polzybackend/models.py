@@ -436,7 +436,7 @@ class AntragActivityRecords(db.Model):
     @classmethod
     def new(cls, antrag):
         json_data = {}
-        for activities in antrag.Aktivitaeten:
+        for activities in antrag.Activities:
             json_data[activities.__class__.__name__] = activities.toJsonForPersistence()
             if activities.encrypt:  # if activity needs to be encrypt then encrypt it and replace
                 encrypted_dic = dict()
@@ -452,7 +452,7 @@ class AntragActivityRecords(db.Model):
             antragsnummer=antrag.antragsnummer,
             status=antrag.status,
             searchString=antrag.searchstring,
-            json_data=json.dumps(antrag.Felder.toJSON()),
+            json_data=json.dumps(antrag.Fields.toJSON()),
             json_data_activities=json.dumps(json_data),
             class_name=antrag.__class__.__name__,
             sapClient=antrag.sapClient,
