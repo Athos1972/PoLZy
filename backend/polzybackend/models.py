@@ -228,6 +228,10 @@ class User(db.Model):
             'companies': [company.to_json() for company in self.companies],
         }
 
+    @classmethod
+    def get_user_by_id(cls, user_id):
+        return db.session.query(cls).filter_by(id=user_id).first().to_json()
+
     def get_admin_json(self):
         return {
             'possibleRoles': [r.name for r in Role.query.all()],
