@@ -19,6 +19,7 @@ import {
   Fade,
 } from '@material-ui/core'
 import SaveIcon from '@material-ui/icons/Save'
+import EmailIcon from '@material-ui/icons/Email'
 import LocalOfferOutlinedIcon from '@material-ui/icons/LocalOfferOutlined'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
@@ -34,7 +35,7 @@ import { executeAntrag, cloneAntrag, deleteAntrag, updateAntragFields, setCustom
 import { ActivityIcon } from '../components/icons'
 import Speedometer, { speedometerSize } from '../components/speedometer'
 import { validateIBAN, getFieldValue } from '../utils'
-//import { getResource } from '../api/general'
+import { getAntragEmail } from '../api/general'
 
 // test imports
 import {BrokeCard} from '../debug/damageCard'
@@ -747,6 +748,20 @@ function ActiveAntrag(props) {
     })
   }
 
+  const handleEmailClicked = (user) => {
+    const payload = {
+      parentId: antrag.id,
+      action: "get",
+    }
+
+    getAntragEmail(user, payload).then(src => {
+      props.updateAntrag()
+      window.open(src, "_blank")
+    }).catch(error => {
+      console.log(error)
+    })
+  }
+
   const isActivityOpen = (activityType=null) => {
     if (!currentActivity) {
       return false
@@ -847,6 +862,10 @@ function ActiveAntrag(props) {
 
               {/* DEBUG: broke antrag */}
                 <BrokeCard card="Antrag" />
+
+                <IconButton onClick={() => handleEmailClicked(props.user)} aria-label="email">
+                <EmailIcon />
+                </ IconButton>
 
               {/* Custom Tag */}
                 <CustomTag

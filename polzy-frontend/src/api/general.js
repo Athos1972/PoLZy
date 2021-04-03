@@ -183,3 +183,25 @@ export const generateEml = async (user, payload) => {
 
   return src
 }
+
+export const getAntragEmail = async (user, payload) => {
+  // call api
+  console.log(payload)
+  const response = await fetch('/api/generateantrageml', {
+    method: 'POST',
+    headers:{
+      'authorization': `Bearer ${user.accessToken}`,
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify(payload)
+  })
+
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+
+  const blob = await response.blob()
+  const src = await (window.URL ? window.URL : window.webkitURL).createObjectURL(blob)
+
+  return src
+}

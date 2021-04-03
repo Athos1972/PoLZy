@@ -536,6 +536,11 @@ class AntragActivityRecords(db.Model):
         instance.json_data_activities = decrypted_data  # replaced instance's dict with decrypted one
         return instance
 
+    @classmethod
+    def getAllVersions(cls, antragsnummer):
+        number = int(antragsnummer)
+        return db.session.query(cls).filter_by(antragsnummer=number).order_by(AntragActivityRecords.timestamp).all()
+
     def get_label(self):
         return ' '.join((
             self.searchString,

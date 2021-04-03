@@ -177,3 +177,27 @@ def generate_eml():
         current_app.logger.exception(f'Faild to get remote documents for paylod {data}\n{e}')
 
     return jsonify({'error': f'Faild to get remote documents'}), 400
+
+
+@bp.route('/generateantrageml', methods=['POST'])
+@auth.login_required
+def generate_antrag_eml():
+    # returns link to a eml file
+    data = request.get_json()
+    try:
+        instance = current_app.config['ANTRAGS'].get(data['parentId'])
+        if instance is None:
+            # try antrags then
+            instance = current_app.config['POLICIES'].get(data['parentId'])
+            if instance is None:
+                raise ValueError(f'Instance with id {data["parentId"]} not found in PoLZy storage. '
+                                 f'Most probably app restarted.')
+
+        # get path
+        path_to_document = instance.generateAntragEml()
+        return send_file(path_to_document)
+
+    except Exception as e:
+        current_app.logger.exception(f'Faild to get remote documents for paylod {data}\n{e}')
+
+    return jsonify({'error': f'Faild to get remote documents'}), 400
