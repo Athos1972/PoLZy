@@ -19,6 +19,8 @@ import {
   Collapse,
   RadioGroup,
   Radio,
+  Slider,
+  Input,
 } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers'
@@ -43,7 +45,7 @@ import { formatNumberWithCommas, typingTimeoutWithInputTrigger, parseJSONString,
 // Styles
 const useStyles = makeStyles((theme) => ({
   inputField: {
-    paddingBottom: theme.spacing(2),
+    paddingBottom: 0,//theme.spacing(2),
   },
 
   infoText: {
@@ -75,6 +77,19 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: 1.43,
     letterSpacing: "0.01071em",
     fontSize: "0.875rem",
+  },
+
+  slider: {
+    padding: 0,
+    color: props => props.error ? theme.palette.error.main : theme.palette.primary.main,
+  },
+
+  sliderTitle: {
+    marginTop: -theme.spacing(1),
+  },
+
+  sliderInput: {
+    width: theme.spacing(7),
   },
 
 }))
@@ -366,6 +381,126 @@ export function DataFieldNumberRange(props) {
 
 
 /*
+**  Number Slider
+*/
+export function DataFieldNumberSlider(props) {
+  const {id, data } = props
+
+  // range boundaries
+  const min = Number(data.inputRange[1])
+  const max = Number(data.inputRange[2])
+  const step = data.inputRange[3] ? Number(data.inputRange[3]) : undefined
+
+  const {t} = useTranslation('common')
+  const [error, setError] = React.useState(true)
+  const [helperText, setHelperText] = React.useState('')
+  const [typingTimeout, setTypingTimeout] = React.useState()
+  const [value, setValue] = React.useState(props.value ? Number(props.value) : min)
+
+  const classes = useStyles({error: error})
+
+  const validateValue = (valueToValidate=value) => {
+    return Boolean(valueToValidate) && valueToValidate >= min && valueToValidate <= max
+  }
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue)
+  }
+
+  const handleInputChange = (event) => {
+    const newValue = event.target.value
+    setValue(newValue === '' ? '' : Number(newValue))
+
+    // check if typing is NOT finished
+    if (typingTimeout) {
+      clearTimeout(typingTimeout)
+    }
+
+    // set timeout for typing finished
+    setTypingTimeout(typingTimeoutWithInputTrigger(props, newValue, validateValue(newValue)))
+  }
+
+  const HandleChangeCommitted = (event, newValue) => {
+    if (props.onInputTrigger && props.data.inputTriggers && validateValue(newValue)) {
+        // input trigger
+        props.onInputTrigger({[props.data.name]: newValue})
+      } else if (props.onChange) {
+        // update antrag value
+        props.onChange({[props.data.name]: newValue})
+      }
+  }
+
+  // error check
+  React.useEffect(() => {
+    // check if error comes from backend
+    if (Boolean(data.errorMessage)) {
+      setHelperText(data.errorMessage)
+      setError(true)
+      return
+    }
+
+    // check value in range
+    if (!validateValue(value)) {
+      setHelperText(t('common:value.range') + ': ' + min + '-' + max)
+      setError(true)
+      return
+    }
+
+    setError(false)
+    setHelperText('')
+  }, [value, data.errorMessage])
+
+  console.log(`Value: ${value}`)
+  console.log(typeof(value))
+
+  return (
+    <React.Fragment>
+      <Grid container spacing={1}>
+        <Grid item xs>
+          <Typography
+            className={classes.sliderTitle}
+            id={`${data.name}-${id}`}
+            component="div"
+          >
+            {data.brief}
+          </Typography>
+          <Slider
+            className={classes.slider}
+            aria-labelledby={`${data.name}-${id}`}
+            valueLabelDisplay="auto"
+            value={value}
+            min={min}
+            max={max}
+            step={step}
+            onChange={handleChange}
+            onChangeCommitted={HandleChangeCommitted}
+          />
+        </Grid>
+        <Grid item>
+          <Input
+            className={classes.sliderInput}
+            value={value}
+            margin="dense"
+            onChange={handleInputChange}
+            error={error}
+            inputProps={{
+              min: min,
+              max: max,
+              step: step,
+              type: 'number',
+              'aria-labelledby': `${data.name}-${id}`,
+            }}
+          />
+        </Grid>
+      </Grid>
+      <FormHelperText error={error}>
+        {helperText}
+      </FormHelperText>
+    </React.Fragment>
+  )
+}
+
+/*
 ** Date
 */
 export function DataFieldDate(props) {
@@ -550,23 +685,34 @@ export function DataField(props) {
   //console.log('DATA FIELD')
   //console.log(props)
 
+  // ranged data
   if (data.inputRange && data.inputRange.length > 0) {
-    if (data.fieldDataType === "Zahl" && data.inputRange[0] === "range") {
-      return <DataFieldNumberRange {...props} />
-    } else {
-      return <DataFieldSelect {...props} />
+    // numeric
+    if (data.fieldDataType === "Zahl") {
+      // regular number range
+      if (data.inputRange[0] === "range") {
+        return <DataFieldNumberRange {...props} />
+      }
+      // slider number range
+      if (data.inputRange[0] === "slider") {
+        return <DataFieldNumberSlider {...props} />
+      }
     }
-  } else {
-    switch (data.fieldDataType) {
-      case "Zahl":
-        return <DataFieldNumber {...props} />
-      case "Datum":
-        return <DataFieldDate {...props} />
-      case "TextBox":
-        return <DataFieldLongText {...props} />
-      default:
-        return <DataFieldText {...props} />
-    }
+
+    // text drop-down
+    return <DataFieldSelect {...props} />
+  }
+  
+  // not ranged data
+  switch (data.fieldDataType) {
+    case "Zahl":
+      return <DataFieldNumber {...props} />
+    case "Datum":
+      return <DataFieldDate {...props} />
+    case "TextBox":
+      return <DataFieldLongText {...props} />
+    default:
+      return <DataFieldText {...props} />
   }
 }
 

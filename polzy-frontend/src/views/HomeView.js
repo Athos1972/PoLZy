@@ -153,7 +153,7 @@ function HomeView(props) {
             ))}
           </Tabs>
           {allowedViews.map((view) => (
-            <React.Fragment>
+
             <div
               key={view}
               role="tabpanel"
@@ -163,15 +163,7 @@ function HomeView(props) {
             >
               { view === tab && <MapTabView view={view} /> }
             </div>
-{/*}
-            <TabPanel
-              key={view}
-              name={view}
-              value={tab}
-            >
-              <GetTabView view={view} />
-            </TabPanel> */}
-            </React.Fragment>
+
           ))}
         </React.Fragment>
       ) : (
