@@ -100,8 +100,6 @@ function HomeView(props) {
     }
   }, [])
 
-  console.log(props)
-
   return(
     <React.Fragment>
       {allowedViews.length > 1 ? (

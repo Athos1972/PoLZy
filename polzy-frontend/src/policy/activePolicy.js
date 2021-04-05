@@ -313,8 +313,9 @@ function ActivePolicy(props) {
           <CardTop
             action={
               <React.Fragment>
-              {/* DEBUG: broke antrag */}
+              {/* DEBUG: broke antrag
                 <BrokeCard card="Policy" />
+              */}
 
               {/* Close Button */}
                 <CardCloseButton

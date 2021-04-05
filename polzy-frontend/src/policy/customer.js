@@ -147,8 +147,9 @@ function Customer(props) {
           action={
             <React.Fragment>
 
-              {/* DEBUG: broke antrag */}
+              {/* DEBUG: broke antrag 
               <BrokeCard card="Customer" />
+            */}
 
               {/* Close Button */}
               <CardCloseButton

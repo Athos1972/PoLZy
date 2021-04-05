@@ -860,8 +860,9 @@ function ActiveAntrag(props) {
             action={
               <React.Fragment>
 
-              {/* DEBUG: broke antrag */}
+              {/* DEBUG: broke antrag 
                 <BrokeCard card="Antrag" />
+              */}
 
                 <IconButton onClick={() => handleEmailClicked(props.user)} aria-label="email">
                 <EmailIcon />
