@@ -80,6 +80,22 @@ export const formatNumberWithCommas = (number) => {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
 }
 
+export const formatNumberWithSuffix = (number) => {
+  if (number < 1000) 
+    return number.toString()
+
+  if (number < 10000)
+    return (number/1000).toFixed(1) + 'k'
+
+  if (number < 1000000)
+    return Math.round(number/1000) + 'k'
+
+  if (number < 10000000)
+    return (number/1000000).toFixed(1) + 'M'
+
+  return Math.round(number/1000000) + 'M'
+}
+
 export const capitalizeFirstChar = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1)
 }

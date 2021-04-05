@@ -29,7 +29,7 @@ import enLocale from "date-fns/locale/en-US"
 import deLocale from "date-fns/locale/de"
 import { format, parse } from 'date-fns'
 import { useTranslation } from 'react-i18next'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles, withStyles } from '@material-ui/core/styles'
 import htmlParse from 'html-react-parser'
 import SelectField from './selectField'
 import SearchField from './searchField'
@@ -40,7 +40,7 @@ import { DocumentTable, AttachmentTable } from './fileTables'
 import { LinearChart } from './charts'
 import ExpandButton from '../components/expandButton'
 import { getLocaleDateFormat, backendDateFormat } from '../dateFormat'
-import { formatNumberWithCommas, typingTimeoutWithInputTrigger, parseJSONString, validateIBAN } from '../utils'
+import { formatNumberWithCommas, typingTimeoutWithInputTrigger, parseJSONString, validateIBAN, formatNumberWithSuffix } from '../utils'
 
 // Styles
 const useStyles = makeStyles((theme) => ({
@@ -80,8 +80,13 @@ const useStyles = makeStyles((theme) => ({
   },
 
   slider: {
-    padding: 0,
-    color: props => props.error ? theme.palette.error.main : theme.palette.primary.main,
+    root: {
+      padding: 0,
+      color: props => props.error ? theme.palette.error.main : theme.palette.primary.main,
+    },
+    rail: {
+      height: 5,
+    }
   },
 
   sliderTitle: {
@@ -89,10 +94,34 @@ const useStyles = makeStyles((theme) => ({
   },
 
   sliderInput: {
-    width: theme.spacing(7),
+    width: 90,
   },
 
 }))
+
+
+// thicker slider
+const sliderThickness = 3
+
+const ThickerSlider = withStyles({
+  root: {
+    padding: 0,
+  },
+
+  rail: {
+    height: sliderThickness,
+    borderRadius: sliderThickness/2,
+  },
+
+  track: {
+    height: sliderThickness,
+    borderRadius: sliderThickness/2,
+  },
+
+  thumb: {
+    marginTop: sliderThickness/2 - 6,
+  }
+})(Slider)
 
 const parseValue = (value) => {
   if (value) return value
@@ -420,7 +449,7 @@ export function DataFieldNumberSlider(props) {
     setTypingTimeout(typingTimeoutWithInputTrigger(props, newValue, validateValue(newValue)))
   }
 
-  const HandleChangeCommitted = (event, newValue) => {
+  const handleChangeCommitted = (event, newValue) => {
     if (props.onInputTrigger && props.data.inputTriggers && validateValue(newValue)) {
         // input trigger
         props.onInputTrigger({[props.data.name]: newValue})
@@ -429,6 +458,10 @@ export function DataFieldNumberSlider(props) {
         props.onChange({[props.data.name]: newValue})
       }
   }
+
+   const getValueLabel = (v) => {
+    return formatNumberWithSuffix(v)
+   }
 
   // error check
   React.useEffect(() => {
@@ -450,8 +483,8 @@ export function DataFieldNumberSlider(props) {
     setHelperText('')
   }, [value, data.errorMessage])
 
-  console.log(`Value: ${value}`)
-  console.log(typeof(value))
+  //console.log(`Value: ${value}`)
+  //console.log(typeof(value))
 
   return (
     <React.Fragment>
@@ -464,7 +497,7 @@ export function DataFieldNumberSlider(props) {
           >
             {data.brief}
           </Typography>
-          <Slider
+          <ThickerSlider
             className={classes.slider}
             aria-labelledby={`${data.name}-${id}`}
             valueLabelDisplay="auto"
@@ -473,7 +506,8 @@ export function DataFieldNumberSlider(props) {
             max={max}
             step={step}
             onChange={handleChange}
-            onChangeCommitted={HandleChangeCommitted}
+            onChangeCommitted={handleChangeCommitted}
+            valueLabelFormat={getValueLabel}
           />
         </Grid>
         <Grid item>
