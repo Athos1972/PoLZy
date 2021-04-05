@@ -1057,7 +1057,6 @@ function ActiveAntrag(props) {
                     onGlobalChange={handleDataChanged}
                     onChange={handleActivityDataChanged}
                     onInputTrigger={handleActivityInputTrigger}
-                    companyTypes={getFieldByName(currentActivity, "firmenArten")}
                     backgroundColor={currentActivity.backgroundColor}
                     subtitles={currentActivity.subtitles}
                   />

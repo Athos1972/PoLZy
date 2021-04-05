@@ -265,21 +265,18 @@ function PartnerCreateField(props) {
       )
 
     case 'companyType':
-      if (props.companyTypes !== null) {
-        return (
-          <DataFieldSelect 
-            {...props}
-            data={{
-              ...props.companyTypes,
-              name: 'companyType',
-              brief: (t('partner:companyType')),
-              inputRange: props.companyTypes.inputRange,
-            }}
-          />
-        )
-      }
-
-      return <DataFieldText {...props} />
+      // using value list "firmenArten"
+      return (
+        <DataFieldSelect 
+          {...props}
+          data={{
+            ...props.companyTypes,
+            name: 'companyType',
+            brief: (t('partner:companyType')),
+            inputRange: ["async", "firmenArten"],
+          }}
+        />
+      )
 
     default:
       return <DataFieldText {...props} />
@@ -520,8 +517,8 @@ export default function SearchField(props) {
     return Object.keys()
   }
 
-  //console.log(`Search Field '${data.name}' value:`)
-  //console.log(value)
+  //console.log(`Search Field '${data.name}' props:`)
+  //console.log(props)
 
   return (
     <React.Fragment>
