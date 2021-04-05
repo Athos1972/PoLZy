@@ -40,7 +40,7 @@ It is a mapper component that accepts available view props and returns a specifi
 
 
 #### Implementation
-Renders one of the views listed in the table from section [View Flags](#view-flags) by matching prop `view` with possible view flags. If `view` does not match any flag the the component renders _default_ [HomeView](#TODO:setlink).
+Renders one of the views listed in the table from section [View Flags](#view-flags) by matching prop `view` with possible view flags. If `view` does not match any flag then the component renders _default_ [HomeView](#TODO:setlink).
 
 MainView
 --------------
