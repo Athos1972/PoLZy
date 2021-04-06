@@ -612,13 +612,12 @@ class Antrag():
             try:
                 field.value = int(field.value)
             except ValueError as e:
-                if field.value:
-                    if field.value == 'None':
-                        field.value = None
-                        field.valueTech = None
-                        field.valueOutput = None
-                        return
-                    logger.warning(f"Value {field.value} can't be converted to int. Error was {e}")
+                if field.value == 'None':
+                    field.value = None
+                    field.valueTech = None
+                    field.valueOutput = None
+                    return
+                logger.warning(f"Value {field.value} can't be converted to int. Error was {e}")
             field.valueTech = field.value
 
             if field.value > 10_000:
