@@ -449,10 +449,7 @@ class Antrag():
     # POLZY
     @recordActivityDecorator
     def createFieldcatalogForAntrag(self):
-        ManageFieldCatalog.addFields(self)
-        # (re-)set all field values before first transmission to frontend.
-        self.updateFieldValues({x.name: x.value for x in self.Fields.getAllInputFields()
-                                if x.fieldType != FieldTypes.hidden})
+        return
 
     # POLZY
     def fillCurrentlyPossibleActivities(self):

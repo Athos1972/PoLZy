@@ -407,8 +407,7 @@ class Activity:
 
     # POLZY
     def createFieldcatalogForActivity(self):
-        ManageFieldCatalog.addFields(self)
-        self.checkAndUpdateInputFields(self.activityFields)
+        return
 
     @staticmethod
     def formatDateFieldForDateSelector(datetimeInput: datetime) -> str:
