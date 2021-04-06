@@ -4,7 +4,7 @@ from dataclasses import dataclass
 @dataclass()
 class Role:
     role: str
-    rolenName: str
+    roleName: str
 
 
 @dataclass()

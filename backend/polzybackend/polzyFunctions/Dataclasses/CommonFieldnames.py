@@ -23,6 +23,11 @@ class CommonFieldnames(Enum):
     lastName = "lastName"
     firstName = "firstName"
 
+    ## Company fields
+    companyName = "companyName"
+    companyType = "companyType"
+    registrationNumber = "registrationNumber"
+
     ## Address fields:
     addressDict = "addressDict"
     risikoAdressDict = "Risikoadresse"
