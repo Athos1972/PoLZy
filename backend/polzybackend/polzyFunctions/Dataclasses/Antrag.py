@@ -25,27 +25,58 @@ logger = getLogger(GlobalConstants.loggerName)
 
 @dataclass
 class Antrag():
-    id: uuid.UUID          # polzy
-    user: User             # polzy
-    productName: str       # polzy
-    status: str            # polzy
-    configurationProviderKey: str    # polzy
-    Fields: InputFields()    # polzy
-    Activities: [Activity]   # polzy
-    searchstring: str = ""  # The search string contains a concatenation (with space) of all relevant properties  #POLZY
+    """
+    THE main component of LeZyTOR (Tariff Online Calculator). In this class (and all inheriting classes) we handle
+    instances of fastOffers.
+    Main attributes:
+    Fields: Fieldcatalog - please see documentation in there
+    Activities: Activities for this instance. Usually you'd have a few static activities and most of the activities
+           would be depending on a) the product or b) the status of the instance. In this list of Activities are only
+           activities, which are currently allowed for this instance.
+    """
+    id: uuid.UUID          # Unique ID
+    user: User             # User from Fronteend
+    productName: str       #
+    status: str            # current status of this instance.
+    # Key to use in configurationProvider to search for configuration values. Usually you'd have one configuration
+    # provider per insurance company as fallback and e.g. one configuration provider for each sales channel.
+    # Depends largely on the use-case of POLZY
+    configurationProviderKey: str
+    Fields: InputFields()    # Field catalog for this product
+    Activities: [Activity]   # Currently allowed activities in this instance.
+    # The search string contains a concatenation (with space) of all relevant properties for a quick search when we
+    # want to reload persisted instances from the database.
+    searchstring: str = ""
 
     def __init__(self, user):
         self.user = user
+        # bufferedFieldValuesForComparisonWithFrontend is updated after each roundtrip with the frontend. When we
+        # get a request to send an instance via parseToFrontend-Method we store the latest values in this dict.
+        # Upon receiving the new values from the frontend in updateFieldValues we can use this dict to identify or
+        # compare changed values.
         self.bufferedFieldValuesForComparisonWithFrontend = {}
         self.Fields = InputFields()
 
         self.id = uuid.uuid4()
+        # The Tag is used in frontend (and saved to database) to set custom tags in order to find the instance
+        # later, independently of the product, id or other search fields. An example of usage would be a clerk, who
+        # calculates multiple offers and multiple Products for Mrs. Smith (not yet a customer). He would tag them with
+        # "Smith" and later use search functionality to find all of them.
         self.tag = None
+        # Additionally to the unique id (self.id) we generate a human readable instance number. Can be overwritten.
         self.antragsnummer = Counter().get_number()
+        # In this dict we collect warning for underwriters, e.g. when a person has a negative mark or certain
+        # field combinations raise warning. When those warnings are set the instance wouldn't automatically be sent
+        # to Backend system but would raise those warnings in a final screen. Apart from the dict itself there is no
+        # logic inside PoLZy. You'll have to develop the reaction to this field in your installation.
         self.underWriterWarnings = {}
 
-    # POLZY
     def loadActivitiesFromDict(self, activities: dict):
+        """
+        # FIXME Akash
+        :param activities:
+        :return:
+        """
         for classname, value in activities.items():
             instance = None
             for old_instance in self.Activities:  # if instance of same activity is already their than update it
@@ -66,9 +97,13 @@ class Antrag():
             logger.debug(f"{classname} loading successful.")
 
     def setSearchString(self):
+        """
+        Method to set the search string, e.g. during initializiation or when the Tag was changed. Implement in your
+        own installation. Most probably specific for each product.
+        :return:
+        """
         return""
 
-    # POLZY
     def handleUnderWriterWarnings(self, section, warningToAdd, textToAdd=None):
         """
         This dict will hold warnings for underwriters. It has a section, within the section a key and a text.
@@ -96,30 +131,27 @@ class Antrag():
         self.underWriterWarnings[section][warningToAdd] = textToAdd
         return True
 
-    # POLZY
     @property
     def uuid(self):
         return str(self.id)
 
-    # POLZY
+    # FIXME Akash: please check, if we need that.
     def returnLogID(self):
         return self.id
 
-    # POLZY
     def set_user(self, user):
         self.user = user
 
-    # POLZY, also the Decorator should go into Polzy.
     @recordAntragDecorator
     def setCustomTag(self, tag):
         logger.debug(f"Tag is set to {tag}")
         self.tag = tag
 
-    # POLZY
     def updateAfterClone(self):
-        #
-        # update antrag props after cloning
-        #
+        """
+        After an instance was cloned do here some cleanup work. Can and should be overwritten in each installation.
+        :return:
+        """
 
         # generate new ID
         self.id = uuid.uuid4()
@@ -131,12 +163,16 @@ class Antrag():
         self.productName = self._generateProduktNameWithAntragsnummer()
         self.setSearchString()
 
-    # POLZY (same as here without implementation.
     def getValueList(self, listName):
+        """
+        long lists should not be transferred to the frontend in each request. Instead we can hand them over once. Each
+        listName is unique. You should provide here the values for the frontend.
+        :param listName: name of the list-object
+        :return: Values of the list object for the frontend
+        """
         # should be defined within specific antrag class
         raise ValueError(f'List with name {listName} not defined')
 
-    # POLZY
     def getClauses(self) -> list:
         """
         Method (so far only used for printing) to retrieve a list of clauses and their texts.
@@ -144,7 +180,6 @@ class Antrag():
         """
         raise NotImplementedError(f"The class {self.__class__.__name__} does not provide implementation for getClauses")
 
-    # POLZY
     def getPremiumValues(self) -> dict:
         """
         Method (so far only for printing) to retrieve the annual premium, taxes and
@@ -154,18 +189,24 @@ class Antrag():
         """
         raise NotImplementedError(f"The class {self.__class__.__name__} does not provide implementation for getClauses")
 
-    # POLZY
     def getRemoteDocuments(self, documents_id: list):
+        """
+        This method is called from frontend for retrieving documents, that are either stored or generated
+        or taken from anther source (like a remote DMS-System).
+        :param documents_id: list of document names, that shall be retrieved. If the list is longer than 1 the result
+                             should be sent as ZIP-File.
+        :return: a filename containing the requested document(s)
+        """
+        # FIXME Akash: Move the contents back to fasifu.
         #
         # fetches document by <id>s from remote system and
         # returns local path to:
         # - the fetched file if there is the only is in the list
         # - a zip file with all the document
         #
-
         logger.debug(f"Files requested: {documents_id}")
         if not self.lDocumentsActivity:
-            self.lDocumentsActivity = [activity for activity in self.Activities if activity.name == "Dokumente"][0]
+            self.lDocumentsActivity = self.get_activity("Dokumente")[0]
         files = []
         for document in documents_id:
             files.append(self.lDocumentsActivity.generateDocument(document))
@@ -184,22 +225,27 @@ class Antrag():
     # POLZY - empty with documentation
     def generateEml(self, documents):
         """
-
-        :param documents:
-        :return:
+        This method is called from frontend when an E-Mail is requested.
+        :param documents: list of documents, that should be included in the E-Mail
+        :return: EML-Binary file
         """
         return
 
     # POLZY - empty with documentation.
     def generateAntragEml(self):
         """
-
-        :return:
+        This method is called form frontend to create the application form and send it via E-Mail (EML-File)
+        :return: EML-File
         """
         return
 
-    # POLZY
     def get_activity(self, activity_name, optional=False):
+        """
+        Retrieve an activity from the list of Activities in this instance by class name
+        :param activity_name: class name of the desired activity
+        :param optional: Don't raise an error if the activity can't be found
+        :return: the activity
+        """
         activityObjects = [x for x in self.Activities if x.__class__.__name__ == activity_name]
         if not activityObjects:
             activityObjects = [x for x in self.Activities if x.name == activity_name]
@@ -207,9 +253,11 @@ class Antrag():
                 logger.critical(f"Cannot find activity: {activity_name}", stack_info=True)
         return activityObjects
 
-    # POLZY
     def getPreviousVersions(self):
-        # gets list of all AntragActivityRecords instances for current antragsnummer
+        """
+        gets list of all AntragActivityRecords instances for current antragsnummer
+        :return:
+        """
         fmt = "%d-%m-%Y %H:%M:%S"
         versionsDict = {
             record.id: [
@@ -220,15 +268,16 @@ class Antrag():
         }
         return versionsDict
 
-    # POLZY
     def formatToString(self):
+        """
+        String-Representation (used in __repr__ and __str__) about this instance.
+        :return:
+        """
         return f"{self.status} {self.antragsnummer} {self.lineOfBusiness}"
 
-    # POLZY
     def __repr__(self):
         return self.formatToString()
 
-    # POLZY
     def __str__(self):
         return self.formatToString()
 
@@ -247,8 +296,11 @@ class Antrag():
 
         return None
 
-    # Polzy
     def parseToFrontend(self):
+        """
+        Creates the JSON that is sent as payload to the frontend
+        :return: the JSON
+        """
 
         try:
             lActivitiesJson = [a.toJSON() for a in self.Activities]
@@ -282,10 +334,9 @@ class Antrag():
 
         return frontendDict
 
-    # POLZY
     def parseToFrontendFieldsWithoutGroup(self) -> list:
         """
-        Fields, die nicht Feldgruppen sind und in keinen Feldgruppen zugordnet sind, werden hier ausgegeben.
+        Fields, that are not part of field groups and not hidden are jsonified here
         :return:
         """
 
@@ -304,7 +355,6 @@ class Antrag():
 
         return lList
 
-    # POLZY
     def parseToFrontendFieldGroups(self) -> dict:
         """
         Loops through the list of Antrags fields and identifies group-fields (if any).
@@ -336,7 +386,6 @@ class Antrag():
 
         return {}
 
-    # POLZY
     def parseToFrontendFieldGroupFields(self) -> dict:
         """
         Will create one dict for each field-group in the field-catalog
@@ -361,16 +410,14 @@ class Antrag():
 
         return lReturnDict
 
-    # POLZY
     def getCountOfPotentialPartners(self) -> int:
         """
         This method is used from AntragPartnerDefintionSingle in order to know, how many partners should be initially
         displayed on the screen. Each Antrag may and should override this method.
-        :return: Number of Partners, that should be initially displayed in the partner card
+        :return: Number of Partners, that should be initially displayed in the partner activity cards
         """
         return 1
 
-    # POLZY
     def getPartnerRoles(self) -> list:
         """
         List of Partner Roles within this Antrag. Should be overwritten by each Antrag, if needed
@@ -378,12 +425,11 @@ class Antrag():
         """
         return [Roles.VN, Roles.PZ]
 
-    # POLZY
     def updateFieldValuesFromDatabase(self, updateValues):
         """
         This method is called after we load values from database. It's a bit tricky, we must load all the values but
         shall not execute any derviations (e.g. AnzahlBetriebsleiter from DU-Variant)
-        :param updateValues:
+        :param updateValues: the field list from database
         :return:
         """
         for k,v in updateValues.items():
@@ -391,14 +437,12 @@ class Antrag():
 
         self.updateFieldValues(updateValues)
 
-    # POLZY
-    # POLZY
     def updateFieldValues(self, updateValues):
         """
         Frontend (or anything) sends new values for fields of antrag instance.
         If the values are really new/changed, we execute follow up processes.
-        :param updateValues:
-        :return:
+        :param updateValues: dict of {<field>:<value>}
+        :return: Nothing
         """
         logger.info(f'New Values (most probably from Frontend):\n{updateValues}')
 
@@ -409,8 +453,13 @@ class Antrag():
 
         self._updateFieldValues(updateValues)
 
-    # POLZY - but keep this logic here.
     def _updateFieldValues(self, updateValues):
+        """
+        Internal Method to update field values. May be overwritten in each implementation.
+        :param updateValues:
+        :return:
+        """
+        # FIXME Akash: Please remove the logic and just keep _updateSinglefieldValueFromFrontend(name, value) in the loop. The rest of the logic should go to fasifu!
         for name, value in updateValues.items():
             if name == CommonFieldnames.Kundenname.value:
                 self.__updateFieldValueOfKundenname(value)
@@ -428,10 +477,16 @@ class Antrag():
 
             self._updateSingleFieldValueFromFrontendInternal(name, value)
 
-    # POLZY
     def _updateSingleFieldValueFromFrontendInternal(self, name, value):
+        """
+        This method is called for a single field/value-combination.
+        :param name: the fieldname, that was updated
+        :param value: the new value
+        :return:
+        """
 
         lUpdatedField = self.Fields.getField(name=name)
+        # fixme akash: Please move this logic back to fasifu and keep only _updateTechnicalFieldValuesAfterChange-call here.
         if not lUpdatedField:
             if name not in ["firmenArten", "resultstring"]:
                 # if it's not a known "rogue" field then let's have a message in the log
@@ -445,32 +500,40 @@ class Antrag():
 
             self._updateTechnicalFieldValuesAfterChange(lUpdatedField)
 
-    # POLZY
     @recordActivityDecorator
     def createFieldcatalogForAntrag(self):
+        """
+        When called, this method will create the field catalog for this instance.
+        :return:
+        """
         return
 
-    # POLZY
     def fillCurrentlyPossibleActivities(self):
         """
         Depending on status of this instance, product, client, etc. we'll derive the currently possible activities
         and store them in self.Activities for further use
         :return:
         """
+        # fixme Akash: Please move this implementation back to fasifu. We should have a dummy implementation of AntragActivitiesDerive in Polzy and call that here.
         from fasifu.AntragActivitiesDerive import AntragActivitiesDerive
         lActivities = AntragActivitiesDerive(antrag=self)
         self.Activities = lActivities.getActivitiesForAntrag()
 
-    # POLZY - but without logic
-    def manageVersicherungsbeginn(self):
-        return
-
-    # POLZY
     def _addFieldForActivity(self, field: FieldDefinition):
+        """
+        This method is called during building the field catalog and will insert one single new field into self.Fields.
+        :param field:
+        :return:
+        """
         self.Fields.addField(field)
 
-    # POLZY
     def _updateTechnicalFieldValuesAfterChange(self, field: FieldDefinition):
+        """
+        When we recive values from the frontend they are in JSON and strings. Internally we know from the field-catalog
+        which field types those fields have. Here we convert them into the internal format.
+        :param field:
+        :return:
+        """
         if field.fieldDataType == FieldDataType(InputFieldTypes.TYPEBOOLEAN) or \
                 field.fieldDataType == FieldDataType(InputFieldTypes.TYPEFLAGFULLLINE):
             self.__handleBooleanField(field)
@@ -484,8 +547,13 @@ class Antrag():
             field.valueTech = field.value
             field.valueOutput = field.value
 
-    # POLZY
     def __handleBooleanField(self, field):
+        """
+        If the planned field data type is boolean we shall interpret string field values and try to identify
+        true or false.
+        :param field:
+        :return:
+        """
         # Wenn der geplante Felddatentyp Boolen ist, aber ein String daher kommt, dann den String umfummeln.
         # TYPEFLAGFULLINE is also boolean, but covers a full line in UI.
         if isinstance(field.value, str):
@@ -498,15 +566,26 @@ class Antrag():
                 logger.critical(f"Value for boolean field {field.name} was {field.value}. "
                                 f"Wasn't able to determine True/False from that. I'll assume 'No'.")
                 field.value = False
+
+        # FIXME: Akash: Please move those back to FASIFU and instead have here valueTech = value, valueOutput = value.
         field.valueTech = self._formatStringVnG(field.value)
         field.valueOutput = self._formatStringOutput(field.value)
 
     def _determineProductName(self, returnValue=None):
+        """
+        Method to overwrite the productName. Should be subclassed/overwritten in each installation
+        :param returnValue: Additional value that can be passed to influence the result.
+        :return:
+        """
         return
 
-    # POLZY
     @staticmethod
     def __handleNumericField(field):
+        """
+        Handle potential string input (from frontend) and transform into internal values (Integer, Float) if possible
+        :param field:
+        :return:
+        """
         if not field.value:
             field.value = None
             return
@@ -553,12 +632,17 @@ class Antrag():
 
     @staticmethod
     def _formatStringOutput(inValue):
+        # FIXME Akash: Not need. remove here please.
         return
 
     def deriveDefaultsFromUserOrCompany(self):
+        """
+        In case the installation has user or company dependent attributes for Antrags-instances here is the
+        place to derive them.
+        :return:
+        """
         return
 
-    # POLZY
     def _toggleFieldsOnOff(self, listOfFieldnamesToToggle: list, OnOffAsBoolean: bool):
         """
         Provide a list of fieldnames and "True" if fields shoulds be on (FieldType = 1) or
@@ -578,16 +662,28 @@ class Antrag():
             else:
                 self.setFieldInvisible(field)
 
-    # POLZY
     def _toggleFieldGroupOnOff(self, listOfFieldgroupNamesToToggle: list, OnOffAsBoolean: bool):
+        """
+        Toggle a list of fieldgroups (=Cards on the UI) on or off by setting the value of the field-group to True/False
+        :param listOfFieldgroupNamesToToggle: List of the names of the fieldgroups to be effected
+        :param OnOffAsBoolean: True = On, False = Off
+        :return:
+        """
         for fielgroup in listOfFieldgroupNamesToToggle:
             try:
                 self.Fields.getField(name=fielgroup).value = OnOffAsBoolean
             except AttributeError:
                 logger.critical(f"Field {fielgroup} not found. Typo? Forgot to add .value?")
 
-    # POLZY
     def setFieldValue(self, fieldName, newValue, optional=False):
+        """
+        Write a new value into a field of this instance.
+
+        :param fieldName:
+        :param newValue:
+        :param optional: don't raise an error/write to log, if field does not exist
+        :return:
+        """
         try:
             lFeld = self.Fields.getField(name=fieldName)
             lFeld.value = newValue
@@ -601,8 +697,13 @@ class Antrag():
                 logger.debug(f"Should have written {newValue} into field {fieldName} "
                              f"and failed with error {e}. Most probably typo in Program. Optional was set, so Ok!")
 
-    # POLZY
     def getFieldValue(self, fieldName, optional=False):
+        """
+        Retrieve the field.value from fieldName
+        :param fieldName:
+        :param optional: Don't write log entry, if the field does not exist
+        :return:
+        """
         try:
             return self.Fields.getField(name=fieldName).value
         except AttributeError:
@@ -611,16 +712,25 @@ class Antrag():
                 logger.exception(f"Called for fieldname = {fieldName}. Doesn't exist! Existing Field names: {lFields}",
                                  stack_info=True)
 
-    # POLZY
     def setFieldVisible(self, fieldName):
+        """
+
+        :param fieldName:
+        :return:
+        """
         try:
             lField = self.Fields.getField(name=fieldName)
             lField.fieldType = FieldTypes.visible
         except AttributeError:
             logger.exception(f"Field {fieldName} should be set visible. Doesn't exist. Most probaly a typo!")
 
-    # POLZY
     def setFieldInvisible(self, fieldName, optional=False):
+        """
+
+        :param fieldName:
+        :param optional: Don't write log, if field doesn't exist in the field catalog
+        :return:
+        """
         try:
             lField = self.Fields.getField(name=fieldName)
             lField.fieldType = FieldTypes.hidden
@@ -633,7 +743,6 @@ class Antrag():
             else:
                 logger.exception(f"Field {fieldName} should be set invisible. Doesn't exist. Most probaly typo!")
 
-    # POLZY
     @staticmethod
     def announceMessage(message, duration=3000, level='default', horizontal='left', vertical='bottom'):
         """
