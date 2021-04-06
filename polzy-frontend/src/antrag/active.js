@@ -596,6 +596,19 @@ function ActiveAntrag(props) {
     setActivityValues({})
   }
 
+  // derive activity by name from antrag object
+  const getActivityByName = (instance, name) => {
+    if (instance.possible_activities) {
+      for (const activity of instance.possible_activities) {
+        if (activity.name === name) {
+          return activity
+        }
+      }
+    }
+
+    return null
+  }
+
   const executeActivity = (action='run', activity=currentActivity, withFields=true) => {
 
     if (action === 'close') {
@@ -629,9 +642,12 @@ function ActiveAntrag(props) {
 
     // execute activity
     executeAntrag(props.user, requestData).then(data => {
-      
-      // post define behavior
-      switch (activity.postExecution) {
+      // post execution behavior
+      // get current activity from response
+      const updatedActivity = getActivityByName(data, activity.name)
+      const postExecution = updatedActivity ? updatedActivity.postExecution : activity.postExecution
+
+      switch (postExecution) {
         case 'link':
         /*
           getResource(props.user, data.link).then(src => {
@@ -647,17 +663,21 @@ function ActiveAntrag(props) {
         default:
           updateAntragFromBackend(data)
       }
+
+      if (postExecution !== 'active') {
+        closeActivity()
+      }
     }).catch(error => {
       console.log(error)
     }).finally(() => {
       //update state
       setExecute(false)
-
+/*
       if (activity.postExecution === 'active' || activity.postExecution === 'close') {
         return
       }
 
-      closeActivity()
+      closeActivity()*/
     })
   }
 

@@ -152,6 +152,7 @@ function SearchDropDownBase(props) {
           label={data.brief}
           variant="outlined"
           required={data.isMandatory}
+          autoFocus={props.autoFocus}
           InputProps={{
             ...params.InputProps,
             endAdornment: (
@@ -301,7 +302,10 @@ function FindDialog(props) {
         {t("antrag:partner.find")}
       </DialogTitle>
       <DialogContent>
-        <SearchDropDown {...props} />
+        <SearchDropDown
+          {...props}
+          autoFocus
+        />
       </DialogContent>
       <DialogActions>
         <Button onClick={props.onClose}>
