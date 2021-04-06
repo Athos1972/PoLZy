@@ -59,4 +59,5 @@ def user_permissions():
         }), 200
 
     except Exception as e:
+        print(e)
         return {'error': f'Failed to set company: {e}'}, 400
