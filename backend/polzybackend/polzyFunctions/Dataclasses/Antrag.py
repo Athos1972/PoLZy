@@ -587,15 +587,19 @@ class Antrag():
                 logger.critical(f"Field {fielgroup} not found. Typo? Forgot to add .value?")
 
     # POLZY
-    def setFieldValue(self, fieldName, newValue):
+    def setFieldValue(self, fieldName, newValue, optional=False):
         try:
             lFeld = self.Fields.getField(name=fieldName)
             lFeld.value = newValue
         except Exception as e:
-            logger.critical(f"Should have written {newValue} into field {fieldName} "
-                            f"and failed with error {e}. Most probably typo in Program.")
-            raise AttributeError(f"Should have written {newValue} into field {fieldName} "
+            if not optional:
+                logger.critical(f"Should have written {newValue} into field {fieldName} "
                                 f"and failed with error {e}. Most probably typo in Program.")
+                raise AttributeError(f"Should have written {newValue} into field {fieldName} "
+                                    f"and failed with error {e}. Most probably typo in Program.")
+            else:
+                logger.debug(f"Should have written {newValue} into field {fieldName} "
+                             f"and failed with error {e}. Most probably typo in Program. Optional was set, so Ok!")
 
     # POLZY
     def getFieldValue(self, fieldName, optional=False):
