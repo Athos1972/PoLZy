@@ -44,7 +44,7 @@ function RenderAntragCard(props) {
 }
 
 RenderAntragCard.propTypes = {
-  scroll: PropTypes.number,
+  scrollTop: PropTypes.number,
   index: PropTypes.number,
   antrag: PropTypes.object,
 }
