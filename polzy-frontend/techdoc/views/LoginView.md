@@ -5,7 +5,7 @@ Login to **PoLZy** comprises  two steps:
 1. user authentication by user's email
 2. user authorization by selecting a company that the user asign to.
 
-There are three components in `/src/LoginView.js`, which implement that process:
+There are three components in `/src/views/LoginView.js`, which implement that process:
 - [AuthView](#authview) (default export)
 - [LoginView](#loginview) (internal)
 - [CompanySelectView](#companyselectview) (internal)

@@ -1,7 +1,7 @@
 Home View
 =========
 
-Module `/src/HomeView.js` renders the  main action views of **PoLZy**, that the current user is allowed to access.
+Module `/src/views/HomeView.js` renders the  main action views of **PoLZy**, that the current user is allowed to access.
 
 The possible action views are:
 

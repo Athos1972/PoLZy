@@ -1,7 +1,7 @@
 Main View
 ========
 
-Module `/src/MainView.js` manages **PoLZy** views for the authenticated users. The module defines:
+Module `/src/views/MainView.js` manages **PoLZy** views for the authenticated users. The module defines:
 - [flags](#view-flags) for the available views
 - component [RenderView](#renderview) (internal), which maps the flags to the available views
 - componnet [MainView](#mainview) (default export), which manages the views, the header, the footer and the toasts (alerts)

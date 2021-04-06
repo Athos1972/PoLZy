@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
@@ -18,10 +19,15 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column'
   },
 
-}));
+}))
 
-function PolicyCard(props) {
+/*
+** Policy Card Mapper
+*/
+function RenderPolicyCard(props) {
   const { index, policy } = props
+
+  console.log(policy)
   
   switch (policy.request_state) {
     case "ok":
@@ -43,11 +49,18 @@ function PolicyCard(props) {
   }
 }
 
+RenderPolicyCard.propTypes = {
+  index: PropTypes.number,
+  policy: PropTypes.object,
+}
+
+
+/*
+** Policy View
+*/
 function PolicyView(props) {
   const classes = useStyles()
   const {t} = useTranslation('common', 'feedback')
-
-  //console.log(props.policies)
 
   return(
     <div className={classes.container}>
@@ -79,11 +92,16 @@ function PolicyView(props) {
             scope.setContext("polzy", getPolicyContext(props.user, policy))
           }}
         >
-          <PolicyCard index={index} policy={policy} />
+          <RenderPolicyCard index={index} policy={policy} />
         </ErrorBoundary>
       ))}
     </div>
   )
+}
+
+PolicyView.propTypes = {
+  user: PropTypes.object,
+  policies: PropTypes.array,
 }
 
 // connect to redux store

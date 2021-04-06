@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Portal from '@material-ui/core/Portal'
 import { makeStyles } from '@material-ui/core/styles'
@@ -17,14 +18,13 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column'
   },
-
-  footer: {
-    padding: theme.spacing(3, 2),
-    marginTop: 'auto',
-  },
 }))
 
-function AntragCard(props) {
+
+/*
+** Antrag Card Mapper
+*/
+function RenderAntragCard(props) {
   const { scrollTop, ...defaultProps } = props
   
   switch (props.antrag.request_state) {
@@ -43,8 +43,16 @@ function AntragCard(props) {
   }
 }
 
+RenderAntragCard.propTypes = {
+  scroll: PropTypes.number,
+  index: PropTypes.number,
+  antrag: PropTypes.object,
+}
 
 
+/*
+** Antrag View
+*/
 function AntragView(props) {
   const classes = useStyles()
   const {t} = useTranslation('common', 'feedback')
@@ -95,7 +103,7 @@ function AntragView(props) {
             scope.setContext("polzy", getAntragContext(props.user, antrag))
           }}
         >
-          <AntragCard
+          <RenderAntragCard
             index={index}
             antrag={antrag}
             scrollTop={scrollTop}
@@ -104,6 +112,11 @@ function AntragView(props) {
       ))}
     </div>
   )
+}
+
+AntragView.propTypes = {
+  user: PropTypes.object,
+  antrags: PropTypes.array,
 }
 
 // connect to redux store
