@@ -1063,7 +1063,7 @@ export default function DataGroup(props) {
                         <TableRow hover>
                           <TableCell>{field.brief}</TableCell>
                           <TableCell>
-                            {htmlParse(field.value)}
+                            {field.value && htmlParse(field.value)}
                             {/*field.value.split("\n").map((line, index) => (
                               <div key={index}>
                                 {line}
