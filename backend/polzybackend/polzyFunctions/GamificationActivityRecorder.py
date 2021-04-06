@@ -79,7 +79,7 @@ class WriteActivity:
                         "stage": self.polizze.user.stage,
                         "sapClient": self.polizze.sapClient,
                         "lineOfBusiness": self.polizze.lineOfBusiness,
-                        "productName": self.polizze.produktName}
+                        "productName": self.polizze.productName}
         return eventDetails
 
     def __getEventDetailsAntrag(self):

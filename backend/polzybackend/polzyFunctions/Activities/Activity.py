@@ -10,7 +10,6 @@ from datetime import datetime
 from logging import getLogger
 import json
 import xml.dom.minidom
-from polzybackend.polzyFunctions.Dataclasses.FieldCatalogManager import ManageFieldCatalog
 from LogLevelUpdater import LogLevelUpdater
 from requests import Session
 from polzybackend.polzyFunctions.Activities.ActivitiesDataClasses import InputFields

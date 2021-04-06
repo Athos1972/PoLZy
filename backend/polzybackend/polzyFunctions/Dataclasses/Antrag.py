@@ -15,7 +15,6 @@ from polzybackend.polzyFunctions.GlobalConstants import GlobalConstants
 from polzybackend.polzyFunctions.Dataclasses.AntragsStatus import AntragsStatus
 from polzybackend.polzyFunctions.AntragActivityRecorder import recordAntragDecorator
 from polzybackend.polzyFunctions.Dataclasses.CommonFieldnames import CommonFieldnames
-from polzybackend.polzyFunctions.Dataclasses.FieldCatalogManager import ManageFieldCatalog
 from polzybackend.polzyFunctions.GamificationActivityRecorder import recordActivityDecorator
 from polzybackend.polzyFunctions.ConfigurationEngine.ConfigurationProvider import ConfigurationProvider
 from polzybackend.polzyFunctions.Activities.ActivitiesDataClasses import InputFields, FieldDataType, FieldTypes, \

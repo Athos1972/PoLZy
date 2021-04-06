@@ -165,6 +165,9 @@ class FieldDefinition:
     background: str = field(default="")
     relatedFields: list = field(default_factory=list)
 
+    def __post_init__(self):
+        pass
+
     @classmethod
     def stringify(cls, value):
         #
