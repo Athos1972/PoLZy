@@ -1,24 +1,25 @@
 from enum import Enum
 
+# fixme akash: Please move fields from here to fasifu (marked with "# fasifu"
 
 class CommonFieldnames(Enum):
-    versicherungsBeginn = "Versicherungsbeginn"
-    versicherungsEnde = "Versicherungsende"
-    hauptfaelligkeit = "Hauptfälligkeit"
+    policyBeginDate = "Versicherungsbeginn"
+    policyEndDate = "Versicherungsende"
+    mainDueDate = "Hauptfälligkeit"
     businessCaseType = "GeschäftsfallArt"
     previousPolicyNumber = "Vorpolizzennummer"
     premium = "premium"
-    verkaufsAktion = "Aktion"
-    zahlungsFrequenz = "Zahlungsfrequenz"
-    expertenModus = "Erweitern"    # "ExpertenModus"
-    AussagenGroup = "Aussagen"
-    provisionsKonto = "ProvKto"
+    verkaufsAktion = "Aktion"       # fasifu
+    paymentFrequency = "Zahlungsfrequenz"
+    expertMode = "Erweitern"    # "ExpertenModus"
+    AussagenGroup = "Aussagen"     # fasifu
+    commissionAccount = "ProvKto"
 
-    bedarfsAnalyse = "BedarfsAnalyse"
+    bedarfsAnalyse = "BedarfsAnalyse"  # fasifu
 
     ## Person fields:
     Partner = "Partner"
-    Kundenname = "Kundenname"
+    partnerName = "partnerName"
     partnerNumber = "partnerNumber"
     birthDate = "birthDate"
     gender = "gender"
@@ -32,7 +33,7 @@ class CommonFieldnames(Enum):
 
     ## Address fields:
     addressDict = "addressDict"
-    risikoAdressDict = "Risikoadresse"
+    risikoAdressDict = "Risikoadresse"  # fasifu
     addressID = "addressID"           # official addressID in Backend-System
     addressNumber = "addressNumber"   # Polzy-Internal, temporary addressNumber
     country = "country"
@@ -43,14 +44,14 @@ class CommonFieldnames(Enum):
     houseNumber = "houseNumber"
     telefon = "telefon"
     email = "email"
-    pac = "pac"                # Austrian specific code for address data
-    haushaltID = "haushaltId"  # Austian specific code for a "container" for a community, e.g. a flat of a family
+    pac = "pac"                # fasifu # Austrian specific code for address data
+    haushaltID = "haushaltId"  # fasifu # Austian specific code for a "container" for a community, e.g. a flat of a family
 
     # Fields for "Senden-An-Bestand"
-    besondereVereinbarungen = "besondereVereinbarungen"
-    besondereVereinbarungenFlag = "besondereVereinbarungenFlag"
+    besondereVereinbarungen = "besondereVereinbarungen"   # fasifu
+    besondereVereinbarungenFlag = "besondereVereinbarungenFlag" # fasifu
     underWriterWarnings = "AnnahmeTexte"
-    releaseInBackend = "releaseInBackend"
+    releaseInBackend = "releaseInBackend"  # fasifu
     policyNumber = "policyNumber"
     applicationNumber = "applicationNumber"
-    sapMessages = "sapMessages"
+    sapMessages = "sapMessages"  # fasifu

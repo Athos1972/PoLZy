@@ -368,14 +368,14 @@ class Antrag():
         lDropFieldGroupEntries = []
         for fieldGroup in lList:
             # Field-Groups, that are not displayed anyway should not be transferred:
-            if not fieldGroup.value and fieldGroup.name != CommonFieldnames.expertenModus.value and fieldGroup.name != CommonFieldnames.AussagenGroup.value:
+            if not fieldGroup.value and fieldGroup.name != CommonFieldnames.expertMode.value and fieldGroup.name != CommonFieldnames.AussagenGroup.value:
                 lDropFieldGroupEntries.append(fieldGroup)
                 continue
 
             # Field-Groups, that don't have any visible fields inside them shall not be transferred:
             fieldList = [x.name for x in lAllInputFields if x.group == fieldGroup.name
                          and x.fieldType != FieldTypes.hidden]
-            if not fieldList and not fieldGroup.name == CommonFieldnames.expertenModus.value and not fieldGroup.name == CommonFieldnames.AussagenGroup.value:
+            if not fieldList and not fieldGroup.name == CommonFieldnames.expertMode.value and not fieldGroup.name == CommonFieldnames.AussagenGroup.value:
                 lDropFieldGroupEntries.append(fieldGroup)
 
         for lDropfieldGroupEntry in lDropFieldGroupEntries:
@@ -399,7 +399,7 @@ class Antrag():
             if feld.group:
                 # If the fieldGroup is not displayed, we shall not send any fields:
                 lGroup = [x for x in lGroups if x.name == feld.group][0]
-                if not lGroup.value and lGroup.name != CommonFieldnames.expertenModus.value and lGroup.name != CommonFieldnames.AussagenGroup.value:
+                if not lGroup.value and lGroup.name != CommonFieldnames.expertMode.value and lGroup.name != CommonFieldnames.AussagenGroup.value:
                     continue
                 # Don't send fields, which are not displayed on Frontend.
                 if feld.fieldType != FieldTypes.hidden:
@@ -461,7 +461,7 @@ class Antrag():
         """
         # FIXME Akash: Please remove the logic and just keep _updateSinglefieldValueFromFrontend(name, value) in the loop. The rest of the logic should go to fasifu!
         for name, value in updateValues.items():
-            if name == CommonFieldnames.Kundenname.value:
+            if name == CommonFieldnames.partnerName.value:
                 self.__updateFieldValueOfKundenname(value)
                 continue
 
