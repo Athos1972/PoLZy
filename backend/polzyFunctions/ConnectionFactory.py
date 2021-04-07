@@ -51,7 +51,7 @@ class ConnectorMeta:
     def connectionSetup(self) -> Session:
         pass
 
-    def executeGetRequestToURL(self, url: str, headers="PoSSGet"):
+    def executeGetRequestToURL(self, url: str, headers=None):
         return
 
 

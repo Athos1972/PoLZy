@@ -136,7 +136,7 @@ class Activity:
         """
         return
 
-    def _executeGetRequestToURL(self, url: str, headers):
+    def _executeGetRequestToURL(self, url: str, headers=None):
         """
 
         :param url: the url to call to
