@@ -73,7 +73,9 @@ class Antrag():
 
     def loadActivitiesFromDict(self, activities: dict):
         """
-        # FIXME Akash
+        This method is used in persistence function. It takes a dictionary as input which contains classname as key &
+        its attributes as value. Classname is used to create/get class instance and then value is supplied to that
+        class instance in order to load its attributes.
         :param activities:
         :return:
         """
@@ -135,10 +137,6 @@ class Antrag():
     def uuid(self):
         return str(self.id)
 
-    # FIXME Akash: please check, if we need that.
-    def returnLogID(self):
-        return self.id
-
     def set_user(self, user):
         self.user = user
 
@@ -190,53 +188,23 @@ class Antrag():
         raise NotImplementedError(f"The class {self.__class__.__name__} does not provide implementation for getClauses")
 
     def getRemoteDocuments(self, documents_id: list):
-        """
-        This method is called from frontend for retrieving documents, that are either stored or generated
-        or taken from anther source (like a remote DMS-System).
-        :param documents_id: list of document names, that shall be retrieved. If the list is longer than 1 the result
-                             should be sent as ZIP-File.
-        :return: a filename containing the requested document(s)
-        """
-        # FIXME Akash: Move the contents back to fasifu.
-        #
-        # fetches document by <id>s from remote system and
-        # returns local path to:
-        # - the fetched file if there is the only is in the list
-        # - a zip file with all the document
-        #
-        logger.debug(f"Files requested: {documents_id}")
-        if not self.lDocumentsActivity:
-            self.lDocumentsActivity = self.get_activity("Dokumente")[0]
-        files = []
-        for document in documents_id:
-            files.append(self.lDocumentsActivity.generateDocument(document))
-        if len(files) > 1:
-            zipname = f'{self.lDocumentsActivity.lPdfGenerator.class_.VNLastName}_{self.antragsnummer}_Dokumente.zip'
-            zippath = os.path.join(self.configurationProvider.PDFOutput, zipname)
-            zipf = zipfile.ZipFile(zippath, 'w', zipfile.ZIP_DEFLATED)
-            for document in files:
-                zipf.write(document, os.path.basename(document))
-            file = os.path.join(os.getcwd(), zippath)
-            zipf.close()
-        else:
-            file = files[0]
-        return file
+        # This method must be implemented in subclass
+        # This method should be used to get/generate documents and return its full path.
+        # Later it will be used for downloading function
+        return
 
     # POLZY - empty with documentation
     def generateEml(self, documents):
-        """
-        This method is called from frontend when an E-Mail is requested.
-        :param documents: list of documents, that should be included in the E-Mail
-        :return: EML-Binary file
-        """
+        # This method must be implemented in subclass
+        # This method should be used to generate eml file with documents as attachment and return full path of the file.
+        # Later it will be used for downloading function of eml & that eml can be used to directly forward mail
         return
 
     # POLZY - empty with documentation.
     def generateAntragEml(self):
-        """
-        This method is called form frontend to create the application form and send it via E-Mail (EML-File)
-        :return: EML-File
-        """
+        # This method must be implemented in subclass
+        # This method should be used to generate eml file with link to antrag and return full path of that eml file.
+        # Later it will be used for downloading function of eml & that eml can be used to directly forward mail
         return
 
     def get_activity(self, activity_name, optional=False):
@@ -459,22 +427,7 @@ class Antrag():
         :param updateValues:
         :return:
         """
-        # FIXME Akash: Please remove the logic and just keep _updateSinglefieldValueFromFrontend(name, value) in the loop. The rest of the logic should go to fasifu!
         for name, value in updateValues.items():
-            if name == CommonFieldnames.partnerName.value:
-                self.__updateFieldValueOfKundenname(value)
-                continue
-
-            if name == CommonFieldnames.addressDict.value or \
-                    name == CommonFieldnames.risikoAdressDict.value:
-                # address fields come in dict "address". We shall process them field by field.
-                if isinstance(value, dict):
-                    for k, v in value.items():
-                        self._updateSingleFieldValueFromFrontendInternal(k, v)
-                # Save the addressDict contents in order to provide it back to the frontend.
-                self._updateSingleFieldValueFromFrontendInternal(CommonFieldnames.addressDict.value, value)
-                continue
-
             self._updateSingleFieldValueFromFrontendInternal(name, value)
 
     def _updateSingleFieldValueFromFrontendInternal(self, name, value):
@@ -486,19 +439,7 @@ class Antrag():
         """
 
         lUpdatedField = self.Fields.getField(name=name)
-        # fixme akash: Please move this logic back to fasifu and keep only _updateTechnicalFieldValuesAfterChange-call here.
-        if not lUpdatedField:
-            if name not in ["firmenArten", "resultstring"]:
-                # if it's not a known "rogue" field then let's have a message in the log
-                logger.critical(f"Fieldname {name} does not exist in Field-List! Value sent for it was {value}",
-                                stack_info=True)
-        else:
-            if lUpdatedField.fieldDataType == InputFieldTypes.TYPENUMERIC and value:
-                lUpdatedField.value = int(value)
-            else:
-                lUpdatedField.value = value
-
-            self._updateTechnicalFieldValuesAfterChange(lUpdatedField)
+        self._updateTechnicalFieldValuesAfterChange(lUpdatedField)
 
     @recordActivityDecorator
     def createFieldcatalogForAntrag(self):
@@ -514,8 +455,7 @@ class Antrag():
         and store them in self.Activities for further use
         :return:
         """
-        # fixme Akash: Please move this implementation back to fasifu. We should have a dummy implementation of AntragActivitiesDerive in Polzy and call that here.
-        from fasifu.AntragActivitiesDerive import AntragActivitiesDerive
+        from polzyFunctions.AntragActivitiesDerive import AntragActivitiesDerive
         lActivities = AntragActivitiesDerive(antrag=self)
         self.Activities = lActivities.getActivitiesForAntrag()
 
@@ -536,9 +476,9 @@ class Antrag():
         """
         if field.fieldDataType == FieldDataType(InputFieldTypes.TYPEBOOLEAN) or \
                 field.fieldDataType == FieldDataType(InputFieldTypes.TYPEFLAGFULLLINE):
-            self.__handleBooleanField(field)
+            self._handleBooleanField(field)
         elif field.fieldDataType == FieldDataType(InputFieldTypes.TYPENUMERIC):
-            self.__handleNumericField(field)
+            self._handleNumericField(field)
         elif isinstance(field.value, datetime):
             field.valueOutput = field.value.strftime(GlobalConstants.dateFormat)
             field.valueTech = field.value
@@ -547,7 +487,7 @@ class Antrag():
             field.valueTech = field.value
             field.valueOutput = field.value
 
-    def __handleBooleanField(self, field):
+    def _handleBooleanField(self, field):
         """
         If the planned field data type is boolean we shall interpret string field values and try to identify
         true or false.
@@ -567,9 +507,8 @@ class Antrag():
                                 f"Wasn't able to determine True/False from that. I'll assume 'No'.")
                 field.value = False
 
-        # FIXME: Akash: Please move those back to FASIFU and instead have here valueTech = value, valueOutput = value.
-        field.valueTech = self._formatStringVnG(field.value)
-        field.valueOutput = self._formatStringOutput(field.value)
+        field.valueTech = field.value
+        field.valueOutput = field.value
 
     def _determineProductName(self, returnValue=None):
         """
@@ -580,7 +519,7 @@ class Antrag():
         return
 
     @staticmethod
-    def __handleNumericField(field):
+    def _handleNumericField(field):
         """
         Handle potential string input (from frontend) and transform into internal values (Integer, Float) if possible
         :param field:
@@ -628,11 +567,6 @@ class Antrag():
                 field.valueOutput = locale.format_string(f="%.0f",
                                                          val=field.value,
                                                          grouping=True)
-
-    @staticmethod
-    def _formatStringOutput(inValue):
-        # FIXME Akash: Not need. remove here please.
-        return
 
     def deriveDefaultsFromUserOrCompany(self):
         """
