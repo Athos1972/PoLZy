@@ -61,8 +61,11 @@ class Activity:
 
         self.configurationProvider = ConfigurationProvider.getInstance()
 
-    # Polzy with in fields, that are available in Polzy (e.g. not fileNameOfTemplate
     def toJsonForPersistence(self):
+        """
+        Will provide JSON-structure of current activity instance for persistence layer.
+        :return:
+        """
         return {
             "name": self.name,
             "description": self.description,
@@ -75,8 +78,12 @@ class Activity:
             "actions": self.frontendActions
         }
 
-    # POLZY
     def loadFromJsonFromPersistence(self, dic):
+        """
+        After antrags-instance was loaded from database, this method is called to also load state from JSON.
+        :param dic:
+        :return:
+        """
         logger.debug(f"Updating {self.name} Activity class from json values.")
         for key, value in dic.items():
             if key == "activityFields":  # loading Field data in InputFields
@@ -86,10 +93,9 @@ class Activity:
                 setattr(self, key, value)
         return self
 
-    # POLZY
     def announceMessage(self, message, duration=3000, level='default', horizontal='left', vertical='bottom'):
         """
-        Please see docu in fasifu/Dataclasses/Antrag.py in announceMessage method
+        Please see docu in Dataclasses/Antrag.py in announceMessage method
         :param message:
         :param duration:
         :param level:
@@ -109,25 +115,46 @@ class Activity:
         })
         messenger.announce(f"data: {msg}\n\n")
 
-    # POLZY (with decorators but without any content)
     @recordAntragDecorator
     @recordActivityDecorator
     def executeActivity(self) -> bool:
+        """
+        This method is called when frontend "Execute"-Button is clicked. Depending on self.postExecutionBehavior
+        usually the activity would be closed in the frontend after this. If you want to stop that (e.g. because
+        of an error in the data) change the postExecutionBehavior accordingly.
+        :return:
+        """
         return True
 
-    # POLZY (with only bare logic without the call to HTTPHeaderGenerate, etc.).
     def _executePostRequestWithPayloadToURL(self, operation=None, usePutInsteadOfPost=None, headers=None):
+        """
+        Implement any specific logic for Post-Requests to a backend system. URL is taken from self.url!
+        :param operation: any value to distinguish this call from other calls in the log
+        :param usePutInsteadOfPost: self-explanatory
+        :param headers: self-explanatory
+        :return:
+        """
         return
 
-    # POLZY
-    def _executeGetRequestToURL(self, url: str, headers="PoSSGet"):
+    def _executeGetRequestToURL(self, url: str, headers):
+        """
+
+        :param url: the url to call to
+        :param headers: header sequence for the call
+        :return: answer from the backend system
+        """
         try:
             return self.connectionToBackend.executeGetRequestToURL(url=url, headers=headers)
         except Exception:
-            self.announceMessage("Problem bei der Verbindung zu einem Service.", duration=0)
+            self.announceMessage(f"Problem occured while connecting to service address {url}", duration=0)
 
-    # POLZY
     def updateFieldValues(self, updateValues):
+        """
+        Frontend calls this method e.g. when "inputTriggersComplexUpdate" is set. We'll receive all current fields and
+        their values and deal with them accordingly.
+        :param updateValues: [{<field>: <value>, {},...]
+        :return: nothing
+        """
         if not updateValues:
             return
 
@@ -141,8 +168,14 @@ class Activity:
 
             self._updateFieldValue(name, value)
 
-    # Polzy
     def _updateFieldValue(self, name, value, optional=None):
+        """
+
+        :param name: fieldname of the activtiy
+        :param value: current field value
+        :param optional: True if the field might not exist (and not log message is requested in case it can't be found)
+        :return:
+        """
 
         # set parent flag
         if hasattr(self, 'polizze'):
@@ -179,7 +212,6 @@ class Activity:
                              f"Class was {self.__class__.__name__}. Error: {e}. Field: {name}, "
                              f"Value: {value}")
 
-    # POLZY
     def checkAndUpdateInputFields(self, inputFieldsToUpdate):
         """
         Here we can set Input Field values from external source. Each implementation will
@@ -198,6 +230,7 @@ class Activity:
                 # Copy all attributes from newly added field into this field
                 lExistingField.__dict__.update(field.__dict__)
 
+    # FIXME AKASH: move back to Fasifu.
     def _readTemplateXMLorJSON(self, fileNameOfTemplate=None):
         if fileNameOfTemplate:
             self.fileNameofTemplate = fileNameOfTemplate
@@ -215,10 +248,13 @@ class Activity:
                 self.payload = file.read()
                 logger.debug(f"First 150 chars of template is: \n{str(self.payload)[0:150]}")
 
-    # POLZY
+
     def _replaceVariablesInPayload(self):
-        # Search in the payload string for $(<variablename>) and replace with either self.polizze or
-        # self.inputFields
+        """
+        Search in the payload string for $(<variablename>) and replace with either self.polizze or
+        self.inputFields
+        :return:
+        """
 
         expression = ""
         if self.payload:
@@ -229,11 +265,13 @@ class Activity:
         if not expression:
             return
 
-    # POLZY (without logic)
     def deriveDefaultsFromUserOrCompany(self):
+        """
+        Here is the place to derive any default values from either user or company (or both) during initializiation
+        :return:
+        """
         return
 
-    # POLZY + documentation
     def _getExpressionFromJson(self, jsonData):
         """
         This method loop through every element of json data and replace the strings with prefix - postfix $( - )
@@ -256,7 +294,6 @@ class Activity:
         else:
             return jsonData
 
-    # POLZY
     def _replaceVariable(self, expression):
         if not "$(" in expression:
             return expression
@@ -298,15 +335,14 @@ class Activity:
                     centerValue = getattr(lClassForAttribute, center)
                 except Exception as e:
                     if hasattr(self, "polizze"):
-                        logger.critical(f"Center war {center}, lClassForAttribute war: {lClassForAttribute}, "
-                                        f"getattr hat nicht funktioniert. Polizze ist {self.polizze}. "
-                                        f"Expression ist: {expression}. Locals waren : {locals()}")
-                        raise ValueError("Fehler in _replaceVariable. Guckst Du Logs.")
+                        logger.critical(f"Center was {center}, lClassForAttribute was: {lClassForAttribute}, "
+                                        f"getattr didn't work. Policy is {self.polizze}. "
+                                        f"Expression is: {expression}. Locals were : {locals()}")
                     elif hasattr(self, "antrag"):
-                        logger.critical(f"Center war {center}, lClassForAttribute war: {lClassForAttribute}, "
-                                        f"getattr hat nicht funktioniert. Polizze ist {self.antrag}. "
-                                        f"Expression ist: {expression}. Locals waren : {locals()}")
-                        raise ValueError("Fehler in _replaceVariable. Guckst Du Logs.")
+                        logger.critical(f"Center was {center}, lClassForAttribute was: {lClassForAttribute}, "
+                                        f"getattr didn't work. Antrag is {self.antrag}. "
+                                        f"Expression is: {expression}. Locals were : {locals()}")
+                    raise ValueError("Error in _replaceVariable. Please check logs.")
             else:
                 lClassForAttribute = self
                 centerValue = None
@@ -335,8 +371,13 @@ class Activity:
 
         return expression
 
-    # POLZY
     def _saveXMLorJSONResultAsPrettyPrinted(self, resultToPrint, operation: str = None):
+        """
+        Used for debugging when we want to save requests/responses from XML or JSON to files.
+        :param resultToPrint:
+        :param operation:
+        :return:
+        """
         if not LogLevelUpdater().saveJson:
              return
 
@@ -379,7 +420,7 @@ class Activity:
             logger.debug(f"File written: {lFileNameResult}")
             return
         except Exception as e:
-            logger.debug(f"Fehler bei XML Dump: {e}, will fallback to text dump.")
+            logger.debug(f"Error during XML-Dump: {e}, will fallback to text dump.")
 
         # If we can't write it as XML nor JSON, maybe we can save a text at least:
         try:
@@ -390,21 +431,29 @@ class Activity:
             logger.critical(f"Error {e} during writing of interface file. Filename was {lFileNameResult}. "
                             f"resultToPrint was {resultToPrint}. Error as ")
 
-    # POLZY
     def _getConnectionFactoryForActivity(self):
+        """
+        self-explanatory
+        :return:
+        """
         lFactory = ConnectionFactory(stage=self.stage)
         self.connectionToBackend = lFactory.getConnector(endpointSystem=self.backendSystem,
                                                          sapClient=self.sapClient)
         self.session = self.connectionToBackend.connectionSetup()
 
-    # POLZY
     def _addFieldForActivity(self, field: FieldDefinition):
+        """
+        Add a new field to the field catalog of this activity
+        :param field:
+        :return:
+        """
         if not self.activityFields.getField(name=field.name):
             self.activityFields.addField(field)
         else:
             self.checkAndUpdateInputFields(field)
 
-    # POLZY
+    # FIXME AKASH: Why is this empty? We should at least add a documentation, how he would load field-definition from
+    # a JSON.
     def createFieldcatalogForActivity(self):
         return
 
@@ -415,8 +464,11 @@ class Activity:
     def __str__(self):
         return self.__class__.__name__
 
-    # POLZY
     def toJSON(self):
+        """
+        Translates the fields and fieldgroups of this activity to JSON for the frontend.
+        :return:
+        """
         frontendDict = {
             'name': self.name,
             'description': self.description,
@@ -434,10 +486,9 @@ class Activity:
         logger.debug(f"Activity dict for class {self.__class__.__name__} is \n {frontendDict}")
         return frontendDict
 
-    # POLZY
     def parseToFrontendFieldsWithoutGroup(self) -> list:
         """
-        Fields, die nicht Feldgruppen sind und in keinen Feldgruppen zugordnet sind, werden hier ausgegeben.
+        Fields, which are not included in groups are collected here
         :return:
         """
         lList = []
@@ -451,7 +502,6 @@ class Activity:
 
         return lList
 
-    # POLZY
     def parseToFrontendFieldGroups(self) -> dict:
         """
         Loops through the list of Antrags fields and identifies group-fields (if any).
@@ -472,7 +522,6 @@ class Activity:
 
         return {}
 
-    # POLZY
     def parseToFrontendFieldGroupFields(self) -> dict:
         """
         Will create one dict for each field-group in the field-catalog
