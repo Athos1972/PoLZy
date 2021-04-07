@@ -9,6 +9,9 @@ class Role:
 
 @dataclass()
 class Roles:
+    """
+    Role short texts and long texts
+    """
     # Versicherungsnehmer, Policyholder. Usually only one, but may be multiple persons or companies
     VN = Role("VN", "Policy holder")
 

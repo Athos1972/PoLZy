@@ -1,4 +1,5 @@
-from polzyFunctions.Activities.ActivitiesDataClasses import FieldDefinition, InputFieldTypes, FieldDataType, FieldVisibilityTypes
+from polzyFunctions.Activities.ActivitiesDataClasses import FieldDefinition, InputFieldTypes, FieldDataType, \
+    FieldVisibilityTypes
 from fasifu.GlobalConstants import GlobalConstants, GlobalSapClients
 from datetime import datetime   # Needed because dynamically called
 from logging import getLogger
@@ -14,7 +15,25 @@ lTranslator = Translator(default=ConfigurationProvider.getInstance().language)  
 
 
 def get_field_catalog_dictionary():
-    # this function is used to get dictionary based on file/function name
+    """
+    This function is used to get dictionary based on file/function name. Fields can be stored in JSON-Files
+    in the form:
+    [
+    {
+        "fieldVisibilityType": "$(FieldVisibilityTypes.visible)",
+        "name": "$(CommonFieldnames.policyBeginDate.value)",
+        "tooltip": "Policy beginn date ",
+        "shortDescription": "Policy begin date",
+        "fieldDataType": "$(FieldDataType(typeName=InputFieldTypes.TYPEDATE))"
+    },
+    ...
+    ]
+
+    These JSON-files can have the same name as each activity.
+
+    :return:
+    """
+
     field_data = dict()
     filenames = os.listdir(GlobalConstants.fieldCatalogJsonFiles)
     for filename in filenames:
@@ -29,7 +48,7 @@ def get_field_catalog_dictionary():
 
 class ManageFieldCatalog:
     """
-    Here are all field definitions for all policy activities and types of quotations (e.g. AntragRS)
+    Here are all field definitions for all policy activities and types of quotations
 
     The fields are loaded from JSON-files, which have the same name as the Antrag or Activity.
     The are in ../Dataclasses/JsonFiles. See method updateFieldDefinition for details.
@@ -60,10 +79,15 @@ class ManageFieldCatalog:
 
     @staticmethod
     def determineLanguage(self):
+        """
+        Try to get the user's language for the translator based on User-Object, which is in Antrag or via
+        Activity.antrag. If found, we set it as translation language, otherwise we let it in english.
+        :param self:
+        :return:
+        """
         global lTranslator
 
-        # Try to get the user's language for the translator based on User-Object, which is in Antrag or via
-        # Activity.antrag. If found, we set it as translation language, otherwise we let it in english.
+
         desiredLanguage = None
         try:
             desiredLanguage = self.antrag.user.language
@@ -81,7 +105,13 @@ class ManageFieldCatalog:
 
     @staticmethod
     def evaluate_value(value, self):
-        # this function converts string to python literal and treat it as statement. It is used in FieldCatalog values.
+        """
+        this function converts string to python literal and treat it as statement. It is used in FieldCatalog values.
+        :param value: a value, that can be evaluated to an expression, e.g. "$(True)" will evaluate to bool True.
+        :param self: the current instance (of an activity or antrag)
+        :return:
+        """
+
         if isinstance(value, dict):  # if it is a dict we need to convert it to json
             for key_, value_ in value.items():
                 value[key_] = ManageFieldCatalog.evaluate_value(value_, self)
@@ -96,7 +126,7 @@ class ManageFieldCatalog:
     def updateFieldDefinition(cls, name, self, keys=None, **kwargs):
         """
 
-        :param name: Name of the JSON-File to load the field definition from
+        :param name: Name of the JSON-File to load the field definition from (this was already cached during init)
         :param self: The object (Either an Antrag-instance or an Activity-Instance)
         :param keys: Keys to load from the JSON. If not provided all records will be loaded
         :param kwargs: Additional arguments, that will be included in the resulting fields, e.g. "backgroundcolor"

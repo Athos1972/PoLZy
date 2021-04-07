@@ -5,6 +5,11 @@ import json
 
 
 def recordActivityDecorator(method):
+    """
+    This is a decorator that will write into GamificationActivity table.
+    :param method: The method to be executed
+    :return:
+    """
     def wrapper(self, *args, **kwargs):
         writer = WriteActivity(self)
         writer.activityWriter()
@@ -14,6 +19,9 @@ def recordActivityDecorator(method):
 
 
 class WriteActivity:
+    """
+    Writes an activity to gamification table.
+    """
     def __init__(self, instanceOfAntragPolicyOrActivity):
         from fasifu.Activities.AntragActivity import AntragActivity
         from fasifu.Activities.PolicyActivity import PolicyActivity

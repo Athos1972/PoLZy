@@ -6,8 +6,11 @@ from polzyFunctions.translator.DataHandler import Data
 logger = getLogger(GlobalConstants.loggerName)
 
 
-class Translator(metaclass=Singleton):  # We are making this class singleton to share same default language on multiple
-    def __init__(self, default="en"):                                                                       # instances
+class Translator(metaclass=Singleton):
+    """
+    We are making this class singleton to share same default language on multiple instances.
+    """
+    def __init__(self, default="en"):
         logger.debug("Language translation backend module initialized - buffered")
         self.default_language = default.lower()
         self.data = Data().data  # getting data from singleton class's attribute
@@ -26,11 +29,14 @@ class Translator(metaclass=Singleton):  # We are making this class singleton to 
         return result
 
     def add_translation_dict(self, dict):
+        # FIXME Akash: please document. I can't find, where this s called.
         self.data.update(dict)
 
     def add_translation_file(self, fileNameAndPath):
+        # FIXME Akash: please document. I can't find, where this is called
         fileNameAndPath = get_file_path(fileNameAndPath)
         self.add_translation_dict(Data.get_data(fileNameAndPath))
 
     def update_default_language(self, language):
+        # FIXME Akash: Please document. I can't find, where this is called.
         self.default_language = language.lower()

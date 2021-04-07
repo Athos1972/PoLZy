@@ -8,12 +8,12 @@ logger = getLogger(GlobalConstants.loggerName)
 
 class AntragActivitiesDerive:
     """
-    Determines which activities are possible based on the application status
+    Determines which activities are possible based on the application status, product, etc.
 
     If there are already activities for this application, then use the existing activities accordingly,
     do not re-instantiate.
 
-    This class is an example and you should create a sub class to achieve goal by referring this
+    This class is an example and you should create a sub class to achieve goal by referring to this implementation.
     """
     def __init__(self, antrag: Antrag):
         self.antrag = antrag

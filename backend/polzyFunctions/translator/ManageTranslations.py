@@ -232,5 +232,5 @@ def manage_args():
         print_args()
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     manage_args()

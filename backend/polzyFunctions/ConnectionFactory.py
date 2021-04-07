@@ -45,6 +45,9 @@ class SessionBuffer(object):
 
 
 class ConnectorMeta:
+    """
+    Meta class for connections. Needs to be implemented and subclassed in each installation
+    """
     def __init__(self, *args, **kwargs):
         pass
 
@@ -56,10 +59,22 @@ class ConnectorMeta:
 
 
 class ConnectionFactory:
+    """
+    Connection factory should reply with an instance of ConnectorMeta
+    """
     availableStages = globalSystemConstants.getAllStages()
 
     def __init__(self, stage):
         return
 
-    def getConnector(self, endpointSystem: str, sapClient: str, *args, **kwargs) -> ConnectorMeta:
+    def getConnector(self, endpointSystem: str, *args, **kwargs) -> ConnectorMeta:
+        """
+        The parameters are needed to identify which backend connector should be returned. This is only needed when
+        there are more than one backend systems. Otherwise you can simply always return the same
+        ConnectorMeta-Implementation
+        :param endpointSystem:
+        :param args:
+        :param kwargs:
+        :return:
+        """
         return

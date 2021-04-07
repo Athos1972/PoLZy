@@ -3,6 +3,10 @@ from enum import Enum
 # fixme akash: Please move fields from here to fasifu (marked with "# fasifu"
 
 class CommonFieldnames(Enum):
+    """
+    Common Fieldnames, that are used in many products (it not all).
+
+    """
     policyBeginDate = "Versicherungsbeginn"
     policyEndDate = "Versicherungsende"
     mainDueDate = "Hauptfälligkeit"
