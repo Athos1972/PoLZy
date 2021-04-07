@@ -11,7 +11,7 @@ logger = getLogger(GlobalConstants.loggerName)
 
 class AntragActivity(Activity):
     """
-    All activities are called with an instance of Polizze and WirksamkeitsDatum (Effective date)
+    All activities are called with an instance of Polizze and effectiveDate (Effective date)
 
     The first call for each activity is to method 'checkIsActivityValidForPolicy'.
         For instance a cancel-activity will switch itself of, if the policy is already in status cancelled.
