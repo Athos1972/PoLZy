@@ -1,4 +1,4 @@
-from polzybackend.polzyFunctions.GlobalConstants import GlobalConstants
+from polzyFunctions.GlobalConstants import GlobalConstants
 import logging
 import json
 from pathlib import Path

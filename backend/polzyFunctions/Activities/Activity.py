@@ -1,18 +1,18 @@
-from polzybackend.polzyFunctions.Activities.ActivitiesDataClasses import InputFields, FieldTypes, FieldDefinition
-from polzybackend.polzyFunctions.GlobalConstants import GlobalConstants
+from polzyFunctions.Activities.ActivitiesDataClasses import InputFields, FieldTypes, FieldDefinition
+from polzyFunctions.GlobalConstants import GlobalConstants
 from polzybackend import messenger
-from polzybackend.polzyFunctions.ConnectionFactory import ConnectionFactory
-from polzybackend.polzyFunctions.ConfigurationEngine.ConfigurationProvider import ConfigurationProvider
-from polzybackend.polzyFunctions.GamificationActivityRecorder import recordActivityDecorator
-from polzybackend.polzyFunctions.AntragActivityRecorder import recordAntragDecorator
-from polzybackend.polzyFunctions.Dataclasses.CommonFieldnames import CommonFieldnames
+from polzyFunctions.ConnectionFactory import ConnectionFactory
+from polzyFunctions.ConfigurationEngine.ConfigurationProvider import ConfigurationProvider
+from polzyFunctions.GamificationActivityRecorder import recordActivityDecorator
+from polzyFunctions.AntragActivityRecorder import recordAntragDecorator
+from polzyFunctions.Dataclasses.CommonFieldnames import CommonFieldnames
 from datetime import datetime
 from logging import getLogger
 import json
 import xml.dom.minidom
 from LogLevelUpdater import LogLevelUpdater
 from requests import Session
-from polzybackend.polzyFunctions.Activities.ActivitiesDataClasses import InputFields
+from polzyFunctions.Activities.ActivitiesDataClasses import InputFields
 
 logger = getLogger()
 

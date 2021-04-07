@@ -8,16 +8,16 @@ from dataclasses import dataclass
 from polzybackend import messenger
 from polzybackend.models import User, AntragActivityRecords
 from datetime import datetime, timedelta
-from polzybackend.polzyFunctions.utils.counter import Counter
-from polzybackend.polzyFunctions.Dataclasses.PersonRoles import Roles
-from polzybackend.polzyFunctions.Activities.Activity import Activity
-from polzybackend.polzyFunctions.GlobalConstants import GlobalConstants
-from polzybackend.polzyFunctions.Dataclasses.AntragsStatus import AntragsStatus
-from polzybackend.polzyFunctions.AntragActivityRecorder import recordAntragDecorator
-from polzybackend.polzyFunctions.Dataclasses.CommonFieldnames import CommonFieldnames
-from polzybackend.polzyFunctions.GamificationActivityRecorder import recordActivityDecorator
-from polzybackend.polzyFunctions.ConfigurationEngine.ConfigurationProvider import ConfigurationProvider
-from polzybackend.polzyFunctions.Activities.ActivitiesDataClasses import InputFields, FieldDataType, FieldTypes, \
+from polzyFunctions.utils.counter import Counter
+from polzyFunctions.Dataclasses.PersonRoles import Roles
+from polzyFunctions.Activities.Activity import Activity
+from polzyFunctions.GlobalConstants import GlobalConstants
+from polzyFunctions.Dataclasses.AntragsStatus import AntragsStatus
+from polzyFunctions.AntragActivityRecorder import recordAntragDecorator
+from polzyFunctions.Dataclasses.CommonFieldnames import CommonFieldnames
+from polzyFunctions.GamificationActivityRecorder import recordActivityDecorator
+from polzyFunctions.ConfigurationEngine.ConfigurationProvider import ConfigurationProvider
+from polzyFunctions.Activities.ActivitiesDataClasses import InputFields, FieldDataType, FieldTypes, \
     InputFieldTypes, FieldDefinition
 
 logger = getLogger(GlobalConstants.loggerName)
