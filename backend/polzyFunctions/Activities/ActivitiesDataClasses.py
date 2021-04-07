@@ -1,12 +1,19 @@
 from dataclasses import dataclass, field
+from polzyFunctions.GlobalConstants import GlobalConstants
 from datetime import datetime
 import json
 from logging import getLogger
 
-logger = getLogger("PyC")
+
+logger = getLogger(GlobalConstants.loggerName)
 
 
 class InputFieldTypes:
+    """
+    These are the input field types, which are used throughout the application. Each inputfieldVisibilityType triggers
+    different behavior in the frontend and has different abilities, additional attributes, etc.
+
+    """
     # Just a regular string. May have valueRangeInput, then it is a dropdown. Otherwise only text field.
     # If used with FieldType.output it may have HTML in the value and it will be rendered accordingly.
     TYPESTRING = "Text"
@@ -68,11 +75,11 @@ class InputFieldTypes:
     #           ]
     #         }
     #       }
-    # Important: Use fieldType = FieldTypes.output - everything else will not work!
+    # Important: Use fieldVisibilityType = FieldVisibilityTypes.output - everything else will not work!
     TYPECHART = "Chart"
 
     # Specific component used for documents-card of Backend-Antrags
-    # fieldType may only be 2!
+    # fieldVisibilityType may only be 2!
     # value is a list dict objects representing document file {
     # "id": <string: file.id>,
     # "name": <string: filename>,
@@ -83,7 +90,7 @@ class InputFieldTypes:
     # lines 175+ of https://gogs.earthsquad.global/athos/PoLZy_Showcase/src/master/antrag.py
     TYPEDOCUMENTS = "Documents"
 
-    # fieldType may only be 2!
+    # fieldVisibilityType may only be 2!
     # value is a list dict objects representing attached file
     # example in lines 128+ of gogs.earthsquad.global/athos/PoLZy_Showcase/src/master/antrag.py
     # {"id": < string: file.id >,
@@ -121,7 +128,10 @@ class FieldDataType:
 
 
 @dataclass
-class FieldTypes:
+class FieldVisibilityTypes:
+    """
+
+    """
     # Visible and ready for Input in Frontend
     visible = 1
     # Visible in Frontend. Output only.
@@ -135,34 +145,53 @@ class FieldTypes:
 # POLZY
 @dataclass
 class FieldDefinition:
-    name: str = field(default="")  # POLZY
-    value: any = field(default=None)  # POLZY
-    valueTech: any = field(default=None)
-    valueOutput: any = field(default=None)
-    valueRangeInput: list = field(default_factory=list)  # POLZY
+    name: str = field(default="")
     # This value is a single implementation of usually 2 fields (Value, DefaultValue). When the activity get's executed
     # it's not important whether the user chose the default value or manually selected another value, so 1 field is
     # enough. When the backend wants to set a default value, it writes it in this field for the frontend.
     # Before the frontend can execute the activity, it will write the chosen value from the UI into this field.
+    value: any = field(default=None)
+    valueTech: any = field(default=None)
+    valueOutput: any = field(default=None)
+    # The value range is always a list. Either a list with all possible entries or a list with ["range", low, high]
+    # for numeric fields. For sliders it is ["slider", low, high].
+    valueRangeInput: list = field(default_factory=list)
+    # Please check docu in fieldDataType
     fieldDataType: FieldDataType = field(default=FieldDataType)  # Boolean, String, Numeric, etc.
+    # for numeric fields only
     decimalPlaces: int = field(default=0)
+    # When this flag is set, the frontend will trigger an immediate backend call if the field value changes.
     inputTriggersComplexUpdates: bool = field(default=False)
-    kurzbeschreibung: str = field(default="")  # Short description
-    tooltip: str = field(default="")
+    shortDescription: str = field(default="")  # Short description, which will be shown in the UI
+    tooltip: str = field(default="")  # Tooltip on mouse-over in the UI
+    # If this value is set to True, a dropdown list will not allow values other than the ones from ValueRange
     onlyValuesFromValueRange: bool = field(default=False)
+    # If True, Frontend will not allow continuation without this field being entered/selected
     isMandatory: bool = field(default=False)
     errorMessage: str = field(default="")  # If a value is set, the frontend will show it as helper to the user.
-    fieldType: int = field(default=FieldTypes.visible)  # See Class FieldTypes
+    fieldVisibilityType: int = field(default=FieldVisibilityTypes.visible)  # See Class FieldVisibilityTypes
     icon: str = field(default="")
+    # if the field shall be part of a card = Group, then enter the group-name here. Groups must be defined first
+    # using isGroupField=True. The field.name of the group shall go into attribute "group"
     group: str = field(default="")
     # If this is True, then the field is a group-field. Must be boolean.
     # Group-Fields are displayed on the top of the card. They activate/
     # deactivate groups of fields = a card within the card.
     isGroupField: bool = field(default=False)
+    # If the value list is too long we can call this endpoint when a value is entered. This is used for instance
+    # for address fields to check and provide a value list once the user starts to enter values.
     endpoint: str = field(default="")
+    # To group cards further we can create "subtitles" (That are sections within the card). Name here, which subsections
+    # you want. Obviously we want to have this attribute only in fields that have also "isGroupField".
+    # e.g. ["first section"]
     subtitles: list = field(default_factory=list)
+    # If a field shall go into a subsection of the card (see previous attribute) state here the exact name
+    # of the section, e.g. "first section" (if you created "first section" within the subtitles of the group.
     subsection: str = field(default="")
+    # Option to set colors for the card. Only works with isGroupField=True
     background: str = field(default="")
+    # For several FieldDataTypes it is possible to have Child-fields, that will appear only if the host-field has
+    # value "true". Here you can pass those additional fields as list.
     relatedFields: list = field(default_factory=list)
 
     def __post_init__(self):
@@ -199,15 +228,15 @@ class FieldDefinition:
 
         # boolean fields with "output" don't work on the frontend. change them to "string" and use valueOutput
         lFieldDataType = self.fieldDataType
-        if lFieldDataType == FieldDataType(InputFieldTypes.TYPEBOOLEAN) and self.fieldType == FieldTypes.output:
+        if lFieldDataType == FieldDataType(InputFieldTypes.TYPEBOOLEAN) and self.fieldVisibilityType == FieldVisibilityTypes.output:
             lFieldDataType = FieldDataType(InputFieldTypes.TYPESTRING)
             lValue = self.stringify(self.valueOutput)
 
         try:
             lReturn = {
-                'fieldType': self.fieldType,
+                'fieldVisibilityType': self.fieldVisibilityType,
                 'name': self.name,
-                'brief': self.kurzbeschreibung,
+                'brief': self.shortDescription,
                 'tooltip': self.tooltip,
                 'icon': self.icon,
                 'fieldDataType': lFieldDataType.toJson(),
@@ -245,7 +274,7 @@ class FieldDefinition:
             return False
         if isinstance(inValue, (list, dict)):
             return len(inValue) == 0
-        if isinstance(inValue, FieldTypes):
+        if isinstance(inValue, FieldVisibilityTypes):
             return False
 
         logger.info(f"not sure how to handle this field value {inValue}, it's type {type(inValue)}. Will parse to FE")
@@ -293,8 +322,8 @@ class InputFields:
     def setField(self, fieldDefinition: FieldDefinition):
         for item in self.fields:
             if item.name == fieldDefinition.name:
-                item.fieldType = fieldDefinition.fieldType
-                item.kurzbeschreibung = fieldDefinition.kurzbeschreibung
+                item.fieldVisibilityType = fieldDefinition.fieldVisibilityType
+                item.shortDescription = fieldDefinition.shortDescription
                 item.isMandatory = fieldDefinition.isMandatory
                 item.feldArt = fieldDefinition.fieldDataType
                 item.value = fieldDefinition.value

@@ -1,4 +1,4 @@
-from polzyFunctions.Activities.ActivitiesDataClasses import FieldDefinition, InputFieldTypes, FieldDataType, FieldTypes
+from polzyFunctions.Activities.ActivitiesDataClasses import FieldDefinition, InputFieldTypes, FieldDataType, FieldVisibilityTypes
 from fasifu.GlobalConstants import GlobalConstants, GlobalSapClients
 from datetime import datetime   # Needed because dynamically called
 from logging import getLogger

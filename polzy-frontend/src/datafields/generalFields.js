@@ -295,7 +295,7 @@ export function DataFieldNumber(props) {
       size="small"
       fullWidth
       required={data.isMandatory}
-      disabled={data.fieldType === 2}
+      disabled={data.fieldVisibilityType === 2}
       error={error}
     >
       <InputLabel htmlFor={`${data.name}-${id}`}>
@@ -859,7 +859,7 @@ export default function DataGroup(props) {
               spacing={2}
             >
               {fields.filter((field) => (
-                field.subsection === subtitle && field.fieldDataType === "Flag" && field.fieldType === 1
+                field.subsection === subtitle && field.fieldDataType === "Flag" && field.fieldVisibilityType === 1
               )).map((field) => (
                 <Grid
                   item
@@ -892,7 +892,7 @@ export default function DataGroup(props) {
               spacing={2}
             >
               {fields.filter((field) => (
-                field.subsection === subtitle && field.fieldDataType !== "Flag" && field.fieldType === 1 && 
+                field.subsection === subtitle && field.fieldDataType !== "Flag" && field.fieldVisibilityType === 1 &&
                 field.fieldDataType !== "SearchEndPoint" && field.fieldDataType !== "Table" &&
                 field.fieldDataType !== "FlagWithOptions" && field.fieldDataType !== "RadioFlagWithOptions"
               )).map((field) => (
@@ -927,7 +927,7 @@ export default function DataGroup(props) {
               spacing={2}
             >
               {fields.filter((field) => (
-                field.subsection === subtitle && field.fieldDataType === "SearchEndPoint" && field.fieldType === 1
+                field.subsection === subtitle && field.fieldDataType === "SearchEndPoint" && field.fieldVisibilityType === 1
               )).map((field) => (
                 <Grid 
                   item
@@ -951,7 +951,7 @@ export default function DataGroup(props) {
               spacing={2}
             >
               {fields.filter((field) => (
-                field.subsection === subtitle && field.fieldType === 1 &&
+                field.subsection === subtitle && field.fieldVisibilityType === 1 &&
                 (field.fieldDataType === "FlagWithOptions" || field.fieldDataType === "RadioFlagWithOptions")
               )).map((field) => (
                 <React.Fragment key={field.name}>
@@ -1027,7 +1027,7 @@ export default function DataGroup(props) {
               spacing={2}
             >
               {fields.filter((field) => (
-                field.subsection === subtitle && field.fieldDataType === "Table" && field.fieldType === 1
+                field.subsection === subtitle && field.fieldDataType === "Table" && field.fieldVisibilityType === 1
               )).map((field) => (
                 <Grid 
                   item
@@ -1054,7 +1054,7 @@ export default function DataGroup(props) {
               <Table>
                 <TableBody>
                   {fields.filter((field) => (
-                    field.subsection === subtitle && field.fieldType === 2 && field.fieldDataType === "Text"
+                    field.subsection === subtitle && field.fieldVisibilityType === 2 && field.fieldDataType === "Text"
                   )).map((field) => (
                     <TooltipField
                     key={field.name}
@@ -1081,7 +1081,7 @@ export default function DataGroup(props) {
             {/* Mapped Images */}
             <Grid item>
               {fields.filter((field) => (
-                field.subsection === subtitle && field.fieldType === 2 && field.fieldDataType === "Image"
+                field.subsection === subtitle && field.fieldVisibilityType === 2 && field.fieldDataType === "Image"
               )).map((field) => (
                 <MappedImage
                   key={field.name}
@@ -1097,7 +1097,7 @@ export default function DataGroup(props) {
             {/* Charts */}
             <Grid item>
               {fields.filter((field) => (
-                field.subsection === subtitle && field.fieldType === 2 && field.fieldDataType === "Chart"
+                field.subsection === subtitle && field.fieldVisibilityType === 2 && field.fieldDataType === "Chart"
               )).map((field) => (
                 <LinearChart
                   key={field.name}
@@ -1113,7 +1113,7 @@ export default function DataGroup(props) {
             <Grid item container spacing={2}> 
               <Grid item xs={12}>
                 {fields.filter((field) => (
-                  field.subsection === subtitle && field.fieldType === 2 && field.fieldDataType === "Documents"
+                  field.subsection === subtitle && field.fieldVisibilityType === 2 && field.fieldDataType === "Documents"
                 )).map((field) => (
                   <DocumentTable
                     key={field.name}
@@ -1128,7 +1128,7 @@ export default function DataGroup(props) {
 
               <Grid item xs={12}>
                 {fields.filter((field) => (
-                  field.subsection === subtitle && field.fieldType === 2 && field.fieldDataType === "Attachments"
+                  field.subsection === subtitle && field.fieldVisibilityType === 2 && field.fieldDataType === "Attachments"
                 )).map((field) => (
                   <AttachmentTable
                     key={field.name}

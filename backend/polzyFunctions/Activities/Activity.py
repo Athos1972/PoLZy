@@ -1,4 +1,4 @@
-from polzyFunctions.Activities.ActivitiesDataClasses import InputFields, FieldTypes, FieldDefinition
+from polzyFunctions.Activities.ActivitiesDataClasses import InputFields, FieldVisibilityTypes, FieldDefinition
 from polzyFunctions.GlobalConstants import GlobalConstants
 from polzybackend import messenger
 from polzyFunctions.ConnectionFactory import ConnectionFactory
@@ -463,7 +463,7 @@ class Activity:
         for feld in self.activityFields.getAllInputFields():
             if feld.isGroupField:
                 countfields = [x.name for x in self.activityFields.getAllInputFields()
-                               if x.group == feld.name and x.fieldType != FieldTypes.hidden]
+                               if x.group == feld.name and x.fieldVisibilityType != FieldVisibilityTypes.hidden]
                 if countfields:
                     lList.append(feld)
 
@@ -482,7 +482,7 @@ class Activity:
         """
         lReturnDict = {}
         for feld in self.activityFields.getAllInputFields():
-            if feld.fieldType == FieldTypes.hidden:
+            if feld.fieldVisibilityType == FieldVisibilityTypes.hidden:
                 continue
             if feld.group:
                 if lReturnDict.get(feld.group):

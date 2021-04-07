@@ -17,7 +17,7 @@ from polzyFunctions.AntragActivityRecorder import recordAntragDecorator
 from polzyFunctions.Dataclasses.CommonFieldnames import CommonFieldnames
 from polzyFunctions.GamificationActivityRecorder import recordActivityDecorator
 from polzyFunctions.ConfigurationEngine.ConfigurationProvider import ConfigurationProvider
-from polzyFunctions.Activities.ActivitiesDataClasses import InputFields, FieldDataType, FieldTypes, \
+from polzyFunctions.Activities.ActivitiesDataClasses import InputFields, FieldDataType, FieldVisibilityTypes, \
     InputFieldTypes, FieldDefinition
 
 logger = getLogger(GlobalConstants.loggerName)
@@ -348,7 +348,7 @@ class Antrag():
         lList = list(map(
             lambda feld: feld.toJSON(),
             filter(
-                lambda feld: not feld.isGroupField and not feld.group and feld.fieldType != FieldTypes.hidden,
+                lambda feld: not feld.isGroupField and not feld.group and feld.fieldVisibilityType != FieldVisibilityTypes.hidden,
                 self.Fields.getAllInputFields()
             )
         ))
@@ -374,7 +374,7 @@ class Antrag():
 
             # Field-Groups, that don't have any visible fields inside them shall not be transferred:
             fieldList = [x.name for x in lAllInputFields if x.group == fieldGroup.name
-                         and x.fieldType != FieldTypes.hidden]
+                         and x.fieldVisibilityType != FieldVisibilityTypes.hidden]
             if not fieldList and not fieldGroup.name == CommonFieldnames.expertMode.value and not fieldGroup.name == CommonFieldnames.AussagenGroup.value:
                 lDropFieldGroupEntries.append(fieldGroup)
 
@@ -402,7 +402,7 @@ class Antrag():
                 if not lGroup.value and lGroup.name != CommonFieldnames.expertMode.value and lGroup.name != CommonFieldnames.AussagenGroup.value:
                     continue
                 # Don't send fields, which are not displayed on Frontend.
-                if feld.fieldType != FieldTypes.hidden:
+                if feld.fieldVisibilityType != FieldVisibilityTypes.hidden:
                     # add field group to the response
                     if lReturnDict.get(feld.group) is None:
                         lReturnDict[feld.group] = []
@@ -590,7 +590,7 @@ class Antrag():
             field.value = None
             return
 
-        if field.decimalPlaces > 0 and field.fieldType == 2:
+        if field.decimalPlaces > 0 and field.fieldVisibilityType == 2:
             # Output-Field should have Value formatted for the UI
             if isinstance(field.value, float):
                 field.value = locale.currency(field.value,
@@ -719,7 +719,7 @@ class Antrag():
         """
         try:
             lField = self.Fields.getField(name=fieldName)
-            lField.fieldType = FieldTypes.visible
+            lField.fieldVisibilityType = FieldVisibilityTypes.visible
         except AttributeError:
             logger.exception(f"Field {fieldName} should be set visible. Doesn't exist. Most probaly a typo!")
 
@@ -732,7 +732,7 @@ class Antrag():
         """
         try:
             lField = self.Fields.getField(name=fieldName)
-            lField.fieldType = FieldTypes.hidden
+            lField.fieldVisibilityType = FieldVisibilityTypes.hidden
             if lField.value and lField.fieldDataType == FieldDataType(InputFieldTypes.TYPEBOOLEAN):
                 lField.value = False
         except Exception:
