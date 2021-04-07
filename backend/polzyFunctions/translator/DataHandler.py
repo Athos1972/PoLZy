@@ -30,12 +30,11 @@ class Data(metaclass=Singleton):
     This also means that any changes made on language_data.json on runtime will not affect the program until restart.
     """
     def __init__(self):
-        lConfig = ConfigurationProvider.getInstance()
         logger.debug("Language translation backend module initialized - buffered")
-        self.dataFile = os.path.join(os.path.dirname(os.path.abspath(__file__)), "language_data.json")
-        self.data = self.get_data()
+        self.data = self.get_data(os.path.join(os.path.dirname(os.path.abspath(__file__)), "language_data.json"))
 
-    def get_data(self):
-        with codecs.open(self.dataFile, 'r')as file:
+    @staticmethod
+    def get_data(fileNameAndPath):
+        with codecs.open(fileNameAndPath, 'r')as file:
             data = json.load(file)
         return data
