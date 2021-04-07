@@ -12,7 +12,7 @@ logger = logging.getLogger(GlobalConstants.loggerName)
 
 class ConfigurationProvider:
     """
-    Static class to provide configurations all over the application.
+    Static/singleton class to provide configurations all over the application.
 
     We read JSON-Files with contents for the current configuration profile (might later be transformed into a
     database. If JSON-File was not found or doesn't have to configuration, that is searched for, we take from
@@ -34,18 +34,18 @@ class ConfigurationProvider:
         if ConfigurationProvider.__instance__ is None:
             ConfigurationProvider.__instance__ = self
         else:
-            raise UserWarning("Session-Klasse schon initialisiert")
+            raise UserWarning("Session class was already initialized")
 
         result = self.__checkAndReadConfigurations("default")
         if not result:
             logger.critical("Default configuration was not found. Aborting.")
             raise NotImplementedError("Default configuration not found. Aborting.")
         self.language = "en"  # default fallback language is english
-        self.offline = self.getOfflineModeState()
-        self.PDFOutput = self.get_pdf_output_path()
+        self.offline = self._getOfflineModeState()
+        self.PDFOutput = self._get_pdf_output_path()
 
     @staticmethod
-    def get_pdf_output_path():
+    def _get_pdf_output_path():
         output_dir = ''
         try:
             config = configparser.ConfigParser()
@@ -63,7 +63,7 @@ class ConfigurationProvider:
         return output_dir
 
     @staticmethod
-    def getOfflineModeState():
+    def _getOfflineModeState():
         offline = False
         try:
             config = configparser.ConfigParser()
@@ -76,6 +76,9 @@ class ConfigurationProvider:
 
     @staticmethod
     def getInstance():
+        """
+        Method to get the singleton instance into any calling class/form
+        """
         if not ConfigurationProvider.__instance__:
             logger.info("ConfigurationProvider instance created")
             ConfigurationProvider()
@@ -84,6 +87,8 @@ class ConfigurationProvider:
 
     def __checkAndReadConfigurations(self, configurationEnvironmentKey: str) -> bool:
         """
+        See, if we had loaded this configuration already. If it was not loaded before, don't retry. Otherwise try to
+        read it.
 
         :param configurationEnvironmentKey:
         :return: True if configuration was found or existed already. False if not found.
@@ -92,7 +97,7 @@ class ConfigurationProvider:
             return True
 
         if configurationEnvironmentKey in self.badConfigs.keys():
-            logger.debug(f"Configuration {configurationEnvironmentKey} was not found before. Not retrying.")
+            logger.debug(f"Configuration {configurationEnvironmentKey} was already not found before. Not retrying.")
             return False
 
         configReadResult = ConfigurationProvider.__readConfigurationFromFile(
@@ -118,6 +123,10 @@ class ConfigurationProvider:
 
     def getConfigurationParameter(self, configurationEnvironmentKey: str, configKeyToSearchFor: str):
         """
+        Main method to retrieve a configuration setting. It will first try to read from the given
+        configurationEnvironment. If that is not successful it will fallback to "default.json".
+
+        If unsuccessful, we'll create a log message.
 
         :param configurationEnvironmentKey: Environment key (e.g. sapClient)
         :param configKeyToSearchFor: The key in either default Configuration or manually set configuration

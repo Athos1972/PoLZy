@@ -9,7 +9,6 @@ from logging import getLogger
 logger = getLogger(GlobalConstants.loggerName)
 
 
-# POLZY
 class AntragActivity(Activity):
     """
     All activities are called with an instance of Polizze and WirksamkeitsDatum (Effective date)
@@ -36,29 +35,34 @@ class AntragActivity(Activity):
         super(AntragActivity, self).__init__()
         self.antrag = antrag
 
-    # POLZY
-    def returnLogID(self):
-        return self.antrag.id
-
-    # POLZY
     def checkIsActivityValidForStatus(self) -> bool:
         """
-        Festlegen, ob die gegenwärtige Aktivität für dieses Antragsobjekt zulässig ist oder nicht. Muss in jeder
-        Aktivität ausgeprägt werden. Wenn man vergisst, gibt's eins auf die Fingerchen
-        :return:
+        Define, whether this activity is valid for the current status of the current instance. Each instance must
+        implement this method
+        :return: True if valid/active, False if not valid/activ
         """
         logger.exception(f"Activity not properly implemented! Doesn't know if it's valid for status or not! "
                          f"{self.__class__}")
-        raise ValueError((f"Activity not properly implemented! Doesn't know if it's valid for status or not! "
-                          f"{self.__class__}"))
+        raise NotImplementedError((f"Activity not properly implemented! Doesn't know if it's valid for status or not! "
+                                   f"{self.__class__}"))
 
-    # POLZY
     def setSingleFieldValue(self, fieldNameToSearchFor, valueToSet):
-        # This not only sets the field value but also executes the activites after field value was changed!
+        """
+        When we get new values from the frontend or from within the acivities logic, they are processed here
+
+        :param fieldNameToSearchFor:
+        :param valueToSet:
+        :return:
+        """
         self.updateFieldValues({fieldNameToSearchFor: valueToSet})
 
-    # POLZY
     def setSingleFieldFieldType(self, fieldNameToSearchFor, fieldVisibilityTypeToSet):
+        """
+        Sets visibility of a field
+        :param fieldNameToSearchFor:
+        :param fieldVisibilityTypeToSet: Any of the values of FieldVisibilityTypes (e.g. hidden, visible)
+        :return:
+        """
         lFeld = self.antrag.Fields.getField(name=fieldNameToSearchFor)
         if lFeld:
             lFeld.fieldVisibilityType = fieldVisibilityTypeToSet
@@ -66,8 +70,11 @@ class AntragActivity(Activity):
             logger.warning(f"Should have set FieldType {fieldVisibilityTypeToSet} for field {fieldNameToSearchFor}. But field"
                            f"is not there")
 
-    # POLZY
     @recordAntragDecorator
     @recordActivityDecorator
     def executeActivity(self) -> bool:
+        """
+        Executes this activity. See description in superclass.
+        :return: True if successful, False if not successful.
+        """
         return super().executeActivity()

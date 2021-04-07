@@ -130,6 +130,7 @@ class FieldDataType:
 @dataclass
 class FieldVisibilityTypes:
     """
+    Self-explanatory
 
     """
     # Visible and ready for Input in Frontend
@@ -142,7 +143,6 @@ class FieldVisibilityTypes:
     hiddenFrontend = 4
 
 
-# POLZY
 @dataclass
 class FieldDefinition:
     name: str = field(default="")
@@ -218,6 +218,10 @@ class FieldDefinition:
         return str(value)
 
     def toJSON(self):
+        """
+        Generate JSON-String to be sent to Frontend
+        :return:
+        """
 
         if hasattr(self, "valueRangeInput") and self.valueRangeInput:
             inputRangeList = [self.stringify(v) for v in self.valueRangeInput]
