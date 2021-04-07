@@ -5,6 +5,8 @@ class CommonFieldnames(Enum):
     versicherungsBeginn = "Versicherungsbeginn"
     versicherungsEnde = "Versicherungsende"
     hauptfaelligkeit = "Hauptfälligkeit"
+    businessCaseType = "GeschäftsfallArt"
+    previousPolicyNumber = "Vorpolizzennummer"
     premium = "premium"
     verkaufsAktion = "Aktion"
     zahlungsFrequenz = "Zahlungsfrequenz"
