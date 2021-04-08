@@ -1,6 +1,6 @@
 from polzybackend.models import GamificationActivity, GamificationEvent, db
 from fasifu.GlobalConstants import logger
-from fasifu.Activities.LoginActivity import LoginActivity
+from polzyFunctions.Activities.LoginActivity import LoginActivity
 import json
 
 

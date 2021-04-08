@@ -1,7 +1,5 @@
 from enum import Enum
 
-# fixme akash: Please move fields from here to fasifu (marked with "# fasifu"
-
 class CommonFieldnames(Enum):
     """
     Common Fieldnames, that are used in many products (it not all).
@@ -13,13 +11,9 @@ class CommonFieldnames(Enum):
     businessCaseType = "GeschäftsfallArt"
     previousPolicyNumber = "Vorpolizzennummer"
     premium = "premium"
-    verkaufsAktion = "Aktion"       # fasifu
     paymentFrequency = "Zahlungsfrequenz"
     expertMode = "Erweitern"    # "ExpertenModus"
-    AussagenGroup = "Aussagen"     # fasifu
     commissionAccount = "ProvKto"
-
-    bedarfsAnalyse = "BedarfsAnalyse"  # fasifu
 
     ## Person fields:
     Partner = "Partner"
@@ -37,7 +31,6 @@ class CommonFieldnames(Enum):
 
     ## Address fields:
     addressDict = "addressDict"
-    risikoAdressDict = "Risikoadresse"  # fasifu
     addressID = "addressID"           # official addressID in Backend-System
     addressNumber = "addressNumber"   # Polzy-Internal, temporary addressNumber
     country = "country"
@@ -48,14 +41,9 @@ class CommonFieldnames(Enum):
     houseNumber = "houseNumber"
     telefon = "telefon"
     email = "email"
-    pac = "pac"                # fasifu # Austrian specific code for address data
-    haushaltID = "haushaltId"  # fasifu # Austian specific code for a "container" for a community, e.g. a flat of a family
 
     # Fields for "Senden-An-Bestand"
-    besondereVereinbarungen = "besondereVereinbarungen"   # fasifu
-    besondereVereinbarungenFlag = "besondereVereinbarungenFlag" # fasifu
     underWriterWarnings = "AnnahmeTexte"
-    releaseInBackend = "releaseInBackend"  # fasifu
     policyNumber = "policyNumber"
     applicationNumber = "applicationNumber"
-    sapMessages = "sapMessages"  # fasifu
+    pac = "pac"

@@ -21,7 +21,7 @@ def activityWriter(inInstance):
     It is anyway important to have this reference because otherwise the "where used" doesn't work for "setSearchString"
 
     """
-    from fasifu.Dataclasses.Antrag import Antrag  # FIXME Akash: That's the wrong class
+    from polzyFunctions.Dataclasses.Antrag import Antrag
 
     lInstance = None
     try:

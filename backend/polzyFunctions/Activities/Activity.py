@@ -230,25 +230,6 @@ class Activity:
                 # Copy all attributes from newly added field into this field
                 lExistingField.__dict__.update(field.__dict__)
 
-    # FIXME AKASH: move back to Fasifu.
-    def _readTemplateXMLorJSON(self, fileNameOfTemplate=None):
-        if fileNameOfTemplate:
-            self.fileNameofTemplate = fileNameOfTemplate
-
-        if not self.fileNameofTemplate:
-            logger.exception("Kein Template File übergeben.")
-            return
-
-        with open(self.fileNameofTemplate, mode="r", encoding="UTF-8") as file:
-            logger.debug(f"File {self.fileNameofTemplate} read.")
-            if ".JSON" in str(self.fileNameofTemplate).upper():
-                self.payloadJSON = json.loads(file.read())
-                logger.debug(f"First 150 chars of template is: \n{str(self.payloadJSON)[0:150]}")
-            else:
-                self.payload = file.read()
-                logger.debug(f"First 150 chars of template is: \n{str(self.payload)[0:150]}")
-
-
     def _replaceVariablesInPayload(self):
         """
         Search in the payload string for $(<variablename>) and replace with either self.polizze or
@@ -452,9 +433,13 @@ class Activity:
         else:
             self.checkAndUpdateInputFields(field)
 
-    # FIXME AKASH: Why is this empty? We should at least add a documentation, how he would load field-definition from
-    # a JSON.
     def createFieldcatalogForActivity(self):
+        """
+        This method is used to update inputFields for current Activity and then update value of those inputFields
+        :return:
+        """
+        # ManageFieldCatalog.addFields(self)                     ## To update inputFields for current Activity
+        # self.checkAndUpdateInputFields(self.activityFields)    ## To update inputFields value
         return
 
     @staticmethod
