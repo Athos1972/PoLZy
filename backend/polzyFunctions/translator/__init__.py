@@ -29,14 +29,18 @@ class Translator(metaclass=Singleton):
         return result
 
     def add_translation_dict(self, dict):
-        # FIXME Akash: please document. I can't find, where this s called.
+        # this method is to be used when we need to update translation from dictionary. It can be called in sub repo
+        # for customer specific translations.
+        # structure of input dictionary: {"English word": {"de": "translation for it", "wi": "translation for it", ...}}
         self.data.update(dict)
 
     def add_translation_file(self, fileNameAndPath):
-        # FIXME Akash: please document. I can't find, where this is called
+        # this method is to be used when we need to update translation from json file. It can be called in sub repo
+        # for customer specific translations.
+        # structure in input json file: {"English word": {"de": "translation for it", "wi": "translation for it", ...}}
         fileNameAndPath = get_file_path(fileNameAndPath)
         self.add_translation_dict(Data.get_data(fileNameAndPath))
 
     def update_default_language(self, language):
-        # FIXME Akash: Please document. I can't find, where this is called.
+        # this method is planned to be used to update default language of translation module as per current user
         self.default_language = language.lower()
