@@ -1,0 +1,135 @@
+{
+    "Standard data": {
+        "de": "Standarddaten",
+        "wi": "Standarddaten"
+    },
+    "content": {
+        "de": "Inhalt",
+        "wi": "Inhalt"
+    },
+    "Data for content": {
+        "de": "Daten zum Inhalt",
+        "wi": "Frogn zum Inhalt"
+    },
+    "building": {
+        "de": "Gebäude",
+        "wi": "Hitt´n"
+    },
+    "Data to the building": {
+        "de": "Daten zum Gebäude",
+        "wi": "Frogn zur Hitt'n"
+    },
+    "Address policyholder": {
+        "de": "Adresse Versicherungsnehmer",
+        "wi": "Wo wohnt a?"
+    },
+    "Dog liability": {
+        "de": "Hundehaftpflicht",
+        "wi": "Hoftpflicht für'n Hund"
+    },
+    "Add liability insurance for dogs": {
+        "de": "Hundehaftpflicht einschließen",
+        "wi": "Hund Hoftpflicht dazua nemma"
+    },
+    "Full address of the policyholder": {
+        "de": "Vollständige Adresse des Versicherungsnehmers",
+        "wi": "Adress vom VN"
+    },
+    "Square meter content": {
+        "de": "Quadratmeter Inhalt",
+        "wi": "Quatdratmeta Inhalt"
+    },
+    "How big is the apartment?": {
+        "de": "Wie groß ist die Wohnung?",
+        "wi": "Wie groß is de Wohnung?"
+    },
+    "Square meter building": {
+        "de": "Quadratmeter Gebäude",
+        "wi": "Quadratmeter Hitt'n"
+    },
+    "How many M2 does the gathered building comprise?": {
+        "de": "Wie viele m2 umfasst das gesammte Gebäude?",
+        "wi": "Wie groß is de Hitt'n?"
+    },
+    "Carport available?": {
+        "de": "Carport vorhanden?",
+        "wi": "Homma an Autohofn?"
+    },
+    "Is a carport available?": {
+        "de": "Ist ein Carport vorhanden?",
+        "wi": "Homma an Autohofn?"
+    },
+    "Product variant": {
+        "de": "Produktvariante",
+        "wi": "Untaprodukt"
+    },
+    "Sum insured building": {
+        "de": "Versicherungssumme Gebäude",
+        "wi": "Göd via de Hittn"
+    },
+    "Sum insured content": {
+        "de": "Versicherungssumme Inhalt",
+        "wi": "Göd via's Zeig'"
+    },
+    "Sum insured of the content, excluding other coverages. Might be suspect to excess.": {
+        "de": "Versicherungssumme Inhalt, exclusive anderer Deckungssummen. Kann einem Selbstbehalt unterliegen",
+        "wi": "Göd via's Zeig - ohne Zeig in aundare Deckungen. Kaunn täuweise zum söba peck'n sei."
+    },
+    "Sum insured of the building. Might be suspect to excess.": {
+        "de": "Versicherungsumme Gebäude, exclusive anderer Deckungssummen. Kann einem Selbstbehalt unterliegen",
+        "wi": "Göd via de Hitt'n - ohne Zeig in aundare Deckungen. Kaunn täuweise zum söba peck'n sei."
+    },
+    "Basis or Plus/Extra variants offer different benefits.": {
+        "de": "Basis bietet weniger Schutz als Plus/Extra. Mehrwert für wenig Geld!",
+        "wi": "Basis is hoit Basis. Plus/Extra sand bessa und kostn ned vü mehr!"
+    },
+    "Address of the risk": {
+        "de": "Risikoadresse",
+        "wi": "Adress´"
+    },
+    "": {
+        "de": "",
+        "wi": ""
+    },
+    "FIXME": {
+        "de": "Beschreibung folgt",
+        "wi": "no ka Text do"
+    },
+    "Flooding Zone": {
+        "de": "Hochwasser Zone",
+        "wi": "Hochwossa Zone"
+    },
+    "Storm Zone": {
+        "de": "Sturmzone",
+        "en": "Sturmzone"
+    },
+    "Earthquake Zone": {
+        "de": "Erdbebenzone",
+        "wi": "Erdbebenzone"
+    },
+    "Sum insured": {
+        "de": "Versicherungssumme",
+        "wi": "Vasicherungsknedl"
+    },
+    "Coverage Variant": {
+        "de": "Deckungsvariante",
+        "wi": "Deckungsvariante"
+    },
+    "Policy holder": {
+        "de": "Versicherungsnehmer",
+        "wi": "Versicherungsnehmer"
+    },
+    "Premium payer": {
+        "de": "Prämienzahler",
+        "wi": "Prämienzahler"
+    },
+    "Operations Manager": {
+        "de": "Betriebsleiter",
+        "wi": "Betriebsleiter"
+    },
+    "Coverage variant": {
+        "de": "Deckungsumfangsvariante",
+        "wi": "Deckungsumfangsvariante"
+    }
+
+}

@@ -207,14 +207,14 @@ function ActiveAntrag(props) {
   
   
   const getValues = (obj) => {
-    const commonFields = obj.fields.filter(field => (field.fieldType !== 2)).reduce((result, field) => ({
+    const commonFields = obj.fields.filter(field => (field.fieldVisibilityType !== 2)).reduce((result, field) => ({
       ...result,
       ...getFieldValue(field),
     }), {})
     return obj.field_groups.reduce((result, group) => ({
       ...result,
       ...obj[group.name].filter((field) => 
-        (field.fieldType !== 2 && field.fieldDataType !== "Table")
+        (field.fieldVisibilityType !== 2 && field.fieldDataType !== "Table")
       ).reduce((groupFields, field) => ({
         ...groupFields,
         ...getFieldValue(field),
@@ -240,7 +240,7 @@ function ActiveAntrag(props) {
     } else {
       setActivityGroups({})
       activityValues = {...activityValues, ...activity.fields.filter((field) => 
-        (field.fieldType !== 2)
+        (field.fieldVisibilityType !== 2)
       ).reduce((result, field) => ({
         ...result,
         ...getFieldValue(field),
@@ -300,7 +300,7 @@ function ActiveAntrag(props) {
   }
 
   const validateFieldList = (fieldList, fieldValues) => {
-    for (const field of fieldList.filter(field => field.fieldType === 1)) {
+    for (const field of fieldList.filter(field => field.fieldVisibilityType === 1)) {
         
       // mandatory fields
       if (
@@ -568,7 +568,7 @@ function ActiveAntrag(props) {
 
     // check if required activity fields are filled correctely
     for (const group of fieldGroups) {
-      for (const field of currentActivity[group.name].filter(field => field.fieldType === 1)) {
+      for (const field of currentActivity[group.name].filter(field => field.fieldVisibilityType === 1)) {
 
         // mandatory fields
         if(field.isMandatory && activityValues[field.name] === '') {
@@ -788,7 +788,7 @@ function ActiveAntrag(props) {
     }
 
     const groupsExist = ("field_groups" in currentActivity) && currentActivity.field_groups.length > 0
-    const fieldsExist = currentActivity.fields.filter(field => field.fieldType < 3).length > 0
+    const fieldsExist = currentActivity.fields.filter(field => field.fieldVisibilityType < 3).length > 0
 
     //console.log(`isActivityOpen: ${activityType}`)
     //console.log(`Groups: ${groupsExist}`)
@@ -930,7 +930,7 @@ function ActiveAntrag(props) {
               {/* Input Group Switchers */}
               <Grid container spacing={2}>
                 {antrag.field_groups.filter((field) => (
-                  field.fieldType === 1 && field.fieldDataType === "Flag"
+                  field.fieldVisibilityType === 1 && field.fieldDataType === "Flag"
                 )).map((field) => (
                   <Grid item key={field.name} xs={6} md={4} lg={3}>
                     <Tooltip
@@ -957,7 +957,7 @@ function ActiveAntrag(props) {
               <div className={classes.flexContainerVertical}>
                   {antrag.field_groups.map((group) => (
                     <React.Fragment key={group.name}>
-                    {antrag[group.name].filter(field => field.fieldType < 3).length > 0 &&
+                    {antrag[group.name].filter(field => field.fieldVisibilityType < 3).length > 0 &&
                       <Collapse
                         in={groups[group.name]}
                         timeout="auto"
@@ -1013,7 +1013,7 @@ function ActiveAntrag(props) {
                 {/* Input Group Switchers */}
                 <Grid container spacing={2}>
                   {currentActivity.field_groups.filter((field) => (
-                    field.fieldType === 1 && field.fieldDataType === "Flag"
+                    field.fieldVisibilityType === 1 && field.fieldDataType === "Flag"
                   )).map((field) => (
                     <Grid item key={field.name} xs={6} md={4} lg={3}>
                       <Tooltip

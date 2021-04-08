@@ -74,7 +74,7 @@ function ActivePolicy(props) {
     setActivityValues({
       ...activityValues,
       ...activity.fields.filter((field) => 
-        (field.fieldType !== 2)
+        (field.fieldVisibilityType !== 2)
       ).reduce((result, field) => ({
         ...result,
         ...getFieldValue(field),
@@ -329,7 +329,7 @@ function ActivePolicy(props) {
             subheader={policy.effective_date}
           />
           {currentActivity && 
-           currentActivity.fields.filter(field => field.fieldType === 1).length > 0 &&
+           currentActivity.fields.filter(field => field.fieldVisibilityType === 1).length > 0 &&
             <CardContent>
               <DataGroup 
                 id={policy.id}
