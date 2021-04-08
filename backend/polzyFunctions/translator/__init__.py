@@ -1,6 +1,6 @@
 from polzyFunctions.utils import get_file_path, Singleton
 from logging import getLogger
-from fasifu.GlobalConstants import GlobalConstants
+from polzyFunctions.GlobalConstants import GlobalConstants
 from polzyFunctions.translator.DataHandler import Data
 
 logger = getLogger(GlobalConstants.loggerName)

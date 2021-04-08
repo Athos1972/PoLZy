@@ -1,5 +1,4 @@
-from polzybackend.models import GamificationActivity, GamificationEvent, db
-from fasifu.GlobalConstants import logger
+from polzybackend.models import GamificationActivity
 from polzyFunctions.Activities.LoginActivity import LoginActivity
 import json
 
@@ -23,10 +22,11 @@ class WriteActivity:
     Writes an activity to gamification table.
     """
     def __init__(self, instanceOfAntragPolicyOrActivity):
-        from fasifu.Activities.AntragActivity import AntragActivity
+        from polzyFunctions.Activities.AntragActivity import AntragActivity
+        from polzyFunctions.Activities.Activity import Activity
+        from polzyFunctions.Dataclasses.Antrag import Antrag
+        # FIXME: Fix after policy refactor
         from fasifu.Activities.PolicyActivity import PolicyActivity
-        from fasifu.Activities.Activity import Activity
-        from fasifu.Dataclasses.Antrag import Antrag
         from fasifu.Dataclasses.Polizze import Polizze
 
         self.activity: Activity = None

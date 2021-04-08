@@ -586,10 +586,6 @@ class Antrag():
         """
 
         for field in listOfFieldnamesToToggle:
-            from fasifu.Dataclasses.BUFTFieldnames import BUFTFieldnames
-            if field.startswith(BUFTFieldnames.Kuendigungsverzicht.value) and OnOffAsBoolean:
-                breakpoint()
-
             if OnOffAsBoolean:
                 self.setFieldVisible(field)
             else:
