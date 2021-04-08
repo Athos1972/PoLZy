@@ -1,10 +1,10 @@
 from polzyFunctions.Activities.ActivitiesDataClasses import FieldDefinition, InputFieldTypes, FieldDataType, \
     FieldVisibilityTypes
-from fasifu.GlobalConstants import GlobalConstants, GlobalSapClients
+from fasifu.GlobalConstants import GlobalConstants
 from datetime import datetime   # Needed because dynamically called
 from logging import getLogger
 from polzyFunctions.translator import Translator
-from fasifu.ConfigurationEngine.ConfigurationProvider import ConfigurationProvider
+from polzyFunctions.ConfigurationEngine.ConfigurationProvider import ConfigurationProvider
 from polzyFunctions.Dataclasses.CommonFieldnames import CommonFieldnames
 import codecs
 import json
@@ -14,7 +14,7 @@ logger = getLogger(GlobalConstants.loggerName)
 lTranslator = Translator(default=ConfigurationProvider.getInstance().language)  # <-- This will lead to English.
 
 
-def get_field_catalog_dictionary():
+def get_field_catalog_dictionary(JsonFilesDirectory):
     """
     This function is used to get dictionary based on file/function name. Fields can be stored in JSON-Files
     in the form:
@@ -35,11 +35,14 @@ def get_field_catalog_dictionary():
     """
 
     field_data = dict()
-    filenames = os.listdir(GlobalConstants.fieldCatalogJsonFiles)
+    if JsonFilesDirectory is None:
+        return
+
+    filenames = os.listdir(JsonFilesDirectory)
     for filename in filenames:
         if filename[-5:].lower() != ".json":
             continue
-        json_file = os.path.join(GlobalConstants.fieldCatalogJsonFiles, filename)
+        json_file = os.path.join(JsonFilesDirectory, filename)
         with codecs.open(json_file, "r", encoding="utf-8") as file:  # using codecs with utf-8 encoding to avoid errors
             dic = json.load(file)
         field_data[filename[:-5]] = dic  # storing key as filename without extension in order to match function name
@@ -57,7 +60,12 @@ class ManageFieldCatalog:
     we'll issue a breakpoint-statement.
     """
 
-    field_data = get_field_catalog_dictionary()  # getting dictionary of FieldCatalog data for all functions
+    # This class attribute is necessary and you must call it in sub class and supply FieldCatalog Json Files directory
+    # as argument for "JsonFilesDirectory". This method will return a dictionary containing FieldCatalog data for all
+    # activities
+
+    # getting dictionary of FieldCatalog data for all functions
+    field_data = get_field_catalog_dictionary(JsonFilesDirectory=None)  # None supplied only for making dummy
 
     @staticmethod
     def addFields(self):

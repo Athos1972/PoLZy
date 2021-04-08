@@ -1,4 +1,4 @@
-from fasifu.GlobalConstants import logger
+from polzyFunctions.GlobalConstants import logger
 from polzybackend.models import AntragActivityRecords
 
 

@@ -2,9 +2,7 @@ import os
 import json
 import codecs
 import threading
-from fasifu.ConfigurationEngine.ConfigurationProvider import ConfigurationProvider
-from pathlib import Path
-from fasifu.GlobalConstants import GlobalConstants
+from polzyFunctions.GlobalConstants import GlobalConstants
 from logging import getLogger
 
 logger = getLogger(GlobalConstants.loggerName)
