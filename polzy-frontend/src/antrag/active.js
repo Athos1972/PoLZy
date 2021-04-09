@@ -18,8 +18,9 @@ import {
   Chip,
   Fade,
 } from '@material-ui/core'
-import SaveIcon from '@material-ui/icons/Save'
-import EmailIcon from '@material-ui/icons/Email'
+import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined';
+import MailOutlineOutlinedIcon from '@material-ui/icons/MailOutlineOutlined';
+import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 import LocalOfferOutlinedIcon from '@material-ui/icons/LocalOfferOutlined'
 import { makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
@@ -162,12 +163,11 @@ function CustomTagBase(props) {
     return (
       <React.Fragment>
         {textValue !== '' &&
-          <IconButton
-            onClick={() => handleTagChange()}
-            aria-label="custom-tag"
-          >
-            <SaveIcon />
-          </IconButton>
+          <Tooltip title={t("common:Save")}>
+            <IconButton onClick={() => handleTagChange()} aria-label="custom-tag">
+              <SaveOutlinedIcon />
+            </IconButton>
+          </ Tooltip>
         }
         <TextField
           classes={{root: classes.customTagInput}}
@@ -883,10 +883,11 @@ function ActiveAntrag(props) {
               {/* DEBUG: broke antrag 
                 <BrokeCard card="Antrag" />
               */}
-
-                <IconButton onClick={() => handleEmailClicked(props.user)} aria-label="email">
-                <EmailIcon />
-                </ IconButton>
+                <Tooltip title={t("common:email")}>
+                    <IconButton onClick={() => handleEmailClicked(props.user)} aria-label="email">
+                        <MailOutlineOutlinedIcon />
+                    </ IconButton>
+                </ Tooltip>
 
               {/* Custom Tag */}
                 <CustomTag
@@ -897,14 +898,11 @@ function ActiveAntrag(props) {
 
               {/* Clone Button */}
                 {isCloneAvailable() &&
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    size="small"
-                    onClick={handleCloneClick}
-                  >
-                    {t("common:copy")}
-                  </Button>
+                <Tooltip title={t("common:copy")}>
+                    <IconButton onClick={handleCloneClick}>
+                        <FileCopyOutlinedIcon />
+                    </IconButton>
+                </ Tooltip>
                 }
 
               {/* Close Button */}
