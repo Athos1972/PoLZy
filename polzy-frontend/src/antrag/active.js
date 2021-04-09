@@ -883,18 +883,18 @@ function ActiveAntrag(props) {
               {/* DEBUG: broke antrag 
                 <BrokeCard card="Antrag" />
               */}
-                <Tooltip title={t("common:email")}>
-                    <IconButton onClick={() => handleEmailClicked(props.user)} aria-label="email">
-                        <MailOutlineOutlinedIcon />
-                    </ IconButton>
-                </ Tooltip>
-
               {/* Custom Tag */}
                 <CustomTag
                   index={props.index}
                   id={antrag.id}
                   text={antrag.tag}
                 />
+
+                <Tooltip title={t("common:email")}>
+                    <IconButton onClick={() => handleEmailClicked(props.user)} aria-label="email">
+                        <MailOutlineOutlinedIcon />
+                    </ IconButton>
+                </ Tooltip>
 
               {/* Clone Button */}
                 {isCloneAvailable() &&
