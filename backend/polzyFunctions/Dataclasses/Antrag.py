@@ -70,6 +70,7 @@ class Antrag():
         # to Backend system but would raise those warnings in a final screen. Apart from the dict itself there is no
         # logic inside PoLZy. You'll have to develop the reaction to this field in your installation.
         self.underWriterWarnings = {}
+        self.latestDBTimestamp = None
 
     def loadActivitiesFromDict(self, activities: dict):
         """

@@ -43,4 +43,5 @@ def activityWriter(inInstance):
         return
 
     record = AntragActivityRecords.new(lInstance)
+    inInstance.latestDBTimestamp = record.timestamp
     logger.debug(f"Activity recorded with id: {record.id}")

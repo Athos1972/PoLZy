@@ -215,6 +215,7 @@ def loadLatestRecords(antrag_id):
     antrag.instance.updateFieldValuesFromDatabase(dic)                                                ## new antrag id
     antrag.instance.status = antrag_record.status
     antrag.instance.antragsnummer = antrag_record.antragsnummer
+    antrag.instance.latestDBTimestamp = antrag_record.timestamp
     try:
         antrag.instance.productName = antrag.instance._generateProduktNameWithAntragsnummer()
     except:
