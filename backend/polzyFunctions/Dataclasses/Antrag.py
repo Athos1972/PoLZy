@@ -450,7 +450,7 @@ class Antrag():
         When called, this method will create the field catalog for this instance.
         :return:
         """
-        return
+        pass
 
     def fillCurrentlyPossibleActivities(self):
         """
@@ -519,7 +519,7 @@ class Antrag():
         :param returnValue: Additional value that can be passed to influence the result.
         :return:
         """
-        return
+        pass
 
     @staticmethod
     def _handleNumericField(field):
@@ -541,15 +541,7 @@ class Antrag():
             field.valueOutput = field.value
 
         elif field.decimalPlaces > 0:
-            try:
-                field.value = float(field.value)
-                field.valueTech = field.value
-                field.valueOutput = locale.currency(field.value,
-                                                    grouping=True, symbol=False)
-            except ValueError:
-                field.value = None
-                field.valueTech = None
-                field.valueOutput = None
+            Antrag.__handleNumericFieldWithDecimals(field)
         else:
             try:
                 field.value = int(field.value)
@@ -571,13 +563,25 @@ class Antrag():
                                                          val=field.value,
                                                          grouping=True)
 
+    @staticmethod
+    def __handleNumericFieldWithDecimals(field):
+        try:
+            field.value = float(field.value)
+            field.valueTech = field.value
+            field.valueOutput = locale.currency(field.value,
+                                                grouping=True, symbol=False)
+        except ValueError:
+            field.value = None
+            field.valueTech = None
+            field.valueOutput = None
+
     def deriveDefaultsFromUserOrCompany(self):
         """
         In case the installation has user or company dependent attributes for Antrags-instances here is the
         place to derive them.
         :return:
         """
-        return
+        pass
 
     def _toggleFieldsOnOff(self, listOfFieldnamesToToggle: list, OnOffAsBoolean: bool):
         """
