@@ -77,18 +77,20 @@ class Antrag():
         This method is used in persistence function. It takes a dictionary as input which contains classname as key &
         its attributes as value. Classname is used to create/get class instance and then value is supplied to that
         class instance in order to load its attributes.
-        :param activities:
+
+        This method can be overwritten in any subclass if you want to execute several tasks after all fields and
+        all activties have been loaded
+        :param activities: Dict of Activities loaded from DB-Field of the antrag-Instance as JSON.
         :return:
         """
         for classname, value in activities.items():
-            instance = None
-            for old_instance in self.Activities:  # if instance of same activity is already their than update it
-                if old_instance.__class__.__name__ == classname:
-                    instance = old_instance
-                    logger.debug(f"Found existing instance of {classname}. Using it to update persistence values.")
-                    instance.loadFromJsonFromPersistence(value)
-                    break
-            if not instance:  # if no existing instance of activity found than create a new and add to list
+            instance = self.get_activity(classname)
+            if instance:
+                # if instance of same activity is already their than update it
+                instance = instance[0]
+                logger.debug(f"Found existing instance of {classname}. Using it to update persistence values.")
+                instance.loadFromJsonFromPersistence(value)
+            else:  # if no existing instance of activity found than create a new and add to list
                 logger.debug(f"No instance found of {classname}. Creating New.")
                 class_ = "fasifu.Activities." + classname  # used to dynamically import module
                 if classname == "AntragClone":  # AntragClone class's module name is not same. Hence updating it
