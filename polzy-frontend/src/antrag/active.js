@@ -222,11 +222,11 @@ function ActiveAntrag(props) {
     }), {...commonFields})
   }
 
-  const [groups, setGroups] = useState({...getGroups(antrag)})
-  const [values, setValues] = useState({...getValues(antrag)})
+  const [groups, setGroups] = useState({})
+  const [values, setValues] = useState({})
 
   //activity states
-  const [currentActivity, setActivity] = useState(null)
+  const [currentActivity, setActivity] = useState()
   const [activityGroups, setActivityGroups] = useState({})
   const [activityValues, setActivityValues] = useState({})
 
@@ -247,7 +247,7 @@ function ActiveAntrag(props) {
       }), {})}
     }
 
-    setActivityValues(activityValues)
+    setActivityValues({...activityValues})
   }
 
   // get values on antrag update
@@ -256,18 +256,30 @@ function ActiveAntrag(props) {
     setGroups({...getGroups(antrag)})
     setValues({...getValues(antrag)})
 
-    // update activity values
-    if (Boolean(currentActivity)) {
-      const updatedActivity = antrag.possible_activities.filter(activity => activity.name === currentActivity.name)[0]
+    // update activity
+    if (currentActivity) {
+      const updatedActivity = getActivityByName(antrag, currentActivity.name)
       if (!updatedActivity) {
-        closeActivity()
+        setActivity()
         return
       }
 
       setActivity(updatedActivity)
-      getActivityValues(updatedActivity)
     }
   }, [antrag])
+
+  // get activity values on update of current activity
+  React.useEffect(() => {
+    if (currentActivity) {
+      getActivityValues(currentActivity)
+      return
+    }
+
+    // clear activity values if no current activity
+    setActivityGroups({})
+    setActivityValues({})
+
+  }, [currentActivity])
 
   // card appear animation
   React.useEffect(() => {
@@ -278,6 +290,13 @@ function ActiveAntrag(props) {
   const [isCalculate, setCalculate] = useState(false)
   const [isExecuting, setExecute] = useState(false)
   const [expanded, setExpanded] = useState(true)
+
+  // close current activity if post-execution behavior is 'close'
+  React.useEffect(() => {
+    if (!isExecuting && currentActivity && currentActivity.postExecution === 'close') {
+      setActivity()
+    }
+  }, [isExecuting])
 
   const updateAntragFromBackend = (antragData) => {
     props.updateAntrag(
@@ -512,7 +531,7 @@ function ActiveAntrag(props) {
     if (antrag.status === "Neu" && !autoCalculateDisabled && !isCalculate && validateFields()) {
       calculateAntrag()
     }
-  }, [antrag, values, groups])
+  }, [antrag.status, values, groups])
 
 
   /*
@@ -556,8 +575,9 @@ function ActiveAntrag(props) {
 
   const validateActivityFields = () => {
     // check if activity selected
-    if (currentActivity === null)
+    if (!currentActivity) {
       return false
+    }
 
     // build 'check' groups
     const fieldGroups = currentActivity.field_groups ? (
@@ -590,10 +610,8 @@ function ActiveAntrag(props) {
     return true
   }
 
-  const closeActivity = () => {
-    setActivity(null)
-    setActivityGroups({})
-    setActivityValues({})
+  const handleActivityClose = () => {
+    setActivity()
   }
 
   // derive activity by name from antrag object
@@ -611,8 +629,13 @@ function ActiveAntrag(props) {
 
   const executeActivity = (action='run', activity=currentActivity, withFields=true) => {
 
+    //console.log('Execute Activity:')
+    //console.log(activity)
+    //console.log(action)
+    //console.log(withFields)
+
     if (action === 'close') {
-      closeActivity()
+      setActivity()
       return
     }
 
@@ -620,9 +643,6 @@ function ActiveAntrag(props) {
       setOpenUploadDialog(true)
       return
     }
-
-    //console.log('Execute Activity:')
-    //console.log(activity)
     
     // switch calculate mode
     setExecute(true)
@@ -658,26 +678,14 @@ function ActiveAntrag(props) {
         */
           window.open(data.link, "_blank")
           break
-        case 'close':
-          break
         default:
           updateAntragFromBackend(data)
-      }
-
-      if (postExecution !== 'active') {
-        closeActivity()
       }
     }).catch(error => {
       console.log(error)
     }).finally(() => {
       //update state
       setExecute(false)
-/*
-      if (activity.postExecution === 'active' || activity.postExecution === 'close') {
-        return
-      }
-
-      closeActivity()*/
     })
   }
 
@@ -729,16 +737,13 @@ function ActiveAntrag(props) {
 
     const newActivity = antrag.possible_activities.filter(activity => activity.name === value)[0]
 
-    //console.log('Selected Activity:')
-    //console.log(newActivity)
-
-    // execute activity if doesn't require inputs
+    // execute activity if it doesn't require inputs
     if (
       (!newActivity.actions || newActivity.actions.length === 0) &&
       (newActivity.fields.length === 0 && !("field_groups" in newActivity)) || 
       ("field_groups" in newActivity && newActivity.field_groups.length === 0)
     ) {
-      closeActivity()
+      setActivity()
       executeActivity('run', newActivity, false)
       return
     }
@@ -747,7 +752,7 @@ function ActiveAntrag(props) {
     setActivity(newActivity)
 
     // update activity values
-    getActivityValues(newActivity)
+    //getActivityValues(newActivity)
 
   }
 
@@ -829,14 +834,8 @@ function ActiveAntrag(props) {
 
     // card rect
     const cardRect = cardRef.current.getBoundingClientRect()
-    //const cardBottom = cardTop + cardHeight
-    //const scrollBottom = props.scrollTop + window.innerHeight
 
     // check if speedometer should be visible
-    //console.log(`1st card: ${props.index === 0}`)
-    //console.log(props.scrollTop)
-    //console.log(cardRect)
-    
     const openSpeedometer = (props.index === 0) ? (
       // 1st card
       cardRect.bottom > 0
@@ -1052,7 +1051,7 @@ function ActiveAntrag(props) {
                           onInputTrigger={handleActivityInputTrigger}
                           onGlobalChange={handleDataChanged}
                           updateAntrag={updateAntrag}
-                          onCloseActivity={closeActivity}
+                          onCloseActivity={handleActivityClose}
                           backgroundColor={group.backgroundColor}
                           subtitles={group.subtitles}
                         />
@@ -1127,7 +1126,7 @@ function ActiveAntrag(props) {
             {/* bottom navigation */}
             <CardContent>
               <BottomNavigation
-                value={currentActivity !== null && currentActivity.name}
+                value={currentActivity && currentActivity.name}
                 showLabels
                 onChange={handleActivitySelect}
               >

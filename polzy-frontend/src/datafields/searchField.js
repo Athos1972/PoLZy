@@ -532,7 +532,7 @@ export default function SearchField(props) {
             <Grid item xs={12} lg={10}>
               <DataFieldText
                 data={data}
-                value={value.label}
+                value={value ? value.label : ""}
                 onClick={handleFindOpen}
                 endAdornment={Boolean(value) &&
                     <InputAdornment position="end">
