@@ -70,24 +70,27 @@ class Antrag():
         # to Backend system but would raise those warnings in a final screen. Apart from the dict itself there is no
         # logic inside PoLZy. You'll have to develop the reaction to this field in your installation.
         self.underWriterWarnings = {}
+        self.latestDBTimestamp = None
 
     def loadActivitiesFromDict(self, activities: dict):
         """
         This method is used in persistence function. It takes a dictionary as input which contains classname as key &
         its attributes as value. Classname is used to create/get class instance and then value is supplied to that
         class instance in order to load its attributes.
-        :param activities:
+
+        This method can be overwritten in any subclass if you want to execute several tasks after all fields and
+        all activties have been loaded
+        :param activities: Dict of Activities loaded from DB-Field of the antrag-Instance as JSON.
         :return:
         """
         for classname, value in activities.items():
-            instance = None
-            for old_instance in self.Activities:  # if instance of same activity is already their than update it
-                if old_instance.__class__.__name__ == classname:
-                    instance = old_instance
-                    logger.debug(f"Found existing instance of {classname}. Using it to update persistence values.")
-                    instance.loadFromJsonFromPersistence(value)
-                    break
-            if not instance:  # if no existing instance of activity found than create a new and add to list
+            instance = self.get_activity(classname)
+            if instance:
+                # if instance of same activity is already their than update it
+                instance = instance[0]
+                logger.debug(f"Found existing instance of {classname}. Using it to update persistence values.")
+                instance.loadFromJsonFromPersistence(value)
+            else:  # if no existing instance of activity found than create a new and add to list
                 logger.debug(f"No instance found of {classname}. Creating New.")
                 class_ = "fasifu.Activities." + classname  # used to dynamically import module
                 if classname == "AntragClone":  # AntragClone class's module name is not same. Hence updating it
@@ -447,7 +450,7 @@ class Antrag():
         When called, this method will create the field catalog for this instance.
         :return:
         """
-        return
+        pass
 
     def fillCurrentlyPossibleActivities(self):
         """
@@ -516,7 +519,7 @@ class Antrag():
         :param returnValue: Additional value that can be passed to influence the result.
         :return:
         """
-        return
+        pass
 
     @staticmethod
     def _handleNumericField(field):
@@ -538,15 +541,7 @@ class Antrag():
             field.valueOutput = field.value
 
         elif field.decimalPlaces > 0:
-            try:
-                field.value = float(field.value)
-                field.valueTech = field.value
-                field.valueOutput = locale.currency(field.value,
-                                                    grouping=True, symbol=False)
-            except ValueError:
-                field.value = None
-                field.valueTech = None
-                field.valueOutput = None
+            Antrag.__handleNumericFieldWithDecimals(field)
         else:
             try:
                 field.value = int(field.value)
@@ -568,13 +563,25 @@ class Antrag():
                                                          val=field.value,
                                                          grouping=True)
 
+    @staticmethod
+    def __handleNumericFieldWithDecimals(field):
+        try:
+            field.value = float(field.value)
+            field.valueTech = field.value
+            field.valueOutput = locale.currency(field.value,
+                                                grouping=True, symbol=False)
+        except ValueError:
+            field.value = None
+            field.valueTech = None
+            field.valueOutput = None
+
     def deriveDefaultsFromUserOrCompany(self):
         """
         In case the installation has user or company dependent attributes for Antrags-instances here is the
         place to derive them.
         :return:
         """
-        return
+        pass
 
     def _toggleFieldsOnOff(self, listOfFieldnamesToToggle: list, OnOffAsBoolean: bool):
         """

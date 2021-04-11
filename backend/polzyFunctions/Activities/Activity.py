@@ -134,7 +134,7 @@ class Activity:
         :param headers: self-explanatory
         :return:
         """
-        return
+        pass
 
     def _executeGetRequestToURL(self, url: str, headers=None):
         """
@@ -251,7 +251,7 @@ class Activity:
         Here is the place to derive any default values from either user or company (or both) during initializiation
         :return:
         """
-        return
+        pass
 
     def _getExpressionFromJson(self, jsonData):
         """
@@ -437,10 +437,10 @@ class Activity:
         """
         This method is used to update inputFields for current Activity and then update value of those inputFields
         :return:
-        """
         # ManageFieldCatalog.addFields(self)                     ## To update inputFields for current Activity
         # self.checkAndUpdateInputFields(self.activityFields)    ## To update inputFields value
-        return
+        """
+        pass
 
     @staticmethod
     def formatDateFieldForDateSelector(datetimeInput: datetime) -> str:
