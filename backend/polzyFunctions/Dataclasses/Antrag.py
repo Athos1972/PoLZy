@@ -84,7 +84,7 @@ class Antrag():
         :return:
         """
         for classname, value in activities.items():
-            instance = self.get_activity(classname)
+            instance = self.get_activity(classname, optional=True)
             if instance:
                 # if instance of same activity is already their than update it
                 instance = instance[0]
