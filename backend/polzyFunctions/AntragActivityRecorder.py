@@ -9,11 +9,11 @@ def recordAntragDecorator(method):
     :return:
     """
     def wrapper(self, *args, **kwargs):
+        result = method(self, *args, **kwargs)
         if hasattr(self, "antrag"):
             self.antrag.latestDBTimestamp = activityWriter(self)
         else:
             self.latestDBTimestamp = activityWriter(self)
-        result = method(self, *args, **kwargs)
         return result
     return wrapper
 
