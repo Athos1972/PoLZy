@@ -208,11 +208,13 @@ def loadLatestRecords(antrag_id):
     current_app.config['ANTRAGS'][antrag.id] = antrag
 
     # creating dictionary with name as key and value as value of inputField. These are used to load fields.
-    dic = {js.get("name"): js.get("value") for js in antrag_record.json_data}
+    fields_json_data = {js.get("name"): js.get("value") for js in antrag_record.json_data}
+    sapAttributes_json_data = {js.get("name"): js.get("sapFieldAttributes") for js in antrag_record.json_data}
 
     # update field values from the record and return the result
     antrag.instance.id = antrag_record.antrag_id  # using same antrag_id as from record to avoid new record because of
-    antrag.instance.updateFieldValuesFromDatabase(dic)                                                ## new antrag id
+    antrag.instance.updateFieldValuesFromDatabase(fields_json_data)                                   ## new antrag id
+    antrag.instance.updateSapAttributesFromDatabase(sapAttributes_json_data)
     antrag.instance.status = antrag_record.status
     antrag.instance.antragsnummer = antrag_record.antragsnummer
     antrag.instance.latestDBTimestamp = antrag_record.timestamp
