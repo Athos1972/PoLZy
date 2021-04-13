@@ -254,6 +254,8 @@ class FieldDefinition:
                 'subtitles': self.subtitles,
                 'subsection': self.subsection,
                 'backgroundColor': self.background,
+                'group': self.group,
+                'shortDescription': self.shortDescription,
                 'relatedFields': json.loads(json.dumps(
                     self.relatedFields, default=lambda o: o.toJson() if isinstance(o, FieldDataType) else o)
                 ),  # converting FieldDataType object to string, just to avoid errors in json.dumps

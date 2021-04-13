@@ -10,7 +10,10 @@ def recordAntragDecorator(method):
     """
     def wrapper(self, *args, **kwargs):
         result = method(self, *args, **kwargs)
-        activityWriter(self)
+        if hasattr(self, "antrag"):
+            self.antrag.latestDBTimestamp = activityWriter(self)
+        else:
+            self.latestDBTimestamp = activityWriter(self)
         return result
     return wrapper
 
@@ -43,5 +46,5 @@ def activityWriter(inInstance):
         return
 
     record = AntragActivityRecords.new(lInstance)
-    inInstance.latestDBTimestamp = record.timestamp
     logger.debug(f"Activity recorded with id: {record.id}")
+    return record.timestamp
