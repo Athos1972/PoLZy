@@ -516,6 +516,13 @@ class AntragActivityRecords(db.Model):
                     instances[obj.antrag_id] = obj                      # stored then replace it with current object
         return list(instances.values())
 
+    @classmethod
+    def getInstancesFromAntragsnummer(cls, user, antragsnummer):
+        companies = (relation.company_id for relation in
+                     db.session.query(UserToCompany).filter_by(user_id=user.id).all())
+        return db.session.query(cls).filter_by(
+            antragsnummer=antragsnummer).filter(cls.company_id.in_(companies)).order_by(cls.timestamp.desc()).all()
+
     @staticmethod
     def getLatest(antrag_id):
         instance = db.session.query(AntragActivityRecords).filter_by(antrag_id=antrag_id).order_by(
