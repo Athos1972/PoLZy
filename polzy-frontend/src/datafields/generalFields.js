@@ -22,6 +22,7 @@ import {
   Slider,
   Input,
 } from '@material-ui/core'
+import ValueLabel from "@material-ui/core/Slider/ValueLabel"
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers'
 import DateFnsUtils from '@date-io/date-fns'
@@ -86,7 +87,7 @@ const useStyles = makeStyles((theme) => ({
     },
     rail: {
       height: 5,
-    }
+    },
   },
 
   sliderTitle: {
@@ -120,8 +121,28 @@ const ThickerSlider = withStyles({
 
   thumb: {
     marginTop: sliderThickness/2 - 6,
-  }
+  },
 })(Slider)
+
+// reactangular label for text slider
+const RectLabel = withStyles(theme => ({
+  offset: {
+    top: theme.spacing(-2),
+    //left: "calc(-50%-20px)",
+    left: "auto",
+  },
+  circle: {
+    transform: "none",
+    width: "auto",
+    height: "auto",
+    padding: theme.spacing(0.5, 1),
+    borderRadius: 3,
+  },
+  label: {
+    transform: "none",
+    whiteSpace: "nowrap",
+  },
+}))(ValueLabel)
 
 const parseValue = (value) => {
   if (value) return value
@@ -267,6 +288,115 @@ export function DataFieldTextBox(props) {
   )
 }
 */
+
+
+/*
+**  Tesxt Slider
+*/
+export function DataFieldTextSlider(props) {
+  const {id, data } = props
+  const {inputRange} = data 
+
+  const [error, setError] = React.useState(false)
+  const [helperText, setHelperText] = React.useState('')
+  const [index, setIndex] = React.useState(inputRange.indexOf(props.value))// ? Number(props.value) : min)
+
+  const classes = useStyles({error: error})
+
+  const handleChange = (event, newIndex) => {
+    setIndex(newIndex)
+  }
+
+  const handleChangeCommitted = (event, newIndex) => {
+    const newValue = {[props.data.name]: inputRange[newIndex]}
+    if (props.onInputTrigger && props.data.inputTriggers) {// && validateValue(newValue)) {
+        // input trigger
+        props.onInputTrigger(newValue)
+      } else if (props.onChange) {
+        // update antrag value
+        props.onChange(newValue)
+      }
+  }
+
+   const getValueLabel = (currentIndex) => {
+    // negative index
+    if (currentIndex <= 1) return inputRange[1].replace(' ', '')
+
+    return inputRange[currentIndex].replace(' ', '')
+   }
+
+  // error check
+  React.useEffect(() => {
+    // check if error comes from backend
+    if (Boolean(data.errorMessage)) {
+      setHelperText(data.errorMessage)
+      setError(true)
+      return
+    }
+
+    setError(false)
+    setHelperText('')
+  }, [data.errorMessage])
+
+  const RenderValueLabel = (props) => {
+   
+    return (
+      <RectLabel
+        {...props}
+        value={props.value <= 1 ? inputRange[1] : inputRange[props.value]}
+      />  
+    )
+  }
+
+  //console.log(`Value: ${value}`)
+  //console.log(typeof(value))
+
+  return (
+    <React.Fragment>
+      <Grid container spacing={1}>
+        <Grid item xs={12} container spacing={1}>
+          <Grid item xs>
+            <Typography
+              className={classes.sliderTitle}
+              id={`${data.name}-${id}`}
+              component="div"
+            >
+              <strong>
+                {`${data.brief}:`}
+              </strong>
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Typography
+              className={classes.sliderTitle}
+              component="div"
+            >
+              {inputRange[index]}
+            </Typography>
+          </Grid>
+        </Grid>
+        <Grid item xs={12}>
+          <ThickerSlider
+            className={classes.slider}
+            aria-labelledby={`${data.name}-${id}`}
+            valueLabelDisplay="auto"
+            value={index}
+            min={1}
+            max={inputRange.length-1}
+            onChange={handleChange}
+            onChangeCommitted={handleChangeCommitted}
+            ValueLabelComponent={RenderValueLabel}
+          />
+        </Grid>
+      </Grid>
+      <FormHelperText error={error}>
+        {helperText}
+      </FormHelperText>
+    </React.Fragment>
+  )
+}
+
+
 /*
 **  Number Input
 */
@@ -733,6 +863,11 @@ export function DataField(props) {
       }
     }
 
+    
+    // text slider
+    if (data.inputRange[0] === "slider") {
+      return <DataFieldTextSlider {...props} />
+    }
     // text drop-down
     return <DataFieldSelect {...props} />
   }
@@ -1079,7 +1214,10 @@ export default function DataGroup(props) {
             </Grid>
 
             {/* Mapped Images */}
-            <Grid item>
+            <Grid
+              className={classes.inputGroupContainer}
+              item
+            >
               {fields.filter((field) => (
                 field.subsection === subtitle && field.fieldVisibilityType === 2 && field.fieldDataType === "Image"
               )).map((field) => (
