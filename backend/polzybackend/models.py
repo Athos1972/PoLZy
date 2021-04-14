@@ -1,6 +1,7 @@
 from polzybackend import db, auth
 from polzybackend.utils import generate_id, date_format
 from polzybackend.utils.auth_utils import generate_token, get_expired, is_supervisor, load_attributes
+from polzyFunctions.GlobalConstants import logger
 from datetime import datetime, date
 from sqlalchemy import and_, or_
 from functools import reduce
@@ -630,8 +631,12 @@ class GamificationActivity(db.Model):
             event_details=event_details,
         )
 
-        db.session.add(instance)
-        db.session.commit()
+        try:
+            db.session.add(instance)
+            db.session.commit()
+        except Exception as ex:
+            logger.error(f"Error during Commit: {ex}. Rolling back.")
+            db.session.rollback()
         
         return instance
 
