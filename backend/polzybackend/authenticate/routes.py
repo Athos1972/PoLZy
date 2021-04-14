@@ -60,4 +60,6 @@ def user_permissions():
 
     except Exception as e:
         print(e)
+        from polzyFunctions.GlobalConstants import logger
+        logger.critical(f"Error: {e}", stack_info=True)
         return {'error': f'Failed to set company: {e}'}, 400
