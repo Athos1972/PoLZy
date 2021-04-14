@@ -26,12 +26,12 @@ class WriteActivity:
         from polzyFunctions.Activities.Activity import Activity
         from polzyFunctions.Dataclasses.Antrag import Antrag
         # FIXME: Fix after policy refactor
-        from fasifu.Activities.PolicyActivity import PolicyActivity
-        from fasifu.Dataclasses.Polizze import Polizze
+        #from fasifu.Activities.PolicyActivity import PolicyActivity
+        #from fasifu.Dataclasses.Polizze import Polizze
 
         self.activity: Activity = None
         self.antrag: Antrag = None
-        self.polizze: Polizze = None
+        self.polizze = None
         self.login: LoginActivity = None
 
         self.callingClassRef = instanceOfAntragPolicyOrActivity
@@ -39,13 +39,13 @@ class WriteActivity:
         if isinstance(instanceOfAntragPolicyOrActivity, AntragActivity):
             self.activity = instanceOfAntragPolicyOrActivity
             self.event = 4  # "AntragActivity"
-        elif isinstance(instanceOfAntragPolicyOrActivity, PolicyActivity):
+        elif instanceOfAntragPolicyOrActivity.__class__.__name__ == "PolicyActivity":
             self.activity = instanceOfAntragPolicyOrActivity
             self.event = 3  # "PolicyActivity"
         elif isinstance(instanceOfAntragPolicyOrActivity, Antrag):
             self.antrag = instanceOfAntragPolicyOrActivity
             self.event = 1  # "Antrag"
-        elif isinstance(instanceOfAntragPolicyOrActivity, Polizze):
+        elif instanceOfAntragPolicyOrActivity.__class__.__name__ == "Polizze":
             self.polizze = instanceOfAntragPolicyOrActivity
             self.event = 2  # "Polizze"
         elif isinstance(instanceOfAntragPolicyOrActivity, LoginActivity):
