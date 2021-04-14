@@ -155,6 +155,9 @@ class FieldDefinition:
     valueOutput: any = field(default=None)
     # The value range is always a list. Either a list with all possible entries or a list with ["range", low, high]
     # for numeric fields. For sliders it is ["slider", low, high].
+    # for string field sliders it is ["slider", <value>, <value2>, <value3>".
+    # The sliders will be positioned according to order in the list (1st entry left,
+    #      2nd entry more right than 1st, last entry right)
     valueRangeInput: list = field(default_factory=list)
     # Please check docu in fieldDataType
     fieldDataType: FieldDataType = field(default=FieldDataType)  # Boolean, String, Numeric, etc.
