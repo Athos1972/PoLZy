@@ -325,6 +325,9 @@ class InputFields:
                 return item
         return None
 
+    def getFieldsByFieldName(self, FieldName="name", value=None):
+        return [field_ for field_ in self.fields if getattr(field_, FieldName) == value]
+
     def setField(self, fieldDefinition: FieldDefinition):
         for item in self.fields:
             if item.name == fieldDefinition.name:
