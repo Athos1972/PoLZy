@@ -39,13 +39,13 @@ class WriteActivity:
         if isinstance(instanceOfAntragPolicyOrActivity, AntragActivity):
             self.activity = instanceOfAntragPolicyOrActivity
             self.event = 4  # "AntragActivity"
-        elif instanceOfAntragPolicyOrActivity.__class__.__name__ == "PolicyActivity":
+        elif "PolicyActivity" in instanceOfAntragPolicyOrActivity.__class__.__name__:
             self.activity = instanceOfAntragPolicyOrActivity
             self.event = 3  # "PolicyActivity"
         elif isinstance(instanceOfAntragPolicyOrActivity, Antrag):
             self.antrag = instanceOfAntragPolicyOrActivity
             self.event = 1  # "Antrag"
-        elif instanceOfAntragPolicyOrActivity.__class__.__name__ == "Polizze":
+        elif "Polizze" in instanceOfAntragPolicyOrActivity.__class__.__name__:
             self.polizze = instanceOfAntragPolicyOrActivity
             self.event = 2  # "Polizze"
         elif isinstance(instanceOfAntragPolicyOrActivity, LoginActivity):
