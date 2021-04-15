@@ -144,6 +144,7 @@ class User(db.Model):
     #    'OAuthProvider',
     #    foreign_keys=[oauth_provider_id],
     # )
+    
     company = db.relationship(
         'UserToCompany',
         primaryjoin=and_(
@@ -152,11 +153,13 @@ class User(db.Model):
         ),
         uselist=False,
         lazy='subquery',
+        overlaps='companies, user',
     )
     badges = db.relationship(
         'GamificationBadge',
         primaryjoin="and_(User.id==GamificationBadge.user_id, "
-                         "User.company_id==GamificationBadge.company_id)"
+                         "User.company_id==GamificationBadge.company_id)",
+        overlaps='gamification_badges, user',
     )
 
     def __str__(self):
@@ -814,7 +817,7 @@ class GamificationBadgeDescription(db.Model):
     description = db.Column(db.String(512), nullable=False)
 
     # relationships
-    type = db.relationship('GamificationBadgeType', foreign_keys=[type_id])
+    type = db.relationship('GamificationBadgeType', backref='descriptions', foreign_keys=[type_id])
     level = db.relationship('GamificationBadgeLevel', foreign_keys=[level_id])
 
 class GamificationBadgeLevel(db.Model):
@@ -853,10 +856,10 @@ class GamificationBadgeType(db.Model):
     title = db.Column(db.String(32), nullable=False)
 
     # reletionaships
-    descriptions = db.relationship(
-        'GamificationBadgeDescription',
-        primaryjoin="GamificationBadgeType.id==GamificationBadgeDescription.type_id",
-    )
+    #descriptions = db.relationship(
+    #    'GamificationBadgeDescription',
+    #    primaryjoin="GamificationBadgeType.id==GamificationBadgeDescription.type_id",
+    #)
 
     def get_description(self):
         return {(d.level.name if not d.level.is_lowest else 'lowest'): d.description for d in self.descriptions}
