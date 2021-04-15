@@ -1,6 +1,6 @@
 from polzyFunctions.Activities.ActivitiesDataClasses import FieldDefinition, InputFieldTypes, FieldDataType, \
     FieldVisibilityTypes
-from fasifu.GlobalConstants import GlobalConstants
+from polzyFunctions.GlobalConstants import GlobalConstants
 from datetime import datetime   # Needed because dynamically called
 from logging import getLogger
 from polzyFunctions.translator import Translator

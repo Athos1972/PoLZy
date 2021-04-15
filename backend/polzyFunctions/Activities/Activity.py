@@ -10,14 +10,13 @@ from datetime import datetime
 from logging import getLogger
 import json
 import xml.dom.minidom
-from LogLevelUpdater import LogLevelUpdater
+from polzyFunctions.LogLevelUpdater import LogLevelUpdater
 from requests import Session
 from polzyFunctions.Activities.ActivitiesDataClasses import InputFields
 
 logger = getLogger()
 
 
-# POLZY
 class Activity:
     """
     This is the template class for Activities. It's not called directly - just a template.
