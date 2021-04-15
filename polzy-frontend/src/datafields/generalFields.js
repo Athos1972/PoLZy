@@ -128,7 +128,6 @@ const ThickerSlider = withStyles({
 const RectLabel = withStyles(theme => ({
   offset: {
     top: theme.spacing(-2),
-    //left: "calc(-50%-20px)",
     left: "auto",
   },
   circle: {
@@ -144,6 +143,8 @@ const RectLabel = withStyles(theme => ({
   },
 }))(ValueLabel)
 
+
+// value parser
 const parseValue = (value) => {
   if (value) return value
 
