@@ -4,6 +4,7 @@ from polzybackend.models import User, GamificationBadge, GamificationBadgeType, 
 from flask import jsonify
 import json
 from random import sample, choice
+from polzyFunctions.GlobalConstants import logger
 
 # toast debugging route
 @bp.route('/ping')
@@ -62,8 +63,12 @@ def newbadge():
         # break if all user badges of the highest level
         if count > 100:
             raise Exception('No new badge is available:(')
-    
-    db.session.commit()
+
+    try:
+        db.session.commit()
+    except Exception as ex:
+        logger.critical(f"Exception while committing changes to db: {ex}")
+        db.session.rollback()
 
     messenger.announce_badge(new_badge)
     return {'success': 'OK'}, 200

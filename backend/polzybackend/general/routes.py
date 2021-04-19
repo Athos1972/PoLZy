@@ -5,6 +5,7 @@ from polzybackend import auth, models, db
 from datetime import datetime
 import os
 from uuid import uuid4
+from polzyFunctions.GlobalConstants import logger
 
 @bp.route('/stages')
 def stages():
@@ -97,7 +98,11 @@ def manage_file(file_id):
     if request.method == 'POST':
         payload = request.get_json()
         file.type = payload.get('fileType')
-        db.session.commit()
+        try:
+            db.session.commit()
+        except Exception as ex:
+            logger.critical(f"Exception while committing changes to db: {ex}")
+            db.session.rollback()
         return {}, 200
 
     # delete file
@@ -105,7 +110,11 @@ def manage_file(file_id):
         # delete file record
         try:
             db.session.delete(file)
-            db.session.commit()
+            try:
+                db.session.commit()
+            except Exception as ex:
+                logger.critical(f"Exception while committing changes to db: {ex}")
+                db.session.rollback()
         except UnmappedInstanceError as e:
             current_app.logger.critical(f"File {file} has not mapped instance. Error: {e}")
         return {}, 200
