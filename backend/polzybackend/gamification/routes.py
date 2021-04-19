@@ -2,7 +2,7 @@ from flask import jsonify, request, current_app
 from polzybackend.gamification import bp
 from polzybackend.models import GamificationBadge, GamificationBadgeType
 from polzybackend import auth
-from polzybackend.utils.import_utils import gamification_ranking
+from polzyFunctions.Gamification import HitList
 
 
 @bp.route('/badges')
@@ -85,7 +85,7 @@ def rankings():
     #
 
     try:
-        return jsonify(gamification_ranking(auth.current_user())), 200
+        return jsonify(HitList().deriveUserRanking(auth.current_user())), 200
     except Exception as e:
         current_app.logger.exception(f"Faild to get user's gamification rankings: {e}")
     

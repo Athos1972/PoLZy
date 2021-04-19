@@ -1,11 +1,7 @@
 from dataclasses import dataclass, field
-from polzyFunctions.GlobalConstants import GlobalConstants
+from polzyFunctions.GlobalConstants import logger
 from datetime import datetime
 import json
-from logging import getLogger
-
-
-logger = getLogger(GlobalConstants.loggerName)
 
 
 class InputFieldTypes:

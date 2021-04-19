@@ -1,9 +1,6 @@
-from logging import getLogger
-from polzyFunctions.GlobalConstants import GlobalConstants
+from polzyFunctions.GlobalConstants import logger
 from polzyFunctions.Dataclasses.Antrag import Antrag
 # Also import all the possible activites candidate here, they will be dynamically imported
-
-logger = getLogger(GlobalConstants.loggerName)
 
 
 class AntragActivitiesDerive:

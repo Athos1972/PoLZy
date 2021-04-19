@@ -1,9 +1,6 @@
 from polzyFunctions.utils import get_file_path, Singleton
-from logging import getLogger
-from polzyFunctions.GlobalConstants import GlobalConstants
+from polzyFunctions.GlobalConstants import logger
 from polzyFunctions.translator.DataHandler import Data
-
-logger = getLogger(GlobalConstants.loggerName)
 
 
 class Translator(metaclass=Singleton):

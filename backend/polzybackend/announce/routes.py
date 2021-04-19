@@ -4,9 +4,8 @@ from polzybackend import auth, db
 from polzybackend import messenger
 from polzybackend.models import ToastNotifications, GamificationBadge
 import json
-from logging import getLogger
+from polzyFunctions.GlobalConstants import logger
 
-logger = getLogger("PyC")
 
 @bp.route('/listen', methods=['GET'])
 def listen():

@@ -2,11 +2,8 @@ from polzyFunctions.Dataclasses.Antrag import Antrag
 from polzyFunctions.Activities.Activity import Activity
 from polzyFunctions.GamificationActivityRecorder import recordActivityDecorator
 from polzyFunctions.AntragActivityRecorder import recordAntragDecorator
-from polzyFunctions.GlobalConstants import GlobalConstants
-from logging import getLogger
+from polzyFunctions.GlobalConstants import logger
 
-
-logger = getLogger(GlobalConstants.loggerName)
 
 
 class AntragActivity(Activity):
