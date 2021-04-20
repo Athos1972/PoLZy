@@ -1,0 +1,24 @@
+{
+  "headers": {
+    "firstName": ["firstname", "fname"],
+    "lastName": ["lastname", "lname"],
+    "Name": ["name", "namevn"],
+    "Versicherungsbeginn": ["versicherungsbeginn"],
+    "Produkt": ["produkt", "product"],
+    "Address": ["addressevn", "address"],
+    "Prämie": ["prämie", "pramie", "praemie"],
+    "postCode": ["plz", "postcode", "postalcode"],
+    "streetNumber": ["streetnumber", "streetno"],
+    "street": ["strasse", "street"],
+    "houseNumber": ["hausnummer", "housenumber"],
+    "birthDate": ["geburtsdatum", "birthdate", "dateofbirth", "dob"],
+    "StockTuer": ["stocktuer"],
+    "Ort": ["ort"]
+  },
+  "valid": [
+    "firstName", "lastName", "Versicherungsbeginn", "Produkt", "Prämie", "postCode", "streetNumber", "street",
+    "houseNumber", "birthDate"
+  ],
+  "dateObj": ["Versicherungsbeginn", "birthDate"],
+  "skip": ["StockTuer", "Ort", "Produkt", "Prämie"]
+}
