@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
 
 /*
 ** View Mapper
-*/
+*//*
 function RenderView(props) {
   switch(props.view) {
     case VIEW_ADMIN:
@@ -64,29 +64,56 @@ RenderView.propTypes = {
   onChange: PropTypes.func,
   onBadgesUpdated: PropTypes.func,
 }
-
-
-/*
-** Main View
 */
+
+/**
+ * This component renders the current view using, defines the logic for transition between the views
+ * and provides alerts for **_PoLZy_** system.
+ *
+ * @component
+ * @category Views
+ * 
+ */
 function MainView(props) {
   const classes = useStyles()
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
+  /**
+   * @typedef {object} state
+   * @ignore
+   */
+  /**
+   * @name view
+   * @desc State: String flag of the current view.
+   * @prop {string} view - state
+   * @prop {function} setView - setter
+   * @type {state}
+   * @memberOf MainView
+   * @inner
+   */
   const [view, setView] = React.useState(VIEW_HOME)
+  /**
+   * @name updateBadges
+   * @desc State: Boolean flag that shows if badge info is updating currently.
+   * @prop {boolean} updateBadges - state
+   * @prop {function} setUpdateBadges - setter
+   * @type {state}
+   * @memberOf MainView
+   * @inner
+   */
   const [updateBadges, setUpdateBadges] = React.useState(true)
 
-  const goToHome = () => {
-    setView(VIEW_HOME)
-  } 
-
-  const closeToastAction = (key) => (
-    <IconButton onClick={() => {closeSnackbar(key)}}>
-      <CloseIcon />
-    </IconButton>
-  )
 
   // push notifications every minute
+  /**
+   * Periodically (by default, once per minute) requests the back-end for pushing system messages.
+   *
+   * @name useEffect
+   * @function
+   * @memberOf MainView
+   * @inner
+   * @variation 1
+   */
   React.useEffect(() => {
     setInterval(() => {
       pushNotifications(props.user).catch(error => {
@@ -96,11 +123,24 @@ function MainView(props) {
   }, [])
 
   // get toasts from backend
+  /**
+   * Defines event listener which constantly monitors back-end route `/api/listen`.
+   * If event occurs, the event listener pushes either a toast that signals about
+   * achieving a new badge (event `newbadge`) or a regular text toast (event `message`).
+   *
+   * @name useEffect
+   * @function
+   * @memberOf MainView
+   * @inner
+   * @variation 2
+   */
   React.useEffect(() => {
     const eventSource = new EventSource(apiHost + "api/listen")
 
     eventSource.addEventListener("newbadge", (e) => {
       const {text, uri, ...toastProps} = JSON.parse(e.data)
+      console.log('Badge:')
+      console.log(uri)
 
       // enqueue toast
       enqueueSnackbar(
@@ -130,8 +170,43 @@ function MainView(props) {
     }
   }, [])
 
+  /**
+   * Callback.
+   * **_Fired_** when received data on user's badges from the back-end.<br/>
+   * **_Implementation_**: sets state `updateBadge` to `false`.
+   * @callback
+   */
   const handleOnBadgesUpdated = () => {
     setUpdateBadges(false)
+  }
+
+  const goToHome = () => {
+    setView(VIEW_HOME)
+  } 
+
+  const closeToastAction = (key) => (
+    <IconButton onClick={() => {closeSnackbar(key)}}>
+      <CloseIcon />
+    </IconButton>
+  )
+
+  const CurrentView = () => {
+    switch(view) {
+      case VIEW_ADMIN:
+        return <AdminView onClose={goToHome} />
+      case VIEW_BADGE:
+        return (
+          <BadgeView
+            onClose={goToHome}
+            updateBadges={updateBadges}
+            onBadgesUpdated={handleOnBadgesUpdated}
+          />
+        )
+      case VIEW_RANKING:
+        return <RankingView onClose={goToHome} />
+      default:
+        return <HomeView tab={props.tab} />
+    }
   }
   
   return(
@@ -143,14 +218,15 @@ function MainView(props) {
           updateBadges={updateBadges}
           onBadgesUpdated={handleOnBadgesUpdated}
         />
-        <RenderView
+        <CurrentView />
+        {/*<RenderView
           view={view}
           tab={props.tab}
           onClose={goToHome}
           onChange={setView}
           updateBadges={updateBadges}
           onBadgesUpdated={handleOnBadgesUpdated}
-        />
+        />*/}
       </Container>
       <footer className={classes.footer}>
         <Copyright />
@@ -160,8 +236,10 @@ function MainView(props) {
 }
 
 MainView.propTypes = {
+  /**
+   * Object that contains user credentials.
+   */
   user: PropTypes.object,
-
 }
 
 // connect to redux store

@@ -20,7 +20,7 @@ It is the main component of the authentication view. Its roles are as follow:
 #### Props
 | Name | Type     | Description              |
 | ---- | -------- | ------------------------ |
-| signIn | `func` | _Redux_ reducer that saves _user_ data to the store. |
+| signIn | `func` | _Redux_ action that saves _user_ data to the store. |
 
 #### State
 | Name | Type     | Default       | Description              |

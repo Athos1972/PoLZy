@@ -21,53 +21,77 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 
-/*
-** Antrag Card Mapper
-*/
-function RenderAntragCard(props) {
-  const { scrollTop, ...defaultProps } = props
-  
-  switch (props.antrag.request_state) {
-    case "ok":
-      return(
-        <ActiveAntrag {...props} />
-      )
-    case "waiting":
-      return(
-        <DisabledAntrag {...defaultProps} />
-      )
-    default:
-      return(
-        <ErrorAntrag {...defaultProps} />
-      )
-  }
-}
-
-RenderAntragCard.propTypes = {
-  scrollTop: PropTypes.number,
-  index: PropTypes.number,
-  antrag: PropTypes.object,
-}
-
-
-/*
-** Antrag View
-*/
+/**
+ * It a view component that defines the layout for the product offer cards.
+ * It renders product offer creation card and all the offers stored in the _redux_ store.
+ * Additionally, it sets [Sentry]{@link Sentry} error boundaries for each card to track possible errors.
+ *
+ * @component
+ * @category Views
+ * 
+ */
 function AntragView(props) {
   const classes = useStyles()
   const {t} = useTranslation('common', 'feedback')
 
-  // scroll track
-  const [scrollTop, setScrollTop] = React.useState(0);
+  /**
+   * @typedef {object} state
+   * @ignore
+   */
+  /**
+   * @name scrollTop
+   * @desc State: tracks the vertical `x` coordinate of the top of the current window.
+   * @prop {number} scrollTop - state
+   * @prop {function} setScrollTop - setter
+   * @type {state}
+   * @memberOf AntragView
+   * @inner
+   */
+  const [scrollTop, setScrollTop] = React.useState(0)
 
+
+  /**
+   * Tracks the current vertical scrolling position of the window
+   * and sets it to state [scrollTop]{@link AntragView~scrollTop}.
+   *
+   * @name useEffect
+   * @function
+   * @memberOf AntragView
+   * @inner
+   */
   React.useEffect(() => {
     const onScroll = (event) => {
       setScrollTop(event.target.documentElement.scrollTop)
     }
-    window.addEventListener("scroll", onScroll);
+    window.addEventListener("scroll", onScroll)
 
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [scrollTop]);
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [scrollTop])
+
+
+  /**
+   * It is a mapper component that renders a specific type of a [product offer card]{@link AntragCards}
+   * depending on the the value of prop `antrag.request_state` as follow:
+   * | Value                       | Product Offer Card Component |
+   * | --------------------------- | ---------------------------- |
+   * | "ok"                        | {@link ActiveAntrag} |
+   * | "waiting"                   | {@link DisabledAntrag} |
+   * | "error" (or any other value)| {@link ErrorAntrag} |
+   *
+   * @prop {number} props.index - The index of the product offer in the _redux_ store
+   * @prop {object} props.anrag - The product offer instance
+   *
+   */
+  const MapAntragCard = (props) => {   
+    switch (props.antrag.request_state) {
+      case "ok":
+        return <ActiveAntrag {...props} scrollTop={scrollTop} />
+      case "waiting":
+        return <DisabledAntrag {...props} />
+      default: 
+        return <ErrorAntrag {...props} />
+    }
+  }
 
   return(
     <div className={classes.container}>
@@ -103,10 +127,9 @@ function AntragView(props) {
             scope.setContext("polzy", getAntragContext(props.user, antrag))
           }}
         >
-          <RenderAntragCard
+          <MapAntragCard
             index={index}
             antrag={antrag}
-            scrollTop={scrollTop}
           />
         </ErrorBoundary>
       ))}
@@ -115,7 +138,13 @@ function AntragView(props) {
 }
 
 AntragView.propTypes = {
+  /**
+   * Object that contains user credentials.
+   */
   user: PropTypes.object,
+  /**
+   * Array that holds all created product offer instances.
+   */
   antrags: PropTypes.array,
 }
 

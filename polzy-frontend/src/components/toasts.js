@@ -1,16 +1,33 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Grid, Typography } from '@material-ui/core'
 import { getBadgeSrc } from '../api/gamification'
-//import { apiHost } from '../utils'
 
-//const uriBadge = apiHost + 'api/badge/'
 
+/**
+ * Renders an alert _toast_ when a **new** badge achieved
+ * 
+ * @component
+ * @category Custom Components
+ *
+ */
 function BadgeToastBase(props) {
+  
+  const [
+    /**
+     * @type {boolean} Badge Source
+     * @memberOf BadgeToastBase
+     */
+    badgeSrc, setBadgeSrc] = React.useState('')
 
-  const [badgeSrc, setBadgeSrc] = React.useState('')
 
   React.useEffect(() => {
+    /**
+     * fetching image resource
+     *
+     * @memberOf BadgeToastBase
+     */
     // get bage src
     getBadgeSrc(props.user, props.uri).then(src => {
       setBadgeSrc(src)
@@ -40,6 +57,22 @@ function BadgeToastBase(props) {
     </Grid>
   )
 }
+
+BadgeToastBase.propTypes = {
+  /**
+   * Badge image URI
+   */
+  uri: PropTypes.string.isRequired,
+  /**
+   * Alert message
+   */
+  text: PropTypes.string.isRequired,
+  /**
+   * User's credentials
+   */
+  user: PropTypes.object.isRequired,
+}
+
 
 // connect to redux store
 const mapStateToProps = (state) => ({
