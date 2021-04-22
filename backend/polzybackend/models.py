@@ -62,19 +62,19 @@ class UserToCompany(db.Model):
     # relationships
     user = db.relationship(
         'User',
-        lazy='subquery',
+        #lazy='subquery',
         backref='companies',
         foreign_keys=[user_id],
     )
     company = db.relationship(
         'Company',
-        lazy='subquery',
+        #lazy='subquery',
         backref='users',
         foreign_keys=[company_id],
     )
     roles = db.relationship(
         'Role',
-        lazy='subquery',
+        #lazy='subquery',
         secondary=user_company_roles,
         primaryjoin=and_(user_id == user_company_roles.c.user_id, company_id == user_company_roles.c.company_id),
         backref=db.backref('user_to_companies'),
@@ -153,7 +153,7 @@ class User(db.Model):
             company_id == UserToCompany.company_id,
         ),
         uselist=False,
-        lazy='subquery',
+        #lazy='subquery',
         overlaps='companies, user',
     )
     badges = db.relationship(
