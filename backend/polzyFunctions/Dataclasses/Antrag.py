@@ -1,9 +1,6 @@
-import os
 import json
 import uuid
 import locale
-import zipfile
-from logging import getLogger
 from dataclasses import dataclass
 from polzybackend import messenger
 from polzybackend.models import User, AntragActivityRecords
@@ -11,16 +8,13 @@ from datetime import datetime, timedelta
 from polzyFunctions.utils.counter import Counter
 from polzyFunctions.Dataclasses.PersonRoles import Roles
 from polzyFunctions.Activities.Activity import Activity
-from polzyFunctions.GlobalConstants import GlobalConstants
+from polzyFunctions.GlobalConstants import GlobalConstants, logger
 from polzyFunctions.Dataclasses.AntragsStatus import AntragsStatus
 from polzyFunctions.AntragActivityRecorder import recordAntragDecorator
 from polzyFunctions.Dataclasses.CommonFieldnames import CommonFieldnames
 from polzyFunctions.GamificationActivityRecorder import recordActivityDecorator
-from polzyFunctions.ConfigurationEngine.ConfigurationProvider import ConfigurationProvider
 from polzyFunctions.Activities.ActivitiesDataClasses import InputFields, FieldDataType, FieldVisibilityTypes, \
     InputFieldTypes, FieldDefinition
-
-logger = getLogger(GlobalConstants.loggerName)
 
 
 @dataclass

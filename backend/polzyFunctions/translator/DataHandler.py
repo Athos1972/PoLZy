@@ -2,10 +2,8 @@ import os
 import json
 import codecs
 import threading
-from polzyFunctions.GlobalConstants import GlobalConstants
-from logging import getLogger
+from polzyFunctions.GlobalConstants import logger
 
-logger = getLogger(GlobalConstants.loggerName)
 lock = threading.Lock()  # to make class thread safe
 
 

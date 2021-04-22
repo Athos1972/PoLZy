@@ -1,10 +1,7 @@
 from requests import Session
-from logging import getLogger
 from dataclasses import dataclass
-from polzyFunctions.GlobalConstants import GlobalConstants
 from polzyFunctions.GlobalSystemConstants import GlobalSystemConstants
 
-logger = getLogger(GlobalConstants.loggerName)
 globalSystemConstants = GlobalSystemConstants()
 
 

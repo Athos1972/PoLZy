@@ -6,6 +6,7 @@ from polzybackend import auth, db
 from polzybackend.models import User, Company, Role, UserToCompany, CompanyToCompany
 #from polzybackend.utils.auth_utils import str_id_to_bytes
 from sqlalchemy import and_
+from polzyFunctions.GlobalConstants import logger
 
 
 @bp.route('/admin')
@@ -105,7 +106,11 @@ def manage_user(action):
             db.session.delete(user_to_company)
 
         # commit changes
-        db.session.commit()
+        try:
+            db.session.commit()
+        except Exception as ex:
+            logger.critical(f"Exception while committing changes to db: {ex}")
+            db.session.rollback()
         
         # return updated admin data
         return jsonify(auth.current_user().get_admin_json()), 200
@@ -168,8 +173,12 @@ def manage_child_company(action):
             db.session.delete(company_company)
 
         # commit changes
-        db.session.commit()
-        
+        try:
+            db.session.commit()
+        except Exception as ex:
+            print(f"Exception while committing changes in db: {ex}")
+            db.session.rollback()
+
         # return updated admin data
         return jsonify(auth.current_user().get_admin_json()), 200
     

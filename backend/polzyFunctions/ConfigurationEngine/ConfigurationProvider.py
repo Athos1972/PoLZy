@@ -1,16 +1,13 @@
-from polzyFunctions.GlobalConstants import GlobalConstants
-import logging
+from polzyFunctions.GlobalConstants import logger
 import json
 from pathlib import Path
 from os import getcwd
 import configparser
 import codecs
+from polzyFunctions.utils import Singleton
 
 
-logger = logging.getLogger(GlobalConstants.loggerName)
-
-
-class ConfigurationProvider:
+class ConfigurationProvider(metaclass=Singleton):
     """
     Static/singleton class to provide configurations all over the application.
 
@@ -19,7 +16,6 @@ class ConfigurationProvider:
     global configuration. If also there not found an error is documented.
 
     """
-    __instance__ = None
 
     def __init__(self):
         logger.info("Executing __init__ in ConfigurationProvider")
@@ -31,48 +27,41 @@ class ConfigurationProvider:
         if not self.pathToConfig.exists():
             self.pathToConfig = Path(getcwd()).parent.joinpath("Configurations")
             self.basePath = Path(getcwd()).parent
-        if ConfigurationProvider.__instance__ is None:
-            ConfigurationProvider.__instance__ = self
-        else:
-            raise UserWarning("Session class was already initialized")
 
         result = self.__checkAndReadConfigurations("default")
         if not result:
             logger.critical("Default configuration was not found. Aborting.")
             raise NotImplementedError("Default configuration not found. Aborting.")
         self.language = "en"  # default fallback language is english
-        self.offline = self._getOfflineModeState()
-        self.PDFOutput = self._get_pdf_output_path()
+        self.offline, self.PDFOutput, self.defaultStage = self._get_default_data()
 
     @staticmethod
-    def _get_pdf_output_path():
+    def _get_default_data():
+        stage = 'pqa'
         output_dir = ''
-        try:
-            config = configparser.ConfigParser()
-            config.read("run_setting.ini")
-            unchecked_path = config["Default"]["PDFOutput"]
-        except Exception as ex:
-            logger.info(f"Exception while checking offline state: {ex}")
-            return output_dir
-        try:
-            Path(unchecked_path).mkdir(parents=True, exist_ok=True)
-            output_dir = unchecked_path
-        except Exception as ex:
-            output_dir = ''
-            logger.info(f"Error during Path creation: {ex}")
-        return output_dir
-
-    @staticmethod
-    def _getOfflineModeState():
         offline = False
         try:
             config = configparser.ConfigParser()
             config.read("run_setting.ini")
-            if config["Default"]["offline"].lower().strip() == "true":
-                offline = True
+            default = config["Default"]
         except Exception as ex:
-            logger.info(f"Exception while checking offline state: {ex}")
-        return offline
+            logger.critical(f"Exception while reading config file: {ex}")
+            return offline, output_dir, stage
+
+        stage = default.get("stage", stage)
+
+        unchecked_path = default.get("PDFOutput")
+        try:
+            if unchecked_path:
+                Path(unchecked_path).mkdir(parents=True, exist_ok=True)
+                output_dir = unchecked_path
+        except Exception as ex:
+            output_dir = ''
+            logger.info(f"Error during Path creation: {ex}")
+
+        if default.get("offline", "").lower().strip() == "true":
+            offline = True
+        return offline, output_dir, stage
 
     @staticmethod
     def getInstance():
@@ -146,3 +135,6 @@ class ConfigurationProvider:
             return False
 
         return lReturn
+
+
+lConfigurationProvider = ConfigurationProvider()

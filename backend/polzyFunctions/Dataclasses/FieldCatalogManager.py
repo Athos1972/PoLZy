@@ -1,17 +1,15 @@
 from polzyFunctions.Activities.ActivitiesDataClasses import FieldDefinition, InputFieldTypes, FieldDataType, \
     FieldVisibilityTypes
-from polzyFunctions.GlobalConstants import GlobalConstants
+from polzyFunctions.GlobalConstants import logger
 from datetime import datetime   # Needed because dynamically called
-from logging import getLogger
 from polzyFunctions.translator import Translator
-from polzyFunctions.ConfigurationEngine.ConfigurationProvider import ConfigurationProvider
+from polzyFunctions.ConfigurationEngine.ConfigurationProvider import lConfigurationProvider
 from polzyFunctions.Dataclasses.CommonFieldnames import CommonFieldnames
 import codecs
 import json
 import os
 
-logger = getLogger(GlobalConstants.loggerName)
-lTranslator = Translator(default=ConfigurationProvider.getInstance().language)  # <-- This will lead to English.
+lTranslator = Translator(default=lConfigurationProvider.language)  # <-- This will lead to English.
 
 
 def get_field_catalog_dictionary(JsonFilesDirectory):

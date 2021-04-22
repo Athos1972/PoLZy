@@ -1,20 +1,17 @@
 from polzyFunctions.Activities.ActivitiesDataClasses import InputFields, FieldVisibilityTypes, FieldDefinition
-from polzyFunctions.GlobalConstants import GlobalConstants
+from polzyFunctions.GlobalConstants import GlobalConstants, logger
 from polzybackend import messenger
 from polzyFunctions.ConnectionFactory import ConnectionFactory
-from polzyFunctions.ConfigurationEngine.ConfigurationProvider import ConfigurationProvider
+from polzyFunctions.ConfigurationEngine.ConfigurationProvider import lConfigurationProvider
 from polzyFunctions.GamificationActivityRecorder import recordActivityDecorator
 from polzyFunctions.AntragActivityRecorder import recordAntragDecorator
 from polzyFunctions.Dataclasses.CommonFieldnames import CommonFieldnames
 from datetime import datetime
-from logging import getLogger
 import json
 import xml.dom.minidom
 from polzyFunctions.LogLevelUpdater import LogLevelUpdater
 from requests import Session
 from polzyFunctions.Activities.ActivitiesDataClasses import InputFields
-
-logger = getLogger()
 
 
 class Activity:
@@ -58,7 +55,7 @@ class Activity:
         # post execution behavior of activity -- could redefined in activity if needed
         self.postExecuteBehavior = self.POSTEXECUTION_DEFAULT
 
-        self.configurationProvider = ConfigurationProvider.getInstance()
+        self.configurationProvider = lConfigurationProvider
 
     def toJsonForPersistence(self):
         """

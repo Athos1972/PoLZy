@@ -168,11 +168,19 @@ class User(db.Model):
 
     def set_stage(self, stage):
         self.stage = stage
-        db.session.commit()
+        try:
+            db.session.commit()
+        except Exception as ex:
+            logger.critical(f"Exception while committing changes to db: {ex}")
+            db.session.rollback()
 
     def set_language(self, language):
         self.language = language
-        db.session.commit()
+        try:
+            db.session.commit()
+        except Exception as ex:
+            logger.critical(f"Exception while committing changes to db: {ex}")
+            db.session.rollback()
 
     def set_company(self, company_id=None, company=None):
         # check if company data is provided
@@ -182,7 +190,7 @@ class User(db.Model):
         # check if company should be fetched
         if company is None:
             company = db.session.query(Company).filter_by(id=company_id).first()
-        
+
         # check if company exists
         if company is None:
             raise Exception('Company not found')
@@ -199,7 +207,11 @@ class User(db.Model):
 
         # set company
         self.company_id = company.id
-        db.session.commit()
+        try:
+            db.session.commit()
+        except Exception as ex:
+            logger.critical(f"Exception while committing changes to db: {ex}")
+            db.session.rollback()
 
         # return company json
         return user_company.to_json()
@@ -294,7 +306,7 @@ class Activity(db.Model):
     status = db.Column(db.String(64), nullable=True)
     finished = db.Column(db.DateTime, nullable=True)
     attributes = db.Column(db.String, nullable=True)
-    
+
     # relationships
     creator = db.relationship(
         'User',
@@ -307,7 +319,7 @@ class Activity(db.Model):
 
     @classmethod
     def new(cls, data, policy, current_user):
-        # 
+        #
         # create instance using data
         #
 
@@ -318,11 +330,15 @@ class Activity(db.Model):
             creator_id=current_user.id,
             attributes=json.dumps(data['activity'].get('fields'))
         )
-        
+
         # store to db
         db.session.add(instance)
-        db.session.commit()
-        
+        try:
+            db.session.commit()
+        except Exception as ex:
+            logger.critical(f"Exception while committing changes to db: {ex}")
+            db.session.rollback()
+
         return instance
 
     @classmethod
@@ -342,17 +358,25 @@ class Activity(db.Model):
 
         # store to db
         db.session.add(instance)
-        db.session.commit()
-        
+        try:
+            db.session.commit()
+        except Exception as ex:
+            logger.critical(f"Exception while committing changes to db: {ex}")
+            db.session.rollback()
+
         return instance
 
     def finish(self, status):
         #
-        # sets is_finished to True 
+        # sets is_finished to True
         #
         self.status = status
         self.finished = datetime.utcnow()
-        db.session.commit()
+        try:
+            db.session.commit()
+        except Exception as ex:
+            logger.critical(f"Exception while committing changes to db: {ex}")
+            db.session.rollback()
 
 
 #
@@ -377,7 +401,7 @@ class File(db.Model):
 
     @classmethod
     def new(cls, user, filename, id, parent_id=None, file_type=None):
-        # 
+        #
         # create new instance of File
         #
 
@@ -391,8 +415,12 @@ class File(db.Model):
         )
 
         db.session.add(instance)
-        db.session.commit()
-        
+        try:
+            db.session.commit()
+        except Exception as ex:
+            logger.critical(f"Exception while committing changes to db: {ex}")
+            db.session.rollback()
+
         return instance
 
     @staticmethod
@@ -407,7 +435,11 @@ class File(db.Model):
         if isinstance(details, dict):
             details = json.dumps(details)
         self.details = details
-        db.session.commit()
+        try:
+            db.session.commit()
+        except Exception as ex:
+            logger.critical(f"Exception while committing changes to db: {ex}")
+            db.session.rollback()
 
     def get_current_filename(self):
         original_filename, extension = os.path.splitext(self.filename)
@@ -463,7 +495,11 @@ class AntragActivityRecords(db.Model):
             tag=antrag.tag,
         )
         db.session.add(instance)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except Exception as ex:
+            logger.critical(f"Exception while committing changes to db: {ex}")
+            db.session.rollback()
         return instance
 
     @staticmethod
@@ -617,7 +653,7 @@ class GamificationActivity(db.Model):
 
     @classmethod
     def new(cls, user, event, event_details):
-        # 
+        #
         # create instance based on the provided data
         #
 
@@ -640,7 +676,7 @@ class GamificationActivity(db.Model):
         except Exception as ex:
             logger.error(f"Error during Commit: {ex}. Rolling back.")
             db.session.rollback()
-        
+
         return instance
 
     def set_processed(self, commit=True):
@@ -653,7 +689,11 @@ class GamificationActivity(db.Model):
 
         # save to db
         if commit:
-            db.session.commit()
+            try:
+                db.session.commit()
+            except Exception as ex:
+                logger.critical(f"Exception while committing changes to db: {ex}")
+                db.session.rollback()
 
 
 class GamificationUserStats(db.Model):
@@ -693,7 +733,11 @@ class GamificationUserStats(db.Model):
             changes = True
         if changes:  # only update last_update time when it is needed
             self.last_updated = datetime.now()
-            db.session.commit()
+            try:
+                db.session.commit()
+            except Exception as ex:
+                logger.critical(f"Exception while committing changes to db: {ex}")
+                db.session.rollback()
 
     def add_points(self, points=1, weight=1):
         self.check_timeline()
@@ -720,7 +764,11 @@ class GamificationUserStats(db.Model):
             type_id=type_id,
         )
         db.session.add(instance)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except Exception as ex:
+            logger.critical(f"Exception while committing changes to db: {ex}")
+            db.session.rollback()
 
         return instance
 
@@ -732,7 +780,11 @@ class GamificationUserStats(db.Model):
             badge = GamificationBadge(
                 user_id=self.user_id, company_id=self.company_id, type_id=self.type_id, level_id=level_id)
             db.session.add(badge)
-            db.session.commit()
+            try:
+                db.session.commit()
+            except Exception as ex:
+                logger.critical(f"Exception while committing changes to db: {ex}")
+                db.session.rollback()
             ToastNotifications.new(
                 message=badge.id, type="badge", company_ids=self.company_id, user_ids=self.user_id
             )
@@ -803,12 +855,20 @@ class GamificationUserStats(db.Model):
             user_stats = GamificationUserStats.new(user_id=user_id, company_id=company_id, type_id=type_id)
             user_stats.add_points(weight=weightage)
         if commit:
-            db.session.commit()
+            try:
+                db.session.commit()
+            except Exception as ex:
+                logger.critical(f"Exception while committing changes to db: {ex}")
+                db.session.rollback()
         return user_id
 
     @staticmethod
     def commit():
-        db.session.commit()
+        try:
+            db.session.commit()
+        except Exception as ex:
+            logger.critical(f"Exception while committing changes to db: {ex}")
+            db.session.rollback()
 
 ## Badges
 
@@ -881,7 +941,7 @@ class GamificationBadgeType(db.Model):
 
 class GamificationBadge(db.Model):
     __tablename__ = 'gamification_badges'
-    id = db.Column(db.Integer, primary_key=True)  
+    id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.String(56), db.ForeignKey('users.id'), nullable=False)
     company_id = db.Column(db.String(56), db.ForeignKey('companies.id'), nullable=False)
     type_id = db.Column(db.Integer, db.ForeignKey('gamification_badge_types.id'), nullable=False)
@@ -900,7 +960,11 @@ class GamificationBadge(db.Model):
 
     def set_seen(self):
         self.is_seen = True
-        db.session.commit()
+        try:
+            db.session.commit()
+        except Exception as ex:
+            logger.critical(f"Exception while committing changes to db: {ex}")
+            db.session.rollback()
 
     def to_json(self):
         return {
@@ -938,7 +1002,11 @@ class GamificationActivityWeight(db.Model):
     def new(cls, activity_name, line_of_business, points=1):
         instance = cls(activity_name=activity_name, line_of_business=line_of_business, points=points)
         db.session.add(instance)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except Exception as ex:
+            logger.critical(f"Exception while committing changes to db: {ex}")
+            db.session.rollback()
 
     def to_json(self):
         js = {
@@ -1011,11 +1079,19 @@ class ToastNotifications(db.Model):
                     instance = cls(company_id=company_id, user_id=user_id, message=message, type=type,
                                    duration=duration, horizontal=horizontal, vertical=vertical)
                 db.session.add(instance)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except Exception as ex:
+            logger.critical(f"Exception while committing changes to db: {ex}")
+            db.session.rollback()
 
     def set_seen(self):
         self.seen_at = datetime.now()
-        db.session.commit()
+        try:
+            db.session.commit()
+        except Exception as ex:
+            logger.critical(f"Exception while committing changes to db: {ex}")
+            db.session.rollback()
 
 
 class AntragNummer(db.Model):
@@ -1032,4 +1108,8 @@ class AntragNummer(db.Model):
         instance = db.session.query(AntragNummer).first()
         instance.count += 100
         db.session.add(instance)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except Exception as ex:
+            logger.critical(f"Exception while committing changes to db: {ex}")
+            db.session.rollback()
