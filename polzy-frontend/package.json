@@ -37,7 +37,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "docs": "jsdoc -c jsdoc.conf.json"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -54,5 +55,9 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:5000"
+  "proxy": "http://localhost:5000",
+  "devDependencies": {
+    "jsdoc": "^3.6.6",
+    "better-docs": "^1.2.2"
+  }
 }
