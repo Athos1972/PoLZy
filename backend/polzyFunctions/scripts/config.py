@@ -27,4 +27,4 @@ class Config(object):
     # flask monitoring dashboard
     DASHBOARD_CONFIG = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'dashboard.cfg')
     DASHBOARD_DATABASE_URI = 'sqlite:///' + os.path.join(os.path.abspath(os.path.dirname(__file__)), 'dashboard.db')
-    DEBUG = False
+    DEBUG = True

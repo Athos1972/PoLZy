@@ -11,14 +11,10 @@ class Singleton(type):
 
 
 def get_file_path(fileName, basepath=""):
-    if os.path.isfile(fileName):
-        return fileName
-    elif basepath and os.path.join(basepath, fileName):
+    if basepath and os.path.isfile(os.path.join(basepath, fileName)):
         return os.path.join(basepath, fileName)
-    elif os.path.join(os.getcwd(), fileName):
+    elif os.path.isfile(os.path.join(os.getcwd(), fileName)):
         return os.path.join(os.getcwd(), fileName)
-    elif os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), fileName):
-        return os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), fileName)
     else:
         print(f"{fileName} path not found!")
         return fileName

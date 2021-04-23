@@ -9,7 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 save_stdout = sys.stdout  # saves original stdout
 sys.stdout = io.StringIO()  # using dummy handler for stdout
-from config import Config  # This command throws a print statement therefore using dummy stdout handler
+from polzyFunctions.scripts.config import Config  # This command throws a print statement therefore using dummy stdout handler
 sys.stdout = save_stdout  # restoring original stdout handler
 
 

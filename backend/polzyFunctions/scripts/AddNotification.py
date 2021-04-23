@@ -1,5 +1,3 @@
-if __name__ == "__main__":
-    import AddRoot
 import sys
 import getopt
 from polzyFunctions.scripts.utils import db, models
