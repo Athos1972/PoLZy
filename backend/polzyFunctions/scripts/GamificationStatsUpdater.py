@@ -1,10 +1,9 @@
-if __name__ == "__main__":
-    import AddRoot
+
 import io
 import sys
 from time import sleep
 from datetime import datetime
-from scripts.utils import db, models
+from polzyFunctions.scripts.utils import db, models
 from polzybackend.models import GamificationActivity, GamificationUserStats
 
 

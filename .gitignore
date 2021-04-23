@@ -19,9 +19,9 @@ size-snapshot.json
 # misc
 *.log
 .eslintcache
-tests
 
 # Backend dist-folder
 /backend/dist
 
 .idea
+/backend/polzyFunctions/tests/reports/

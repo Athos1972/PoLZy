@@ -91,7 +91,7 @@ class ConfigurationProvider(metaclass=Singleton):
 
         configReadResult = ConfigurationProvider.__readConfigurationFromFile(
             self.pathToConfig.joinpath(f"{configurationEnvironmentKey}.json"))
-
+        print(configurationEnvironmentKey)
         if configReadResult:
             self.configsRead[configurationEnvironmentKey] = configReadResult
             return True

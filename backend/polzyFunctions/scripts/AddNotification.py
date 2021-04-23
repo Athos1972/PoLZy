@@ -2,8 +2,7 @@ if __name__ == "__main__":
     import AddRoot
 import sys
 import getopt
-from scripts.utils import db
-from scripts.utils import models
+from polzyFunctions.scripts.utils import db, models
 from sqlalchemy import func, or_
 
 

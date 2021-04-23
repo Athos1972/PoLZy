@@ -2,7 +2,7 @@ import os
 import shutil
 from uuid import UUID, uuid4
 from datetime import datetime
-from scripts.utils import db, models, admin, sample_organiztion_id
+from polzyFunctions.scripts.utils import db, models, admin, sample_organiztion_id
 from polzyFunctions.GlobalConstants import GlobalConstants, logger
 from sqlalchemy import and_, or_
 
