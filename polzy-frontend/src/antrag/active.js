@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { 
   CardContent,
@@ -91,7 +92,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 /*
-** Custom Tag
+** Antrag Custom Tag
 */
 function CustomTagBase(props) {
   const classes = useStyles()
@@ -111,6 +112,10 @@ function CustomTagBase(props) {
     setTextValue('')
   }
 
+  const handleValueChange = (event) => {
+    setTextValue(event.target.value)
+  }
+
   const handleTagChange = () => {
     // update tag in back-end 
     setCustomTag(
@@ -126,10 +131,6 @@ function CustomTagBase(props) {
     }).catch(error => {
       console.log(error)
     })
-  }
-
-  const handleValueChange = (event) => {
-    setTextValue(event.target.value)
   }
 
   const handleTagDelete = () => {
@@ -181,6 +182,30 @@ function CustomTagBase(props) {
   }
 }
 
+CustomTagBase.propTypes = {
+  index: PropTypes.number,
+  id: PropTypes.string,
+  text: PropTypes.string,
+  user: PropTypes.object,
+  updateAntrag: PropTypes.func,
+}
+
+// connect to redux store
+const mapStateToPropsCustomTag = (state) => ({
+  user: state.user,
+})
+
+const mapDispatchToPropsCustomTag = {
+  updateAntrag: updateAntrag,
+}
+
+const CustomTag = connect(mapStateToPropsCustomTag, mapDispatchToPropsCustomTag)(CustomTagBase)
+
+
+
+/**
+ * Antrag Active Card
+ */
 function ActiveAntrag(props) {
   const {antrag} = props
   const {t} = useTranslation('common', 'antrag')
@@ -189,7 +214,7 @@ function ActiveAntrag(props) {
   const cardRef = React.useRef()
   const calcRef = React.useRef()
 
-  const [isVisible, setIsVisible] = useState()
+  const [isVisible, setIsVisible] = useState(false)
   const [autoCalculateDisabled, setAutoCalculateDisabled] = useState(false)
   const [openUploadDialog, setOpenUploadDialog] = useState(false)
 
@@ -1182,6 +1207,18 @@ function ActiveAntrag(props) {
   )
 }
 
+ActiveAntrag.propTypes = {
+  scrollTop: PropTypes.number,
+  index: PropTypes.number,
+  antrag: PropTypes.object,
+  user: PropTypes.object,
+  valueLists: PropTypes.object,
+  updateAntrag: PropTypes.func,
+  newAntrag: PropTypes.func,
+  closeAntrag: PropTypes.func,
+  clearAddressList: PropTypes.func,
+}
+
 // connect to redux store
 const mapStateToProps = (state) => ({
   user: state.user,
@@ -1195,9 +1232,4 @@ const mapDispatchToProps = {
   clearAddressList: clearAddressList,
 }
 
-const mapDispatchToPropsToCustomTag = {
-  updateAntrag: updateAntrag,
-}
-
-const CustomTag = connect(mapStateToProps, mapDispatchToPropsToCustomTag)(CustomTagBase)
 export default connect(mapStateToProps, mapDispatchToProps)(ActiveAntrag)
