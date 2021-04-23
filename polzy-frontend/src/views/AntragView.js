@@ -20,6 +20,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+const MapAntragCard = (props) => {
+  const {scrollTop, ...baseProps} = props 
+    switch (props.antrag.request_state) {
+      case "ok":
+        return <ActiveAntrag {...baseProps} scrollTop={scrollTop} />
+      case "waiting":
+        return <DisabledAntrag {...baseProps} />
+      default: 
+        return <ErrorAntrag {...baseProps} />
+    }
+  }
+
 
 /**
  * It a view component that defines the layout for the product offer cards.
@@ -82,16 +94,20 @@ function AntragView(props) {
    * @prop {object} props.anrag - The product offer instance
    *
    */
-  const MapAntragCard = (props) => {   
-    switch (props.antrag.request_state) {
+   /*
+  const MapAntragCard = (cardProps) => {   
+    switch (cardProps.antrag.request_state) {
       case "ok":
-        return <ActiveAntrag {...props} scrollTop={scrollTop} />
+        return <ActiveAntrag {...cardProps} scrollTop={scrollTop} />
       case "waiting":
-        return <DisabledAntrag {...props} />
+        return <DisabledAntrag {...cardProps} />
       default: 
-        return <ErrorAntrag {...props} />
+        return <ErrorAntrag {...cardProps} />
     }
   }
+*/
+  console.log('Antrag View:')
+  console.log(props)
 
   return(
     <div className={classes.container}>
@@ -130,6 +146,7 @@ function AntragView(props) {
           <MapAntragCard
             index={index}
             antrag={antrag}
+            scrollTop={scrollTop}
           />
         </ErrorBoundary>
       ))}
