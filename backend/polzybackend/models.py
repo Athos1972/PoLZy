@@ -532,7 +532,7 @@ class AntragActivityRecords(db.Model):
             return
 
         # gathering all company ids of which user is part of. They are used to filter search.
-        companies = (relation.company_id for relation in db.session.query(UserToCompany).filter_by(user_id=user.id).all())
+        companies = [relation.company_id for relation in db.session.query(UserToCompany).filter_by(user_id=user.id).all()]
         try:  # if searchString is int than most probably it can be antragsnummer
             number = int(searchString)
             instance = db.session.query(cls).filter_by(
@@ -546,7 +546,7 @@ class AntragActivityRecords(db.Model):
         # looping through all records of the companies in which current user is a part
         from sqlalchemy import func
         matching_instances = db.session.query(cls).filter(and_(cls.company_id.in_(companies), func.lower(
-                                            cls.searchString).contains(func.lower(str(searchString))))).all()
+            cls.searchString).contains(func.lower(str(searchString))))).order_by(cls.timestamp.desc()).all()
         for obj in matching_instances:
             print(f'*** Found Antrags: {obj}')
             if not obj.antrag_id in instances:
