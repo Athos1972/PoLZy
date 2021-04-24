@@ -44,6 +44,9 @@ class Antrag():
 
     def __init__(self, user):
         self.user = user
+
+        self.status = ""  # take a look sir
+        self.Activities = []  # take a look sir
         # bufferedFieldValuesForComparisonWithFrontend is updated after each roundtrip with the frontend. When we
         # get a request to send an instance via parseToFrontend-Method we store the latest values in this dict.
         # Upon receiving the new values from the frontend in updateFieldValues we can use this dict to identify or
@@ -411,12 +414,18 @@ class Antrag():
         """
         logger.info(f'New Values (most probably from Frontend):\n{updateValues}')
 
+        if not self.status:  # return if status is empty  # take a look sir
+            return
+
         if AntragsStatus.getStatusNumberFromText(self.status) >= AntragsStatus.getStatusNumberFromText(
                 AntragsStatus.s800_sent):
             self.announceMessage("Antrag bereits gesendet. Leider keine Änderug mehr möglich.")
             return
 
         self._updateFieldValues(updateValues)
+
+    def updateSapAttributesFromDatabase(self, *args, **kwargs):  # take a look sir
+        return
 
     def _updateFieldValues(self, updateValues):
         """
