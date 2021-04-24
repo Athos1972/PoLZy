@@ -30,9 +30,9 @@ def test_GamificationActivity(user):
 
 
 @patch("polzyFunctions.scripts.GamificationStatsUpdater.GamificationUserStats.create_or_update_row")
-@patch("polzyFunctions.scripts.GamificationStatsUpdater.get_activites")
+@patch("polzyFunctions.scripts.utils.db.session")
 def test_GamificationStatsUpdater(mock, mock2):
-    mock.return_value = [activity]
+    mock.query.return_value.all.return_value = [activity]
     run_loop(0)
     db.session.query(GamificationActivity).filter_by(id=activity.id).delete()
     try:

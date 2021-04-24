@@ -18,9 +18,8 @@ class Translator(metaclass=Singleton):
         language = language.lower()
         if language == "en":
             return word
-        try:
-            result = self.data.get(word).get(language)
-        except:
+        result = self.data.get(word).get(language)
+        if not result:
             result = word
             logger.info(f'Translation of "{word}" for language "{language}" not found!')
         return result
@@ -36,7 +35,9 @@ class Translator(metaclass=Singleton):
         # for customer specific translations.
         # structure in input json file: {"English word": {"de": "translation for it", "wi": "translation for it", ...}}
         fileNameAndPath = get_file_path(fileNameAndPath)
-        self.add_translation_dict(Data.get_data(fileNameAndPath))
+        dic = Data.get_data(fileNameAndPath)
+        print(f"Updating translation data of file {fileNameAndPath}, data: {dic}")
+        self.add_translation_dict(dic)
 
     def update_default_language(self, language):
         # this method is planned to be used to update default language of translation module as per current user

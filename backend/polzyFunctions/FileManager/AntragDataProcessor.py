@@ -1,4 +1,3 @@
-from .utils import initFakeUser
 from polzyFunctions.FileManager.utils import setActivities, sanitizeHeader
 from polzyFunctions.GlobalConstants import logger
 from datetime import datetime
