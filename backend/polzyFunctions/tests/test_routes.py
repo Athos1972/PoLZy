@@ -3,10 +3,10 @@ import pytest
 from polzybackend import create_app
 from config import Config
 from uuid import uuid4
-
 from polzyFunctions.Dataclasses.CommonFieldnames import CommonFieldnames
 from polzyFunctions.tests.utils import user, company
 from unittest.mock import patch
+from polzyFunctions.Dataclasses.Antrag import Antrag
 
 
 update_json = {
@@ -164,3 +164,14 @@ def test_newbadge(mock, mock2, client):
 def test_get_users(client):
     res = client.get('/users')
     assert type(res.get_json()) == list
+
+
+@patch.object(Antrag, "parseToFrontend")
+@patch.object(Antrag, "setCustomTag")
+@patch.object(Antrag, "loadActivitiesFromDict")
+def test_get_latest(mock, mock2, mock3, client, header):
+    mock3.return_value = {}
+    res1 = client.post("/antrag/records/search", headers=header, json={"value": "test"})
+    antrag_id = res1.get_json()[0].get("id")
+    res2 = client.get(f"/antrag/records/{antrag_id}", headers=header)
+    assert res2.status_code == 200
