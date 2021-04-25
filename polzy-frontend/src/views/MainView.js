@@ -22,9 +22,21 @@ import { apiHost } from '../utils'
 import { pushNotifications } from '../api/notifications'
 import { parseHtmlTextWithLink } from '../utils'
 
-/*
-** Avalable Views Flags
-*/
+/**
+ * **PoLZy** uses a set of string flags to define which a view is rendered currently.
+ * The table below shows the list of the flags and the corresponding views. 
+ *
+ * | Name         | Type     | Value     | Corresponded View            |
+ * | ------------ | -------- | --------- | ---------------------------- |
+ * | VIEW_HOME    | `string` | "home"    | [HomeView]{@link HomeView}   |
+ * | VIEW_ADMIN   | `string` | "admin"   | [AdminView]{@link AdminView} |
+ * | VIEW_BADGE   | `string` | "badge"   | [BadgeView]{@link BadgeView} |
+ * | VIEW_RANKING | `string` | "ranking" | [RankingView]{@link RankingView} |
+ *
+ * @category Views
+ * @name View Flags
+ * @alias ViewFlags
+ */
 export const VIEW_HOME = 'home'
 export const VIEW_ADMIN = 'admin'
 export const VIEW_BADGE = 'badge'
@@ -103,8 +115,6 @@ function MainView(props) {
    */
   const [updateBadges, setUpdateBadges] = React.useState(true)
 
-
-  // push notifications every minute
   /**
    * Periodically (by default, once per minute) requests the back-end for pushing system messages.
    *
@@ -122,7 +132,7 @@ function MainView(props) {
     }, 60000)
   }, [])
 
-  // get toasts from backend
+
   /**
    * Defines event listener which constantly monitors back-end route `/api/listen`.
    * If event occurs, the event listener pushes either a toast that signals about
@@ -173,23 +183,39 @@ function MainView(props) {
   /**
    * Callback.
    * **_Fired_** when received data on user's badges from the back-end.<br/>
-   * **_Implementation_**: sets state `updateBadge` to `false`.
-   * @callback
+   * **_Implementation_**: sets state [_updateBadge_]{@link MainView~updateBadge} to `false`.
    */
   const handleOnBadgesUpdated = () => {
     setUpdateBadges(false)
   }
 
+  /**
+   * Callback<br/>
+   * **_Fired_** when exiting any view.<br/>
+   * **_Implementation_**: sets the view flag to `VIEW_HOME`.
+   */
   const goToHome = () => {
     setView(VIEW_HOME)
   } 
 
+  /**
+   * Inner component<br/>
+   * Close button for toast snackbars
+   *
+   * @inner
+   * @arg {string} key - `key` of a toast snackbar component
+   */
   const closeToastAction = (key) => (
     <IconButton onClick={() => {closeSnackbar(key)}}>
       <CloseIcon />
     </IconButton>
   )
 
+  /**
+   * Inner component<br/>
+   * It is a mapper component that renders a specific view
+   * by matching state [_view_]{@link MainView~view} with [view flags]{@link global#ViewFlags}.
+   */
   const CurrentView = () => {
     switch(view) {
       case VIEW_ADMIN:

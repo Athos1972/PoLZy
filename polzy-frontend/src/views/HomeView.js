@@ -32,6 +32,15 @@ import { addAntrag } from '../redux/actions'
 /*
 ** Tab View Mapper
 */
+/**
+ * It is a mapper component that renders a specific action view by matching prop _view_ with possible view names.
+ * If _view_ does not match any name (or is empty) then renders {@link NotAllowedView}
+ *
+ * @prop {string} props.view
+ * The name of an action view (the possible names of the action views are listed [above]{@link HomeView})
+ *
+ * @memberOf HomeView
+ */
 function RenderTabView(props) {
 
   switch(props.view) {
@@ -49,19 +58,59 @@ RenderTabView.propTypes = {
 }
 
 
-/*
-** Home View
-*/
+/**
+ * This component renders a tab panel (if user is allowed to access multiple action views)
+ * and a currently selected action view.
+ * If the user is not allowed to see any action view, then the component renders {@link NotAllowedView}.
+ * The possible action views are:
+ * - Policy (name = "_policy_")
+ * - Fast Offer (name= "_antrag_")
+ *
+ * @component
+ * @category Views
+ *
+ */
 function HomeView(props) {
   const {t} = useTranslation('policy', 'antrag')
   const location = useLocation()
   const {enqueueSnackbar} = useSnackbar()
 
+  /**
+   * @typedef {object} state
+   * @ignore
+   */
+  /**
+   * @name tab
+   * @desc State: The name of the current action view.
+   * @prop {string} tab - state
+   * @prop {function} setTab - setter
+   * @type {state}
+   * @memberOf HomeView
+   * @inner
+   */
   const [tab, setTab] = useState()
+  /**
+   * @name allowedViews
+   * @desc State: A list of allowed to the _user_ action views.
+   * @prop {string} allowedViews - state
+   * @prop {function} setAllowedViews - setter
+   * @type {state}
+   * @memberOf HomeView
+   * @inner
+   */
   const [allowedViews, setAllowedViews] = useState([])
   const {permissions} = props.user
 
-  // update allowed views
+  /**
+   * Updates state [_allowedViews_]{@link HomeView~allowedViews} from prop _user.permissions_
+   * when the component is mounted or user's permissions changed.
+   *
+   * @name useEffect
+   * @function
+   * @memberOf HomeView
+   * @inner
+   * @variation 1
+   */
   useEffect(() => {
     const views = Object.keys(permissions).filter(item => permissions[item])
     setAllowedViews(views)
@@ -74,6 +123,16 @@ function HomeView(props) {
   }, [permissions])
 
   // load antrag from URL
+  /**
+   * Checks if user is trying to access a specific product offer by a link when the compponent is mounted.
+   * If so, it fetches the product offer from the back-end and stores it to the _redux_ store
+   *
+   * @name useEffect
+   * @function
+   * @memberOf HomeView
+   * @inner
+   * @variation 2
+   */
   useEffect(() => {
     const instanceId = location.pathname.split('/')[2]
     if (instanceId) {
@@ -149,8 +208,19 @@ function HomeView(props) {
 }
 
 HomeView.propTypes = {
+  /**
+   * The name of the predefined action view.
+   * Used if user is trying to access a record on a specific view by an external link.
+   */
   tab: PropTypes.string,
+  /**
+   * Object that contains user credentials and permissions.
+   */
   user: PropTypes.object,
+  /**
+   * Callback that generates _redux_ action to add a product offer instance to the store.
+   * Fired when user is accessing **PoLZy** by external link on a product offer.
+   */
   addAntrag: PropTypes.func,
 }
 

@@ -20,6 +20,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+
+/**
+ * It is a mapper component that renders a specific type of a [product offer card]{@link AntragCards}
+ * depending on the the value of prop `antrag.request_state` as follow:
+ * | Value                       | Product Offer Card Component |
+ * | --------------------------- | ---------------------------- |
+ * | "ok"                        | {@link ActiveAntrag} |
+ * | "waiting"                   | {@link DisabledAntrag} |
+ * | "error" (or any other value)| {@link ErrorAntrag} |
+ *
+ * @prop {number} props.index - The index of the product offer in the _redux_ store
+ * @prop {object} props.anrag - The product offer instance
+ *
+ * @memberOf AntragView
+ */
 const MapAntragCard = (props) => {
   const {scrollTop, ...baseProps} = props 
     switch (props.antrag.request_state) {
@@ -34,7 +49,7 @@ const MapAntragCard = (props) => {
 
 
 /**
- * It a view component that defines the layout for the product offer cards.
+ * It is a view component that defines the layout for the product offer cards.
  * It renders product offer creation card and all the offers stored in the _redux_ store.
  * Additionally, it sets [Sentry]{@link Sentry} error boundaries for each card to track possible errors.
  *
@@ -64,7 +79,7 @@ function AntragView(props) {
 
   /**
    * Tracks the current vertical scrolling position of the window
-   * and sets it to state [scrollTop]{@link AntragView~scrollTop}.
+   * and sets it to state [_scrollTop_]{@link AntragView~scrollTop}.
    *
    * @name useEffect
    * @function
@@ -79,35 +94,6 @@ function AntragView(props) {
 
     return () => window.removeEventListener("scroll", onScroll)
   }, [scrollTop])
-
-
-  /**
-   * It is a mapper component that renders a specific type of a [product offer card]{@link AntragCards}
-   * depending on the the value of prop `antrag.request_state` as follow:
-   * | Value                       | Product Offer Card Component |
-   * | --------------------------- | ---------------------------- |
-   * | "ok"                        | {@link ActiveAntrag} |
-   * | "waiting"                   | {@link DisabledAntrag} |
-   * | "error" (or any other value)| {@link ErrorAntrag} |
-   *
-   * @prop {number} props.index - The index of the product offer in the _redux_ store
-   * @prop {object} props.anrag - The product offer instance
-   *
-   */
-   /*
-  const MapAntragCard = (cardProps) => {   
-    switch (cardProps.antrag.request_state) {
-      case "ok":
-        return <ActiveAntrag {...cardProps} scrollTop={scrollTop} />
-      case "waiting":
-        return <DisabledAntrag {...cardProps} />
-      default: 
-        return <ErrorAntrag {...cardProps} />
-    }
-  }
-*/
-  console.log('Antrag View:')
-  console.log(props)
 
   return(
     <div className={classes.container}>
