@@ -1,7 +1,7 @@
 from polzyFunctions.GlobalConstants import logger
 import json
 from pathlib import Path
-from os import getcwd
+import os
 import configparser
 import codecs
 from polzyFunctions.utils import Singleton
@@ -22,12 +22,11 @@ class ConfigurationProvider(metaclass=Singleton):
         self.configsRead = {}
         self.badConfigs = {}
         # pathToConfig can and should be overwritten if needed otherwise:
-        self.pathToConfig = Path(getcwd()).joinpath("Configurations")
-        self.basePath = Path(getcwd())
+        self.pathToConfig = Path(os.getcwd()).joinpath("Configurations")
+        self.basePath = Path(os.getcwd())
         if not self.pathToConfig.exists():
-            self.pathToConfig = Path(getcwd()).parent.joinpath("Configurations")
-            self.basePath = Path(getcwd()).parent
-
+            self.pathToConfig = Path(os.path.abspath(__file__)).parent.parent.joinpath("Configurations")
+            self.basePath = Path(os.path.abspath(__file__)).parent.parent
         result = self.__checkAndReadConfigurations("default")
         if not result:
             logger.critical("Default configuration was not found. Aborting.")
@@ -42,7 +41,8 @@ class ConfigurationProvider(metaclass=Singleton):
         offline = False
         try:
             config = configparser.ConfigParser()
-            config.read("run_setting.ini")
+            # pathlib.Path resolves issue of lowercase path stored in __file__ which was creating issue in configparser
+            config.read(Path(os.path.abspath(__file__)).parent.parent.joinpath("run_setting.ini"))
             default = config["Default"]
         except Exception as ex:
             logger.critical(f"Exception while reading config file: {ex}")
@@ -91,7 +91,7 @@ class ConfigurationProvider(metaclass=Singleton):
 
         configReadResult = ConfigurationProvider.__readConfigurationFromFile(
             self.pathToConfig.joinpath(f"{configurationEnvironmentKey}.json"))
-        print(configurationEnvironmentKey)
+
         if configReadResult:
             self.configsRead[configurationEnvironmentKey] = configReadResult
             return True

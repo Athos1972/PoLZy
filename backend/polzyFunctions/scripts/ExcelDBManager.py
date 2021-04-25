@@ -58,7 +58,7 @@ def attributes_to_boolean(js):
     return json.dumps(attribute_json, ensure_ascii=False)
 
 
-def download_excel():
+def download_excel(fileNameAndPath="db2excel.xlsx"):
     dfs = {}
     # reading database with pandas and storing table_name:dataframe(converted table) as key:value
     dfs[User.__tablename__] = pd.read_sql_table(User.__tablename__, Config.SQLALCHEMY_DATABASE_URI)
@@ -85,7 +85,7 @@ def download_excel():
     dfs[user_company_roles.name]["company_id"] = dfs[user_company_roles.name]["company_id"
                                                                         ].apply(lambda x: uuidBytes2String(x))
 
-    with pd.ExcelWriter("../db2excel.xlsx", engine='xlsxwriter')as writer:
+    with pd.ExcelWriter(fileNameAndPath, engine='xlsxwriter')as writer:
         for df in dfs:  # writing excel sheets with table name as sheet name
             dfs[df].to_excel(writer, df, index=False)
             worksheet = writer.sheets[df]  # pull worksheet object
@@ -96,6 +96,7 @@ def download_excel():
                     len(str(series.name))  # len of column name/header
                 )) + 1  # adding a little extra space
                 worksheet.set_column(idx, idx, max_len)  # set column width
+    return os.path.abspath(fileNameAndPath)
 
 
 class UploadExcel:
@@ -235,13 +236,13 @@ class UploadExcel:
         data_dict = roles_table.to_dict('r')
         for data in data_dict:
             self.remove_nan(data)
-            roles = self.db.session.query(Role).filter(id=data['id']).first()
+            roles = self.db.session.query(Role).filter_by(id=data['id']).first()
             if not roles:
                 is_supervisor = True if str(data['is_supervisor']).upper() in ["TRUE", "1"] else False
                 roles = Role(id=data["id"], name=data["name"], is_supervisor=is_supervisor)
             else:
                 roles.name = data["name"]
-                roles.is_supervisor = data['is_supervisor']
+                roles.is_supervisor = string2bool(data.get('is_supervisor', 0))
             self.db.session.add(roles)
         try:
             self.db.session.commit()
@@ -328,6 +329,7 @@ class UploadExcel:
         # Main method to upload all data in db
         self.upload_user()
         self.upload_company()
+        self.upload_role()
         self.upload_user2company()
         self.upload_company2company()
 

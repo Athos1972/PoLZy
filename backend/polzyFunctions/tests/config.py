@@ -28,3 +28,5 @@ class Config(object):
     DASHBOARD_CONFIG = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'dashboard.cfg')
     DASHBOARD_DATABASE_URI = 'sqlite:///' + os.path.join(os.path.abspath(os.path.dirname(__file__)), 'dashboard.db')
     DEBUG = True
+
+    CLASSNAME_ANTRAG = 'polzyFunctions.polzyvig.antrag.VIGAntrag'

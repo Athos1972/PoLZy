@@ -2,12 +2,10 @@ import os
 import sys
 import json
 import codecs
-from copy import deepcopy
 from datetime import datetime
 from polzyFunctions.FileManager.AddressParser import Parser
 from polzyFunctions.GlobalConstants import GlobalConstants, logger
 from dateutil.parser import parse
-from polzybackend import models
 from polzyFunctions.Dataclasses.CommonFieldnames import CommonFieldnames
 
 
@@ -84,14 +82,3 @@ def sanitizeHeader(value):
             return key
     print(value.lower().strip().replace(" ", "").replace("_", "").replace("-", "").replace(".", ""))
 
-
-def initFakeUser(stage="pqa", email="admin@polzy.com",
-                 localDatabase=None):  # ldb is used to supply db instance to avoid conflicts
-    if localDatabase:
-        models.db = localDatabase
-        realUser: models.User = deepcopy(localDatabase.session.query(models.User).filter_by(email=email).first())
-    else:
-        realUser: models.User = deepcopy(models.db.session.query(models.User).filter_by(email=email).first())
-    #    agent = models.User.query.filter_by(email='agent@polzy.com').first()
-    realUser.stage = stage
-    return realUser

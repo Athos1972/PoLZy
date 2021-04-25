@@ -89,7 +89,8 @@ class ManageTranslator:
         language_code = language_code.lower()
         for key in self.data:
             del self.data[key][language_code]
-        del self.languages[language_code]
+        if language_code in self.languages:
+            del self.languages[language_code]
         if save:
             self.save_data()
 

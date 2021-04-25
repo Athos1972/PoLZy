@@ -1,7 +1,8 @@
 from polzyFunctions.Dataclasses.Antrag import Antrag
-from polzyFunctions.tests.utils import db, user
+from polzyFunctions.tests.utils import db, models, user, company
 from polzyFunctions.Activities.Activity import Activity
 from polzyFunctions.LogLevelUpdater import LogLevelUpdater
+from polzybackend.models import AntragActivityRecords
 
 
 antrag = Antrag(user)
@@ -15,10 +16,10 @@ antrag.productName = "test"
 antrag.user.id = "test"
 antrag.user.stage = "test"
 antrag.sapClient = "test"
-antrag.user.company_id = "test"
 
 
-def test_Antrag():
+def test_Antrag(company):
+    antrag.user.company_id = company.id  # using real company id to avoid errors
     antrag.parseToFrontend()
     antrag.parseToFrontendFieldGroupFields()
     antrag.parseToFrontendFieldGroups()
@@ -31,6 +32,10 @@ def test_Antrag():
 
 
 def test_recordDecorators():
+    antrag.Activities = [lActivity]
+    antrag.searchstring = "test"
+    lActivity.encrypt = True
+    antrag.Activities = [lActivity]
     antrag.createFieldcatalogForAntrag()  # recordActivityDecorator
     antrag.setCustomTag("test")  # recordAntragDecorator
     assert antrag.tag == "test"
