@@ -121,6 +121,13 @@ function LoginView(props) {
     })
   }
 
+  
+  /**
+   * Checks if the entered email is valid and a stage selected.
+   * Enables the submit button enables if the form is valid.
+   *
+   * @function
+   */
   const validateForm = () => {   
     // check if email is valid and stage is set
     return validateEmail(user.email) && Boolean(stage)

@@ -48,7 +48,7 @@ const MapPolicyCard = (props) => {
       )
     case "customer":
       return(
-        <Customer index={index} customer={policy.customer} />
+        <Customer index={props.index} customer={props.policy.customer} />
       )
     default:
       return(
@@ -107,7 +107,7 @@ function PolicyView(props) {
             scope.setContext("polzy", getPolicyContext(props.user, policy))
           }}
         >
-          <RenderPolicyCard index={index} policy={policy} />
+          <MapPolicyCard index={index} policy={policy} />
         </ErrorBoundary>
       ))}
     </div>
