@@ -21,22 +21,30 @@ const useStyles = makeStyles((theme) => ({
 
 }))
 
-/*
-** Policy Card Mapper
-*/
-function RenderPolicyCard(props) {
-  const { index, policy } = props
-
-  console.log(policy)
-  
-  switch (policy.request_state) {
+/**
+ * It is a mapper component that renders a specific type of a [policy card]{@link PolicyCards}
+ * depending on the the value of prop `policy.request_state` as follow:
+ * | Value                       | Policy Card Component |
+ * | --------------------------- | ---------------------------- |
+ * | "ok"                        | {@link ActivePolicy} |
+ * | "waiting"                   | {@link DisabledPolicy} |
+ * | "customer"                  | {@link Customer} |
+ * | "error" (or any other value)| {@link ErrorPolicy} |
+ *
+ * @prop {number} props.index - The index of the policy in the _redux_ store
+ * @prop {object} props.anrag - The policy instance
+ *
+ * @memberOf PolicyView
+ */
+const MapPolicyCard = (props) => {
+  switch (props.policy.request_state) {
     case "ok":
       return(
-        <ActivePolicy index={index} policy={policy} />
+        <ActivePolicy {...props} />
       )
     case "waiting":
       return(
-        <DisabledPolicy index={index} policy={policy} />
+        <DisabledPolicy {...props} />
       )
     case "customer":
       return(
@@ -44,20 +52,27 @@ function RenderPolicyCard(props) {
       )
     default:
       return(
-        <ErrorPolicy index={index} policy={policy} />
+        <ErrorPolicy {...props} />
       )
   }
 }
-
+/*
 RenderPolicyCard.propTypes = {
   index: PropTypes.number,
   policy: PropTypes.object,
 }
-
-
-/*
-** Policy View
 */
+
+
+/**
+ * It is a view component that defines the layout for the policy cards.
+ * It renders policy creation card and all the policy cards stored in the _redux_ store.
+ * Additionally, it sets [Sentry]{@link Sentry} error boundaries for each card to track possible errors.
+ *
+ * @component
+ * @category Views
+ * 
+ */
 function PolicyView(props) {
   const classes = useStyles()
   const {t} = useTranslation('common', 'feedback')
@@ -100,7 +115,13 @@ function PolicyView(props) {
 }
 
 PolicyView.propTypes = {
+  /**
+   * Object that contains user credentials.
+   */
   user: PropTypes.object,
+  /**
+   * Array that holds all the loaded policy objects.
+   */
   policies: PropTypes.array,
 }
 

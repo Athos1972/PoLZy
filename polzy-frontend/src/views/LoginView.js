@@ -28,21 +28,68 @@ const useStyles = makeStyles({
 })
 
 
-/*
-** Authentication View
-*/
+/**
+ * Provides a login form that gathers user email, one of the possible stages to work in and lnaguage of the interface.
+ *
+ * @component
+ * @category Views
+ * @subcategory Auth Views
+ */
 function LoginView(props) {
   const classes = useStyles()
   const {t, i18n} = useTranslation('auth')
 
+  /**
+   * @typedef {object} state
+   * @ignore
+   */
+  /**
+   * @name allStages
+   * @desc State: Array of strings that represent possible **_PoLZy_** stages.
+   * @prop {array} allStages - state
+   * @prop {function} setAllStages - setter
+   * @type {state}
+   * @memberOf LoginView
+   * @inner
+   */
   const [allStages, setAllStages] = useState([])
+  /**
+   * @name stage
+   * @desc State: Currently selected stage.
+   * @prop {string} stage - state
+   * @prop {function} setStage - setter
+   * @type {state}
+   * @memberOf LoginView
+   * @inner
+   */
   const [stage, setStage] = useState(null)
+  /**
+   * State: Object that holds user's email data
+   * @name user
+   * @prop {object} user - state
+   * @prop {string} user.email - currently entered users's email
+   * @prop {string | null} user.error - error mesage associated with the user's email.
+   * _null_ if no error occured 
+   * @prop {function} setUser - setter
+   * @type {state}
+   * @memberOf LoginView
+   * @inner
+   */
   const [user, setUser] = useState({
     email: '',
     error: null,
   })
   
   // call to back-end for possible stages
+  /**
+   * Calls the back-end ({@link getStages}) for a list of the possible stages, when the component is mounted.
+   * If the response is _OK_, the stages are set to state _{@link LoginView~allStages}_.
+   *
+   * @name useEffect
+   * @function
+   * @memberOf LoginView
+   * @inner
+   */
   useEffect(() => {
     getStages().then((data) => {
       setAllStages(data)
@@ -143,6 +190,9 @@ function LoginView(props) {
 }
 
 LoginView.propTypes = {
+  /**
+   * Callback fired when the submit button is clicked.
+   */
   onSubmit: PropTypes.func,
 }
 
