@@ -31,7 +31,11 @@ def new_antrag(product_type):
     # and returns it to frontend
     #
     try:
-        antrag = antrag_class()(product_type, auth.current_user())
+        # load user and its relationships
+        user = auth.current_user()
+        user.company.company
+        # create antrag instance
+        antrag = antrag_class()(product_type, user)
 
         # store antrag and return it to store and return json object
         antrag.initialize()
