@@ -4,10 +4,9 @@ from pathlib import Path
 import os
 import configparser
 import codecs
-from polzyFunctions.utils import Singleton
 
 
-class ConfigurationProvider(metaclass=Singleton):
+class ConfigurationProvider:
     """
     Static/singleton class to provide configurations all over the application.
 
@@ -17,13 +16,14 @@ class ConfigurationProvider(metaclass=Singleton):
 
     """
 
-    def __init__(self):
+    def __init__(self, setting_file=Path(os.path.abspath(__file__)).parent.parent.joinpath("run_setting.ini")):
         logger.info("Executing __init__ in ConfigurationProvider")
         self.configsRead = {}
         self.badConfigs = {}
         # pathToConfig can and should be overwritten if needed otherwise:
         self.pathToConfig = Path(os.getcwd()).joinpath("Configurations")
         self.basePath = Path(os.getcwd())
+        self.setting_file = setting_file
         if not self.pathToConfig.exists():
             self.pathToConfig = Path(os.path.abspath(__file__)).parent.parent.joinpath("Configurations")
             self.basePath = Path(os.path.abspath(__file__)).parent.parent
@@ -34,15 +34,14 @@ class ConfigurationProvider(metaclass=Singleton):
         self.language = "en"  # default fallback language is english
         self.offline, self.PDFOutput, self.defaultStage = self._get_default_data()
 
-    @staticmethod
-    def _get_default_data():
+    def _get_default_data(self):
         stage = 'pqa'
         output_dir = ''
         offline = False
         try:
             config = configparser.ConfigParser()
             # pathlib.Path resolves issue of lowercase path stored in __file__ which was creating issue in configparser
-            config.read(Path(os.path.abspath(__file__)).parent.parent.joinpath("run_setting.ini"))
+            config.read(self.setting_file)
             default = config["Default"]
         except Exception as ex:
             logger.critical(f"Exception while reading config file: {ex}")
