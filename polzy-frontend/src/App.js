@@ -9,7 +9,7 @@ import {
   Redirect,
 } from 'react-router-dom'
 import { polzyTheme } from './styles/theme'
-import LoginView from './views/LoginView'
+import AuthView from './views/AuthView'
 import MainView from './views/MainView'
 
 
@@ -47,7 +47,7 @@ function App(props) {
             
             {/* Log in */}
             <Route path="/login">
-              <LoginView />
+              <AuthView />
             </Route>
 
             {/* Antrag Tab */}

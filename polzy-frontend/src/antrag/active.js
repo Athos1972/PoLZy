@@ -205,6 +205,9 @@ const CustomTag = connect(mapStateToPropsCustomTag, mapDispatchToPropsCustomTag)
 
 /**
  * Antrag Active Card
+ *
+ * @component
+ * @category Product Offer
  */
 function ActiveAntrag(props) {
   const {antrag} = props
@@ -214,9 +217,24 @@ function ActiveAntrag(props) {
   const cardRef = React.useRef()
   const calcRef = React.useRef()
 
-  const [isVisible, setIsVisible] = useState(false)
-  const [autoCalculateDisabled, setAutoCalculateDisabled] = useState(false)
-  const [openUploadDialog, setOpenUploadDialog] = useState(false)
+  /**
+   * @typedef {object} state
+   * @ignore
+   */
+  /**
+   * State: Boolean flag that defines the card visibility.
+   * Used to animate the card appearence and closure. 
+   *
+   * @name isVisible
+   * @prop {boolean} isVisible - state
+   * @prop {function} setIsVisible - setter
+   * @type {state}
+   * @memberOf ActiveAntrag
+   * @inner
+   */
+  const [isVisible, setIsVisible] = React.useState(false)
+  const [autoCalculateDisabled, setAutoCalculateDisabled] = React.useState(false)
+  const [openUploadDialog, setOpenUploadDialog] = React.useState(false)
 
   // speedometer
   const [openSpeedometer, setOpenSpeedometer] = React.useState(false)

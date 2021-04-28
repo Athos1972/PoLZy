@@ -52,32 +52,6 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 
-/*
-** View Mapper
-*//*
-function RenderView(props) {
-  switch(props.view) {
-    case VIEW_ADMIN:
-      return <AdminView onClose={props.onClose} />
-    case VIEW_BADGE:
-      return <BadgeView {...props} />
-    case VIEW_RANKING:
-      return <RankingView onClose={props.onClose} />
-    default:
-      return <HomeView tab={props.tab} />
-  }
-}
-
-RenderView.propTypes = {
-  view: PropTypes.string,
-  tab: PropTypes.string,
-  updateBadges: PropTypes.bool,
-  onClose: PropTypes.func,
-  onChange: PropTypes.func,
-  onBadgesUpdated: PropTypes.func,
-}
-*/
-
 /**
  * This component renders the current view using, defines the logic for transition between the views
  * and provides alerts for **_PoLZy_** system.
@@ -147,10 +121,13 @@ function MainView(props) {
   React.useEffect(() => {
     const eventSource = new EventSource(apiHost + "api/listen")
 
+    /**
+     * Push a new badge toast
+     * 
+     * @listens newbadge
+     */
     eventSource.addEventListener("newbadge", (e) => {
       const {text, uri, ...toastProps} = JSON.parse(e.data)
-      console.log('Badge:')
-      console.log(uri)
 
       // enqueue toast
       enqueueSnackbar(
@@ -167,6 +144,11 @@ function MainView(props) {
       setUpdateBadges(true)
     })
 
+    /**
+     * Push a regular text toast
+     * 
+     * @listens message
+     */
     eventSource.onmessage = (e) => {
       const {text, ...toastProps} = JSON.parse(e.data)
       enqueueSnackbar(
@@ -245,14 +227,6 @@ function MainView(props) {
           onBadgesUpdated={handleOnBadgesUpdated}
         />
         <CurrentView />
-        {/*<RenderView
-          view={view}
-          tab={props.tab}
-          onClose={goToHome}
-          onChange={setView}
-          updateBadges={updateBadges}
-          onBadgesUpdated={handleOnBadgesUpdated}
-        />*/}
       </Container>
       <footer className={classes.footer}>
         <Copyright />
