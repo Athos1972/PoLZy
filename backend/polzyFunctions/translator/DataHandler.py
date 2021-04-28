@@ -31,6 +31,6 @@ class Data(metaclass=Singleton):
 
     @staticmethod
     def get_data(fileNameAndPath):
-        with codecs.open(fileNameAndPath, 'r') as file:
+        with codecs.open(fileNameAndPath, 'rb') as file:
             data = json.load(file)
         return data

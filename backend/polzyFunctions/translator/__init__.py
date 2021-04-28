@@ -18,8 +18,10 @@ class Translator(metaclass=Singleton):
         language = language.lower()
         if language == "en":
             return word
-        result = self.data.get(word).get(language)
-        if not result:
+        translations = self.data.get(word)
+        if translations:
+            result = translations.get(language)
+        else:
             result = word
             logger.info(f'Translation of "{word}" for language "{language}" not found!')
         return result
