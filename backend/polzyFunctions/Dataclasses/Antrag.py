@@ -4,6 +4,7 @@ import locale
 from dataclasses import dataclass
 from polzybackend import messenger
 from polzybackend.models import User, AntragActivityRecords
+from polzybackend.mediators import Antrag as polzyAntrag
 from datetime import datetime, timedelta
 from polzyFunctions.utils.counter import Counter
 from polzyFunctions.Dataclasses.PersonRoles import Roles
@@ -15,10 +16,12 @@ from polzyFunctions.Dataclasses.CommonFieldnames import CommonFieldnames
 from polzyFunctions.GamificationActivityRecorder import recordActivityDecorator
 from polzyFunctions.Activities.ActivitiesDataClasses import InputFields, FieldDataType, FieldVisibilityTypes, \
     InputFieldTypes, FieldDefinition
+from copy import deepcopy
+
 
 
 @dataclass
-class Antrag():
+class Antrag(polzyAntrag):
     """
     THE main component of LeZyTOR (Tariff Online Calculator). In this class (and all inheriting classes) we handle
     instances of fastOffers.
@@ -145,6 +148,16 @@ class Antrag():
         logger.debug(f"Tag is set to {tag}")
         self.tag = tag
 
+    def clone(self):
+        #
+        # returns a cloned instance which has updated fields as required
+        #
+
+        antrag_copy = deepcopy(self)
+        antrag_copy.updateAfterClone()
+
+        return antrag_copy
+
     def updateAfterClone(self):
         """
         After an instance was cloned do here some cleanup work. Can and should be overwritten in each installation.
@@ -168,7 +181,21 @@ class Antrag():
         :param listName: name of the list-object
         :return: Values of the list object for the frontend
         """
-        # should be defined within specific antrag class
+        # default value lists
+        if listName == "firmenArten":
+            return sorted(["GmbH", "GmbH&Co KG", "AG", "ArGE", "Einz.Unt", "EWIV", "Gen", "GenbR", "E.U", "KEG",
+                           "KG", "OEG", "OG", "OHG", "OPG", "PsT", "Sparkasse", "Verein", "VVaG", "WEG"])
+
+        # get specific value lists
+        lReasult = self.getSpecificValueList(listName)
+        return lReasult
+
+    def getSpecificValueList(self, listName):
+        """
+        see getValueList method
+
+        antrag specific value lists should be defined within the specific antrag class
+        """
         raise ValueError(f'List with name {listName} not defined')
 
     def getClauses(self) -> list:
@@ -392,6 +419,7 @@ class Antrag():
         :return: Standard list: [VN, PZ]
         """
         return [Roles.VN, Roles.PZ]
+
 
     def updateFieldValuesFromDatabase(self, updateValues):
         """
