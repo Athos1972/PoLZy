@@ -76,7 +76,7 @@ class Antrag:
         self.id = id or generate_id()
         self.product_name = product_name
         self.user = deepcopy(user)
-        self.instance = None
+        #self.instance = None
 
 
     def clone(self):
@@ -89,7 +89,7 @@ class Antrag:
 
         return antrag_copy
 
-
+    '''
     def initialize(self):
         #
         # IMPORTANT: this method should be define within custom implementation
@@ -98,16 +98,16 @@ class Antrag:
         #
 
         raise Exception('Initialize method is not defined in Antrag class')
+    '''
 
-
-    def get(self):
+    def parseToFrontend(self):
         #
         # IMPORTANT: this method should be define within custom implementation
         #
         # returns antrag instance as json object to front-end 
         #
 
-        raise Exception('Method "get" is not defined in Antrag class')
+        raise Exception('Method "parseToFrontend" is not defined in Antrag class')
 
 
     def getValueList(self, valueListName):

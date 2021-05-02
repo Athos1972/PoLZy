@@ -40,7 +40,7 @@ def new_antrag(product_type):
         # store antrag and return it to store and return json object
         antrag.initialize()
         current_app.config['ANTRAGS'][antrag.id] = antrag
-        result = antrag.get()
+        result = antrag.parseToFrontend()
         return jsonify(result), 200
 
     except Exception as e:
@@ -65,7 +65,7 @@ def clone_antrag(id):
         # make copy and return antrag json object
         antrag = antrag_src.clone()
         current_app.config['ANTRAGS'][antrag.id] = antrag
-        result = antrag.get()
+        result = antrag.parseToFrontend()
         return jsonify(result), 200
 
     except Exception as e:
@@ -135,7 +135,7 @@ def update_antrag():
 
         # update antrag values and return antrag json object
         antrag.updateFields(data)
-        result = antrag.get()
+        result = antrag.parseToFrontend()
         return jsonify(result), 200
 
     except Exception as e:
@@ -230,6 +230,6 @@ def loadLatestRecords(antrag_id):
     # update tag
     antrag.instance.setCustomTag(antrag_record.tag)
     antrag.instance.fillCurrentlyPossibleActivities()
-    result = antrag.get()
+    result = antrag.parseToFrontend()
     return jsonify(result), 200
 
