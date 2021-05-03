@@ -236,17 +236,24 @@ class Antrag(polzyAntrag):
 
     def get_activity(self, activity_name, optional=False):
         """
-        Retrieve an activity from the list of Activities in this instance by class name
-        :param activity_name: class name of the desired activity
+        Retrieve an activity from the list of Activities in this instance by class name or activity name
+        :param activity_name: class name or activity name of the desired activity
         :param optional: Don't raise an error if the activity can't be found
-        :return: the activity
+        :return: the activity or None
         """
-        activityObjects = [x for x in self.Activities if x.__class__.__name__ == activity_name]
-        if not activityObjects:
-            activityObjects = [x for x in self.Activities if x.name == activity_name]
-            if not activityObjects and not optional:
-                logger.critical(f"Cannot find activity: {activity_name}", stack_info=True)
-        return activityObjects
+        for activity in self.Activities:
+            if activity_name == activity.__class__.__name__ or activity_name == activity.name:
+                return activity
+
+        if not optional:
+            logger.critical(f"Cannot find activity: {activity_name}", stack_info=True)
+
+        #activityObjects = [x for x in self.Activities if x.__class__.__name__ == activity_name]
+        #if not activityObjects:
+        #    activityObjects = [x for x in self.Activities if x.name == activity_name]
+        #    if not activityObjects and not optional:
+        #        logger.critical(f"Cannot find activity: {activity_name}", stack_info=True)
+        #return activityObjects
 
     def getPreviousVersions(self):
         """
