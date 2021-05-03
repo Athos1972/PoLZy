@@ -38,7 +38,7 @@ def new_antrag(product_type):
         antrag = antrag_class()(product_type, user)
 
         # store antrag and return it to store and return json object
-        antrag.initialize()
+        #antrag.initialize()
         current_app.config['ANTRAGS'][antrag.id] = antrag
         result = antrag.parseToFrontend()
         return jsonify(result), 200
