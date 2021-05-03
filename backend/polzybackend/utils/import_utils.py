@@ -63,12 +63,22 @@ def policy_class():
 
     return Policy
 
-
+'''
 def antrag_class():
     #
     # returns antrag class of the current implementation
     #
 
+    if current_app.config.get('CLASSNAME_ANTRAG'):
+        return import_class(current_app.config['CLASSNAME_ANTRAG'])
+
+    return Antrag
+'''
+def antrag_factory():
+    #
+    # returns antrag factory class of the current implementation
+    #
+    
     if current_app.config.get('CLASSNAME_ANTRAG'):
         return import_class(current_app.config['CLASSNAME_ANTRAG'])
 

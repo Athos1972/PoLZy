@@ -1,6 +1,6 @@
 from flask import jsonify, request, current_app, send_file, abort
 from polzybackend.antrag import bp
-from polzybackend.utils.import_utils import antrag_products, antrag_class
+from polzybackend.utils.import_utils import antrag_products, antrag_factory
 from polzybackend import auth
 from polzybackend.models import AntragActivityRecords
 from polzybackend.utils.import_utils import import_class
@@ -35,11 +35,11 @@ def new_antrag(product_type):
         user = auth.current_user()
         user.company.company
         # create antrag instance
-        antrag = antrag_class()(product_type, user)
+        antrag = antrag_factory().create(product_type, user)
 
         # store antrag and return it to store and return json object
         #antrag.initialize()
-        current_app.config['ANTRAGS'][antrag.id] = antrag
+        current_app.config['ANTRAGS'][antrag.uuid] = antrag
         result = antrag.parseToFrontend()
         return jsonify(result), 200
 
@@ -64,7 +64,7 @@ def clone_antrag(id):
 
         # make copy and return antrag json object
         antrag = antrag_src.clone()
-        current_app.config['ANTRAGS'][antrag.id] = antrag
+        current_app.config['ANTRAGS'][antrag.uuid] = antrag
         result = antrag.parseToFrontend()
         return jsonify(result), 200
 
@@ -108,11 +108,11 @@ def antrag_tag(antrag_id):
         # get tag from payload
         tag = request.get_json().get('tag')
         if tag:
-            antrag.instance.setCustomTag(tag)
+            antrag.setCustomTag(tag)
             return {'OK': 'Custom Tag successfully set'}, 200
 
     # delete tag
-    antrag.instance.setCustomTag(None)
+    antrag.setCustomTag(None)
     return {'OK': 'Custom Tag successfully deleted'}, 200
 
 
@@ -201,7 +201,7 @@ def loadLatestRecords(antrag_id):
         return {'error': f'No record found of antrag {antrag_id}'}, 404
 
     # create antrag instance from the record
-    antrag = antrag_class()(
+    antrag = antrag_factory()(  ##### DEBUG: add load method to antrag factory
         antrag_record.class_name,
         auth.current_user(),
         id=antrag_id,
