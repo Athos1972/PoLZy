@@ -87,7 +87,7 @@ class Antrag(polzyAntrag):
             instance = self.get_activity(classname, optional=True)
             if instance:
                 # if instance of same activity is already their than update it
-                instance = instance[0]
+                #instance = instance[0]
                 logger.debug(f"Found existing instance of {classname}. Using it to update persistence values.")
                 instance.loadFromJsonFromPersistence(value)
             else:  # if no existing instance of activity found than create a new and add to list
