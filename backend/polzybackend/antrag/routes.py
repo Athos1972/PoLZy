@@ -5,6 +5,7 @@ from polzybackend import auth
 from polzybackend.models import AntragActivityRecords
 from polzybackend.utils.import_utils import import_class
 import json
+from copy import deepcopy
 
 @bp.route('/antrag/products')
 @auth.login_required
@@ -35,7 +36,7 @@ def new_antrag(product_type):
         user = auth.current_user()
         user.company.company
         # create antrag instance
-        antrag = antrag_factory().create(product_type, user)
+        antrag = antrag_factory().create(product_type, deepcopy(user))
 
         # store antrag and return it to store and return json object
         #antrag.initialize()
@@ -200,36 +201,18 @@ def loadLatestRecords(antrag_id):
     if antrag_record is None:
         return {'error': f'No record found of antrag {antrag_id}'}, 404
 
-    # create antrag instance from the record
-    antrag = antrag_factory()(  ##### DEBUG: add load method to antrag factory
-        antrag_record.class_name,
-        auth.current_user(),
-        id=antrag_id,
+    # load user with company relationships
+    user = auth.current_user()
+    user.company.company 
+
+    # load antrag instance from the record and store it within the app
+    antrag = antrag_factory().load(  
+        antrag_record,
+        deepcopy(user),
     )
+    current_app.config['ANTRAGS'][antrag.uuid] = antrag
 
-    # load antrag instance and store it within the app
-    antrag.load(antrag_record.sapClient)
-    current_app.config['ANTRAGS'][antrag.id] = antrag
-
-    # creating dictionary with name as key and value as value of inputField. These are used to load fields.
-    fields_json_data = {js.get("name"): js.get("value") for js in antrag_record.json_data}
-    sapAttributes_json_data = {js.get("name"): js.get("sapFieldAttributes") for js in antrag_record.json_data}
-
-    # update field values from the record and return the result
-    antrag.instance.id = antrag_record.antrag_id  # using same antrag_id as from record to avoid new record because of
-    antrag.instance.updateFieldValuesFromDatabase(fields_json_data)                                   ## new antrag id
-    antrag.instance.updateSapAttributesFromDatabase(sapAttributes_json_data)
-    antrag.instance.status = antrag_record.status
-    antrag.instance.antragsnummer = antrag_record.antragsnummer
-    antrag.instance.latestDBTimestamp = antrag_record.timestamp
-    try:
-        antrag.instance.productName = antrag.instance._generateProduktNameWithAntragsnummer()
-    except:
-        pass
-    antrag.instance.loadActivitiesFromDict(antrag_record.json_data_activities)
-    # update tag
-    antrag.instance.setCustomTag(antrag_record.tag)
-    antrag.instance.fillCurrentlyPossibleActivities()
+    # return antrag json
     result = antrag.parseToFrontend()
     return jsonify(result), 200
 

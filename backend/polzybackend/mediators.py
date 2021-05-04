@@ -72,11 +72,21 @@ class Antrag:
     # PoLZy interface instance for antrag
     #
 
-    def __init__(self, product_name, user, id=None):
-        self.id = id or generate_id()
-        self.product_name = product_name
-        self.user = deepcopy(user)
-        #self.instance = None
+    def __init__(self, user):
+        # set user
+        self.user = user
+        self.id = uuid.uuid4()
+
+
+    def set_id(self, id):
+        #
+        # set id from UUID string
+        #
+        try:
+            self.id = uuid.UUID(id)
+        except Exception:
+            # badly formatted UUID string
+            pass
 
 
     def clone(self):

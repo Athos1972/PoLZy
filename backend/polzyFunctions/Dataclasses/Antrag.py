@@ -46,7 +46,9 @@ class Antrag(polzyAntrag):
     searchstring: str = ""
 
     def __init__(self, user):
+        # set user and id
         self.user = user
+        self.id = uuid.uuid4()
 
         self.status = ""  # take a look sir
         self.Activities = []  # take a look sir
@@ -57,7 +59,6 @@ class Antrag(polzyAntrag):
         self.bufferedFieldValuesForComparisonWithFrontend = {}
         self.Fields = InputFields()
 
-        self.id = uuid.uuid4()
         # The Tag is used in frontend (and saved to database) to set custom tags in order to find the instance
         # later, independently of the product, id or other search fields. An example of usage would be a clerk, who
         # calculates multiple offers and multiple Products for Mrs. Smith (not yet a customer). He would tag them with
