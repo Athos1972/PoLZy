@@ -163,7 +163,7 @@ function MainView(props) {
   }, [])
 
   /**
-   * Callback.
+   * Callback<br/>
    * **_Fired_** when received data on user's badges from the back-end.<br/>
    * **_Implementation_**: sets state [_updateBadge_]{@link MainView~updateBadge} to `false`.
    */

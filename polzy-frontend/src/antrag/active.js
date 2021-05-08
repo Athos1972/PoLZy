@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { 
@@ -98,7 +98,7 @@ function CustomTagBase(props) {
   const classes = useStyles()
   const {t} = useTranslation('antrag')
 
-  const [textValue, setTextValue] = useState('')
+  const [textValue, setTextValue] = React.useState('')
 
   const updateTag = (newValue) => {
     props.updateAntrag(
@@ -204,7 +204,8 @@ const CustomTag = connect(mapStateToPropsCustomTag, mapDispatchToPropsCustomTag)
 
 
 /**
- * Antrag Active Card
+ * This component renders a product offer card with request status _OK_.
+ * @see {@link AntragView.MapAntragCard} for possible request status of product offer
  *
  * @component
  * @category Product Offer
@@ -223,9 +224,10 @@ function ActiveAntrag(props) {
    */
   /**
    * State: Boolean flag that defines the card visibility.
-   * Used to animate the card appearence and closure. 
+   * Used to animate the card appearance and closure. 
    *
    * @name isVisible
+   * @default false
    * @prop {boolean} isVisible - state
    * @prop {function} setIsVisible - setter
    * @type {state}
@@ -233,22 +235,219 @@ function ActiveAntrag(props) {
    * @inner
    */
   const [isVisible, setIsVisible] = React.useState(false)
+  /**
+   * State: Boolean flag that defines if the product offer automatic calculation should be disabled.
+   * By default, **_PoLZy_** calculates a product offer right after all the mandatory fields are filled.
+   *
+   * @name autoCalculateDisabled
+   * @default false
+   * @prop {boolean} autoCalculateDisabled - state
+   * @prop {function} setAutoCalculateDisabled - setter
+   * @type {state}
+   * @memberOf ActiveAntrag
+   * @inner
+   */
   const [autoCalculateDisabled, setAutoCalculateDisabled] = React.useState(false)
+  /**
+   * State: Boolean flag that shows if the product offer is calculating now.
+   * Used to disable calculation requests if the previous calculation is still in progress.
+   *
+   * @name isCalculate
+   * @default false
+   * @prop {boolean} isCalculate - state
+   * @prop {function} setCalculate - setter
+   * @type {state}
+   * @memberOf ActiveAntrag
+   * @inner
+   */
+  const [isCalculate, setCalculate] = React.useState(false)
+  /**
+   * State: Boolean flag that shows if a product offer activity is executing now.
+   * Used to disable execution requests of activities
+   * if the previous request of an activity execution is still in progress.
+   *
+   * @name isExecuting
+   * @default false
+   * @prop {boolean} isExecuting - state
+   * @prop {function} setExecute - setter
+   * @type {state}
+   * @memberOf ActiveAntrag
+   * @inner
+   */
+  const [isExecuting, setExecute] = React.useState(false)
+  /**
+   * State: Boolean flag that defines the visual state (expanded or collapsed) of the product offer card.
+   * If _true_ the card is expanded. 
+   *
+   * @name expanded
+   * @default true
+   * @prop {boolean} expanded - state
+   * @prop {function} setExpanded - setter
+   * @type {state}
+   * @memberOf ActiveAntrag
+   * @inner
+   */
+  const [expanded, setExpanded] = React.useState(true)
+  /**
+   * State: Boolean flag that opens a [file upload dialog]{@link FileUploadDialog}.
+   *
+   * @name openUploadDialog
+   * @default false
+   * @prop {boolean} openUploadDialog - state
+   * @prop {function} setOpenUploadDialog - setter
+   * @type {state}
+   * @memberOf ActiveAntrag
+   * @inner
+   */
   const [openUploadDialog, setOpenUploadDialog] = React.useState(false)
-
-  // speedometer
+  /**
+   * State: Boolean flag that opens a [speedometer]{@link Speedometer}
+   * that shows the efficiency of the selected options.
+   *
+   * @name openSpeedometer
+   * @default false
+   * @prop {boolean} openSpeedometer - state
+   * @prop {function} setOpenSpeedometer - setter
+   * @type {state}
+   * @memberOf ActiveAntrag
+   * @inner
+   */
   const [openSpeedometer, setOpenSpeedometer] = React.useState(false)
+  /**
+   * State: Boolean flag that signals if the product offer [speedometer]{@link Speedometer}
+   * should be sticked to the card layout.
+   * A sticky speedometer is used for smaller screen size when it can't be placed on page margins. 
+   *
+   * @name speedometerIsSticky
+   * @default false
+   * @prop {boolean} speedometerIsSticky - state
+   * @prop {function} setSpeedometerSticky - setter
+   * @type {state}
+   * @memberOf ActiveAntrag
+   * @inner
+   */
   const [speedometerIsSticky, setSpeedometerSticky] = React.useState(false)
+  /**
+   * State: Object that holds the current state of the groups of the product offer fields in form
+   * ```javascript
+   * {
+   *   <groupName>: false | true
+   * }
+   * ```
+   * A product offer can provide optional groups of input fields.
+   * In such a case, the product offer card renders on its top switches,
+   * which control the state of that groups.
+   *
+   * @name groups
+   * @default {}
+   * @prop {object} groups - state
+   * @prop {function} setGroups - setter
+   * @type {state}
+   * @memberOf ActiveAntrag
+   * @inner
+   */
+  const [groups, setGroups] = React.useState({})
+  /**
+   * State: Object that holds the current values of the product offer input fields in form
+   * ```javascript
+   * {
+   *   <fieldName>: <value>
+   * }
+   * ```
+   *
+   * @name values
+   * @default {}
+   * @prop {object} values - state
+   * @prop {function} setValues - setter
+   * @type {state}
+   * @memberOf ActiveAntrag
+   * @inner
+   */
+  const [values, setValues] = React.useState({})
+  /**
+   * State: Object that holds the currently selected activity of the product offer.
+   * If no activity selected then _undefined_.
+   *
+   * @name currentActivity
+   * @default undefined
+   * @prop {object | undefined} currentActivity - state
+   * @prop {function} setActivity - setter
+   * @type {state}
+   * @memberOf ActiveAntrag
+   * @inner
+   */
+  const [currentActivity, setActivity] = React.useState()
+  /**
+   * State: Object that holds the current state of the groups of the input fields of the current activity in form 
+   * ```javascript
+   * {
+   *   <groupName>: false | true
+   * }
+   * ```
+   * A product offer activity can provide optional groups of input fields.
+   * In such a case, the product offer card renders switches, which control the state of that groups,
+   * on the top of the current activity section
+   *
+   * @name activityGroups
+   * @default {}
+   * @prop {object} activityGroups - state
+   * @prop {function} setActivityGroups - setter
+   * @type {state}
+   * @memberOf ActiveAntrag
+   * @inner
+   */
+  const [activityGroups, setActivityGroups] = React.useState({})
+  /**
+   * State: Object that holds the current values of the input field of the current activity in form
+   * ```javascript
+   * {
+   *   <fieldName>: <value>
+   * }
+   * ```
+   *
+   * @name activityValues
+   * @default {}
+   * @prop {object} activityValues - state
+   * @prop {function} setActivityValues - setter
+   * @type {state}
+   * @memberOf ActiveAntrag
+   * @inner
+   */
+  const [activityValues, setActivityValues] = React.useState({})
 
-  // groups states
+  /**
+   * Method<br/>
+   * Collects status of the groups of the input fields from the passed argument _obj_.
+   * Used to update the group statuses while updating the product offer object on the back-end.
+   *
+   * @function
+   * @arg {object} obj
+   * Object that contains input fields in required format.
+   * It can be the product offer object received from from back-end or an object of product offer activity.
+   * @returns {object}
+   * Object that can be set to state [groups]{@link ActiveAntrag~groups}
+   * or [activityGroups]{@link ActiveAntrag~activityGroups}.
+   */
   const getGroups = (obj) => {
     return obj.field_groups.reduce((result, group) => ({
       ...result,
       [group.name]: group.value === "True",
     }), {})
   }
-  
-  
+
+  /**
+   * Method<br/>
+   * Collects values of the input fields from the passed argument _obj_.
+   * Used to update the values of the input fields while updating the product offer object on the back-end.
+   *
+   * @function
+   * @arg {object} obj
+   * Object that contains input fields in required format.
+   * It can be the product offer object received from from back-end or an object of product offer activity.
+   * @returns {object}
+   * Object that can be set to state [values]{@link ActiveAntrag~values}
+   * or [activityValues]{@link ActiveAntrag~activityValues}.
+   */
   const getValues = (obj) => {
     const commonFields = obj.fields.filter(field => (field.fieldVisibilityType !== 2)).reduce((result, field) => ({
       ...result,
@@ -265,14 +464,7 @@ function ActiveAntrag(props) {
     }), {...commonFields})
   }
 
-  const [groups, setGroups] = useState({})
-  const [values, setValues] = useState({})
-
-  //activity states
-  const [currentActivity, setActivity] = useState()
-  const [activityGroups, setActivityGroups] = useState({})
-  const [activityValues, setActivityValues] = useState({})
-
+/*
   const getActivityValues = (activity) => {
     // update activity values
     let activityValues
@@ -292,14 +484,33 @@ function ActiveAntrag(props) {
 
     setActivityValues({...activityValues})
   }
+*/
 
   // get values on antrag update
+  /**
+   * Updates states [groups]{@link ActiveAntrag~groups} and [values]{@link ActiveAntrag~values}
+   * from the product offer object stored in _redux_, when it changes.
+   * If state [currentActivity]{@link ActiveAntrag~currentActivity} is not _undefined_ then
+   * also updates it.
+   *
+   * @name useEffect
+   * @function
+   * @memberOf ActiveAntrag
+   * @inner
+   * @variation 1
+   * @arg {object} antrag
+   * prop [antrag]{@link ActiveAntrag}
+   */
   React.useEffect(() => {
-    // update antrag values
+    /**
+     * Updates _groups_ and _values_ of the product offer
+     */
     setGroups({...getGroups(antrag)})
     setValues({...getValues(antrag)})
 
-    // update activity
+    /**
+     * Updates current activity.
+     */
     if (currentActivity) {
       const updatedActivity = getActivityByName(antrag, currentActivity.name)
       if (!updatedActivity) {
@@ -311,36 +522,95 @@ function ActiveAntrag(props) {
     }
   }, [antrag])
 
-  // get activity values on update of current activity
+  /**
+   * Updates states [activityGroups]{@link ActiveAntrag~activityGroups}
+   * and [activityValues]{@link ActiveAntrag~activityValues} from the product offer object
+   * stored in _redux_, when state [currentActivity]{@link ActiveAntrag~currentActivity} changes.
+   * If [currentActivity]{@link ActiveAntrag~currentActivity} changes to _undefined_ then
+   * sets the default values to [activityGroups]{@link ActiveAntrag~activityGroups}
+   * and [activityValues]{@link ActiveAntrag~activityValues}.
+   *
+   * @name useEffect
+   * @function
+   * @memberOf ActiveAntrag
+   * @inner
+   * @variation 2
+   * @arg {object} currentValue
+   * state [currentActivity]{@link ActiveAntrag~currentActivity}
+   */
   React.useEffect(() => {
-    if (currentActivity) {
-      getActivityValues(currentActivity)
+    if (currentActivity) {     
+      const isGroupedFields = ("field_groups" in currentActivity)
+      const lActivityGroups = isGroupedFields ? getGroups(currentActivity) : {}
+      const lActivityValues = isGroupedFields ? getValues(currentActivity) : {}
+
+      /**
+       * Collects ungrouped input fields
+       *
+       */
+      setActivityValues({
+        ...activityValues,
+        ...activity.fields.filter((field) => 
+          (field.fieldVisibilityType !== 2)
+        ).reduce((result, field) => ({
+          ...result,
+          ...getFieldValue(field),
+        }), {})
+      })
+      setActivityGroups({...lActivityGroups})
+    
       return
     }
 
-    // clear activity values if no current activity
+    /**
+     * Sets default values if no current activity set.
+     */
     setActivityGroups({})
     setActivityValues({})
 
   }, [currentActivity])
 
-  // card appear animation
+  /**
+   * Implements animation of the card appearance by setting state [isVissible]
+   *
+   * @name useEffect
+   * @function
+   * @memberOf ActiveAntrag
+   * @inner
+   * @variation 3
+   */
   React.useEffect(() => {
     setIsVisible(true)
   }, [])
 
-  // other states
-  const [isCalculate, setCalculate] = useState(false)
-  const [isExecuting, setExecute] = useState(false)
-  const [expanded, setExpanded] = useState(true)
+  
 
   // close current activity if post-execution behavior is 'close'
+  /**
+   * Implements closer of the current activity if its post-execution behavior set to _close_.
+   *
+   * @name useEffect
+   * @function
+   * @memberOf ActiveAntrag
+   * @inner
+   * @variation 4
+   * @arg {boolean} isExecuting
+   * state [isExecuting]{@link ActiveAntrag~isExecuting}
+   */
   React.useEffect(() => {
     if (!isExecuting && currentActivity && currentActivity.postExecution === 'close') {
       setActivity()
     }
   }, [isExecuting])
 
+  /**
+   * Method<br/>
+   * Updates product offer object in the _redux_ store by the received _antragData_.
+   *
+   * @function
+   * @arg {object} antragData
+   * Product offer object received from the back-end.
+   */
   const updateAntragFromBackend = (antragData) => {
     props.updateAntrag(
       props.index,
@@ -351,6 +621,14 @@ function ActiveAntrag(props) {
     )
   }
 
+  /**
+   * Method<br/>
+   * Extracts the value of field _premium_ from the product offer object.
+   *
+   * @function
+   * @returns {string}
+   * value of field _premium_ of prop [antrag]{@link ActiveAntrag}.
+   */
   const getPremium = () => {
     for (const field of antrag.fields) {
       if (field.name === 'premium') {
@@ -361,6 +639,26 @@ function ActiveAntrag(props) {
     return ""
   }
 
+  /**
+   * Method<br/>
+   * Recursion method that validates the input fields by a list and values.<br/> 
+   * The validation criteria are as follow:
+   * * if field is mandatory then it should have a value
+   * * if a numeric field defines a range of the possible values then its value should be within the range
+   * * if a field provides a list of the possible values then its value should be within the list
+   * * value of an IBAN field should be a correct IBAN
+   * * if a boolean field takes value _true_ and has required subfield
+   * then the values of the mandatory subfields should be also set 
+   *
+   * @function
+   * @arg {array} fieldList
+   * list of the field object to validate
+   * @arg {object} fieldValues
+   * state object [values]{@link ActiveAntrag~values} or [activityValues]{@link ActiveAntrag~activityVAlues}
+   * that holds the current values of the input fields
+   * @returns {boolean}
+   * results of the validation of the provided input fields
+   */
   const validateFieldList = (fieldList, fieldValues) => {
     for (const field of fieldList.filter(field => field.fieldVisibilityType === 1)) {
         
@@ -421,6 +719,19 @@ function ActiveAntrag(props) {
     return true
   }
 
+  /**
+   * Method<br/>
+   * Validates the input fields of the product offer or its activity.<br/>
+   * Calls method [validateFieldList]{@link ActiveAntrag~validateFieldList}
+   * for every group (represented as a list) of input fields including ungrouped fields.
+   * 
+   * @arg {boolean} isAntrag=true
+   * Flag that defines the source of the fields to be validate.<br/>
+   * If _true_ then the method extracts input fields from prop [antrag]{@link ActiveAntrag},
+   * if _false_ &ndash; from state [currentActivity]{@link ActiveAntrag~currentActivity}.<br/>
+   * * @returns {boolean}
+   * results of the validation of the all the input fields of the product offer or its activity
+   */
   const validateFields = (isAntrag=true) => {
     const instance = isAntrag ? antrag : currentActivity
     const instanceGroups = isAntrag ? groups : activityGroups
@@ -442,7 +753,7 @@ function ActiveAntrag(props) {
     }
     return true
   }
-
+/*
   const getFieldByName = (instance, name) => {
     // returns field of instace by its name
     // check fields
@@ -465,7 +776,14 @@ function ActiveAntrag(props) {
 
     return null
   }
+*/
 
+  /**
+   * Method<br/>
+   * Checks if the product offer provides _clone_ activity.
+   * 
+   * @returns {boolean}
+   */
   const isCloneAvailable = () => {
     for (const activity of antrag.possible_activities) {
       if (activity.name === "Clone")
@@ -475,6 +793,14 @@ function ActiveAntrag(props) {
     return false
   }
 
+
+  /**
+   * Event Handler<br/>
+   * **_Event:_** click clone_ button.<br/>
+   * **_Implementation:_** calls back-end (_{@link cloneAntrag}_) to make a copy of the product offer.
+   * If the response is successful then fires callback [prop.newAntrag]{@link ActiveAntrag}
+   * to add the cloned product offer instance to the _redux_ store.
+   */
   const handleCloneClick = () => {
     // request antrag copy
     cloneAntrag(props.user, antrag.id).then(data => {
@@ -489,6 +815,22 @@ function ActiveAntrag(props) {
     })
   }
 
+  /**
+   * Event Handler<br/>
+   * **_Event:_** change state of a group _switch_.<br/>
+   * **_Implementation:_** if the input group's prop `inputTriggers == true` then the method
+   * calls the back-end (_{@link updateAntragFields}_) to update the product offer instance
+   * with the actual values of the input fields. On the successful response,
+   * it pushes the obtained from the back-end product offer instance to
+   * [updateAntragFromBackend]{@link ActiveAntrag~updateAntragFromBackend}<br/>
+   * if the input group's prop `inputTriggers == false` then the method sets the
+   * the value of prop _name_ of the state [groups]{@link ActiveAntrag~groups} to _value_.
+   *
+   * @arg {string} name
+   * name of a group of input fields
+   * @arg {boolean} value
+   * new value of the group visibility
+   */
   const updateGroupVisibility = (name, value) => {
     // check if group switch requires field update
     for (const group of antrag.field_groups) {
