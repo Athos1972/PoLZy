@@ -81,120 +81,8 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-/*
-** Antrag Custom Tag
-
-function CustomTagBase(props) {
-  const classes = useStyles()
-  const {t} = useTranslation('antrag')
-
-  const [textValue, setTextValue] = React.useState('')
-
-  const updateTag = (newValue) => {
-    props.updateAntrag(
-      props.index,
-      {
-        tag: newValue,
-      }
-    )
-    
-    // clear current text value
-    setTextValue('')
-  }
-
-  const handleValueChange = (event) => {
-    setTextValue(event.target.value)
-  }
-
-  const handleTagChange = () => {
-    // update tag in back-end 
-    setCustomTag(
-      props.user,
-      props.id,
-      {
-        action: 'set',
-        tag: textValue,
-      }
-    ).then(() => {
-      // update tag in front-end
-      updateTag(textValue)
-    }).catch(error => {
-      console.log(error)
-    })
-  }
-
-  const handleTagDelete = () => {
-    // update tag in back-end 
-    setCustomTag(
-      props.user,
-      props.id,
-      {
-        action: 'delete',
-      }
-    ).then(() => {
-      // update tag in front-end
-      updateTag()
-    }).catch(error => {
-      console.log(error)
-    })
-  }
-
-  if (props.text) {
-    return (
-      <Chip
-        classes={{root: classes.horizontalMargin}}
-        label={props.text}
-        onDelete={handleTagDelete}
-        color="primary"
-        variant="outlined"
-        icon={<LocalOfferOutlinedIcon />}
-      />
-    )
-  } else {
-    return (
-      <React.Fragment>
-        {textValue !== '' &&
-          <Tooltip title={t("common:Save")}>
-            <IconButton onClick={() => handleTagChange()} aria-label="custom-tag">
-              <SaveOutlinedIcon />
-            </IconButton>
-          </ Tooltip>
-        }
-        <TextField
-          classes={{root: classes.customTagInput}}
-          placeholder={t("antrag:tag")}
-          size="small"
-          value={textValue}
-          onChange={handleValueChange}
-        />
-      </React.Fragment>
-    )
-  }
-}
-
-CustomTagBase.propTypes = {
-  index: PropTypes.number,
-  id: PropTypes.string,
-  text: PropTypes.string,
-  user: PropTypes.object,
-  updateAntrag: PropTypes.func,
-}
-
-// connect to redux store
-const mapStateToPropsCustomTag = (state) => ({
-  user: state.user,
-})
-
-const mapDispatchToPropsCustomTag = {
-  updateAntrag: updateAntrag,
-}
-
-const CustomTag = connect(mapStateToPropsCustomTag, mapDispatchToPropsCustomTag)(CustomTagBase)
-*/
-
-
 /**
- * This component renders a product offer card with request status _OK_.
+ * This component renders a product offer card with the request status _OK_.
  * @see {@link AntragView.MapAntragCard} for possible request status of product offer
  *
  * @component
@@ -489,7 +377,6 @@ function ActiveAntrag(props) {
     }), {...commonFields})
   }
 
-  // get values on antrag update
   /**
    * Updates states [groups]{@link ActiveAntrag~groups} and [values]{@link ActiveAntrag~values}
    * from the product offer object stored in _redux_, when it changes.
