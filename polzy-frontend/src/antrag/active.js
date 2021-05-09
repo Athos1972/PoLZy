@@ -35,12 +35,13 @@ import DataGroup from '../datafields/generalFields'
 import { removeAntrag, updateAntrag, addAntrag, clearAddressList } from '../redux/actions'
 import { executeAntrag, cloneAntrag, deleteAntrag, updateAntragFields, setCustomTag } from '../api/antrag'
 import { ActivityIcon } from '../components/icons'
+import CustomTag from './customTag'
 import Speedometer, { speedometerSize } from '../components/speedometer'
 import { validateIBAN, getFieldValue } from '../utils'
 import { getAntragEmail } from '../api/general'
 
 // test imports
-import {BrokeCard} from '../debug/damageCard'
+//import {BrokeCard} from '../debug/damageCard'
 
 
 // set styles
@@ -58,17 +59,6 @@ const useStyles = makeStyles((theme) => ({
 
   activityActionsContainer: {
     padding: theme.spacing(2),
-  },
-
-  customTagInput: {
-    width: 240,
-    verticalAlign: "middle",
-    marginRight: theme.spacing(1),
-  },
-
-  horizontalMargin: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
   },
 
   verticalMargin: {
@@ -93,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
 
 /*
 ** Antrag Custom Tag
-*/
+
 function CustomTagBase(props) {
   const classes = useStyles()
   const {t} = useTranslation('antrag')
@@ -200,7 +190,7 @@ const mapDispatchToPropsCustomTag = {
 }
 
 const CustomTag = connect(mapStateToPropsCustomTag, mapDispatchToPropsCustomTag)(CustomTagBase)
-
+*/
 
 
 /**
@@ -215,8 +205,29 @@ function ActiveAntrag(props) {
   const {t} = useTranslation('common', 'antrag')
   const classes = useStyles()
 
+  /**
+   * @typedef {object} ref
+   * @ignore
+   */
+  /**
+   * Ref: associated with the DOM node of the product offer card.
+   *
+   * @name cardRef
+   * @type {ref}
+   * @memberOf ActiveAntrag
+   * @inner
+   */
   const cardRef = React.useRef()
+  /**
+   * Ref: associated with the DOM node of the _calculate_ button of the product offer card.
+   *
+   * @name calcRef
+   * @type {ref}
+   * @memberOf ActiveAntrag
+   * @inner
+   */
   const calcRef = React.useRef()
+
 
   /**
    * @typedef {object} state
@@ -328,6 +339,19 @@ function ActiveAntrag(props) {
    */
   const [speedometerIsSticky, setSpeedometerSticky] = React.useState(false)
   /**
+   * State: Height of the `<div>` element that holds the [speedometer]{@link Speedometer}
+   * connected to the product offer card.
+   *
+   * @name speedometerDivHeight
+   * @default 0
+   * @prop {object} speedometerDivHeight - state
+   * @prop {function} setSpeedometerDivHeight - setter
+   * @type {state}
+   * @memberOf ActiveAntrag
+   * @inner
+   */
+  const [speedometerDivHeight, setSpeedometerDivHeight] = React.useState(0)
+  /**
    * State: Object that holds the current state of the groups of the product offer fields in form
    * ```javascript
    * {
@@ -414,6 +438,7 @@ function ActiveAntrag(props) {
    * @inner
    */
   const [activityValues, setActivityValues] = React.useState({})
+  
 
   /**
    * Method<br/>
@@ -550,7 +575,7 @@ function ActiveAntrag(props) {
        */
       setActivityValues({
         ...activityValues,
-        ...activity.fields.filter((field) => 
+        ...currentActivity.fields.filter((field) => 
           (field.fieldVisibilityType !== 2)
         ).reduce((result, field) => ({
           ...result,
@@ -571,7 +596,8 @@ function ActiveAntrag(props) {
   }, [currentActivity])
 
   /**
-   * Implements animation of the card appearance by setting state [isVissible]
+   * Implements animation of the card appearance
+   * by setting state [isVisible]{@link ActiveAntrag~isVisible} to _true_.
    *
    * @name useEffect
    * @function
@@ -583,9 +609,6 @@ function ActiveAntrag(props) {
     setIsVisible(true)
   }, [])
 
-  
-
-  // close current activity if post-execution behavior is 'close'
   /**
    * Implements closer of the current activity if its post-execution behavior set to _close_.
    *
@@ -729,7 +752,7 @@ function ActiveAntrag(props) {
    * Flag that defines the source of the fields to be validate.<br/>
    * If _true_ then the method extracts input fields from prop [antrag]{@link ActiveAntrag},
    * if _false_ &ndash; from state [currentActivity]{@link ActiveAntrag~currentActivity}.<br/>
-   * * @returns {boolean}
+   * @returns {boolean}
    * results of the validation of the all the input fields of the product offer or its activity
    */
   const validateFields = (isAntrag=true) => {
@@ -796,7 +819,7 @@ function ActiveAntrag(props) {
 
   /**
    * Event Handler<br/>
-   * **_Event:_** click clone_ button.<br/>
+   * **_Event:_** click _clone_ button.<br/>
    * **_Implementation:_** calls back-end (_{@link cloneAntrag}_) to make a copy of the product offer.
    * If the response is successful then fires callback [prop.newAntrag]{@link ActiveAntrag}
    * to add the cloned product offer instance to the _redux_ store.
@@ -823,7 +846,7 @@ function ActiveAntrag(props) {
    * with the actual values of the input fields. On the successful response,
    * it pushes the obtained from the back-end product offer instance to
    * [updateAntragFromBackend]{@link ActiveAntrag~updateAntragFromBackend}<br/>
-   * if the input group's prop `inputTriggers == false` then the method sets the
+   * If the input group's prop `inputTriggers == false` then the method sets
    * the value of prop _name_ of the state [groups]{@link ActiveAntrag~groups} to _value_.
    *
    * @arg {string} name
@@ -835,7 +858,9 @@ function ActiveAntrag(props) {
     // check if group switch requires field update
     for (const group of antrag.field_groups) {
       if (group.name === name && group.inputTriggers) {
-        // build request data
+        /**
+         * build request payload  to update product offer on the back-end
+         */
         const requestData = {
           id: antrag.id,
           values: {
@@ -845,7 +870,9 @@ function ActiveAntrag(props) {
           }
         }
         updateAntragFields(props.user, requestData).then(data => {
-          // update antrag
+          /**
+           * Update product offer in redux store
+           */
           updateAntragFromBackend(data)
         }).catch(error => {
           console.log(error)
@@ -861,7 +888,22 @@ function ActiveAntrag(props) {
     }))
   }
 
-
+  /**
+   * Method<br/>
+   * Calculates the product offer.<br/>
+   * **_Implementation:_** calls back-end (_{@link executeAntrag}_) to execute _Berechnen_ (_calculate_) activity.
+   * If the response is successful then updates the product offer instance in the _redux_ store.<br/>
+   * Sets state [isCalculate]{@link ActiveAntrag~isCalculate} to _true_ while while executing.
+   *
+   * @arg {object} newValues={}
+   * Object of form
+   * ```javascript
+   * {
+   *    <inputFieldName>: <inputFieldValue>
+   * }
+   * ```
+   * that updates values of object [value]{@link ActiveAntrag~values} when calling the back-end. 
+   */
   const calculateAntrag = (newValues={}) => {
     setCalculate(true)
     // build request body
@@ -887,7 +929,20 @@ function ActiveAntrag(props) {
     })
   }
 
-
+  /**
+   * Callback<br/>
+   * **_Implementation:_** calls back-end (_{@link updateAntragFields}_) to update the values of the input fields.
+   * If the response is successful then updates the product offer instance in the _redux_ store.
+   *
+   * @arg {object} newValues={}
+   * Object of form
+   * ```javascript
+   * {
+   *    <inputFieldName>: <inputFieldValue>
+   * }
+   * ```
+   * that updates values of object [value]{@link ActiveAntrag~values} when calling the back-end. 
+   */
   const updateAntrag = (newValues={}) => {
     /* update antrag fields */
     // build request body
@@ -909,9 +964,27 @@ function ActiveAntrag(props) {
     })
   }
 
-  /*
-  ** Auto Calculate
-  */
+
+  /**
+   * Implements auto calculation of the product offer if the following criteria are met:
+   * * the status of the product offer is _Neu_ (_new_)
+   * * the input fields are valid ([validateFields]{@link ActiveAntrag~validateFields} returns _true_)
+   * * the auto calculation is enabled
+   * (state [autoCalculateDisabled]{@link ActiveAntrag~autoCalculateDisabled} is _false_)
+   * * the product offer is not calculating now
+   *
+   * @name useEffect
+   * @function
+   * @memberOf ActiveAntrag
+   * @inner
+   * @variation 5
+   * @arg {string} antrag.status
+   * prop [antrag.status]{@link ActiveAntrag}
+   * @arg {object} values
+   * state [values]{@link ActiveAntrag~values}
+   * @arg {object} groups
+   * state [groups]{@link ActiveAntrag~groups}
+   */
   React.useEffect(() => {
     if (antrag.status === "Neu" && !autoCalculateDisabled && !isCalculate && validateFields()) {
       calculateAntrag()
@@ -919,9 +992,26 @@ function ActiveAntrag(props) {
   }, [antrag.status, values, groups])
 
 
-  /*
-  ** update antrag on input trigger
-  */
+  /**
+   * Event Handler<br/>
+   * **_Event:_** change the value of an input field, which prop `inputTriggers == true`.<br/>
+   * **_Implementation:_** calls the back-end (_{@link updateAntragFields}_) to update
+   * the product offer instance with the actual values of the input fields.
+   * On the successful response, it pushes the obtained from the back-end product offer instance to
+   * [updateAntragFromBackend]{@link ActiveAntrag~updateAntragFromBackend}<br/>
+   * Disables auto calculation
+   * (sets state [autoCalculateDisabled]{@link ActiveAntrag~autoCalculateDisabled} to _false_)
+   * while executing. 
+   *
+   * @arg {object} newValues={}
+   * Object of form
+   * ```javascript
+   * {
+   *    <inputFieldName>: <inputFieldValue>
+   * }
+   * ```
+   * that updates values of object [value]{@link ActiveAntrag~values} when calling the back-end. 
+   */
   const handleInputTrigger = (newValues={}) => {
     // build request body
     const requestData = {
@@ -946,6 +1036,19 @@ function ActiveAntrag(props) {
     })
   }
 
+  /**
+   * Event Handler<br/>
+   * **_Event:_** change the value of an input field, which prop `inputTriggers != true`.<br/>
+   * **_Implementation:_** updates state [values]{@link ActiveAntrag~values} with the received _newValues_.
+   *
+   * @arg {object} newValues
+   * Object of form
+   * ```javascript
+   * {
+   *    <inputFieldName>: <inputFieldValue>
+   * }
+   * ```
+   */
   const handleDataChanged = (newValues) => {
     // update field values
     setValues(preValues => ({
@@ -954,10 +1057,16 @@ function ActiveAntrag(props) {
     }))
   }
 
+  /**
+   * Event Handler<br/>
+   * **_Event:_** click _calculate_ button.<br/>
+   * **_Implementation:_** calls method [calculateAntrag]{@link ActiveAntrag~calculateAntrag}.
+   *
+   */
   const handleCalculateClick = () => {
     calculateAntrag()
   }
-
+/*
   const validateActivityFields = () => {
     // check if activity selected
     if (!currentActivity) {
@@ -994,12 +1103,27 @@ function ActiveAntrag(props) {
     }
     return true
   }
+*/
 
+  /**
+   * Callback<br/>
+   * **_Implementation:_** sets state [currentActivity]{@link ActiveAntrag~currentActivity} to _ubdefined_.
+   *
+   */
   const handleActivityClose = () => {
     setActivity()
   }
 
-  // derive activity by name from antrag object
+  /**
+   * Method<br/>
+   * Searches for the activity with the specific _name_ in a product offer _instance_ and returns it.
+   * 
+   * @arg {object} instance
+   * Object of a product offer instance. Could be the actual instance or updated one received from the back-end.
+   * @arg {string} name
+   * The name of a product offer activity
+   * @returns {object | null}
+   */
   const getActivityByName = (instance, name) => {
     if (instance.possible_activities) {
       for (const activity of instance.possible_activities) {
@@ -1012,12 +1136,30 @@ function ActiveAntrag(props) {
     return null
   }
 
+  /**
+   * Method<br/>
+   * Executes specified _activity_ taking into account additional arguments.<br/>
+   * **_Implementation:_**<br/> If `action == 'close'` then
+   * sets state [currentActivity]{@link ActiveAntrag~currentActivity} to _undefined_.<br/>
+   * If `action == 'upload'` then opens a [file upload dialog]{@link FileUploadDialog}.<br/>
+   * Otherwise, calls back-end (_{@link executeAntrag}_) to execute specified _activity_.
+   * If the response is successful then derives prop _postExecution_
+   * from the received instance (if exists) or actual _activity_ argument.
+   * In case of `postExecution == 'link'`, opens the received link in a new tab of the browser.
+   * if not then updates the product offer instance in the _redux_ store with received one.<br/>
+   * Sets state [isExecuting]{@link ActiveAntrag~isExecuting} to _true_ while while executing.
+   * 
+   * @arg {string} action='run'
+   * Defines the flow of the execution of the activity.<br/>
+   * Possible values: 'run' | 'close' | 'upload'
+   * @arg {object} activity=[currentActivity]{@link ActiveAntrag~currentActivity}
+   * The activity instance to be executed.
+   * @arg {boolean} withFields=true
+   * Flag that shows if states [activityGroups]{@link ActiveAntrag~activityGroups} and
+   * [activityValues]{@link ActiveAntrag~activityValues} should be passed to the back-end
+   * to execute the _activity_.
+   */
   const executeActivity = (action='run', activity=currentActivity, withFields=true) => {
-
-    //console.log('Execute Activity:')
-    //console.log(activity)
-    //console.log(action)
-    //console.log(withFields)
 
     if (action === 'close') {
       setActivity()
@@ -1074,6 +1216,17 @@ function ActiveAntrag(props) {
     })
   }
 
+  /**
+   * Event Handler<br/>
+   * **_Event:_** change state of a group _switch_ of an activity.<br/>
+   * **_Implementation:_** Sets the value of prop _name_ of
+   * state [activityGroups]{@link ActiveAntrag~activityGroups} to _value_.
+   *
+   * @arg {string} name
+   * name of a current activity group of input fields
+   * @arg {boolean} value
+   * new value of the group visibility
+   */
   const updateActivityGroupVisibility = (name, value) => {
     setActivityGroups((preValues) => ({
       ...preValues,
@@ -1081,6 +1234,24 @@ function ActiveAntrag(props) {
     }))
   }
 
+  /**
+   * Event Handler<br/>
+   * **_Event:_** change the value of an input field, which prop `inputTriggers == true`,
+   * of the current activity.<br/>
+   * **_Implementation:_**<br/> calls the back-end (_{@link updateAntragFields}_) to update
+   * the product offer instance with the actual values of the input fields of the current activity.
+   * On the successful response, it pushes the obtained from the back-end product offer instance to
+   * [updateAntragFromBackend]{@link ActiveAntrag~updateAntragFromBackend}<br/>
+   *
+   * @arg {object} newValues={}
+   * Object of form
+   * ```javascript
+   * {
+   *    <inputFieldName>: <inputFieldValue>
+   * }
+   * ```
+   * that updates values of object [activityValues]{@link ActiveAntrag~activityValues} when calling the back-end. 
+   */
   const handleActivityInputTrigger = (newValues={}) => {
     /* 
     ** update antrag fields
@@ -1106,6 +1277,21 @@ function ActiveAntrag(props) {
     })
   }
 
+  /**
+   * Event Handler<br/>
+   * **_Event:_** change the value of an input field, which prop `inputTriggers != true`,
+   * of the current activity.<br/>
+   * **_Implementation:_** updates state [activityValues]{@link ActiveAntrag~activityValues}
+   * with the received _newValues_.
+   *
+   * @arg {object} newValues
+   * Object of form
+   * ```javascript
+   * {
+   *    <inputFieldName>: <inputFieldValue>
+   * }
+   * ```
+   */
   const handleActivityDataChanged = (newValues) => {
     setActivityValues(preValues => ({
       ...preValues,
@@ -1113,6 +1299,20 @@ function ActiveAntrag(props) {
     }))
   }
 
+  /**
+   * Event Handler<br/>
+   * **_Event:_** select an item of the activity navigation bar.<br/>
+   * **_Implementation:_** if no activity of the product offer is executing
+   * (states [isExecuting]{@link ActiveAntrag~isExecuting} and [isCalculate]{@link ActiveAntrag~isCalculate}
+   * are _false_) then extracts an activity by its name from the possible activities of the product offer.
+   * In case of the extracted activity does not requires additional inputs, the method executes it and
+   * sets state [currentActivity]{@link ActiveAntrag~currentActivity} to _undefined_.<br/>
+   * Otherwise, sets [currentActivity]{@link ActiveAntrag~currentActivity} to the extracted activity object.
+   *
+   * @arg {string} value
+   * Object of form
+   * The name of the selected activity.
+   */
   const handleActivitySelect = (event, value) => {
 
     // check if activity is executing
@@ -1135,17 +1335,26 @@ function ActiveAntrag(props) {
     
     // update current activity
     setActivity(newActivity)
-
-    // update activity values
-    //getActivityValues(newActivity)
-
   }
 
+  /**
+   * Event Handler<br/>
+   * **_Event:_** click _close_ button of the product offer card.<br/>
+   * Implements animation of the card vanishing
+   * by setting state [isVisible]{@link ActiveAntrag~isVisible} to _false_.
+   */
   const handleCloseCard = () => {
-    //setOpenSpeedometer(false)
     setIsVisible(false)
   }
 
+  /**
+   * Callback<br/>
+   * **_Implementation:_** deletes the product offer by:
+   * * removing the product offer instance from the _redux_ store
+   * * removing the address lists, associated with the product offer, from the _redux_ store
+   * * calling back-end (_{@link deleteAntrag}_) to remove the product offer in back-end  
+   *
+   */
   const handleDeleteCard = () => {
     props.clearAddressList(antrag.id)
     props.closeAntrag(props.index)
@@ -1158,13 +1367,19 @@ function ActiveAntrag(props) {
     })
   }
 
-  const handleEmailClicked = (user) => {
+  /**
+   * Event Handler<br/>
+   * **_Event:_** click _email_ button of the product offer card.<br/>
+   * **Implementation:_** calls the back-end (_{@link getAntragEmail}_) for _.eml_ file
+   * for the product offer and opens it in a new tab of the browser. 
+   */
+  const handleEmailClicked = () => {
     const payload = {
       parentId: antrag.id,
       action: "get",
     }
 
-    getAntragEmail(user, payload).then(src => {
+    getAntragEmail(props.user, payload).then(src => {
       props.updateAntrag()
       window.open(src, "_blank")
     }).catch(error => {
@@ -1172,6 +1387,18 @@ function ActiveAntrag(props) {
     })
   }
 
+  /**
+   * Method<br/>
+   * Checks if the current activity defines input fields of the specified type.
+   *
+   * @arg {string | null} activityType=null
+   * Type of activity by its input fields.<br/>
+   * Possible values:
+   * * '_groups_' for grouped fields
+   * * '_fields_' for ungrouped fields
+   * * _null_ for any type of fields
+   * @returns {boolean}
+   */
   const isActivityOpen = (activityType=null) => {
     if (!currentActivity) {
       return false
@@ -1180,47 +1407,50 @@ function ActiveAntrag(props) {
     const groupsExist = ("field_groups" in currentActivity) && currentActivity.field_groups.length > 0
     const fieldsExist = currentActivity.fields.filter(field => field.fieldVisibilityType < 3).length > 0
 
-    //console.log(`isActivityOpen: ${activityType}`)
-    //console.log(`Groups: ${groupsExist}`)
-    //console.log(`Fields: ${fieldsExist}`)
-
     switch (activityType) {
       case "groups":
         return groupsExist
       case "fields":
         return fieldsExist
       default:
-        //console.log(`Return: ${groupsExist || fieldsExist}`)
         return groupsExist || fieldsExist
     }
   }
 
-  //***** BEBUG OUTPUT
-  //console.log('Antrag Props:')
-  //console.log(props)
-  //console.log('Current Activity:')
-  //console.log(currentActivity)
-  //console.log('Antrag Values:')
-  //console.log(values)
-  //console.log('Activity Values')
-  //console.log(activityValues)
-  //console.log(cardRef)
-
-
-
-  /*
-  ** Speedometer
-  */
+  /**
+   * Toggles visibility of the [speedometer]{@link Speedometer} associated with the product offer card
+   * by setting state [openSpeedometer]{@link ActiveAntrag~openSpeedometer}.
+   * The conditions to show the speedometer are as follow:
+   * * prop [antrag]{@link ActiveAntrag} holds property _speedometerValue_ with non-zero value
+   * * the width of the screen is larger then 600px
+   * * the product offer card is currently visible on the screen
+   *
+   * @name useEffect
+   * @function
+   * @memberOf ActiveAntrag
+   * @inner
+   * @variation 6
+   * @arg {boolean} isVisible
+   * state [isVisible]{@link ActiveAntrag~isVisible}
+   * @arg {number} scrollTop
+   * prop [scrollTop]{@link ActiveAntrag}
+   * @arg {number} antrag.speedometerValue
+   * prop [antrag.speedometerValue]{@link ActiveAntrag}
+   */
   React.useEffect(() => {
     if (!antrag.speedometerValue || !cardRef.current || window.innerWidth < 600) {
       setOpenSpeedometer(false)
       return
     }
 
-    // card rect
+    /**
+     * Derives position of the product offer card.
+     */
     const cardRect = cardRef.current.getBoundingClientRect()
 
-    // check if speedometer should be visible
+    /**
+     * The speedometer should be visible if the related card is within the current browser window.
+     */
     const openSpeedometer = (props.index === 0) ? (
       // 1st card
       cardRect.bottom > 0
@@ -1232,8 +1462,33 @@ function ActiveAntrag(props) {
     setOpenSpeedometer(isVisible && openSpeedometer)
   }, [isVisible, props.scrollTop, antrag.speedometerValue])
 
-  const [speedometerDivHeight, setSpeedometerDivHeight] = React.useState(0)
-
+  
+  /**
+   * Derives the position and the height of the parent `<div>` element
+   * that holds [speedometer]{@link Speedometer} connected to the product offer card.
+   * The position could be one of the following:
+   * * on the right margin of the page if the screen is wide enough
+   * * within the layout of the product offer card
+   *
+   * The height of the parent `<div>` element equals to:
+   * * the height of the speedometer if it is located on the page margin
+   * * the sum of the speedometer height and the distance between the card bottom and
+   * the _calculate_ button if it is located within the card
+   *
+   * @name useEffect
+   * @function
+   * @memberOf ActiveAntrag
+   * @inner
+   * @variation 7
+   * @arg {number} scrollTop
+   * prop [scrollTop]{@link ActiveAntrag}
+   * @arg {object} currentActivity
+   * state [currentActivity]{@link ActiveAntrag~currentActivity}
+   * @arg {object} cardRef
+   * ref [cardRef]{@link ActiveAntrag~cardRef}
+   * @arg {object} calcRef
+   * ref [calcRef]{@link ActiveAntrag~calcRef}
+   */
   React.useEffect(() => {
     if (!cardRef.current || !calcRef.current) {
       setSpeedometerDivHeight(0)
@@ -1249,6 +1504,17 @@ function ActiveAntrag(props) {
     setSpeedometerSticky(isSticky)
   }, [cardRef, calcRef, currentActivity, props.scrollTop])
 
+
+  //***** BEBUG OUTPUT
+  //console.log('Antrag Props:')
+  //console.log(props)
+  //console.log('Current Activity:')
+  //console.log(currentActivity)
+  //console.log('Antrag Values:')
+  //console.log(values)
+  //console.log('Activity Values')
+  //console.log(activityValues)
+  //console.log(cardRef)
 
   return(
     <React.Fragment>
@@ -1275,7 +1541,7 @@ function ActiveAntrag(props) {
                 />
 
                 <Tooltip title={t("common:email")}>
-                    <IconButton onClick={() => handleEmailClicked(props.user)} aria-label="email">
+                    <IconButton onClick={handleEmailClicked} aria-label="email">
                         <MailOutlineOutlinedIcon />
                     </ IconButton>
                 </ Tooltip>
@@ -1568,14 +1834,41 @@ function ActiveAntrag(props) {
 }
 
 ActiveAntrag.propTypes = {
+  /**
+   * The vertical `x` coordinate of the top of the current window
+   */
   scrollTop: PropTypes.number,
+  /**
+   * The index of the product offer in the _redux_ store
+   */
   index: PropTypes.number,
+  /**
+   * The product offer instance
+   */
   antrag: PropTypes.object,
+  /**
+   * Object that contains the user credentials
+   */
   user: PropTypes.object,
+  /**
+   * Object that contains _value lists_ stored in the _redux_
+   */
   valueLists: PropTypes.object,
+  /**
+   * _Redux_ action that updates product offer instance in the store
+   */
   updateAntrag: PropTypes.func,
+  /**
+   * _Redux_ action that adds a new product offer instance to the store
+   */
   newAntrag: PropTypes.func,
+  /**
+   * _Redux_ action that removes a product offer instance from the store
+   */
   closeAntrag: PropTypes.func,
+  /**
+   * _Redux_ action that removes from the store the address list associated with the current product offer
+   */
   clearAddressList: PropTypes.func,
 }
 
