@@ -489,28 +489,6 @@ function ActiveAntrag(props) {
     }), {...commonFields})
   }
 
-/*
-  const getActivityValues = (activity) => {
-    // update activity values
-    let activityValues
-    if ("field_groups" in activity) {
-      const newGroups = getGroups(activity)
-      setActivityGroups(newGroups)
-      activityValues = {...getValues(activity)}
-    } else {
-      setActivityGroups({})
-      activityValues = {...activityValues, ...activity.fields.filter((field) => 
-        (field.fieldVisibilityType !== 2)
-      ).reduce((result, field) => ({
-        ...result,
-        ...getFieldValue(field),
-      }), {})}
-    }
-
-    setActivityValues({...activityValues})
-  }
-*/
-
   // get values on antrag update
   /**
    * Updates states [groups]{@link ActiveAntrag~groups} and [values]{@link ActiveAntrag~values}
@@ -564,7 +542,7 @@ function ActiveAntrag(props) {
    * state [currentActivity]{@link ActiveAntrag~currentActivity}
    */
   React.useEffect(() => {
-    if (currentActivity) {     
+    if (currentActivity) {
       const isGroupedFields = ("field_groups" in currentActivity)
       const lActivityGroups = isGroupedFields ? getGroups(currentActivity) : {}
       const lActivityValues = isGroupedFields ? getValues(currentActivity) : {}
@@ -574,7 +552,7 @@ function ActiveAntrag(props) {
        *
        */
       setActivityValues({
-        ...activityValues,
+        ...lActivityValues,
         ...currentActivity.fields.filter((field) => 
           (field.fieldVisibilityType !== 2)
         ).reduce((result, field) => ({
