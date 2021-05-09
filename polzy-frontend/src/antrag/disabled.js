@@ -8,7 +8,9 @@ import { AntragTitle } from './components'
 import { updateAntrag } from '../redux/actions'
 import { fetchAntrag } from '../api/antrag'
 
-// Waiting Element
+/**
+ * Waiting Animation Element
+ */
 const WaitingProgress = withStyles((theme) => ({
   root: {
     marginTop: theme.spacing(1),
@@ -18,7 +20,7 @@ const WaitingProgress = withStyles((theme) => ({
 
 /**
  * This component renders a product offer card with the request status _waiting_.
- * @see {@link AntragView.MapAntragCard} for possible request status of product offer
+ * @see [MapAntragCard]{@link AntragView.MapAntragCard} for possible request status of product offer
  *
  * @component
  * @category Product Offer

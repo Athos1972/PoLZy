@@ -83,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
 
 /**
  * This component renders a product offer card with the request status _OK_.
- * @see {@link AntragView.MapAntragCard} for possible request status of product offer
+ * @see [MapAntragCard]{@link AntragView.MapAntragCard} for possible request status of product offer
  *
  * @component
  * @category Product Offer

@@ -22,13 +22,18 @@ const useStyles = makeStyles((theme) => ({
 
 
 /**
- * It is a mapper component that renders a specific type of a [product offer card]{@link AntragCards}
+ * A product offer card could be in one of the following states:
+ * * _disabled_ (while initilizing the offer and requesting data from the back-end for the first time)
+ * * _active_ (if the offer object was successfully initialized)
+ * * _error_ (if any error occures while processing the offer data)
+ *
+ * This mapper component renders a specific type of a product offer card
  * depending on the the value of prop `antrag.request_state` as follow:
- * | Value                       | Product Offer Card Component |
- * | --------------------------- | ---------------------------- |
- * | "ok"                        | {@link ActiveAntrag} |
- * | "waiting"                   | {@link DisabledAntrag} |
- * | "error" (or any other value)| {@link ErrorAntrag} |
+ * | Card State | antrag.request_state        | Card Component         |
+ * | -----------|-----------------------------|----------------------- |
+ * | _disabled_ | "waiting"                   | {@link DisabledAntrag} |
+ * | _active_   | "ok"                        | {@link ActiveAntrag}   |
+ * | _error_    | "error" (or any other value)| {@link ErrorAntrag}    |
  *
  * @prop {number} props.index - The index of the product offer in the _redux_ store
  * @prop {object} props.anrag - The product offer instance
