@@ -35,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
  * | _active_   | "ok"                        | {@link ActiveAntrag}   |
  * | _error_    | "error" (or any other value)| {@link ErrorAntrag}    |
  *
+ * @prop {object} props
  * @prop {number} props.index - The index of the product offer in the _redux_ store
  * @prop {object} props.anrag - The product offer instance
  *
