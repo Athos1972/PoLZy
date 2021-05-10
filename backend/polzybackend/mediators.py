@@ -28,14 +28,14 @@ class Policy:
     def setLanguage(self, language):
         self.language = language
 
-    def fetch(self):
+    def parseToFrontend(self):
         #
         # IMPORTANT: this method should be define within custon implementation
         #
         # fetches policy details from Policy Management System
         #
 
-        raise Exception('Method "fetch" is not defined in Policy class')
+        raise Exception('Method "parseToFrontend" is not defined in Policy class')
 
     def getValueList(self, valueListName):
         #

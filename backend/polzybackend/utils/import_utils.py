@@ -52,7 +52,7 @@ def permissions(user):
     # default method
     return user.get_permissions()
 
-
+'''
 def policy_class():
     #
     # returns policy class of the current implementation
@@ -62,7 +62,16 @@ def policy_class():
         return import_class(current_app.config.get('CLASSNAME_POLICY'))
 
     return Policy
+'''
+def policy_factory():
+    #
+    # returns policy factory class of the current implementation
+    #
+    
+    if current_app.config.get('POLICY_FACTORY'):
+        return import_class(current_app.config['POLICY_FACTORY'])
 
+    return Policy
 '''
 def antrag_class():
     #
@@ -79,8 +88,8 @@ def antrag_factory():
     # returns antrag factory class of the current implementation
     #
     
-    if current_app.config.get('CLASSNAME_ANTRAG'):
-        return import_class(current_app.config['CLASSNAME_ANTRAG'])
+    if current_app.config.get('ANTRAG_FACTORY'):
+        return import_class(current_app.config['ANTRAG_FACTORY'])
 
     return Antrag
 

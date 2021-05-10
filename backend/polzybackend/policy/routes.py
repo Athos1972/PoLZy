@@ -2,9 +2,10 @@ from flask import jsonify, request, current_app
 from datetime import date
 from polzybackend.policy import bp
 from polzybackend import auth
-from polzybackend.utils.import_utils import policy_class
+from polzybackend.utils.import_utils import policy_factory
 from polzybackend.models import Activity
 from polzybackend.GamificationHandler import update_achievement
+from copy import deepcopy
 
 
 @bp.route('/policy/<string:policy_number>/<string:effective_date>')
@@ -16,19 +17,24 @@ def get_policy(policy_number, effective_date=None):
     # and returns it
     #
 
-    # set default effective_date if needed
-    if effective_date is None:
-        effective_date = str(date.today())
-
     try:
-        # get Policy
-        policy = policy_class()(policy_number, effective_date)
-        # update policy stage and language
-        policy.setStage(auth.current_user().stage)
-        policy.setLanguage(auth.current_user().language)
-        policy.set_user(auth.current_user())
+        # load user and its relationships
+        user = auth.current_user()
+        user.company.company
+        # create policy
+        policy = policy_factory().create(
+            policy_number,
+            effective_date or str(date.today()),
+            user,
+        )
         current_app.logger.info(f"Policy={policy_number}, Stage={policy.stage}, lang={policy.language}")
-
+        # create policy activity
+        Activity.read_policy(policy_number, effective_date, user)
+        # store policy to app and return as json object
+        current_app.config['POLICIES'][policy.UUID] = policy
+        result = policy.parseToFrontend()
+        return jsonify(result), 200
+        '''
         if policy.fetch():
             policy.set_user(auth.current_user())
             current_app.config['POLICIES'][policy.id] = policy
@@ -47,7 +53,7 @@ def get_policy(policy_number, effective_date=None):
             # if response_code == 200:
             #    update_achievement()
             return jsonify(result), response_code
-
+        '''
     except Exception as e:
         current_app.logger.exception(f'Fetch policy {policy_number} {effective_date} failed: {e}')
         return jsonify({'error': str(e)}), 400
@@ -87,8 +93,11 @@ def new_activity():
         if policy is None:
             raise Exception(f'Policy {data["id"]} is absent in PoLZy storage')
 
+        # load user and its relationships
+        user = auth.current_user()
+        user.company.company
         # save activity to DB
-        activity = Activity.new(data, policy, auth.current_user())
+        activity = Activity.new(data, policy, user)
 
         # execute activity
         result = policy.executeActivity(data['activity'])
@@ -97,18 +106,18 @@ def new_activity():
 
         if result:
             # update policy
-            policy.setStage(auth.current_user().stage)
-            policy.setLanguage(auth.current_user().language)
-            current_app.logger.info(f"Stage={policy.stage}, lang={policy.language}")
+            update_policy = policy_factory().update(policy, deepcopy(user))
+            current_app.config['POLICIES'][policy.UUID] = update_policy
+            current_app.logger.info(f"Policy={update_policy.number}, Stage={update_policy.stage}, lang={update_policy.language}")
 
             # check if activity returns not bool result
             if result is not True:
                 update_achievement()
                 return jsonify(result), 200
 
-            policy.fetch()
+            result = update_policy.parseToFrontend()
             update_achievement()
-            return jsonify(policy.get()), 200
+            return jsonify(result), 200
         
     except Exception as e:
         current_app.logger.exception(f'Execution activity {data.get("name")} for policy {data["id"]} faild: {e}')
@@ -145,9 +154,11 @@ def update_policy():
             raise Exception(f'Policy {data["id"]} is absent in PoLZy storage. Most probably instance restarted.')
 
         # update policy values
-        policy.updateFields(data)
-        result = policy.get()
-        return jsonify(result), 200
+        if policy.updateActivityFields(data):
+            result = policy.parseToFrontend()
+            return jsonify(result), 200
+
+        raise Exception(f'Activity {data.get("activity")} not found')
 
     except Exception as e:
         current_app.logger.exception(f'Policy {data["id"]} update failed: {e}')

@@ -38,7 +38,7 @@ def new_antrag(product_type):
         # create antrag instance
         antrag = antrag_factory().create(product_type, deepcopy(user))
 
-        # store antrag and return it to store and return json object
+        # store antrag to app and return as json object
         #antrag.initialize()
         current_app.config['ANTRAGS'][antrag.uuid] = antrag
         result = antrag.parseToFrontend()
