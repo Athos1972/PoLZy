@@ -6,6 +6,7 @@ from flask_cors import CORS
 import os
 from polzybackend.messenger import Messenger
 import flask_monitoringdashboard as dashboard
+import logging
 
 
 # initialization
@@ -27,7 +28,11 @@ def create_app(config=None):
         default='sqlite:///' + os.path.join(os.path.abspath(os.path.dirname(__file__)), 'polzy.db'),
     )
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['COMPRESS_MIN_SIZE'] = 8_000
     app.config.from_object(config)
+
+    #logging
+    app.logger.setLevel(logging.DEBUG if os.getenv('FLASK_DEBUG') else logging.ERROR)
 
     # policy store
     app.config['POLICIES'] = {}
