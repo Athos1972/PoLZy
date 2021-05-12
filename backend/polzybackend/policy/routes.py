@@ -17,6 +17,8 @@ def get_policy(policy_number, effective_date=None):
     # and returns it
     #
 
+    policy_date = effective_date or str(date.today())
+
     try:
         # load user and its relationships
         user = auth.current_user()
@@ -24,12 +26,12 @@ def get_policy(policy_number, effective_date=None):
         # create policy
         policy = policy_factory().create(
             policy_number,
-            effective_date or str(date.today()),
-            user,
+            policy_date,
+            deepcopy(user),
         )
         current_app.logger.info(f"Policy={policy_number}, Stage={policy.stage}, lang={policy.language}")
         # create policy activity
-        Activity.read_policy(policy_number, effective_date, user)
+        Activity.read_policy(policy_number, policy_date, user)
         # store policy to app and return as json object
         current_app.config['POLICIES'][policy.UUID] = policy
         result = policy.parseToFrontend()
@@ -55,10 +57,10 @@ def get_policy(policy_number, effective_date=None):
             return jsonify(result), response_code
         '''
     except Exception as e:
-        current_app.logger.exception(f'Fetch policy {policy_number} {effective_date} failed: {e}')
+        current_app.logger.exception(f'Fetch policy {policy_number} {policy_date} failed: {e}')
         return jsonify({'error': str(e)}), 400
 
-    return jsonify({'error': 'Policy not found'}), 404
+    #return jsonify({'error': 'Policy not found'}), 404
 
 
 @bp.route('/policy/delete/<string:id>', methods=['DELETE'])
@@ -118,6 +120,14 @@ def new_activity():
             result = update_policy.parseToFrontend()
             update_achievement()
             return jsonify(result), 200
+
+        if result is None:
+            # activity execution not implemented
+            return jsonify({
+                'id': policy.UUID,
+                'activity': activity.type,
+                'status': 'not implemented',
+            }), 409
         
     except Exception as e:
         current_app.logger.exception(f'Execution activity {data.get("name")} for policy {data["id"]} faild: {e}')

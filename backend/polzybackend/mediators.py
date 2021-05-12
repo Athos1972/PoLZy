@@ -19,7 +19,7 @@ class Policy:
         self.data = None
         self.user = None
 
-    def set_user(self, user):
+    def updateUser(self, user):
         self.user = deepcopy(user)
 
     def setStage(self, stage):
