@@ -17,7 +17,7 @@ update_json = {
         "BonusMalusStufe ": "0", "AlterFahrzeug ": "Neu", "Antriebsart ": "Benzin mit Kat",
         "CO2 ": "1", "KW ": "1", "HaftpflichtVSU ": "30 Mio", "Listenneupreis ": "1",
         "Sonderausstattung ": "", "Kaskovariante ": "Vollkasko genereller SBH",  "KaskoSBH ": "350",
-        "IUVariante ": "Lenker- und Insassen", "IUTod ": "€ 20.000,00", "IUDI ": "€ 40.000,00"
+        "IUVariante ": "Lenker- und Insassen", "IUTod ": "€ 20.000,00", "IUDI ": "€ 30.000,00"
     }
 }
 

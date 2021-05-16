@@ -18,7 +18,7 @@ if __name__ == '__main__':
         description="Open source Insurance Policy Life Cycle Management",
         long_description=long_description,
         long_description_content_type="text/markdown",
-        url="https://baangt.org",
+        url="https://www.buhl-consulting.com.cy",
         packages=setuptools.find_packages(),
         data_files=[],
         package_data={},

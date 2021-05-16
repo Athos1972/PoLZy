@@ -6,6 +6,8 @@ from polzybackend.models import AntragActivityRecords
 from polzybackend.utils.import_utils import import_class
 import json
 from copy import deepcopy
+from polzybackend.utils import zip_response
+
 
 @bp.route('/antrag/products')
 @auth.login_required
@@ -39,10 +41,12 @@ def new_antrag(product_type):
         antrag = antrag_factory().create(product_type, deepcopy(user))
 
         # store antrag to app and return as json object
-        #antrag.initialize()
         current_app.config['ANTRAGS'][antrag.uuid] = antrag
         result = antrag.parseToFrontend()
         return jsonify(result), 200
+
+        response = zip_response(result)
+        return response, 200
 
     except Exception as e:
         current_app.logger.exception(f'Initialization of antrag instance {product_type} failed: {e}')
@@ -67,7 +71,9 @@ def clone_antrag(id):
         antrag = antrag_src.clone()
         current_app.config['ANTRAGS'][antrag.uuid] = antrag
         result = antrag.parseToFrontend()
-        return jsonify(result), 200
+
+        response = zip_response(result)
+        return response, 200
 
     except Exception as e:
         current_app.logger.warning(f'Cloning of antrag {id} failed: {e}')
@@ -137,7 +143,9 @@ def update_antrag():
         # update antrag values and return antrag json object
         antrag.updateFields(data)
         result = antrag.parseToFrontend()
-        return jsonify(result), 200
+        
+        response = zip_response(result)
+        return response, 200
 
     except Exception as e:
         current_app.logger.exception(f'Antrag {data["id"]}, fields update failed: {e}')
@@ -164,7 +172,9 @@ def execute_antrag():
 
         # execute antrag activity and return the response object
         result = antrag.executeActivity(data)
-        return jsonify(result), 200
+        
+        response = zip_response(result)
+        return response, 200
 
     except Exception as e:
         current_app.logger.exception(f'Failed execute activity {data.get("activity")} of antrag {data["id"]}: {e}')
@@ -214,5 +224,5 @@ def loadLatestRecords(antrag_id):
 
     # return antrag json
     result = antrag.parseToFrontend()
-    return jsonify(result), 200
-
+    response = zip_response(result)
+    return response, 200
