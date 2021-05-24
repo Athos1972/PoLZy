@@ -43,7 +43,7 @@ def new_antrag(product_type):
         # store antrag to app and return as json object
         current_app.config['ANTRAGS'][antrag.uuid] = antrag
         result = antrag.parseToFrontend()
-        return jsonify(result), 200
+        #return jsonify(result), 200
 
         response = zip_response(result)
         return response, 200
