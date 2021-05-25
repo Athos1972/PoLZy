@@ -5,6 +5,7 @@ from time import sleep
 from datetime import datetime
 from polzyFunctions.scripts.utils import db, models
 from polzybackend.models import GamificationActivity, GamificationUserStats
+from backend.polzyFunctions.GlobalConstants import logger
 
 
 save_stdout = sys.stdout  # saves original stdout
