@@ -4,7 +4,6 @@ from polzybackend.policy import bp
 from polzybackend import auth
 from polzybackend.utils.import_utils import policy_class
 from polzybackend.models import Activity
-from polzybackend.GamificationHandler import update_achievement
 
 
 @bp.route('/policy/<string:policy_number>/<string:effective_date>')
@@ -103,11 +102,9 @@ def new_activity():
 
             # check if activity returns not bool result
             if result is not True:
-                update_achievement()
                 return jsonify(result), 200
 
             policy.fetch()
-            update_achievement()
             return jsonify(policy.get()), 200
         
     except Exception as e:

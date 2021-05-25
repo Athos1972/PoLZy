@@ -3,7 +3,8 @@ from polzybackend import messenger, db
 from polzybackend.models import User, GamificationBadge, GamificationBadgeType, GamificationBadgeLevel
 from flask import jsonify
 import json
-from random import sample, choice
+from random import sample
+from secrets import choice
 from polzyFunctions.GlobalConstants import logger
 
 # toast debugging route
@@ -44,7 +45,6 @@ def newbadge():
         search_type = any(b.type == badge_type for b in user.badges)
         if search_type:
             current_badge = next(filter(lambda b: b.type == badge_type, user.badges))
-            #search_type = any(b.type == badge_type and b.level.next_level is None for b in user.badges)
             if current_badge.level.next_level:
                 badge_level = current_badge.level.next_level
                 new_badge = current_badge
