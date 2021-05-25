@@ -54,7 +54,10 @@ class DatabaseManager:
         return lFile
 
     @classmethod
-    def set_processed(cls, file, processed_obj=None, details={}, key=None):
+    def set_processed(cls, file, processed_obj=None, details=None, key=None):
+        if not details:
+            details = {}
+
         filename, extension = os.path.splitext(file)
 
         if not processed_obj:  # getting File row object if not supplied

@@ -194,6 +194,13 @@ class FieldDefinition:
     relatedFields: list = field(default_factory=list)
 
     def __post_init__(self):
+        """
+        This empty __post_init__ is needed so that in subclassed classes it is processed. If it's not included
+        in the base class it will not be processed in subclasses either. Tested with Python 3.6.3 to 3.8.7
+
+        You can use this method to add attributes to this class and (pre-)set values.
+        :return:
+        """
         pass
 
     @classmethod
@@ -308,7 +315,7 @@ class InputFields:
         outputList = [f.toJSON() for f in self.fields]
         return outputList
 
-    def getField(self, **kwargs) -> FieldDefinition:
+    def getField(self, **kwargs):
         # returns InputField object matching with given parameters.
         for item in self.fields:
             success = True
