@@ -32,19 +32,12 @@ def get_policy(policy_number, effective_date=None):
             policy.set_user(auth.current_user())
             current_app.config['POLICIES'][policy.id] = policy
             result = policy.get()
-            # DEBUG
-            import json
-            # print('RESULT:')
-            # print(result)
-            # print(json.dumps(result, indent=2))
 
             # save activity to DB
             Activity.read_policy(policy_number, effective_date, auth.current_user())
             
             # set response
             response_code = 400 if 'error' in result else 200
-            # if response_code == 200:
-            #    update_achievement()
             return jsonify(result), response_code
 
     except Exception as e:
@@ -66,7 +59,7 @@ def delete_policy(id):
         return jsonify({'error': f'Policy instance {id} not found'}), 404
 
     current_app.config['POLICIES'] = {key: value for key, value in current_app.config['POLICIES'].items() if key != id}
-    return {'OK': f'Policy instance {id} successfully deleted'}, 200
+    return jsonify({'OK': f'Policy instance {id} successfully deleted'}), 200
 
 
 @bp.route(f'/policy/activity', methods=['POST'])
