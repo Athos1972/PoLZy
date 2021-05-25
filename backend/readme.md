@@ -4,8 +4,16 @@ PoLZy Back-End App
 [PoLZy](https://gogs.earthsquad.global/athos/PoLZy) is a flexible tool for insurance companies to deal with standard business processes during the life cycle of a policy.  
 Here you can find the PoLZy back-end application.
 
-**Currently, it is available only a development installation**  
+**Currently, it is available only as a development installation**  
 
+Showcase
+--------
+Without investing too much time when evaluating whether Polzy could be useful for your
+organization you can use the Showcase app either on https://polzydemo.buhl-consulting.com.cy/login
+or install it from [repository](https://gogs.earthsquad.global/athos/PoLZy_Showcase) locally.
+
+Please see the [Readme](https://gogs.earthsquad.global/athos/PoLZy_Showcase/src/master/README.md)
+for detailed instructions about users and available test data.
 
 Custom Elements
 ---------------
@@ -173,7 +181,4 @@ flask db migrate
 flask db upgrade
 ```
 
-To populate database with the sample instances, execute:
-```bash
-python populate_db.py
-```
+
