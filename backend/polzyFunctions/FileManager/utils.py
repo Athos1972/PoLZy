@@ -38,10 +38,10 @@ def updateFieldDataName(data):
     for key, value in data.items():
         if key not in valid_headers:  # then most probably this key contains value of some other keys in it -
             try:
-                sanitize = getattr(sys.modules[__name__], key.lower())(value)     # - e.g. name = first_name & last_name
+                sanitize = getattr(sys.modules[__name__], key.lower())(value)    # e.g. name is first_name and last_name
                 sanitized_data.update(sanitize)
-            except:
-                logger.critical(f"Found new header: {key}")
+            except Exception as ex:
+                logger.critical(f"Found new header: {key}. This shouldn't be the case. Error was {ex}")
         elif key in dateObj:  # if key is in date object category that means we need to convert value in datetime object
             processed = returnDate(value)
             sanitized_data[key] = processed
@@ -69,8 +69,8 @@ def returnDate(string):
     # some fields need date object, so we are using dateutils here to get date object
     try:
         dt = parse(string).strftime(GlobalConstants.dateFormat)
-    except:
-        logger.critical(f"Unable to parse date: {string}")
+    except Exception as ex:
+        logger.critical(f"Unable to parse date: {string}. Error was {ex}")
         dt = datetime.now().strftime(GlobalConstants.dateFormat)
     return dt
 

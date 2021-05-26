@@ -36,31 +36,10 @@ def get_policy(policy_number, effective_date=None):
         current_app.config['POLICIES'][policy.UUID] = policy
         result = policy.parseToFrontend()
         return jsonify(result), 200
-        '''
-        if policy.fetch():
-            policy.set_user(auth.current_user())
-            current_app.config['POLICIES'][policy.id] = policy
-            result = policy.get()
-            # DEBUG
-            import json
-            # print('RESULT:')
-            # print(result)
-            # print(json.dumps(result, indent=2))
 
-            # save activity to DB
-            Activity.read_policy(policy_number, effective_date, auth.current_user())
-            
-            # set response
-            response_code = 400 if 'error' in result else 200
-            # if response_code == 200:
-            #    update_achievement()
-            return jsonify(result), response_code
-        '''
     except Exception as e:
         current_app.logger.exception(f'Fetch policy {policy_number} {policy_date} failed: {e}')
         return jsonify({'error': str(e)}), 400
-
-    #return jsonify({'error': 'Policy not found'}), 404
 
 
 @bp.route('/policy/delete/<string:id>', methods=['DELETE'])
@@ -75,7 +54,7 @@ def delete_policy(id):
         return jsonify({'error': f'Policy instance {id} not found'}), 404
 
     current_app.config['POLICIES'] = {key: value for key, value in current_app.config['POLICIES'].items() if key != id}
-    return {'OK': f'Policy instance {id} successfully deleted'}, 200
+    return jsonify({'OK': f'Policy instance {id} successfully deleted'}), 200
 
 
 @bp.route(f'/policy/activity', methods=['POST'])
@@ -114,7 +93,6 @@ def new_activity():
 
             # check if activity returns not bool result
             if result is not True:
-                update_achievement()
                 return jsonify(result), 200
 
             result = update_policy.parseToFrontend()
@@ -128,7 +106,7 @@ def new_activity():
                 'activity': activity.type,
                 'status': 'not implemented',
             }), 409
-        
+
     except Exception as e:
         current_app.logger.exception(f'Execution activity {data.get("name")} for policy {data["id"]} faild: {e}')
         return jsonify({'error': 'Bad Request'}), 400

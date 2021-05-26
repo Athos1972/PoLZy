@@ -93,7 +93,7 @@ def delete_antrag(id):
         return jsonify({'error': f'Antrag instance {id} not found'}), 404
 
     current_app.config['ANTRAGS'] = {key: value for key, value in current_app.config['ANTRAGS'].items() if key != id}
-    return {'OK': f'Antrag instance {id} successfully deleted'}, 200
+    return jsonify({'OK': f'Antrag instance {id} successfully deleted'}), 200
 
 
 
@@ -209,7 +209,7 @@ def loadLatestRecords(antrag_id):
     # get antrag record by id
     antrag_record = AntragActivityRecords.getLatest(antrag_id)
     if antrag_record is None:
-        return {'error': f'No record found of antrag {antrag_id}'}, 404
+        return jsonify({'error': f'No record found of antrag {antrag_id}'}), 404
 
     # load user with company relationships
     user = auth.current_user()

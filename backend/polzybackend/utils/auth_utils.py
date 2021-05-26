@@ -1,4 +1,4 @@
-from random import choice
+from secrets import choice
 from datetime import datetime, timedelta
 from functools import reduce
 import uuid
@@ -11,8 +11,8 @@ EXPIRED_HOURS = 24
 
 
 def generate_token(length=ACCESS_KEY_LENGTH):
-    simbols = string.ascii_letters + string.digits + '!#$%&*+-<=>?@'
-    return ''.join(choice(simbols) for i in range(length))
+    symbols = string.ascii_letters + string.digits + '!#$%&*+-<=>?@'
+    return ''.join(choice(symbols) for i in range(length))
 
 
 def get_expired(hours=EXPIRED_HOURS, days=0):

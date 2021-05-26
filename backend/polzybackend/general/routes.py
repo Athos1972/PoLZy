@@ -3,8 +3,10 @@ from polzybackend.general import bp
 from polzybackend.utils.import_utils import all_stages
 from polzybackend import auth, models, db
 from datetime import datetime
+from sqlalchemy.orm.exc import UnmappedInstanceError
 import os
 from uuid import uuid4
+from pathlib import Path
 from polzyFunctions.GlobalConstants import logger
 
 @bp.route('/stages')
@@ -92,7 +94,7 @@ def manage_file(file_id):
         ext = file.filename.split('.')[-1]
     except AttributeError:
         ext = ""
-    path_to_file = os.path.join(current_app.config['UPLOADS'], f'{file_id}.{ext}')
+    path_to_file = Path(current_app.config['UPLOADS']).joinpath(f"{file_id}.{ext}")
 
     # edit file type
     if request.method == 'POST':

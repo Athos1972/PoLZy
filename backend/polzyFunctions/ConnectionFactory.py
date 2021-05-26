@@ -46,9 +46,19 @@ class ConnectorMeta:
     Meta class for connections. Needs to be implemented and subclassed in each installation
     """
     def __init__(self, *args, **kwargs):
+        """
+        Needs to be implemented for each backend system to connect to in an installation
+        :param args:
+        :param kwargs:
+        """
         pass
 
     def connectionSetup(self) -> Session:
+        """
+        This method must be impleemented for each system. It should provide a Session object
+        which can be used for all GET, PUT, POST, etc. requests.
+        :return:
+        """
         pass
 
     def executeGetRequestToURL(self, url: str, headers=None):
@@ -74,4 +84,4 @@ class ConnectionFactory:
         :param kwargs:
         :return:
         """
-        return
+        return ConnectorMeta()

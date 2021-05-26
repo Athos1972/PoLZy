@@ -12,8 +12,6 @@ class Singleton(type):
 
 
 class HitList(metaclass=Singleton):
-    def __init__(self):
-        pass
 
     def deriveUserRanking(self, user):
         #

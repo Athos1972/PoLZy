@@ -25,9 +25,6 @@ class WriteActivity:
         from polzyFunctions.Activities.AntragActivity import AntragActivity
         from polzyFunctions.Activities.Activity import Activity
         from polzyFunctions.Dataclasses.Antrag import Antrag
-        # FIXME: Fix after policy refactor
-        #from fasifu.Activities.PolicyActivity import PolicyActivity
-        #from fasifu.Dataclasses.Polizze import Polizze
 
         self.activity: Activity = None
         self.antrag: Antrag = None
@@ -71,7 +68,7 @@ class WriteActivity:
                 user = self.activity.antrag.user
                 self.antrag = self.activity.antrag
                 eventDetails = self.__getEventDetailsAntrag()
-            except:
+            except Exception:
                 user = self.activity.polizze.user
                 self.polizze = self.activity.polizze
                 eventDetails = self.__getEventDetailsPolizze()
