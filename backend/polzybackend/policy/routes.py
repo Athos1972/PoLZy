@@ -4,7 +4,6 @@ from polzybackend.policy import bp
 from polzybackend import auth
 from polzybackend.utils.import_utils import policy_factory
 from polzybackend.models import Activity
-from polzybackend.GamificationHandler import update_achievement
 from copy import deepcopy
 
 
