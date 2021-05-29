@@ -177,7 +177,7 @@ def execute_antrag():
         return response, 200
 
     except Exception as e:
-        current_app.logger.exception(f'Failed execute activity {data.get("activity")} of antrag {data["id"]}: {e}')
+        current_app.logger.exception(f'Failed execute activity {data.get("activity")} of antrag {data.get("id")}: {e}')
     
     return jsonify({'error': f'Execution of antrag activiy {data.get("activity")} failed'}), 400
 
