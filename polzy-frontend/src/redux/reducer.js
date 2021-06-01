@@ -21,6 +21,7 @@ import {
   CLEAR_VALUES,
 } from './actions.js'
 
+
 /*
 ** USER
 */
@@ -153,11 +154,57 @@ const valueReducer = (state = {}, action) => {
   }
 }
 
+
+/**
+ * Redux State
+ *
+ * @category Redux
+ * @module State
+ */
+/**
+ * @typedef {object} state
+ * @ignore
+ */
 const reducer = combineReducers({
+  /**
+   * Data of the currently signed in user
+   *
+   * @name user
+   * @type {object}
+   */
   user: userReducer,
+  /**
+   * Holds the currently loaded policy and customer instances
+   *
+   * @name policies
+   * @type {array}
+   */
   policies: policyReducer,
+  /**
+   * Holds of the currently loaded product offer instances
+   *
+   * @name antrags
+   * @type {array}
+   */
   antrags: antragReducer,
+  /**
+   * Holds the currently loaded addresses as arrays mapped to the product offers
+   *
+   * @name addressList
+   * @type {object}
+   * @prop key {string} - ID od a product offer
+   * @prop value {array} - list of addresses associated with the given product offer
+   */
   addressList: addressReducer,
+  /**
+   * Holds loaded value lists, which are long lists of valus for some dropdown fields.
+   * Such lists are loaded once per session.
+   *
+   * @name valueLists
+   * @type {object}
+   * @prop key {string} - Name of the list
+   * @prop value {array} - values
+   */
   valueLists: valueReducer,
 })
 
