@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import {
   Table,
   TableHead,
@@ -288,10 +289,36 @@ function FilterMenu(props) {
   )
 }
 
-export default function EnhancedTable(props) {
+/**
+ * Renders data field of type _Table_.
+ *
+ * @component
+ * @category Data Fields
+ */
+function EnhancedTable(props) {
 
   const classes = useStyles()
   const {t} = useTranslation('common')
+  /**
+   * Table data extracted from prop [data]{@link EnhancedTable}
+   *
+   * @name data
+   * @type {object}
+   * @memberOf EnhancedTable
+   * @prop columns {array}
+   * List of objects that describe the columns of the table.
+   * Each object defines the following properties of the column:
+   * @prop columns.label {string} - title of the column
+   * @prop columns.type {string} - type of the values within the column.
+   * Possible values: 'hidden', 'string', 'number'
+   * @prop columns.filter {bool}
+   * boolean flag that shows if filtering by this column is available
+   * @prop columns.isKey {bool}
+   * boolean flag that shows if the current column keeps the key data of the records
+   * (the key data is set to the value of the _Table_ data field when a row selected)
+   * @prop rows {array}
+   * list of row records. Each record is an array of values that correspond to the columns.
+  */
   const {title, data} = props
 
   const [orderBy, setOrderBy] = React.useState(null)
@@ -611,3 +638,16 @@ export default function EnhancedTable(props) {
     </Paper>
   )
 }
+
+EnhancedTable.propTypes = {
+  /**
+   * Title of the table
+   */
+  title: PropTypes.string,
+  data: PropTypes.object.isRequired,
+  onChange: PropTypes.function,
+  onCloseActivity: PropTypes.function,
+  updateAntrag: PropTypes.function,
+}
+
+export default EnhancedTable

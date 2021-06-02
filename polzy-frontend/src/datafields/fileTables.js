@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import {
   Table,
@@ -111,6 +112,12 @@ const getSortedData = (data, orderBy, ascOrder) => {
     return sortedData
   }
 
+/*
+ * Renders data field of type _Table_.
+ *
+ * @component
+ * @category Data Fields
+ */
 function DocumentTableBase(props) {
 
   const classes = useStyles()
@@ -312,7 +319,15 @@ function DocumentTableBase(props) {
     </Paper>
   )
 }
-
+/*
+DocumentTableBase.propTypes = {
+  parentId: PropTypes.string,
+  title: PropTypes.string,
+  data: PropTypes.array.isRequired,
+  user: PropTypes.object,
+  updateAntrag: PropTypes.function,
+}
+*/
 
 function AttachmentRowBase(props) {
   const classes = useRowStyles()
@@ -449,6 +464,12 @@ function AttachmentRowBase(props) {
 }
 
 
+/*
+ * Renders data field of type _Attachments_.
+ *
+ * @component
+ * @category Data Fields
+ */
 export function AttachmentTable(props) {
 
   const classes = useStyles()
