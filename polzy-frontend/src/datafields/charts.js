@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { 
   Grid,
   Typography,
@@ -29,6 +30,8 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
+/*
+// the variant of rendering tooltips of nodes
 const RenderTooltip = (props) => {
   if (props.payload.length === 2) {
     return(
@@ -49,19 +52,67 @@ const RenderTooltip = (props) => {
 
   return null
 }
+*/
 
+/**
+ * This component renders an output data field of type _Chart_.
+ * The component uses library [Recharts]{@link https://recharts.org/} to display data as a linear chart.
+ *
+ * @component
+ * @category Data Fields
+ *
+ * @example
+ * const title = 'test'
+ * const data = {
+ *   axis: {
+ *     x: {
+ *       label: 'x_label',
+ *       units: 'test',
+ *     },
+ *     y: {
+ *       label: 'y_label',
+ *       units: 'test',
+ *     },
+ *   },
+ *   values: [10, 20]
+ * }
+ * return <LinearChart title={title} data={data} />
+ */
 export function LinearChart(props) {
   const classes = useStyles()
   const theme = useTheme()
+  /**
+   * Options and data of the chart extracted from prop [data]{@link LinearChart}
+   *
+   * @name data
+   * @type {object}
+   * @memberOf LinearChart
+   * @prop axis {object} - options of the chart axis
+   * @prop axis.x.label {string} - label of the axis _x_
+   * @prop axis.x.units {string} - units of the axis _x_
+   * @prop axis.y.label {string} - label of the axis _y_
+   * @prop axis.y.units {string} - units of the axis _y_
+   * @prop values {array}
+   * list of data points presented in form of arrays of two values [xValue, yValue]
+  */
   const {data} = props
 
-  //console.log("Chart:")
-  //console.log(props)
-
+  /**
+   * Callback<br/>
+   * Converts a numeric _value_ into a string with commas as thousands separator.
+   * Used as a formatter function of ticks of the _y_-axis and node values.
+   */
   const formatTooltip = (value, name, props) => {
     return formatNumberWithCommas(value)
   }
 
+  /**
+   * Method<br/>
+   * Converts prop [data.values]{@link LinearChart.data}
+   * to array of data that could be parsed by _Rechart_.
+   *
+   * @returns {object}
+   */
   const getChartData = () => {
     return data.values.map(point => ({
       x: point[0],
@@ -125,4 +176,15 @@ export function LinearChart(props) {
       </Grid>
     </Grid>
   )
+}
+
+LinearChart.propTypes = {
+  /**
+   * the name of the chart
+   */
+  title: PropTypes.string,
+  /**
+   * chart data and options (see [data]{@link LinearChart.data} for detailed structure)
+   */
+  data: PropTypes.object.isRequired,
 }
