@@ -54,13 +54,7 @@ const RenderTooltip = (props) => {
 }
 */
 
-/**
- * This component renders an output data field of type _Chart_.
- * The component uses library [Recharts]{@link https://recharts.org/} to display data as a linear chart.
- *
- * @component
- * @category Data Fields
- *
+/* 
  * @example
  * const title = 'test'
  * const data = {
@@ -77,6 +71,14 @@ const RenderTooltip = (props) => {
  *   values: [10, 20]
  * }
  * return <LinearChart title={title} data={data} />
+ */
+
+/**
+ * This component renders an output data field of type _Chart_.
+ * The component uses library [Recharts]{@link https://recharts.org/} to display data as a linear chart.
+ *
+ * @component
+ * @category Data Fields
  */
 export function LinearChart(props) {
   const classes = useStyles()
