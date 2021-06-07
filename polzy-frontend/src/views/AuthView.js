@@ -80,7 +80,7 @@ function AuthView(props) {
   /**
    * Callback<br/>
    * **_Fired_** when submitting data in {@link LoginForm}.<br/>
-   * **_Implementation:_** checks the quantity the _companies_ associated with the _user_.
+   * **_Implementation:_** checks the quantity of the _companies_ associated with the _user_.
    * If the user assigned to only company then calls [_props.signIn_]{@link AuthView}
    * to push the company permissions and redirects the user to {@link HomeView}. 
    * Otherwise sets the user data to state [_user_]{@link AuthView~user}.<br/>

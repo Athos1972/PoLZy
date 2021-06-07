@@ -73,7 +73,7 @@ function EnhancedTable(props) {
    */
   /**
    * State<br/>
-   * Header of a column acoording to which the table data should be ordered.
+   * Header of a column according to which the table data should be ordered.
    *
    * @name orderBy
    * @default null
@@ -357,7 +357,7 @@ function EnhancedTable(props) {
 
   /**
    * Method<br/>
-   * Checks if state [selectedRow]{@link EnhansedTable~selectedRow} currently keeps the the given row.
+   * Checks if state [selectedRow]{@link EnhansedTable~selectedRow} currently keeps the given row.
    *
    * @function
    * @arg {array} row
@@ -468,8 +468,8 @@ function EnhancedTable(props) {
     if (props.onChange) {
       props.onChange(hiddenValues)
     }
-    if (props.updateAntrag) {
-      props.updateAntrag(hiddenValues)
+    if (props.updateParent) {
+      props.updateParent(hiddenValues)
     }
   }
 
@@ -628,9 +628,9 @@ EnhancedTable.propTypes = {
    */
   onCloseActivity: PropTypes.func,
   /**
-   * Callback fired when the instance of the current product offer should be updated 
+   * Callback fired to update the parent instance 
    */
-  updateAntrag: PropTypes.func,
+  updateParent: PropTypes.func,
 }
 
 export default EnhancedTable
