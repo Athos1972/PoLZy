@@ -20,7 +20,7 @@ class Config(object):
     IMAGES = os.path.join(MEDIA, 'images')
 
     # Local URI
-    HOST = 'http://localhost:5000'
+    HOST = 'http://0.0.0.0:5000'
     DOWNLOADS = 'files'
     LOGO_URI = 'logo'
 
