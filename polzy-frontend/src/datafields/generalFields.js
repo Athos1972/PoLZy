@@ -37,7 +37,8 @@ import SearchField from './searchField'
 import EnhancedTable from './enhancedTable'
 import DataFieldSelect from './selectField'
 import MappedImage from './mappedImage'
-import { DocumentTable, AttachmentTable } from './fileTables'
+import DocumentTable from './documentTable'
+import AttachmentTable from './attachmentTable'
 import { LinearChart } from './charts'
 import ExpandButton from '../components/expandButton'
 import { getLocaleDateFormat, backendDateFormat } from '../dateFormat'
@@ -1176,7 +1177,7 @@ export default function DataGroup(props) {
                     data={parseJSONString(field.value)}
                     value={values[field.name]}
                     onChange={props.onGlobalChange}
-                    updateAntrag={props.updateAntrag}
+                    updateParent={props.updateAntrag}
                     onCloseActivity={props.onCloseActivity}
                   />
                 </Grid>
@@ -1260,7 +1261,7 @@ export default function DataGroup(props) {
                     name={field.name}
                     title={field.brief}
                     data={parseJSONString(field.value)}
-                    updateAntrag={props.onInputTrigger}
+                    updateParent={props.onInputTrigger}
                   />
                 ))}
               </Grid>
@@ -1274,7 +1275,7 @@ export default function DataGroup(props) {
                     name={field.name}
                     title={field.brief}
                     data={parseJSONString(field.value)}
-                    onDelete={props.onInputTrigger}
+                    updateParent={props.onInputTrigger}
                   />
                 ))}
               </Grid>

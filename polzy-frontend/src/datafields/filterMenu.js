@@ -411,7 +411,7 @@ FilterMenu.propTypes = {
   /**
    * A list of the current filter options
    */
-  filterList: PropTypes.array.isRequired,
+  filterList: PropTypes.array,
   /**
    * Callback that closes the menu
    */
