@@ -96,7 +96,7 @@ function CustomTag(props) {
   /**
    * Event Handler<br/>
    * **_Event:_** click _save_ button in the _edit_ mode.<br/>
-   * **_Implementation:_** calls the back-end (_{@link setCustomTag}_) to update the custom tag.
+   * **_Implementation:_** calls the back-end [setCustomTag]{@link module:Antrag.setCustomTag} to update the custom tag.
    * If the response is successful then calls method [updateTag]{@link CustomTag~updateTag}
    * to synchronize the custom tag with the back-end.
    */
@@ -120,7 +120,8 @@ function CustomTag(props) {
   /**
    * Event Handler<br/>
    * **_Event:_** click _delete_ button of the tag chip in the _view_ mode.<br/>
-   * **_Implementation:_** calls the back-end (_{@link setCustomTag}_) to set an empty string to the custom tag.
+   * **_Implementation:_** calls the back-end [setCustomTag]{@link module:Antrag.setCustomTag}
+   * to set an empty string to the custom tag.
    * If the response is successful then calls method [updateTag]{@link CustomTag~updateTag}
    * to synchronize the custom tag with the back-end.
    */

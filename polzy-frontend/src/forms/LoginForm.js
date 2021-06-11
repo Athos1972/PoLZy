@@ -85,7 +85,7 @@ function LoginForm(props) {
   /**
    * Event Handler<br/>
    * **_Event:_** click _submit_ button.<br/>
-   * **_Implementation:_** calls back-end (_{@link login}_) for user data.
+   * **_Implementation:_** calls back-end [login]{@link module:Auth.login} for user data.
    * If the response is successful then fires [_props.onSubmit_]{@link LoginForm} callback.
    * Otherwise, sets state [_user.error_]{@link LoginForm~user} to the error message received from the back-end.
    */

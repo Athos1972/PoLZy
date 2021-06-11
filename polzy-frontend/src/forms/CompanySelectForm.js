@@ -47,7 +47,7 @@ function CompanySelectForm(props) {
   /**
    * Event Handler<br/>
    * **_Event:_** click _submit_ button.<br/>
-   * **_Implementation:_** calls back-end (_{@link getPermissions}_) for user permissions in the selected company.
+   * **_Implementation:_** calls back-end [getPermissions]{@link module:Auth.getPermissions} for user permissions in the selected company.
    * If response is successful then fires [_props.onSubmit_]{@link CompanySelectForm} callback.
    */
   const handleCompanySelect = () => {

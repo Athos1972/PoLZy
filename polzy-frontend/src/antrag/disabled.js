@@ -29,7 +29,7 @@ function DisabledAntrag(props) {
   const {index, antrag} = props
 
   /**
-   * Calls the back-end (_{@link fetchAntrag}_) for a product offer instance, when the component is mounted.
+   * Calls the back-end [fetchAntrag]{@link module:Antrag.fetchAntrag} for a product offer instance, when the component is mounted.
    * Then pushes to prop [updateAntrag]{@link DisabledAntrag}:
    * * the received product offer instance if the response is _OK_
    * * the current product offer instance with state _failed_ if the response is _error_

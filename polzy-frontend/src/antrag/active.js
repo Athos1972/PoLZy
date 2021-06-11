@@ -282,7 +282,7 @@ function ActiveAntrag(props) {
    *
    * @name currentActivity
    * @default undefined
-   * @prop {object | undefined} currentActivity - state
+   * @prop {object|undefined} currentActivity - state
    * @prop {function} setActivity - setter
    * @type {state}
    * @memberOf ActiveAntrag
@@ -685,7 +685,7 @@ function ActiveAntrag(props) {
   /**
    * Event Handler<br/>
    * **_Event:_** click _clone_ button.<br/>
-   * **_Implementation:_** calls back-end (_{@link cloneAntrag}_) to make a copy of the product offer.
+   * **_Implementation:_** calls back-end [cloneAntrag]{@link module:Antrag.cloneAntrag} to make a copy of the product offer.
    * If the response is successful then fires callback [prop.newAntrag]{@link ActiveAntrag}
    * to add the cloned product offer instance to the _redux_ store.
    */
@@ -707,7 +707,8 @@ function ActiveAntrag(props) {
    * Event Handler<br/>
    * **_Event:_** change state of a group _switch_.<br/>
    * **_Implementation:_** if the input group's prop `inputTriggers == true` then the method
-   * calls the back-end (_{@link updateAntragFields}_) to update the product offer instance
+   * calls the back-end [updateAntragFields]{@link module:Antrag.updateAntragFields}
+   * to update the product offer instance
    * with the actual values of the input fields. On the successful response,
    * it pushes the obtained from the back-end product offer instance to
    * [updateAntragFromBackend]{@link ActiveAntrag~updateAntragFromBackend}<br/>
@@ -756,7 +757,8 @@ function ActiveAntrag(props) {
   /**
    * Method<br/>
    * Calculates the product offer.<br/>
-   * **_Implementation:_** calls back-end (_{@link executeAntrag}_) to execute _Berechnen_ (_calculate_) activity.
+   * **_Implementation:_** calls back-end [executeAntrag]{@link module:Antrag.executeAntrag}
+   * to execute _Berechnen_ (_calculate_) activity.
    * If the response is successful then updates the product offer instance in the _redux_ store.<br/>
    * Sets state [isCalculate]{@link ActiveAntrag~isCalculate} to _true_ while while executing.
    *
@@ -796,7 +798,8 @@ function ActiveAntrag(props) {
 
   /**
    * Callback<br/>
-   * **_Implementation:_** calls back-end (_{@link updateAntragFields}_) to update the values of the input fields.
+   * **_Implementation:_** calls back-end [updateAntragFields]{@link module:Antrag.updateAntragFields}
+   * to update the values of the input fields.
    * If the response is successful then updates the product offer instance in the _redux_ store.
    *
    * @arg {object} newValues={}
@@ -860,8 +863,8 @@ function ActiveAntrag(props) {
   /**
    * Event Handler<br/>
    * **_Event:_** change the value of an input field, which prop `inputTriggers == true`.<br/>
-   * **_Implementation:_** calls the back-end (_{@link updateAntragFields}_) to update
-   * the product offer instance with the actual values of the input fields.
+   * **_Implementation:_** calls the back-end [updateAntragFields]{@link module:Antrag.updateAntragFields}
+   * to update the product offer instance with the actual values of the input fields.
    * On the successful response, it pushes the obtained from the back-end product offer instance to
    * [updateAntragFromBackend]{@link ActiveAntrag~updateAntragFromBackend}<br/>
    * Disables auto calculation
@@ -987,7 +990,7 @@ function ActiveAntrag(props) {
    * Object of a product offer instance. Could be the actual instance or updated one received from the back-end.
    * @arg {string} name
    * The name of a product offer activity
-   * @returns {object | null}
+   * @returns {object|null}
    */
   const getActivityByName = (instance, name) => {
     if (instance.possible_activities) {
@@ -1007,7 +1010,8 @@ function ActiveAntrag(props) {
    * **_Implementation:_**<br/> If `action == 'close'` then
    * sets state [currentActivity]{@link ActiveAntrag~currentActivity} to _undefined_.<br/>
    * If `action == 'upload'` then opens a [file upload dialog]{@link FileUploadDialog}.<br/>
-   * Otherwise, calls back-end (_{@link executeAntrag}_) to execute specified _activity_.
+   * Otherwise, calls back-end [executeAntrag]{@link module:Antrag.executeAntrag}
+   * to execute specified _activity_.
    * If the response is successful then derives prop _postExecution_
    * from the received instance (if exists) or actual _activity_ argument.
    * In case of `postExecution == 'link'`, opens the received link in a new tab of the browser.
@@ -1103,8 +1107,8 @@ function ActiveAntrag(props) {
    * Event Handler<br/>
    * **_Event:_** change the value of an input field, which prop `inputTriggers == true`,
    * of the current activity.<br/>
-   * **_Implementation:_**<br/> calls the back-end (_{@link updateAntragFields}_) to update
-   * the product offer instance with the actual values of the input fields of the current activity.
+   * **_Implementation:_**<br/> calls the back-end [updateAntragFields]{@link module:Antrag.updateAntragFields}
+   * to update the product offer instance with the actual values of the input fields of the current activity.
    * On the successful response, it pushes the obtained from the back-end product offer instance to
    * [updateAntragFromBackend]{@link ActiveAntrag~updateAntragFromBackend}<br/>
    *
@@ -1217,7 +1221,8 @@ function ActiveAntrag(props) {
    * **_Implementation:_** deletes the product offer by:
    * * removing the product offer instance from the _redux_ store
    * * removing the address lists, associated with the product offer, from the _redux_ store
-   * * calling back-end (_{@link deleteAntrag}_) to remove the product offer in back-end  
+   * * calling back-end [deleteAntrag]{@link module:Antrag.deleteAntrag}
+   * to remove the product offer in back-end  
    *
    */
   const handleDeleteCard = () => {
@@ -1235,8 +1240,8 @@ function ActiveAntrag(props) {
   /**
    * Event Handler<br/>
    * **_Event:_** click _email_ button of the product offer card.<br/>
-   * **Implementation:_** calls the back-end (_{@link getAntragEmail}_) for _.eml_ file
-   * for the product offer and opens it in a new tab of the browser. 
+   * **_Implementation:_** calls the back-end [getAntragEmail]{@link module:General.getAntragEmail}
+   * for *._eml_ file for the product offer and opens it in a new tab of the browser. 
    */
   const handleEmailClicked = () => {
     const payload = {
@@ -1256,7 +1261,7 @@ function ActiveAntrag(props) {
    * Method<br/>
    * Checks if the current activity defines input fields of the specified type.
    *
-   * @arg {string | null} activityType=null
+   * @arg {string|null} activityType=null
    * Type of activity by its input fields.<br/>
    * Possible values:
    * * '_groups_' for grouped fields

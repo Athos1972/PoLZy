@@ -211,7 +211,7 @@ function NewAntrag(props) {
 
 
   /**
-   * Calls the back-end (_{@link getProducts}_) for the available list of products to offer.
+   * Calls the back-end [getProducts]{@link module:Antrag.getProducts} for the available list of products to offer.
    * If the response is successful then sets the received list to
    * state [productList]{@link NewAntrag~productList}.
    * If the list contain one product then automaticaly creates a new offer of this product
@@ -265,7 +265,7 @@ function NewAntrag(props) {
    * Event Handler<br/>
    * **_Event:_** select an item from _drop-down list_ of the product offer that could be loaded from the database
    * and match the serach string from state [searchAntragText]{@link NewAntrag~searchAntragText}.<br/>
-   * **_Implementation:_** calls the back-end (_{@link loadAntrag}_) to load the selected product offer from
+   * **_Implementation:_** calls the back-end [loadAntrag]{@link module:Antrag.loadAntrag} to load the selected product offer from
    * the database. If the response is successful then pushes the received product offer instance
    * to prop [newAntrag]{@link NewAntrag} with request status _OK_.<br/>
    * In case of the error status `409` of the response, shows a notification
