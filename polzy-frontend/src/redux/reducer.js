@@ -197,7 +197,7 @@ const reducer = combineReducers({
    */
   addressList: addressReducer,
   /**
-   * Holds loaded value lists, which are long lists of valus for some dropdown fields.
+   * Holds the loaded value lists, which are long lists of valus for some dropdown fields.
    * Such lists are loaded once per session.
    *
    * @name valueLists
