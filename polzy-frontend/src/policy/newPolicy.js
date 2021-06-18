@@ -19,7 +19,8 @@ import { CardNew, CardLogo } from '../styles/cards'
 import { addPolicy } from '../redux/actions'
 import { getCompanyLogo, EmblemLogo } from '../components/logo'
 import { backendDateFormat } from '../dateFormat'
-import { DataFieldText, DataFieldDate } from '../datafields/generalFields'
+import { DataFieldDate } from '../datafields/generalFields'
+import DataFieldText from '../datafields/textField'
 import { SearchDropDown } from '../datafields/searchField'
 
 // styles

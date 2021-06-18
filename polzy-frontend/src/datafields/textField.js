@@ -5,22 +5,20 @@ import {
   InputLabel,
   OutlinedInput,
 } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
-import { typingTimeoutWithInputTrigger, validateIBAN } from '../utils'
-import { inputFieldStyle, parseValue } from './util'
+import { DataFieldFormControl } from './styled'
+import { validateIBAN } from '../utils'
+import { inputFieldStyle, parseValue, typingTimeoutWithInputTrigger } from './util'
 
 // Styles
-const useStyles = makeStyles((theme) => (inputFieldStyle))
+//const useStyles = makeStyles((theme) => (inputFieldStyle))
 
 /**
- * Renders data field of type _Text_.
+ * Renders data field of type _Text_ without predefined values.
  *
  * @component
  * @category Data Fields
  */
 function DataFieldText(props) {
-  const classes = useStyles()
-
   /**
    * Field data extracted from _prop_ [data]{@link DataFieldText}
    *
@@ -28,13 +26,16 @@ function DataFieldText(props) {
    * @type {object}
    * @memberOf DataFieldText
    * @prop {string} name
-   * the name of the field
+   * the name of the data field
    * @prop {string} brief
-   * a short description of the field
+   * a short description of the data field
    * @prop {bool} isMandatory
-   * a boolean flag that shows if the field is mandatory
+   * a boolean flag that shows if the data field is mandatory
+   * @prop {bool} inputTriggers
+   * a boolean flag that shows if the parent instance should be updated
+   * on the back-end using the current input value
    * @prop {string} [errorMessage]
-   * error message of the field retrieved from the back-end
+   * an error message related to the field that comes from the back-end
    */
   const {id, data } = props
   
@@ -175,8 +176,7 @@ function DataFieldText(props) {
   //console.log(props)
 
   return (
-    <FormControl
-      classes={{root: classes.inputField}}
+    <DataFieldFormControl
       variant="outlined"
       size="small"
       fullWidth
@@ -199,7 +199,7 @@ function DataFieldText(props) {
       <FormHelperText>
         {errorMessage}
       </FormHelperText>
-    </FormControl>
+    </DataFieldFormControl>
   )
 }
 
@@ -221,9 +221,17 @@ DataFieldText.propTypes = {
    */
   disabled: PropTypes.bool,
   /**
-   * Callback fired on click or key-down event
+   * Callback fired when click or key-down event occurred
    */
   onClick: PropTypes.func,
+  /**
+   * Callback fired to change the value of the data field
+   */
+  onChange: PropTypes.func,
+  /**
+   * Callback fired to update the parent instance on the back-end using the current input value
+   */
+  onInputTrigger: PropTypes.func,
   /**
    * End [InputAdornment]{@link https://material-ui.com/api/input-adornment/#inputadornment-api}
    * for this text field
