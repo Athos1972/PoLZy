@@ -1,10 +1,14 @@
-
 import io
 import sys
 from time import sleep
 from datetime import datetime
 from polzybackend.models import GamificationActivity, GamificationUserStats
 from polzyFunctions.GlobalConstants import logger
+
+"""
+Import UpdateStats(db, models) function in sub-repo and parse db & models of that sub-repo as parameter 
+in order to update Gamification Statistics of that db/repo.
+"""
 
 
 save_stdout = sys.stdout  # saves original stdout
