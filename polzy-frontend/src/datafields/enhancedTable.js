@@ -64,7 +64,7 @@ function EnhancedTable(props) {
    * (the key data is set to the value of the _Table_ data field when a row selected)
    * @prop rows {array}
    * list of row records. Each record is an array of values that correspond to the columns.
-  */
+   */
   const {title, data} = props
 
   /**

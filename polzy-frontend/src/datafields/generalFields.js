@@ -43,6 +43,10 @@ import { LinearChart } from './charts'
 import ExpandButton from '../components/expandButton'
 import { getLocaleDateFormat, backendDateFormat } from '../dateFormat'
 import { formatNumberWithCommas, typingTimeoutWithInputTrigger, parseJSONString, validateIBAN, formatNumberWithSuffix } from '../utils'
+import DataFieldText from './textField'
+import DataFieldLongText from './textBoxField'
+import DataFieldTextSlider from './textFieldSlider'
+
 
 // Styles
 const useStyles = makeStyles((theme) => ({
@@ -155,7 +159,7 @@ const parseValue = (value) => {
 
 /*
 **  Text Input
-*/
+*//*
 export function DataFieldText(props) {
   const classes = useStyles()
   const {id, data } = props
@@ -241,11 +245,11 @@ export function DataFieldText(props) {
     </FormControl>
   )
 }
-
+*/
 
 /*
 ** Long Text Input
-*/
+*//*
 export function DataFieldLongText(props) {
   const {id, data, value, onChange } = props
 
@@ -262,7 +266,7 @@ export function DataFieldLongText(props) {
       size="small"
     />
   )
-}
+}*/
 /*
 export function DataFieldTextBox(props) {
   const classes = useStyles()
@@ -294,7 +298,7 @@ export function DataFieldTextBox(props) {
 
 /*
 **  Tesxt Slider
-*/
+*//*
 export function DataFieldTextSlider(props) {
   const {id, data } = props
   const {inputRange} = data 
@@ -397,7 +401,7 @@ export function DataFieldTextSlider(props) {
     </React.Fragment>
   )
 }
-
+*/
 
 /*
 **  Number Input
