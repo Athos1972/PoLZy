@@ -3,7 +3,6 @@ import io
 import sys
 from time import sleep
 from datetime import datetime
-from polzyFunctions.scripts.utils import db, models
 from polzybackend.models import GamificationActivity, GamificationUserStats
 from polzyFunctions.GlobalConstants import logger
 
@@ -21,7 +20,7 @@ def print_args():
     To update statistics only for one time = python GamificationStatsUpdater.py --sleep 0""")
 
 
-def get_activites():
+def get_activites(db):
     """
     Returns unprocessed gamification Activities.
     :return:
@@ -38,13 +37,13 @@ def get_activites():
     return activites
 
 
-def update_statistics():
+def update_statistics(db, models):
     """
     Updates unprocessed statistics
     :param seconds: Time in seconds for sleep before rerun loop
     :return:
     """
-    activites = get_activites()
+    activites = get_activites(db)
     users = set()  # using set in order to get count of unique users at the end
     done = 0
     total = len(activites)
@@ -63,12 +62,12 @@ def update_statistics():
     print(f"Total {str(len(activites))} activities updated for {str(len(users))} unique users.")
 
 
-def run_loop(seconds=0):
+def run_loop(db, models, seconds=0):
     exceptions = 0
     excpetion_threshold = 100
     while True:
         try:
-            update_statistics()
+            update_statistics(db, models)
             exceptions = 0
         except Exception as ex:
             exceptions += 1
@@ -85,16 +84,21 @@ def run_loop(seconds=0):
             sleep(seconds)
 
 
-if __name__ == "__main__":
+def UpdateStats(db, models):
     if len(sys.argv) < 2:
         print_args()
-        update_statistics()
+        update_statistics(db, models)
     elif "sleep" in sys.argv[1] and len(sys.argv) > 2:
         try:
             seconds = int(sys.argv[2])
         except:
             print("Integer value needed for sleep. e.g. python GamificationStatsUpdater.py --sleep 10")
             sys.exit()
-        run_loop(seconds)
+        run_loop(db, models, seconds)
     else:
         print_args()
+
+
+if __name__ == "__main__":
+    from polzyFunctions.scripts.utils import db, models
+    UpdateStats(db, models)
