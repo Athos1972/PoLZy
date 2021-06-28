@@ -13,3 +13,12 @@ or install it from [repository](https://gogs.earthsquad.global/athos/PoLZy_Showc
 
 Please see the [Readme](https://gogs.earthsquad.global/athos/PoLZy_Showcase/src/master/README.md)
 for detailed instructions about users and available test data.
+
+Docs
+----
+
+``npm run docs`` in Folder ``polzy-frontend``
+
+Tests
+-----
+``pytest`` in folder ``backend\polzyFunctions\tests``
