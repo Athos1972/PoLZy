@@ -455,7 +455,7 @@ class AntragActivityRecords(db.Model):
     antrag_id = db.Column(db.String(56), primary_key=True)
     user_id = db.Column(db.String(56), db.ForeignKey('users.id'), nullable=False)
     company_id = db.Column(db.String(56), db.ForeignKey('companies.id'), nullable=False)
-    antragsnummer = db.Column(db.String(56), nullable=False)
+    antragsnummer = db.Column(db.Integer(), nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.now)
     status = db.Column(db.String(50), nullable=False)
     searchString = db.Column(db.String, nullable=False)
